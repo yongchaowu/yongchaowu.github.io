@@ -10,12 +10,13 @@ type: page
     <div class="left">
         <h1>{{page.title}}</h1>
         <hr>
-        {% assign sortedtags = site.tags | sort %}
+        {% assign sortedpairs = site.tags | sort %}
 
         <ul>
-        {% for tag in sortedtags %}
+        {% for pair in sortedpairs %}
+          {% assign tag = pair | first %}
           <h2 id="{{ tag }}">{{ tag }}</h2>
-          {% for post in site.tags[tag] %}
+          {% for post in pair.last %}
             <li>
                 <time>
                 {{ post.date | date:"%F" }} {{ post.date | date: "%a" }}.
@@ -37,13 +38,14 @@ type: page
             <!-- Content -->
             <div class="side content">
                 <div>
-                    Content
+                    Tags
                 </div>
                 <ul id="content-side" class="content-ul">
-                    {% for tag in sortedtags %}
+                    {% for pair in sortedpairs %}
+                    {% assign tag = pair | first %}
                     <li>
-                        <a data-scroll href="#{{ tag }}">
-                            {{ tag }} ({{ site.tags[tag].size }})
+                        <a data-scroll href="#{{ tag | url_encode }}">
+                            {{ tag }} ({{ pair.last.size }})
                         </a>
                     </li>
                     {% endfor %}
