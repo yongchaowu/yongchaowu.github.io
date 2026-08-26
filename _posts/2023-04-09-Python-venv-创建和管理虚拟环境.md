@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Python-venv-创建和管理虚拟环境"
+title: Python-venv-创建和管理虚拟环境
 date: 2023-04-09 13:38:00
-categories: ["Python"]
-tags: ["Python"]
+categories:
+- Programming
+tags:
+- Python
 ---
 
 >[https://docs.python.org/3/tutorial/venv.html](https://docs.python.org/3/tutorial/venv.html "Python venv")

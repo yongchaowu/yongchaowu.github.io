@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-git-command-入门笔记[慕课网-五月的夏天]"
+title: git-command-入门笔记[慕课网-五月的夏天]
 date: 2020-11-27 01:25:00
-categories: ["Tool"]
-tags: ["git", "Tool"]
+categories:
+- Developer Tools
+tags:
+- git
+- Tool
 ---
 
 November 26, 2020 11:45 PM

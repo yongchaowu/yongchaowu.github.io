@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Model-MiniCPM5-1B"
+title: MiniCPM5-1B
 date: 2026-06-10 19:56:00
-categories: ["Model"]
-tags: ["Model"]
+categories:
+- AI & LLM
+tags:
+- Model
 ---
 
 本节内容参考引用 [微信文章](https://mp.weixin.qq.com/s/2tdHV01FL_YGUmZQ12DS2A)

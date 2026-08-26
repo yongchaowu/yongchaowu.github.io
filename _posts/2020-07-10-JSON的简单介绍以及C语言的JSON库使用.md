@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "JSON的简单介绍以及C语言的JSON库使用"
+title: JSON的简单介绍以及C语言的JSON库使用
 date: 2020-07-10 02:13:00
-categories: ["Json"]
-tags: ["Json", "Open Source Library", "C"]
+categories:
+- Personal / Misc
+tags:
+- Json
+- Open Source Library
+- C
 ---
 
 # [JSON的简单介绍以及C语言的JSON库使用](https://www.cnblogs.com/liunianshiwei/p/6087596.html)

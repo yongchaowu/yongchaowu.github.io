@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-VS2015 Total UnInstaller"
+title: Visual Studio-VS2015 Total UnInstaller
 date: 2020-07-04 00:10:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 4, 2020 12:07 AM

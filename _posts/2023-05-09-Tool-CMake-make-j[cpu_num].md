@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-make -j[cpu_num]"
+title: CMake-make -j[cpu_num]
 date: 2023-05-09 05:39:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://blog.csdn.net/KingOfMyHeart/article/details/105438151

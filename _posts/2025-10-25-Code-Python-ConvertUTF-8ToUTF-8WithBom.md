@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-Python-ConvertUTF-8ToUTF-8WithBom"
+title: Python-ConvertUTF-8ToUTF-8WithBom
 date: 2025-10-25 09:34:00
-categories: ["Code"]
-tags: ["Code", "Python"]
+categories:
+- Programming
+tags:
+- Code
+- Python
 ---
 
 `UTF-8 With Bom` 与 `UTF-8` 格式相比，文件开头多3个字节`\xef\xbb\xbf`

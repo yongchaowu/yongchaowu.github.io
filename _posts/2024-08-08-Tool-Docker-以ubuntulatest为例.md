@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-Docker-以ubuntu:latest为例"
+title: 以ubuntu:latest为例
 date: 2024-08-08 16:48:00
-categories: ["Tool"]
-tags: ["Docker", "Tool", "Ubuntu"]
+categories:
+- Developer Tools
+tags:
+- Docker
+- Tool
+- Ubuntu
 ---
 
 [Ubuntu-Install](https://docs.docker.com/engine/install/ubuntu/)

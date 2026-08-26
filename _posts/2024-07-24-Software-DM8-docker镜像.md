@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "Software-DM8-docker镜像"
+title: Software-DM8-docker镜像
 date: 2024-07-24 16:59:00
-categories: ["Software"]
-tags: ["Software", "DB", "Tool"]
+categories:
+- Developer Tools
+tags:
+- Software
+- DB
+- Tool
+- Docker
 ---
 
 - [达梦数据库](https://www.dameng.com/)

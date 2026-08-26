@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "协议-Magnet协议 磁力链接（Magnet URI scheme）"
+title: 协议-Magnet协议 磁力链接（Magnet URI scheme）
 date: 2023-02-27 02:03:00
-categories: ["协议"]
-tags: ["协议"]
+categories:
+- Personal / Misc
+tags:
+- 协议
 ---
 
 # MagNet协议  磁力链接（Magnet URI scheme）

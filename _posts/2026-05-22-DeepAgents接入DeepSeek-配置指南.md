@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "DeepAgents接入DeepSeek 配置指南"
+title: DeepAgents接入DeepSeek 配置指南
 date: 2026-05-22 02:06:00
-categories: ["DeepAgents"]
-tags: ["DeepAgents", "DeepSeek"]
+categories:
+- AI & LLM
+tags:
+- DeepAgents
+- DeepSeek
 ---
 
 引用[DeepAgents接入DeepSeek 配置指南](https://chat.deepseek.com/share/52ikg61qsi9au9e3wf)

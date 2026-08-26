@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "IDE-Visual Studio Code-Extensions-Continue"
+title: Visual Studio Code-Extensions-Continue
 date: 2026-06-02 07:10:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "Extensions", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- Extensions
+- IDE
 ---
 
 - [Continue - open-source AI code agent](https://marketplace.visualstudio.com/items?itemName=Continue.continue)

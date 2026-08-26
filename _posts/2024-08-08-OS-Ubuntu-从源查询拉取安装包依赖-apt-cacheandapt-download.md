@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Ubuntu-从源查询拉取安装包依赖-apt-cache&apt download"
+title: Ubuntu-从源查询拉取安装包依赖-apt-cache&apt download
 date: 2024-08-08 17:38:00
-categories: ["OS"]
-tags: ["OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Ubuntu
 ---
 
 引用：

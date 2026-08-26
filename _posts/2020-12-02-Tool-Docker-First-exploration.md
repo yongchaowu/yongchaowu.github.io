@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Docker-First exploration"
+title: First exploration
 date: 2020-12-02 18:28:00
-categories: ["Tool"]
-tags: ["Docker", "Tool"]
+categories:
+- Developer Tools
+tags:
+- Docker
+- Tool
 ---
 
 2020/11/30  00:19:00

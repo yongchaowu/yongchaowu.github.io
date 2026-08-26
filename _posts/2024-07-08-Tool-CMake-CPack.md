@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-CPack"
+title: CMake-CPack
 date: 2024-07-08 13:32:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 `CMakeLists.txt:Cpack`

@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-Python package and project manager-uv"
+title: Python package and project manager-uv
 date: 2026-06-02 06:51:00
-categories: ["Tool"]
-tags: ["Python", "Tool", "uv"]
+categories:
+- Developer Tools
+tags:
+- Python
+- Tool
+- uv
 ---
 
 - [Home](https://docs.astral.sh/uv/)

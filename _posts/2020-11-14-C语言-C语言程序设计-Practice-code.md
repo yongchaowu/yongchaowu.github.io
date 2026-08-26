@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C语言-C语言程序设计-Practice code"
+title: C语言-C语言程序设计-Practice code
 date: 2020-11-14 11:02:00
-categories: ["C语言"]
-tags: ["C语言", "C"]
+categories:
+- C & C++
+tags:
+- C
 ---
 
 书上第一章的几个练习。 关于直方图有点头疼，之后再仔细研究一下。

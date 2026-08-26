@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Python-Ray Offline Installation Guide"
+title: Python-Ray Offline Installation Guide
 date: 2026-06-12 22:17:00
-categories: ["Python"]
-tags: ["Python", "Ray"]
+categories:
+- Programming
+tags:
+- Python
+- Ray
 ---
 
 ## Prerequisites

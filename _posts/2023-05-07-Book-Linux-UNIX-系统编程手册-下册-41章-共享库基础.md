@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Book-Linux UNIX 系统编程手册-下册-41章 共享库基础"
+title: Book-Linux UNIX 系统编程手册-下册-41章 共享库基础
 date: 2023-05-07 12:05:00
-categories: ["Book"]
-tags: ["Book", "Linux"]
+categories:
+- Computer Science
+tags:
+- Book
+- Linux
 ---
 
 共享库是一种将库函数打包成一个单元使之能够在运行时被多个进程共享的技术。这种技术能

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-重置数据库，修复server迁移token异常"
+title: Gitlab-重置数据库，修复server迁移token异常
 date: 2024-07-08 13:41:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 迁移gitlab的server数据之后，导致token异常

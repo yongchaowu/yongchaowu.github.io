@@ -5,35 +5,33 @@ layout: default
 <div class="page clearfix" post>
     <div class="left">
         <h1>{{page.title}}</h1>
-        <div class="label">
+        {% include content-badge.html %}
+        <div class="post-meta">
 
-            <div class="label-card">
+            <span class="label-card">
                 <i class="fa fa-calendar"></i>{{ page.date | date: "%F" }}
-            </div>
+            </span>
 
-            <div class="label-card">
+            <span class="label-card">
                 <i class="fa fa-pencil"></i>{{ content | strip_html | size }} 字
-            </div>
+            </span>
 
-            <div class="label-card">
-                {% if page.author %}<i class="fa fa-user"></i>{{ page.author }}
-                {% endif %}
-            </div>
+            {% if page.content_type %}
+            <span class="label-card type-badge type-badge--{{ page.content_type }}">{{ page.content_type | capitalize }}</span>
+            {% endif %}
 
-            <div class="label-card">
-                {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }}  {% endif %}
-            </div>
-
-            <div class="label-card">
+            <span class="label-card">
             {% include category.html %}
-            </div>
+            </span>
 
-            <div class="label-card">
+            <span class="label-card">
             {% include tag.html %}
-            </div>
+            </span>
 
         </div>
         <hr>
+        {% include tested-env.html %}
+        {% include series-nav.html %}
         <article itemscope itemtype="http://schema.org/BlogPosting">
         {{content}}
         </article>
@@ -46,7 +44,7 @@ layout: default
                 {% for thisTag in page.tags %}
                     {% if postHasSimilar == false and hasSimilar.size < 6 and post != page and tag == thisTag %}
                         {% if hasSimilar.size == 0 %}
-                        <h2 id="similar_posts">相关文章</h2>
+                        <h2 id="similar_posts">Related Posts</h2>
                         <ul>
                         {% endif %}
                         <li class="relatedPost">
@@ -68,11 +66,6 @@ layout: default
 
         {% include previousAndNext.html %}
 
-        {% if site.duoshuo_shortname or site.disqus_shortname %}
-        <h2 id="comments">Comments</h2>
-        {% include comments.html %}
-        {% endif %}
-
 
     </div>
     <button class="anchor"><i class="fa fa-anchor"></i></button>
@@ -82,14 +75,11 @@ layout: default
             <!-- Content -->
             <div class="side content">
                 <div>
-                    <i class="fa fa-bookmark-o"></i> 本文导航
+                    <i class="fa fa-bookmark-o"></i> On This Page
                 </div>
                 <ul id="content-side" class="content-ul">
                     {% if hasSimilar.size > 0 %}
-                    <li><a href="#similar_posts">相关文章</a></li>
-                    {% endif %}
-                    {% if site.duoshuo_shortname or site.disqus_shortname %}
-                    <li><a href="#comments">评论</a></li>
+                    <li><a href="#similar_posts">Related Posts</a></li>
                     {% endif %}
                 </ul>
             </div>

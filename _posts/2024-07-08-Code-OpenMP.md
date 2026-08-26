@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-OpenMP"
+title: OpenMP
 date: 2024-07-08 21:06:00
-categories: ["Code"]
-tags: ["Code", "OpenMP"]
+categories:
+- Programming
+tags:
+- Code
+- OpenMP
 ---
 
 - [openmp home](https://www.openmp.org/)

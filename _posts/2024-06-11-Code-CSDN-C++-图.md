@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-CSDN-C++-图"
+title: CSDN-C++-图
 date: 2024-06-11 06:44:00
-categories: ["Code"]
-tags: ["Code", "Data Structure"]
+categories:
+- Programming
+tags:
+- Code
+- Data Structure
 ---
 
 **转自**

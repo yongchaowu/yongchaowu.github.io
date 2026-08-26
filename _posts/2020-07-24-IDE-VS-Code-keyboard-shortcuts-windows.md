@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "IDE-VS Code-keyboard-shortcuts-windows"
+title: VS Code-keyboard-shortcuts-windows
 date: 2020-07-24 08:35:00
-categories: ["IDE"]
-tags: ["ShortCuts", "Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- ShortCuts
+- Visual Studio Code
+- IDE
 ---
 
 https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf

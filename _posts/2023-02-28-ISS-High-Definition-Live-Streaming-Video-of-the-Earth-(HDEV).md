@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "ISS High Definition Live Streaming Video of the Earth (HDEV)"
+title: ISS High Definition Live Streaming Video of the Earth (HDEV)
 date: 2023-02-28 00:10:00
-categories: ["摄影"]
-tags: ["摄影", "素材"]
+categories:
+- Photography
+tags:
+- 摄影
+- 素材
 ---
 
 NASA 地球直播影像(流媒体) 

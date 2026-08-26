@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-CMake-Cpack-生成版本信息文件"
+title: CMake-Cpack-生成版本信息文件
 date: 2024-07-20 16:30:00
-categories: ["Tool"]
-tags: ["CMake", "Tool", "CPack"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
+- CPack
 ---
 
 在使用 CPack 打包过程中自动生成一个文件，其包含存储特定信息，比如版本号或者其他元数据。

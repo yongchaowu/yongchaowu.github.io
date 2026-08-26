@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-QT5-Install-源码安装"
+title: QT5-Install-源码安装
 date: 2024-08-15 10:27:00
-categories: ["IDE"]
-tags: ["QT", "IDE"]
+categories:
+- Developer Tools
+tags:
+- QT
+- IDE
 ---
 
 引用：

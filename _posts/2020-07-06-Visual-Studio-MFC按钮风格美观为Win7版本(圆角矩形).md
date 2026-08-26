@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-MFC按钮风格美观为Win7版本(圆角矩形)"
+title: Visual Studio-MFC按钮风格美观为Win7版本(圆角矩形)
 date: 2020-07-06 22:51:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 6, 2020 10:48 PM

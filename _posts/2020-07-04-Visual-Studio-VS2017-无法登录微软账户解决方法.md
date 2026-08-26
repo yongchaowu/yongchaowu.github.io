@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-VS2017 无法登录微软账户解决方法"
+title: Visual Studio-VS2017 无法登录微软账户解决方法
 date: 2020-07-04 00:03:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 4, 2020 12:02 AM

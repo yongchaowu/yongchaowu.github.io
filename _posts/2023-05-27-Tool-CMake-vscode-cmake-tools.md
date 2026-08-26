@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-CMake-vscode-cmake-tools"
+title: CMake-vscode-cmake-tools
 date: 2023-05-27 12:33:00
-categories: ["Tool"]
-tags: ["CMake", "Tool", "Visual Studio Code"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
+- Visual Studio Code
 ---
 
 microsoft/vscode-cmake-tools

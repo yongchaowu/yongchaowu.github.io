@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C语言-C语言程序设计-Function-strcpy"
+title: C语言-C语言程序设计-Function-strcpy
 date: 2020-11-14 10:56:00
-categories: ["C语言"]
-tags: ["C语言", "C"]
+categories:
+- C & C++
+tags:
+- C
 ---
 
 书上关于strcpy介绍了数组、指针、指针简化的例子，对于代码简化是个可见的例子，记录下来。

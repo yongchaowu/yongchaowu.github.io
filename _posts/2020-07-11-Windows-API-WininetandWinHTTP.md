@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Windows API-Wininet&WinHTTP"
+title: Windows API-Wininet&WinHTTP
 date: 2020-07-11 22:36:00
-categories: ["Windows API"]
-tags: ["WinHTTP", "Wininet", "Windows API"]
+categories:
+- Systems
+tags:
+- WinHTTP
+- Wininet
+- Windows API
 ---
 
 July 11, 2020 10:33 PM

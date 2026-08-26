@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Windows-bat-loop for restart exe"
+title: Windows-bat-loop for restart exe
 date: 2020-07-10 02:10:00
-categories: ["Windows"]
-tags: ["Windows", "Windows批处理 (cmd/bat)", "OS"]
+categories:
+- Systems
+tags:
+- Windows
+- Windows批处理 (cmd/bat)
+- OS
 ---
 
 July 10, 2020 2:09 AM

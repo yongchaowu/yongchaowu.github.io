@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-Visual Studio Code-Extensions（插件）"
+title: Visual Studio Code-Extensions（插件）
 date: 2023-04-14 21:31:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- IDE
 ---
 
 [https://marketplace.visualstudio.com/](https://marketplace.visualstudio.com/ "vscode extensions")

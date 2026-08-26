@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Web-Front-End Tips"
+title: Web-Front-End Tips
 date: 2020-07-09 20:54:00
-categories: ["Web"]
-tags: ["Front-End", "Web"]
+categories:
+- Programming
+tags:
+- Front-End
+- Web
 ---
 
 ## 调试前 确认浏览器大小

@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Windows API-后台服务"
+title: Windows API-后台服务
 date: 2020-07-09 08:12:00
-categories: ["Windows API"]
-tags: ["Backstage Service", "Windows API", "C++"]
+categories:
+- Systems
+tags:
+- Backstage Service
+- Windows API
+- C++
 ---
 
 ## C++创建Windows后台服务程序

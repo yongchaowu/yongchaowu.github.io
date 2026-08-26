@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "WebService"
+title: WebService
 date: 2020-07-10 00:15:00
-categories: ["未分类"]
-tags: ["未分类", "Webservice"]
+categories:
+- Personal / Misc
+tags:
+- 未分类
+- Webservice
 ---
 
 * https://www.cnblogs.com/xdp-gacl/p/4048937.html

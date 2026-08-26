@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-add_custom_command-copy"
+title: CMake-add_custom_command-copy
 date: 2023-05-09 05:58:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://cmake.org/cmake/help/latest/command/add_custom_command.html?highlight=add_custom_command

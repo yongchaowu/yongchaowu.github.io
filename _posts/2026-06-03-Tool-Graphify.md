@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Graphify"
+title: Graphify
 date: 2026-06-03 07:49:00
-categories: ["Tool"]
-tags: ["Tool", "Graphify"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- Graphify
 ---
 
 Graphify 是一项开源技能，通过把代码、文档、论文和图示构建为可查询知识图谱，帮助 AI 编码助手理解多模态代码库。

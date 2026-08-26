@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-Class-Util & Helper"
+title: C++-Class-Util & Helper
 date: 2023-05-22 21:11:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 >https://zhuanlan.zhihu.com/p/352749160

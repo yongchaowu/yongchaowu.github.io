@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Algorithm-Sort-时间复杂度与空间复杂度及稳定性"
+title: Algorithm-Sort-时间复杂度与空间复杂度及稳定性
 date: 2020-10-24 20:47:00
-categories: ["Algorithm"]
-tags: ["Algorithm"]
+categories:
+- Computer Science
+tags:
+- Algorithm
 ---
 
 <!--more-->

@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "Multi-Node LLM Serving: Architecture, Frameworks & Best Practices (LLM Generated)"
+title: 'Node LLM Serving: Architecture, Frameworks & Best Practices'
 date: 2026-06-12 21:13:00
-categories: ["Multi"]
-tags: ["Multi", "Model", "LLM"]
+categories:
+- AI & LLM
+tags:
+- Multi
+- Model
+- LLM
+content_origin: ai-assisted
 ---
 
 {% raw %}

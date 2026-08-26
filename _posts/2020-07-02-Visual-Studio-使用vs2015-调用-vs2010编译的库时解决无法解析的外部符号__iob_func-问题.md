@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-使用vs2015 调用 vs2010编译的库时解决\"无法解析的外部符号__iob_func 问题\""
+title: Visual Studio-使用vs2015 调用 vs2010编译的库时解决"无法解析的外部符号__iob_func 问题"
 date: 2020-07-02 08:47:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 当使用高版本的Visual Studio调用低版本lib时，编译器会发生错误

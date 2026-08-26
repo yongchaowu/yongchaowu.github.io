@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Cross-compilation-Toolchain-ARM-Linaro"
+title: Cross-compilation-Toolchain-ARM-Linaro
 date: 2024-07-15 10:50:00
-categories: ["Tool"]
-tags: ["Tool", "Cross-compilation"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- Cross-compilation
 ---
 
 Ubuntu上基于Arm的交叉编译工具链。

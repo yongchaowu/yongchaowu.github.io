@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Linux-Ubuntu-apt-get"
+title: Linux-Ubuntu-apt-get
 date: 2023-04-08 21:16:00
-categories: ["OS"]
-tags: ["Linux", "OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- Linux
+- OS
+- Ubuntu
 ---
 
 - [https://help.ubuntu.com/community/AptGet/Howto](https://help.ubuntu.com/community/AptGet/Howto "Ubuntu apt-get Guide")

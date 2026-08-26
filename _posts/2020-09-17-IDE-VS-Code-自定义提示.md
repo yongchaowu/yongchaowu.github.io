@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-VS Code-自定义提示"
+title: VS Code-自定义提示
 date: 2020-09-17 08:42:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- IDE
 ---
 
 September 16, 2020 2:52 PM

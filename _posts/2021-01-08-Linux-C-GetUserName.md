@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Linux-C-GetUserName"
+title: Linux-C-GetUserName
 date: 2021-01-08 19:52:00
-categories: ["Linux"]
-tags: ["Linux", "C"]
+categories:
+- Systems
+tags:
+- Linux
+- C
 ---
 
 1. code

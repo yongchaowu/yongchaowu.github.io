@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "Multi-Node LLM Serving-vLLM+Ray(Docker)"
+title: Node LLM Serving-vLLM+Ray
 date: 2026-06-12 22:04:00
-categories: ["Multi"]
-tags: ["Multi", "LLM", "Model", "Agent"]
+categories:
+- AI & LLM
+tags:
+- Multi
+- LLM
+- Model
+- Agent
+- Docker
 ---
 
 vLLM+Ray(Docker) 双节点离线一键部署完整方案

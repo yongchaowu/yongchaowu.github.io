@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-Struct string初始化&&map初始化"
+title: C++-Struct string初始化&&map初始化
 date: 2020-07-10 02:17:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 July 10, 2020 2:16 AM

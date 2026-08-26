@@ -1,0 +1,21 @@
+{% if page.series %}
+<div class="series-nav">
+    <div class="series-nav-header">
+        <i class="fa fa-list-ol"></i> Series: {{ page.series }}
+    </div>
+    {% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
+    {% if series_posts.size > 1 %}
+    <ol class="series-nav-list">
+        {% for sp in series_posts %}
+        <li{% if sp.url == page.url %} class="series-nav-current"{% endif %}>
+            {% if sp.url == page.url %}
+            <strong>{{ sp.title }}</strong>
+            {% else %}
+            <a href="{{ sp.url | prepend: site.baseurl }}">{{ sp.title }}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+</div>
+{% endif %}

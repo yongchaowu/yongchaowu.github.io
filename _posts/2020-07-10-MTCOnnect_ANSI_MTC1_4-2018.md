@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "MTCOnnect_ANSI_MTC1_4-2018"
+title: MTCOnnect_ANSI_MTC1_4-2018
 date: 2020-07-10 00:28:00
-categories: ["MTCOnnect_ANSI_MTC1_4"]
-tags: ["MTCOnnect_ANSI_MTC1_4", "MTConnect"]
+categories:
+- Database
+tags:
+- MTC
+- MTConnect
 ---
 
 MTCOnnect_ANSI_MTC1_4-2018

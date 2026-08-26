@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio color schemes"
+title: Visual Studio color schemes
 date: 2020-07-06 22:53:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 6, 2020 10:52 PM

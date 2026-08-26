@@ -15,7 +15,7 @@
         if (DATA) return cb()
         if (LOADING) return setTimeout(function() { load(cb) }, 200)
         LOADING = true
-        stats.textContent = '加载索引中…'
+        stats.textContent = 'Loading index…'
         var xhr = new XMLHttpRequest()
         xhr.open('GET', '{{ "/search.json" | prepend: site.baseurl }}', true)
         xhr.onload = function() {
@@ -23,12 +23,12 @@
                 DATA = JSON.parse(xhr.responseText)
                 stats.textContent = ''
             } catch (e) {
-                stats.textContent = '索引加载失败'
+                stats.textContent = 'Index failed to load'
             }
             LOADING = false
             cb()
         }
-        xhr.onerror = function() { stats.textContent = '索引加载失败'; LOADING = false }
+        xhr.onerror = function() { stats.textContent = 'Index failed to load'; LOADING = false }
         xhr.send()
     }
 
@@ -73,7 +73,7 @@
             hits.push({ p: p, score: score })
         }
         hits.sort(function(a, b) { return b.score - a.score })
-        stats.textContent = hits.length ? hits.length + ' 条结果' : '没有找到相关文章'
+        stats.textContent = hits.length ? hits.length + ' results' : 'No matching posts found'
         results.innerHTML = hits.slice(0, 30).map(function(h) {
             var t = esc(h.p.title).replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
                 return '<mark>' + m + '</mark>'

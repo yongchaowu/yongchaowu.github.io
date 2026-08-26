@@ -1,9 +1,16 @@
 ---
 layout: post
-title: "OS-Linux-Ubuntu22.04x64-Python-C++调用Python缺少Python.h"
+title: Linux-Ubuntu22.04x64-Python-C++调用Python缺少Python.h
 date: 2023-04-09 10:07:00
-categories: ["OS"]
-tags: ["C++", "Python", "Ubuntu", "Visual Studio Code", "IDE", "OS"]
+categories:
+- Systems
+tags:
+- C++
+- Python
+- Ubuntu
+- Visual Studio Code
+- IDE
+- OS
 ---
 
 - [使用 C 或 C++ 扩展 Python](https://docs.python.org/zh-cn/3.10/extending/extending.html#extracting-parameters-in-extension-functions "使用 C 或 C++ 扩展 Python")

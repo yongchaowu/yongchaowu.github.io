@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Office-Visio-Tips"
+title: Office-Visio-Tips
 date: 2020-08-20 20:29:00
-categories: ["Office"]
-tags: ["Visio", "Office"]
+categories:
+- Developer Tools
+tags:
+- Visio
+- Office
 ---
 
 August 17, 2020 10:13 AM

@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-unique_lock与lock_guard区别"
+title: C++-unique_lock与lock_guard区别
 date: 2023-04-11 21:13:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 >[https://blog.csdn.net/ccw_922/article/details/124662275](https://blog.csdn.net/ccw_922/article/details/124662275)

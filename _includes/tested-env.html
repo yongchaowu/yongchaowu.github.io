@@ -1,0 +1,10 @@
+{% if page.tested_env %}
+<div class="tested-env">
+    <div class="tested-env-header"><i class="fa fa-flask"></i> Test Environment</div>
+    <table>
+        {% for item in page.tested_env %}
+        <tr><td class="te-key">{{ item[0] }}</td><td class="te-val">{{ item[1] }}</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}

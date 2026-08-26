@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "OpenSource-BehaviorTree.CPP-ManualNotes"
+title: BehaviorTree.CPP-ManualNotes
 date: 2026-07-15 23:51:00
-categories: ["OpenSource"]
-tags: ["OpenSource", "C++", "Code", "Open source library", "UML"]
+categories:
+- Personal / Misc
+tags:
+- Open Source
+- C++
+- Code
+- Open source library
+- UML
 ---
 
 - [Introduce](https://www.behaviortree.dev/)

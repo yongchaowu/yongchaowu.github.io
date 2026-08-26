@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Windows CMD生成文件夹目录结构"
+title: Windows CMD生成文件夹目录结构
 date: 2020-07-06 23:35:00
-categories: ["OS"]
-tags: ["Windows批处理 (cmd/bat)", "Windows", "OS"]
+categories:
+- Systems
+tags:
+- Windows批处理 (cmd/bat)
+- Windows
+- OS
 ---
 
 July 6, 2020 11:18 PM

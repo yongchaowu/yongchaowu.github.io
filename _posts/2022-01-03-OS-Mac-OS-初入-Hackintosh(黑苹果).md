@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Mac OS 初入-Hackintosh(黑苹果)"
+title: Mac OS 初入-Hackintosh(黑苹果)
 date: 2022-01-03 01:18:00
-categories: ["OS"]
-tags: ["OS", "macOS"]
+categories:
+- Systems
+tags:
+- OS
+- macOS
 ---
 
 ## 安装方式

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-备份恢复-迁移"
+title: Gitlab-备份恢复-迁移
 date: 2023-07-24 19:26:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 ## 备份

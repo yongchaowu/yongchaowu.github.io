@@ -162,5 +162,5 @@ function moveTOC() {
  */
 function isAndroidWechatBrowser() {
     var ua = navigator.userAgent.toLowerCase()
-    return /micromessenger/.test(ua) && /android/.test(ua2)
+    return /micromessenger/.test(ua) && /android/.test(ua)
 }

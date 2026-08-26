@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Valgrind"
+title: Valgrind
 date: 2024-07-12 13:17:00
-categories: ["Tool"]
-tags: ["Tool", "Valgrind"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- Valgrind
 ---
 
 Valgrind 是一个功能强大的开源程序分析工具，主要用于检测 C/C++ 程序中的内存问题、线程问题以及性能问题。以下是 Valgrind 的一些基本使用方法：

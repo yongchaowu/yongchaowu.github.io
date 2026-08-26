@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C语言-C语言程序设计-Function-fopen"
+title: C语言-C语言程序设计-Function-fopen
 date: 2020-11-14 10:48:00
-categories: ["C语言"]
-tags: ["C语言", "C"]
+categories:
+- C & C++
+tags:
+- C
 ---
 
 直接抄的书上的，编译没过，应该和系统有关，用的windows系统去编译unix上的函数。

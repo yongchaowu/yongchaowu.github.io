@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Book-Linux/UNIX 系统编程手册-上册(部分章节)"
+title: Book-Linux/UNIX 系统编程手册-上册(部分章节)
 date: 2023-05-02 06:05:00
-categories: ["Book"]
-tags: ["Book", "Linux"]
+categories:
+- Computer Science
+tags:
+- Book
+- Linux
 ---
 
 ### Linux专有的编程特性

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Windows-Close Windows Error Reporting"
+title: Windows-Close Windows Error Reporting
 date: 2020-07-11 13:48:00
-categories: ["OS"]
-tags: ["OS", "Windows"]
+categories:
+- Systems
+tags:
+- OS
+- Windows
 ---
 
 July 11, 2020 1:44 PM

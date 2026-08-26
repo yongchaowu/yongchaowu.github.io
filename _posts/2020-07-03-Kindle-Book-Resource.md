@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Kindle Book Resource"
+title: Kindle Book Resource
 date: 2020-07-03 22:52:00
-categories: ["Book"]
-tags: ["Book", "Kindle"]
+categories:
+- Computer Science
+tags:
+- Book
+- Kindle
 ---
 
 July 3, 2020 10:35 PM

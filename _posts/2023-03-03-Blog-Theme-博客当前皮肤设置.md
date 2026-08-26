@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Blog Theme-博客当前皮肤设置"
+title: Blog Theme-博客当前皮肤设置
 date: 2023-03-03 21:47:00
-categories: ["Blog Theme"]
-tags: ["Blog Theme"]
+categories:
+- Personal / Misc
+tags:
+- Blog Theme
 ---
 
 2023/3/3 21:45:37 

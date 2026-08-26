@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Libevent - an event notification library"
+title: Libevent - an event notification library
 date: 2020-07-10 01:00:00
-categories: ["Libevent"]
-tags: ["Open source library", "Libevent"]
+categories:
+- Personal / Misc
+tags:
+- Open source library
+- Libevent
 ---
 
 >[https://libevent.org/](https://libevent.org/)

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-CTime&ColeDateTime"
+title: C++-CTime&ColeDateTime
 date: 2020-07-10 02:24:00
-categories: ["Code"]
-tags: ["Code", "C++"]
+categories:
+- Programming
+tags:
+- Code
+- C++
 ---
 
 July 10, 2020 2:23 AM

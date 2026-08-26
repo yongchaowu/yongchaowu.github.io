@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "C++-Error:invalid new-expression of abstract class type"
+title: C++-Error:invalid new-expression of abstract class type
 date: 2023-04-11 19:58:00
-categories: ["C++"]
-tags: ["C++", "Debug"]
+categories:
+- C & C++
+tags:
+- C++
+- Debug
 ---
 
 C++工程，使用new操作符，new一个抽象类对象时编译报错如下：

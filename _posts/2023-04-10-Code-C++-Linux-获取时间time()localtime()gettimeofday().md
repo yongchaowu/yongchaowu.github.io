@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++-Linux-获取时间time()/localtime()/gettimeofday()"
+title: C++-Linux-获取时间time()/localtime()/gettimeofday()
 date: 2023-04-10 23:50:00
-categories: ["Code"]
-tags: ["C++", "Code", "Time"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Time
 ---
 
 <!--more-->

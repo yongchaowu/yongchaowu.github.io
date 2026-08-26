@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Linux/UNIX 系统编程手册-下册(部分章节)"
+title: Linux/UNIX 系统编程手册-下册(部分章节)
 date: 2023-05-04 07:07:00
-categories: ["Linux_UNIX 系统编程手册"]
-tags: ["Linux_UNIX 系统编程手册", "Book", "Linux"]
+categories:
+- Personal / Misc
+tags:
+- Linux_UNIX 系统编程手册
+- Book
+- Linux
 ---
 
 ### 34.1 概述  （进程组、会话和作业控制）

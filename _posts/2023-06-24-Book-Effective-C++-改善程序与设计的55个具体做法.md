@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Book-Effective C++ 改善程序与设计的55个具体做法"
+title: Book-Effective C++ 改善程序与设计的55个具体做法
 date: 2023-06-24 15:24:00
-categories: ["Book"]
-tags: ["Book", "C++"]
+categories:
+- Computer Science
+tags:
+- Book
+- C++
 ---
 
 1. 让自己习惯C++

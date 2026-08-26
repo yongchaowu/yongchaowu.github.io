@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-Cut CString to get keyValue by \",\"||\"}\""
+title: C++-Cut CString to get keyValue by ","||"}"
 date: 2020-07-10 02:21:00
-categories: ["Code"]
-tags: ["Code", "C++"]
+categories:
+- Programming
+tags:
+- Code
+- C++
 ---
 
 July 10, 2020 2:19 AM

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-regex"
+title: C++-regex
 date: 2024-08-15 09:52:00
-categories: ["Code"]
-tags: ["C++", "Code"]
+categories:
+- Programming
+tags:
+- C++
+- Code
 ---
 
 C++ 正则表达式 regex

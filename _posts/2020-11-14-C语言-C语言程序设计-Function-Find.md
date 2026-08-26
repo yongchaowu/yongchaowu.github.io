@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C语言-C语言程序设计-Function-Find"
+title: C语言-C语言程序设计-Function-Find
 date: 2020-11-14 10:41:00
-categories: ["C语言"]
-tags: ["C语言", "C"]
+categories:
+- C & C++
+tags:
+- C
 ---
 
 照着书敲了一遍然后又重新读了一次才发现程序通过while循环识别的 -xn这种输入。

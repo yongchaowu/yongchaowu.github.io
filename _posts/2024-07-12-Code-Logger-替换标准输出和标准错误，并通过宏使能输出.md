@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Code-Logger-替换标准输出和标准错误，并通过宏使能输出"
+title: Logger-替换标准输出和标准错误，并通过宏使能输出
 date: 2024-07-12 13:18:00
-categories: ["Code"]
-tags: ["Code"]
+categories:
+- Programming
+tags:
+- Code
 ---
 
 需求：替换标准输出和标准错误，并通过宏使能输出

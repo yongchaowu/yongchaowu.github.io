@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-MESSAGE"
+title: CMake-MESSAGE
 date: 2023-04-29 13:48:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 Show status information, warnings or errors

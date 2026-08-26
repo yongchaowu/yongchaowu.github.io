@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-Own Finder(-I -L -l)-compiling"
+title: CMake-Own Finder(-I -L -l)-compiling
 date: 2023-04-29 13:52:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 What is a finder

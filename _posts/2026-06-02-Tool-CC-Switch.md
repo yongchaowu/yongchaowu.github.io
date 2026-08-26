@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CC Switch"
+title: CC Switch
 date: 2026-06-02 07:16:00
-categories: ["Tool"]
-tags: ["Tool", "CCSwitch"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- CCSwitch
 ---
 
 一个应用管理供应商、路由、用量、会话和技能

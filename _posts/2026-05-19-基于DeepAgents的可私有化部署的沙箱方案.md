@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "基于DeepAgents的可私有化部署的沙箱方案"
+title: 基于DeepAgents的可私有化部署的沙箱方案
 date: 2026-05-19 18:47:00
-categories: ["DeepAgents"]
-tags: ["DeepAgents"]
+categories:
+- AI & LLM
+tags:
+- DeepAgents
 ---
 
 参考[Deep Agents 概述 - LangChain 文档 - LangChain 教程](https://docs.langchain.org.cn/oss/python/deepagents/overview)

@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Windows-计算机内存型号配置查看"
+title: Windows-计算机内存型号配置查看
 date: 2023-04-05 08:07:00
-categories: ["OS"]
-tags: ["Tool", "Windows", "OS"]
+categories:
+- Systems
+tags:
+- Tool
+- Windows
+- OS
 ---
 
 近来想给计算机配置内存，在网上百度到了如何查看型号和配置的方法，整理如下。

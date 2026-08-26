@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-OPTION"
+title: CMake-OPTION
 date: 2023-04-29 13:26:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://clubjuggler.livejournal.com/138364.html

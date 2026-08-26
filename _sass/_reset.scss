@@ -1,3 +1,99 @@
+/* === CSS Custom Properties === */
+:root {
+    --bg-primary: #f5f6fa;
+    --bg-content: #f8f8fd;
+    --bg-card: #fff;
+    --bg-hover: #f4efeb;
+    --bg-code: #fafafa;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --text-link: #4d6dad;
+    --text-link-hover: #223253;
+    --border-color: #eee;
+    --border-strong: #ddd;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 30px rgba(10,10,0,0.1) inset;
+    --shadow-hover: 0 3px 12px rgba(77,109,173,0.15);
+    --header-bg: #222;
+    --header-text: #9d9d9d;
+    --footer-bg: #2b2b3c;
+    --footer-text: #bbb;
+    --code-bg: #272822;
+    --code-text: #d1d1c9;
+    --badge-bg: #eef1f8;
+    --badge-text: #4d6dad;
+    --tag-bg: #eef1f8;
+    --tag-hover: #4d6dad;
+    --excerpt-border: #d8dee9;
+    --excerpt-bg: #fafafa;
+    --scrollbar-thumb: #D3D3D3;
+    --scrollbar-track: #F1F1F1;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #111827;
+    --bg-content: #1a1f36;
+    --bg-card: #1e2433;
+    --bg-hover: #252d3d;
+    --bg-code: #0d1117;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #777;
+    --text-link: #7ba4d4;
+    --text-link-hover: #a3c4f0;
+    --border-color: #2d3748;
+    --border-strong: #3d4a5c;
+    --shadow: 0 1px 3px rgba(0,0,0,0.5);
+    --shadow-hover: 0 3px 12px rgba(0,0,0,0.4);
+    --header-bg: #0f1420;
+    --header-text: #9d9d9d;
+    --footer-bg: #0f1420;
+    --footer-text: #777;
+    --code-bg: #0d1117;
+    --code-text: #c9d1d9;
+    --badge-bg: #1e2d4a;
+    --badge-text: #7ba4d4;
+    --tag-bg: #1e2d4a;
+    --tag-hover: #7ba4d4;
+    --excerpt-border: #3d4a5c;
+    --excerpt-bg: #1a1f36;
+    --scrollbar-thumb: #3d4a5c;
+    --scrollbar-track: #1a1f36;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg-primary: #111827;
+        --bg-content: #1a1f36;
+        --bg-card: #1e2433;
+        --bg-hover: #252d3d;
+        --bg-code: #0d1117;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --text-muted: #777;
+        --text-link: #7ba4d4;
+        --text-link-hover: #a3c4f0;
+        --border-color: #2d3748;
+        --border-strong: #3d4a5c;
+        --shadow: 0 1px 3px rgba(0,0,0,0.5);
+        --shadow-hover: 0 3px 12px rgba(0,0,0,0.4);
+        --header-bg: #0f1420;
+        --header-text: #9d9d9d;
+        --footer-bg: #0f1420;
+        --footer-text: #777;
+        --code-bg: #0d1117;
+        --code-text: #c9d1d9;
+        --badge-bg: #1e2d4a;
+        --badge-text: #7ba4d4;
+        --tag-bg: #1e2d4a;
+        --tag-hover: #7ba4d4;
+        --excerpt-border: #3d4a5c;
+        --excerpt-bg: #1a1f36;
+        --scrollbar-thumb: #3d4a5c;
+        --scrollbar-track: #1a1f36;
+    }
+}
+
 body,
 html,
 div,
@@ -28,14 +124,20 @@ html {
 }
 body {
     font-family: 'Helvetica Neue',Helvetica,Arial,'Microsoft YaHei',sans-serif;
-    color: #333;
-    background-image: url(https://gw.alicdn.com/tfs/TB1xzbUumBYBeNjy0FeXXbnmFXa-125-121.png);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
     position: relative;
     min-height: 100%;
     padding-bottom: 190px;
+    transition: background-color 0.3s, color 0.3s;
 }
 a {
     text-decoration: none;
+    color: var(--text-link);
+    transition: color 0.2s;
+    &:hover {
+        color: var(--text-link-hover);
+    }
 }
 button {
     border: none;
@@ -43,7 +145,7 @@ button {
 }
 hr {
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
     margin: 20px 0;
 }
 
@@ -53,7 +155,7 @@ h1 {
 }
 h2 {
     font-size: 26px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     margin: 50px 0 25px;
 }
 h3 {
@@ -73,8 +175,8 @@ h6 {
     margin: 10px 0 5px;
 }
 blockquote {
-    color: #444;
-    border-left: 5px solid #D6DBDF;
+    color: var(--text-secondary);
+    border-left: 5px solid var(--border-strong);
     padding-left: 15px;
     background: rgba(112,138,153,.1);
     padding: 10px 20px;
@@ -84,13 +186,13 @@ blockquote {
     }
 }
 table {
-    border-top: 2px solid #777;
-    border-bottom: 2px solid #777;
+    border-top: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
     margin: 8px 0;
     border-collapse: collapse;
     thead {
-        border-bottom: 1px solid #777;
-        background-color: #aaa;
+        border-bottom: 1px solid var(--text-muted);
+        background-color: var(--text-muted);
         color: #fff;
     }
     th {
@@ -100,10 +202,10 @@ table {
     tbody {
         tr {
             &:nth-of-type(2n+1) {
-                background-color: #f8f8fd;
+                background-color: var(--bg-content);
             }
             &:nth-of-type(2n) {
-                background-color: #e5eaed;
+                background-color: var(--bg-hover);
             }
         }
     }

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-Output File-Two Way"
+title: Output File-Two Way
 date: 2020-07-09 21:29:00
-categories: ["Code"]
-tags: ["Code", "C++"]
+categories:
+- Programming
+tags:
+- Code
+- C++
 ---
 
 July 9, 2020 9:25 PM

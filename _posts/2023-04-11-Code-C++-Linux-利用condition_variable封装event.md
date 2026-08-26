@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-Linux-利用condition_variable封装event"
+title: C++-Linux-利用condition_variable封装event
 date: 2023-04-11 00:09:00
-categories: ["Code"]
-tags: ["C++", "Code"]
+categories:
+- Programming
+tags:
+- C++
+- Code
 ---
 
 C++11使用condition_variable加上mutex封装event类，实现等同于windows的事件功能。

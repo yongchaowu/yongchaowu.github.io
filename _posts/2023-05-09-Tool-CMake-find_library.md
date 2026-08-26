@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-find_library"
+title: CMake-find_library
 date: 2023-05-09 06:09:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://cmake.org/cmake/help/latest/command/find_library.html?highlight=find_library

@@ -4,79 +4,49 @@ layout: default
 
 <div class="page clearfix" index>
     <div class="left">
-        <h1>Yc.W's Blog <small style="font-size: 16px; color: #999;">@yongchao</small></h1>
-        <p>Engineer · 记录技术与生活 —— C++ / OS / AI &amp; LLM</p>
-
-        <div class="site-cards">
-            <a class="site-card" href="https://www.cnblogs.com/yongchao/" target="_blank" rel="noopener">
-                <i class="fa fa-book" aria-hidden="true"></i>
-                <span class="name">博客园 Theseus'Ship</span>
-                <span class="desc">cnblogs.com/yongchao</span>
-            </a>
-            <a class="site-card" href="https://github.com/yongchaowu" target="_blank" rel="noopener">
-                <i class="fa fa-github" aria-hidden="true"></i>
-                <span class="name">GitHub</span>
-                <span class="desc">github.com/yongchaowu</span>
-            </a>
-            <a class="site-card" href="https://blog.csdn.net/wyclswq" target="_blank" rel="noopener">
-                <i class="fa fa-file-text" aria-hidden="true"></i>
-                <span class="name">CSDN</span>
-                <span class="desc">blog.csdn.net/wyclswq</span>
-            </a>
-            <a class="site-card" href="https://gitee.com/yongchaospace" target="_blank" rel="noopener">
-                <i class="fa fa-code-fork" aria-hidden="true"></i>
-                <span class="name">Gitee</span>
-                <span class="desc">gitee.com/yongchaospace</span>
-            </a>
+        <div class="hero">
+            <h1>Yc.W</h1>
+            <p class="hero-subtitle">Systems &amp; AI Engineering</p>
+            <p class="hero-tags">C++ · Linux · AI/LLM · Infrastructure</p>
+            <p class="hero-desc">Engineering notes, experiments and troubleshooting from real-world development.</p>
+            <div class="hero-links">
+                <a href="https://github.com/yongchaowu" target="_blank" rel="noopener"><i class="fa fa-github"></i> GitHub</a>
+                <a href="{{ '/about/' | prepend: site.baseurl }}"><i class="fa fa-user"></i> About</a>
+                <a href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}"><i class="fa fa-rss"></i> RSS</a>
+            </div>
         </div>
         <hr>
-        <ul>
+
+        <h2 class="section-title">Latest Notes</h2>
+        <ul class="post-list">
             {% for post in paginator.posts %}
-              <li>
-                <h2>
-                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-                </h2>
-                <div class="label">
-                    <div class="label-card">
-                        <i class="fa fa-calendar"></i>{{ post.date | date: "%F" }}
-                    </div>
-                    <div class="label-card">
-                        {% if post.author %}<i class="fa fa-user"></i>{{ post.author }}
-                        {% endif %}
-                    </div>
-                    <div class="label-card">
-                        {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }}  {% endif %}
-                    </div>
-
-                    <div class="label-card">
-                    {% include category.html %}
-                    </div>
-
-                    <div class="label-card">
-                    {% include tag.html %}
-                    </div>
+              <li class="post-card">
+                <div class="post-card-meta">
+                    <span class="post-card-cat">{% include category.html %}</span>
+                    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
                 </div>
+                <h3 class="post-card-title">
+                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                </h3>
+                {% include content-badge.html %}
                 <div class="excerpt">
                     {% assign excerpt_text = post.excerpt | strip_html | normalize_whitespace | strip %}
                     {% if excerpt_text == empty or excerpt_text.size < 50 %}
                         {% assign excerpt_text = post.content | strip_html | normalize_whitespace | strip %}
                     {% endif %}
-                    {{ excerpt_text | truncate: 150 }}
+                    {{ excerpt_text | truncate: 140 }}
                 </div>
                 <div class="read-all">
-                    <a  href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>阅读全文</a>
+                    <a href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i> Read →</a>
                 </div>
-                <hr>
               </li>
             {% endfor %}
         </ul>
 
-
-
         <!-- Pagination links -->
         <div class="pagination">
           {% if paginator.previous_page %}
-            <a href="/index.html" class="previous"><i class="fa fa-angle-double-left"></i></a>
+            <a href="{{ site.baseurl }}/index.html" class="previous"><i class="fa fa-angle-double-left"></i></a>
             <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous"><i class="fa fa-angle-left"></i></a>
           {% else %}
             <span class="previous disable"><i class="fa fa-angle-double-left"></i></span>
@@ -97,24 +67,12 @@ layout: default
         <div class="wrap">
             <div class="side">
                 <div>
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                    Recent Posts
-                </div>
-                <ul class="content-ul" recent>
-                    {% for post in site.posts offset: 0 limit: 10  %}
-                        <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- Content -->
-            <div class="side ">
-                <div>
                     <i class="fa fa-th-list"></i>
-                    Categories
+                    Topics
                 </div>
                 <ul class="content-ul" cate>
-                    {% for category in site.categories %}
+                    {% assign sorted_categories = site.categories | sort %}
+                    {% for category in sorted_categories limit:11 %}
                     <li>
                         <a href="{{ root_url }}/{{ site.category_dir }}#{{ category | first }}" class="categories-list-item" cate="{{ category | first }}">
                             <span class="name">
@@ -125,60 +83,24 @@ layout: default
                     </li>
                     {% endfor %}
                 </ul>
+                <a class="view-all" href="{{ root_url }}/{{ site.category_dir }}">View all topics →</a>
             </div>
-            <!-- 其他div框放到这里 -->
-            <div class="side">
+
+            <div class="side ">
                 <div>
                     <i class="fa fa-tags"></i>
-                    Tags
+                    Popular Tags
                 </div>
                 <div class="tags-cloud">
-                    {% capture tagdata %}{% for tag in site.tags %}{{ tag[1].size | prepend: '00000' | slice: -5, 5 }}:{{ tag[0] }}:{{ tag[1].size }};{% endfor %}{% endcapture %}
-                    {% assign tarr = tagdata | split: ';' | sort | reverse %}
-                    {% assign tarr = tarr | slice: 0, 40 %}
-                    {% assign max = tarr.first | split: ':' | first | plus: 0 %}
-                    {% assign min = tarr.last | split: ':' | first | plus: 0 %}
-
-                    {% if max == min %}
-                        {% assign diff = 1 %}
-                    {% else %}
-                        {% assign diff = max | minus: min %}
-                    {% endif %}
-
+                    {% assign sorted_tags = site.tags | sort %}
+                    {% assign tarr = sorted_tags | reverse %}
+                    {% assign tarr = tarr | slice: 0, 15 %}
                     {% for t in tarr %}
-                      {% assign parts = t | split: ':' %}
-                      {% assign cnt = parts.first | plus: 0 %}
-                      {% assign temp = cnt | minus: min | times: 36 | divided_by: diff %}
-                      {% assign base = temp | divided_by: 4 %}
-                      {% assign remain = temp | modulo: 4 %}
-                      {% if remain == 0 %}
-                        {% assign size = base | plus: 9 %}
-                      {% elsif remain == 1 or remain == 2 %}
-                        {% assign size = base | plus: 9 | append: '.5' %}
-                      {% else %}
-                        {% assign size = base | plus: 10 %}
-                      {% endif %}
-                      {% if remain == 0 or remain == 1 %}
-                        {% assign color = 9 | minus: base %}
-                      {% else %}
-                        {% assign color = 8 | minus: base %}
-                      {% endif %}
-                      <a href="{{ root_url }}/{{ site.tag_dir }}#{{ parts[1] }}" style="font-size: {{ size }}pt; color: #{{ color }}{{ color }}{{ color }};">{{ parts[1] }}</a>
+                      <a href="{{ root_url }}/{{ site.tag_dir }}#{{ t[0] }}">{{ t[0] }}</a>
                     {% endfor %}
                 </div>
+                <a class="view-all" href="{{ root_url }}/{{ site.tag_dir }}">View all tags →</a>
             </div>
-
-            <!-- <div class="side">
-                <div>
-                    <i class="fa fa-external-link"></i>
-                    Links
-                </div>
-                <ul  class="content-ul">
-
-                </ul>
-            </div> -->
         </div>
     </div>
 </div>
-<!-- <script src="{{ "/js/scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script> -->
-<!-- <script src="{{ "/js/pageContent.js " | prepend: site.baseurl }}" charset="utf-8"></script> -->

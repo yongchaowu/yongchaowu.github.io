@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++-Snowflake"
+title: C++-Snowflake
 date: 2023-10-12 12:49:00
-categories: ["Code"]
-tags: ["C++", "Code", "Snowflake"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Snowflake
 ---
 
 <!--more-->

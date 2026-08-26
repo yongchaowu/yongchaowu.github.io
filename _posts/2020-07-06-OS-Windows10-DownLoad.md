@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Windows10 DownLoad"
+title: Windows10 DownLoad
 date: 2020-07-06 23:05:00
-categories: ["OS"]
-tags: ["Windows", "OS"]
+categories:
+- Systems
+tags:
+- Windows
+- OS
 ---
 
 July 6, 2020 11:03 PM

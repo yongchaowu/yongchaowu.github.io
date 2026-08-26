@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Web-Express Solution"
+title: Web-Express Solution
 date: 2020-07-09 20:39:00
-categories: ["Web"]
-tags: ["Express", "Web"]
+categories:
+- Programming
+tags:
+- Express
+- Web
 ---
 
 [Express 中文网](https://www.expressjs.com.cn/)

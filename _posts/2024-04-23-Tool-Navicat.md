@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Navicat"
+title: Navicat
 date: 2024-04-23 08:30:00
-categories: ["Tool"]
-tags: ["DB", "Tool"]
+categories:
+- Developer Tools
+tags:
+- DB
+- Tool
 ---
 
 ## Ubuntu
