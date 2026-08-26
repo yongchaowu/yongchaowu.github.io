@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Office-Word Tips"
+title: Office-Word Tips
 date: 2020-08-20 20:33:00
-categories: ["Office"]
-tags: ["Word", "Office"]
+categories:
+- Developer Tools
+tags:
+- Word
+- Office
 ---
 
 ## 快速返回上次编辑位置

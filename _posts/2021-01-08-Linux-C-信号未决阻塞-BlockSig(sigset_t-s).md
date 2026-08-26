@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Linux-C-信号未决/阻塞-BlockSig(sigset_t s)"
+title: Linux-C-信号未决/阻塞-BlockSig(sigset_t s)
 date: 2021-01-08 18:10:00
-categories: ["Linux"]
-tags: ["Linux", "C"]
+categories:
+- Systems
+tags:
+- Linux
+- C
 ---
 
 ```

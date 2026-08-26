@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "Linux-ARM-Actual use of physical memory"
+title: Linux-ARM-Actual use of physical memory
 date: 2020-07-10 01:10:00
-categories: ["Linux"]
-tags: ["Physical Memory", "ARM", "Linux", "OS"]
+categories:
+- Systems
+tags:
+- Physical Memory
+- ARM
+- Linux
+- OS
 ---
 
 [在ARM板上的linux系统中查看进程实际使用物理内存](https://blog.csdn.net/yangjie1987636/article/details/45871103?utm_source=blogxgwz0)

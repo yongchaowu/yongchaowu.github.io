@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-How CMake simplifies the build process by Bruno Abinader"
+title: CMake-How CMake simplifies the build process by Bruno Abinader
 date: 2023-04-29 12:59:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://gitlab.kitware.com/cmake/community/-/wikis/home

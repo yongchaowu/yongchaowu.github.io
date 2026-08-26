@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++ Invoke Python"
+title: C++ Invoke Python
 date: 2023-04-09 10:46:00
-categories: ["Code"]
-tags: ["C++", "Code", "Python"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Python
 ---
 
 >[https://www.cnblogs.com/yongchao/p/17299892.html](https://www.cnblogs.com/yongchao/p/17299892.html "C++ invoke Python")

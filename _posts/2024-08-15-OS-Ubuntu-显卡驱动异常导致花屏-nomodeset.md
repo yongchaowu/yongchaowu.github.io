@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Ubuntu-显卡驱动异常导致花屏-nomodeset"
+title: Ubuntu-显卡驱动异常导致花屏-nomodeset
 date: 2024-08-15 10:17:00
-categories: ["OS"]
-tags: ["OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Ubuntu
 ---
 
 Ubuntu系统，显卡驱动异常，导致启动后花屏或无法正常显示输出。

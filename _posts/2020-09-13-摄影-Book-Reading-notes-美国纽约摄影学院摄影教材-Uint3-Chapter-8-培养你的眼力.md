@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "摄影-Book-Reading notes-美国纽约摄影学院摄影教材-Unit3 Chapter 8 培养你的眼力"
+title: 摄影-Book-Reading notes-美国纽约摄影学院摄影教材-Unit3 Chapter 8 培养你的眼力
 date: 2020-09-13 15:10:00
-categories: ["摄影"]
-tags: ["摄影"]
+categories:
+- Photography
+tags:
+- 摄影
 ---
 
 September 13, 2020 2:48 PM

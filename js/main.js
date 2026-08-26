@@ -28,30 +28,48 @@
   }
 }());
 
+//////////////////////////dark mode////////////////////////////
+(function() {
+  var toggle = document.querySelector('#themeToggle')
+  if (!toggle) return
+
+  var icon = toggle.querySelector('i')
+  var STORAGE_KEY = 'ycw-theme'
+
+  function getPreferred() {
+    var stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) return stored
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme)
+    if (icon) {
+      icon.className = theme === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o'
+    }
+  }
+
+  // Apply on load
+  apply(getPreferred())
+
+  toggle.onclick = function() {
+    var current = document.documentElement.getAttribute('data-theme') || getPreferred()
+    var next = current === 'dark' ? 'light' : 'dark'
+    apply(next)
+    localStorage.setItem(STORAGE_KEY, next)
+  }
+}());
+
 //////////////////////////back to top////////////////////////////
 (function() {
   var backToTop = document.querySelector('.back-to-top')
   var backToTopA = document.querySelector('.back-to-top a')
-  // console.log(backToTop);
   window.addEventListener('scroll', function() {
-
-    // 页面顶部滚进去的距离
     var scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
-
     if (scrollTop > 200) {
       backToTop.classList.add('back-to-top-show')
     } else {
       backToTop.classList.remove('back-to-top-show')
     }
   })
-
-  // backToTopA.addEventListener('click',function (e) {
-  //     e.preventDefault()
-  //     window.scrollTo(0,0)
-  // })
-}());
-
-//////////////////////////hover on demo//////////////////////////////
-(function() {
-  var demoItems = document.querySelectorAll('.grid-item')
 }());

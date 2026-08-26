@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-ThreadPool-BS::thread_pool-单例"
+title: C++-ThreadPool-BS::thread_pool-单例
 date: 2025-02-27 21:26:00
-categories: ["Code"]
-tags: ["C++", "Code"]
+categories:
+- Programming
+tags:
+- C++
+- Code
 ---
 
 - https://github.com/bshoshany/thread-pool.git

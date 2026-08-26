@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Office-PowerPoint-Tips"
+title: Office-PowerPoint-Tips
 date: 2020-09-08 22:42:00
-categories: ["Office"]
-tags: ["Office"]
+categories:
+- Developer Tools
+tags:
+- Office
 ---
 
 September 8, 2020 9:26 PM

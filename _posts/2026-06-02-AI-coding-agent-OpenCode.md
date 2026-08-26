@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "AI coding agent-OpenCode"
+title: AI coding agent-OpenCode
 date: 2026-06-02 07:27:00
-categories: ["AI coding agent"]
-tags: ["AI coding agent", "Agent", "OpenCode"]
+categories:
+- AI & LLM
+tags:
+- AI Coding Agent
+- Agent
+- OpenCode
 ---
 
 - [OpenCode Documentation](https://open-code.ai/en)

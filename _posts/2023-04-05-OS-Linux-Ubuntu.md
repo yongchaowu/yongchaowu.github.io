@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Linux-Ubuntu"
+title: Linux-Ubuntu
 date: 2023-04-05 12:38:00
-categories: ["OS"]
-tags: ["OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Ubuntu
 ---
 
 - 开源 Ubuntu一直是免费下载，使用和分享

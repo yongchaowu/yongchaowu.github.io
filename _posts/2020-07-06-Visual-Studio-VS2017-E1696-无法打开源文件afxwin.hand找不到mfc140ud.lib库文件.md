@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-VS2017 E1696 无法打开源文件“afxwin.h”&找不到“mfc140ud.lib”库文件"
+title: Visual Studio-VS2017 E1696 无法打开源文件“afxwin.h”&找不到“mfc140ud.lib”库文件
 date: 2020-07-06 21:47:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 #Visual Studio-VS2017  E1696 无法打开源文件“afxwin.h”&找不到“mfc140ud.lib”库文件

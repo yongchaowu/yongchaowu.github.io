@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-Linux-time_t"
+title: Linux-time_t
 date: 2020-07-10 22:58:00
-categories: ["Code"]
-tags: ["Code", "C"]
+categories:
+- Programming
+tags:
+- Code
+- C
 ---
 
 https://www.runoob.com/w3cnote/cpp-time_t.html

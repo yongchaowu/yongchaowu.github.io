@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Libevent-windows 编译&引用"
+title: Libevent-windows 编译&引用
 date: 2020-07-09 00:06:00
-categories: ["Libevent"]
-tags: ["Libevent", "Open Source Library"]
+categories:
+- Personal / Misc
+tags:
+- Libevent
+- Open Source Library
 ---
 
 # Libevent

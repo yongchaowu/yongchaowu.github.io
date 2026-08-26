@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-codeblocks常用操作快捷键"
+title: codeblocks常用操作快捷键
 date: 2023-02-24 01:57:00
-categories: ["IDE"]
-tags: ["Tool", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- IDE
 ---
 
 ## 编辑部分：

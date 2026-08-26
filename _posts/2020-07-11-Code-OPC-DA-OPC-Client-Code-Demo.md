@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-OPC DA-OPC Client Code Demo"
+title: OPC DA-OPC Client Code Demo
 date: 2020-07-11 15:40:00
-categories: ["Code"]
-tags: ["OPC", "Code"]
+categories:
+- Programming
+tags:
+- OPC
+- Code
 ---
 
 {% raw %}

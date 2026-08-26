@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "Tool-Mysql-安装&卸载&运行"
+title: Mysql-安装&卸载&运行
 date: 2024-04-23 08:12:00
-categories: ["Tool"]
-tags: ["DB", "Ubuntu", "MySQL", "Tool"]
+categories:
+- Developer Tools
+tags:
+- DB
+- Ubuntu
+- MySQL
+- Tool
 ---
 
 ## 背景

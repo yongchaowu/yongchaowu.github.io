@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Windows API-_com_error"
+title: Windows API-_com_error
 date: 2020-07-09 21:07:00
-categories: ["Windows API"]
-tags: ["Windows API"]
+categories:
+- Systems
+tags:
+- Windows API
 ---
 
 July 9, 2020 9:06 PM

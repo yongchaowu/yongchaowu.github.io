@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "C++ Primer Plus (第六版) 中文版(部分章节)"
+title: C++ Primer Plus (第六版) 中文版(部分章节)
 date: 2023-05-04 07:09:00
-categories: ["Book"]
-tags: ["Book", "C++"]
+categories:
+- Computer Science
+tags:
+- Book
+- C++
 ---
 
 ### Bjarne Stroustrup's homepage!

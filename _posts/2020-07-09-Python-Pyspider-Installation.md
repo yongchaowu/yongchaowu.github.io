@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Python-Pyspider-Installation"
+title: Python-Pyspider-Installation
 date: 2020-07-09 21:32:00
-categories: ["Python"]
-tags: ["pyspider", "Python"]
+categories:
+- Programming
+tags:
+- pyspider
+- Python
 ---
 
 July 9, 2020 9:30 PM

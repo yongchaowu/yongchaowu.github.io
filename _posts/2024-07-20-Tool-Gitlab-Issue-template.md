@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-Issue-template"
+title: Gitlab-Issue-template
 date: 2024-07-20 16:32:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 创建一个高效的Bug报告Issue模板。

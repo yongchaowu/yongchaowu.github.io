@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Ubuntu-gcc-源码安装gcc7.5.0"
+title: Ubuntu-gcc-源码安装gcc7.5.0
 date: 2024-08-08 17:59:00
-categories: ["OS"]
-tags: ["C++", "OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- C++
+- OS
+- Ubuntu
 ---
 
 - [GNU Mirror List](https://www.gnu.org/prep/ftp.html)

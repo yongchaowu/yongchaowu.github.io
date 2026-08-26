@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-Static Analyzers-C++"
+title: Static Analyzers-C++
 date: 2023-05-27 17:36:00
-categories: ["Tool"]
-tags: ["C++", "Tool", "Static Analyzers"]
+categories:
+- Developer Tools
+tags:
+- C++
+- Tool
+- Static Analyzers
 ---
 
 ## C++ Code Style

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-双系统-Windows+Ubuntu"
+title: 双系统-Windows+Ubuntu
 date: 2023-05-27 11:20:00
-categories: ["OS"]
-tags: ["OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Ubuntu
 ---
 
 在已有的Windows10上安装Ubuntu。

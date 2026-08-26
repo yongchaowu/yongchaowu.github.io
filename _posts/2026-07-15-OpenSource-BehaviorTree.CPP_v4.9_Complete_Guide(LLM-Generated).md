@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM Generated)"
+title: BehaviorTree.CPP_v4.9_Complete_Guide
 date: 2026-07-15 23:52:00
-categories: ["OpenSource"]
-tags: ["OpenSource", "LLM", "Open source library"]
+categories:
+- Personal / Misc
+tags:
+- Open Source
+- LLM
+- Open source library
+content_origin: ai-assisted
 ---
 
 {% raw %}

@@ -29,6 +29,25 @@ pre {
      }
 }
 
+pre {
+    position: relative;
+    .copy-btn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        padding: 2px 8px;
+        font-size: 12px;
+        background: #555;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        &:hover { background: #333; }
+    }
+    &:hover .copy-btn { opacity: 1; }
+}
 .highlight {
     border-radius: 3px;
 

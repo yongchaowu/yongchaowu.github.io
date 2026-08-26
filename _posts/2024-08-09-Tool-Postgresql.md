@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Postgresql"
+title: Postgresql
 date: 2024-08-09 09:15:00
-categories: ["Tool"]
-tags: ["DB", "Tool"]
+categories:
+- Developer Tools
+tags:
+- DB
+- Tool
 ---
 
 Ubuntu18.04 安装postgresql

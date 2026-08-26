@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Markdown grammar"
+title: Markdown grammar
 date: 2020-10-22 20:57:00
-categories: ["Tool"]
-tags: ["Markdown", "Tool"]
+categories:
+- Developer Tools
+tags:
+- Markdown
+- Tool
 ---
 
 October 22, 2020 8:45 PM

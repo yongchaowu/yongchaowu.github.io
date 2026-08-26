@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-Docker-Ubuntu18.04"
+title: Ubuntu18.04
 date: 2024-07-15 10:01:00
-categories: ["Tool"]
-tags: ["Docker", "Tool", "Ubuntu"]
+categories:
+- Developer Tools
+tags:
+- Docker
+- Tool
+- Ubuntu
 ---
 
 在`Ubuntu18.04`的操作系统上安装`Docker`，并实现镜像导入与容器运行。

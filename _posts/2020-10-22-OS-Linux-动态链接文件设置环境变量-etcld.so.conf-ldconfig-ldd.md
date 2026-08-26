@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Linux-动态链接文件设置环境变量-/etc/ld.so.conf ldconfig ldd"
+title: Linux-动态链接文件设置环境变量-/etc/ld.so.conf ldconfig ldd
 date: 2020-10-22 20:37:00
-categories: ["OS"]
-tags: ["OS", "Linux"]
+categories:
+- Systems
+tags:
+- OS
+- Linux
 ---
 
 October 22, 2020 8:22 PM

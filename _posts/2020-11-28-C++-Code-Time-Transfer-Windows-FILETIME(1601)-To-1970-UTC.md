@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "C++-Code-Time Transfer-Windows FILETIME(1601) To 1970 UTC"
+title: C++-Code-Time Transfer-Windows FILETIME(1601) To 1970 UTC
 date: 2020-11-28 17:00:00
-categories: ["C++"]
-tags: ["Time", "Code", "C++"]
+categories:
+- C & C++
+tags:
+- Time
+- Code
+- C++
 ---
 
 November 28, 2020 4:56 PM

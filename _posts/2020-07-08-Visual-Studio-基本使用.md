@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-基本使用"
+title: Visual Studio-基本使用
 date: 2020-07-08 01:39:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 转载[Visual Studio基本使用](https://blog.csdn.net/dadan1314/article/details/89519300)

@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "OS-Linux-Ubuntu-Tool-Visual Studio Code"
+title: Linux-Ubuntu-Tool-Visual Studio Code
 date: 2023-04-08 02:02:00
-categories: ["OS"]
-tags: ["OS", "C++", "Tool", "Visual Studio Code", "Debug"]
+categories:
+- Systems
+tags:
+- OS
+- C++
+- Tool
+- Visual Studio Code
+- Debug
 ---
 
 在Ubuntu上，可以使用Visual Studio Code进行代码调试。

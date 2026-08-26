@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Web-Session"
+title: Web-Session
 date: 2020-07-09 00:09:00
-categories: ["Web"]
-tags: ["Session", "Web"]
+categories:
+- Programming
+tags:
+- Session
+- Web
 ---
 
 [Session原理](https://blog.csdn.net/weixin_42217767/article/details/92760353)

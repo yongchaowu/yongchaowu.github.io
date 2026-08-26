@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-shared_ptr"
+title: C++-shared_ptr
 date: 2023-05-10 06:04:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 <!--more-->

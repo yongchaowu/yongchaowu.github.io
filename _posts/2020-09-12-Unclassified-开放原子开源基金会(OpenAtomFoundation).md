@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Unclassified-开放原子开源基金会(OpenAtomFoundation)"
+title: Unclassified-开放原子开源基金会(OpenAtomFoundation)
 date: 2020-09-12 16:57:00
-categories: ["Unclassified"]
-tags: ["OpenAtomFoundation", "Unclassified"]
+categories:
+- Personal / Misc
+tags:
+- OpenAtomFoundation
+- Unclassified
 ---
 
 ##百度百科资料

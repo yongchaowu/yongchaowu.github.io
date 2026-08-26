@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "Other-个人博客系统-Build"
+title: Other-个人博客系统-Build
 date: 2020-10-22 18:50:00
-categories: ["Other"]
-tags: ["Other", "WordPress", "Blog", "Website", "Unclassified"]
+categories:
+- Personal / Misc
+tags:
+- Other
+- WordPress
+- Blog
+- Website
+- Unclassified
 ---
 
 October 20, 2020 5:31 PM

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-VS Code-Extension-Language User Defined"
+title: VS Code-Extension-Language User Defined
 date: 2020-09-19 17:39:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- IDE
 ---
 
 September 19, 2020 5:08 PM

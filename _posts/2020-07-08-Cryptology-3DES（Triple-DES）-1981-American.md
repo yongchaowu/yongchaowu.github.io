@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Cryptology-3DES（Triple DES） -1981 American"
+title: Cryptology-3DES（Triple DES） -1981 American
 date: 2020-07-08 23:58:00
-categories: ["Cryptology"]
-tags: ["Triple DES", "Cryptology"]
+categories:
+- Security & Networking
+tags:
+- Triple DES
+- Cryptography
 ---
 
 [百度百科](https://baike.baidu.com/item/3DES/6368161?fr=aladdin)

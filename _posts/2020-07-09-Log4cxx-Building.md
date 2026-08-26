@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Log4cxx Building"
+title: Log4cxx Building
 date: 2020-07-09 00:05:00
-categories: ["Log4cxx"]
-tags: ["Log4cxx", "Open Source Library"]
+categories:
+- Personal / Misc
+tags:
+- Log4cxx
+- Open Source Library
 ---
 
 ## Building Apache log4cxx with Microsoft Visual Studio

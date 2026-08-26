@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Markdown-表格嵌套"
+title: Markdown-表格嵌套
 date: 2020-10-24 21:12:00
-categories: ["Tool"]
-tags: ["Tool", "Markdown"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- Markdown
 ---
 
 October 24, 2020 8:48 PM

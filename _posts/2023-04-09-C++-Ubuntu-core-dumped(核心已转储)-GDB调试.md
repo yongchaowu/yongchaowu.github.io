@@ -1,9 +1,14 @@
 ---
 layout: post
-title: "C++-Ubuntu core dumped(核心已转储)-GDB调试"
+title: C++-Ubuntu core dumped(核心已转储)-GDB调试
 date: 2023-04-09 23:07:00
-categories: ["C++"]
-tags: ["C++", "GDB", "coredump", "Debug"]
+categories:
+- C & C++
+tags:
+- C++
+- GDB
+- coredump
+- Debug
 ---
 
 Linux的可执行程序异常退出时，提示“核心已转储”。

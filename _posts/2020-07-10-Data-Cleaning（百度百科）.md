@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Data Cleaning（百度百科）"
+title: Data Cleaning（百度百科）
 date: 2020-07-10 00:43:00
-categories: ["Data Cleaning"]
-tags: ["Data Cleaning"]
+categories:
+- Personal / Misc
+tags:
+- Data Cleaning
 ---
 
 数据清洗是指发现并纠正数据文件中可识别的错误的最后一道程序，包括检查数据一致性，处理无效值和缺失值等。与问卷审核不同，录入后的数据清理一般是由计算机而不是人工完成。

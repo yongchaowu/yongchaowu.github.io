@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "IDE-Visual Studio Code-Extension-离线安装PlantUML"
+title: Visual Studio Code-Extension-离线安装PlantUML
 date: 2023-04-16 22:47:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- IDE
 ---
 
 >[https://www.hd2y.net/archives/plantuml-installation-and-use](http://web.archive.org/web/20260416181302/https://www.hd2y.net/archives/plantuml-installation-and-use)

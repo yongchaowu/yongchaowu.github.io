@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++-Linux-统计一个文件夹占据空间大小"
+title: C++-Linux-统计一个文件夹占据空间大小
 date: 2023-04-11 21:58:00
-categories: ["Code"]
-tags: ["C++", "Code", "Linux"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Linux
 ---
 
 >[https://my.oschina.net/Tsybius2014/blog/330628](https://my.oschina.net/Tsybius2014/blog/330628)

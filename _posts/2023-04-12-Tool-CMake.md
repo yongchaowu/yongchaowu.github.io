@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake"
+title: CMake
 date: 2023-04-12 22:48:00
-categories: ["Tool"]
-tags: ["Tool", "CMake"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- CMake
 ---
 
 >[https://cmake.org/](https://cmake.org/)

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-CICD-jobs-删除或清空"
+title: Gitlab-CICD-jobs-删除或清空
 date: 2024-07-20 16:31:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 清空GitLab项目中所有的CI/CD Jobs列表或者说是清除Pipeline的历史记录，可以通过GitLab的Web界面或者API来实现。

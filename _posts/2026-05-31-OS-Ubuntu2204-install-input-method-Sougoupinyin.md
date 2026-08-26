@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Ubuntu2204 install input method-Sougoupinyin"
+title: Ubuntu2204 install input method-Sougoupinyin
 date: 2026-05-31 11:57:00
-categories: ["OS"]
-tags: ["OS", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Ubuntu
 ---
 
 - 背景：基于Ubuntu22.04 安装 拼音输入法

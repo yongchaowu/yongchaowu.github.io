@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Model-Sentence Transformers models-Sentence-BERT 模型"
+title: Sentence Transformers models-Sentence-BERT 模型
 date: 2026-06-01 21:39:00
-categories: ["Model"]
-tags: ["Model", "Sentence-BERT"]
+categories:
+- AI & LLM
+tags:
+- Model
+- Sentence-BERT
 ---
 
 背景：某项目中涉及Sentence-BERT 模型

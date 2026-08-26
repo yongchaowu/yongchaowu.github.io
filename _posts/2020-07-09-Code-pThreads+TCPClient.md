@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-pThreads+TCPClient"
+title: pThreads+TCPClient
 date: 2020-07-09 21:02:00
-categories: ["Code"]
-tags: ["Code", "C++", "Open Source Library"]
+categories:
+- Programming
+tags:
+- Code
+- C++
+- Open Source Library
 ---
 
 ` rc:return code`

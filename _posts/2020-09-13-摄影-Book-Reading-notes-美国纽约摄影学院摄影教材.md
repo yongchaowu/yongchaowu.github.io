@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "摄影-Book-Reading notes-美国纽约摄影学院摄影教材"
+title: 摄影-Book-Reading notes-美国纽约摄影学院摄影教材
 date: 2020-09-13 09:21:00
-categories: ["摄影"]
-tags: ["摄影"]
+categories:
+- Photography
+tags:
+- 摄影
 ---
 
 September 12, 2020 4:20 PM

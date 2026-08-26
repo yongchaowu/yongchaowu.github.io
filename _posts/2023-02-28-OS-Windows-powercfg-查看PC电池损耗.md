@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Windows-powercfg 查看PC电池损耗"
+title: Windows-powercfg 查看PC电池损耗
 date: 2023-02-28 22:21:00
-categories: ["OS"]
-tags: ["OS", "Tool", "Windows"]
+categories:
+- Systems
+tags:
+- OS
+- Tool
+- Windows
 ---
 
 Windows系统相关命令 `powercfg`

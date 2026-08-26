@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-禁止开机自启动"
+title: Gitlab-禁止开机自启动
 date: 2024-07-20 17:22:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 Ubuntu18.04 Gitlab设置禁止开机自启动方法

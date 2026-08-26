@@ -24,6 +24,6 @@
         li.appendChild(a)
         ul.appendChild(li)
     })
-    box.innerHTML = '<div><i class="fa fa-list"></i> 目录</div>'
+    box.innerHTML = '<div><i class="fa fa-list"></i> Contents</div>'
     box.appendChild(ul)
 }())

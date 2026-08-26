@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-OpenSource-JSON for Modern C++ v3.10.5"
+title: OpenSource-JSON for Modern C++ v3.10.5
 date: 2023-07-24 19:29:00
-categories: ["Code"]
-tags: ["C++", "Code", "Open source library"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Open source library
 ---
 
 github.com/nlohmann/json

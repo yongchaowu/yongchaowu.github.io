@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-\"类视图\"和\"对象浏览器\"图标"
+title: Visual Studio-"类视图"和"对象浏览器"图标
 date: 2020-07-06 22:56:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 6, 2020 10:54 PM

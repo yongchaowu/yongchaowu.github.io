@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-VS2008快速清除最近打开的项目"
+title: Visual Studio-VS2008快速清除最近打开的项目
 date: 2020-07-06 22:39:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 6, 2020 10:37 PM

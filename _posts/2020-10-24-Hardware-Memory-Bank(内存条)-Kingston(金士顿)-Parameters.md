@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Hardware-Memory Bank(内存条)-Kingston(金士顿) Parameters"
+title: Hardware-Memory Bank(内存条)-Kingston(金士顿) Parameters
 date: 2020-10-24 11:56:00
-categories: ["Hardware"]
-tags: ["Memory Bank", "Hardware"]
+categories:
+- Systems
+tags:
+- Memory Bank
+- Hardware
 ---
 
 October 24, 2020 11:23 AM

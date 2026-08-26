@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Tool-Intel VTune Profiler"
+title: Intel VTune Profiler
 date: 2023-07-24 18:51:00
-categories: ["Tool"]
-tags: ["Tool"]
+categories:
+- Developer Tools
+tags:
+- Tool
 ---
 
 转自 [使用Intel VTune Profiler进行性能分析及优化](https://blog.csdn.net/yaojingqingcheng/article/details/120335335)

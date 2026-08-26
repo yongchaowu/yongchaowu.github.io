@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "TCP-ECN：设置pc的网卡设置，使ECN使能"
+title: TCP-ECN：设置pc的网卡设置，使ECN使能
 date: 2021-01-07 17:28:00
-categories: ["TCP"]
-tags: ["TCP", "TCP/IP ECN", "Unclassified"]
+categories:
+- Security & Networking
+tags:
+- TCP
+- TCP/IP ECN
+- Unclassified
 ---
 
 ```

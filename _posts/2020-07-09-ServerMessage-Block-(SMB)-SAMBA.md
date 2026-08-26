@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "ServerMessage Block (SMB)--SAMBA"
+title: ServerMessage Block (SMB)--SAMBA
 date: 2020-07-09 12:23:00
-categories: ["ServerMessage Block (SMB)"]
-tags: ["ServerMessage Block (SMB)", "SAMBA"]
+categories:
+- Security & Networking
+tags:
+- SMB
+- SAMBA
 ---
 
 [website Samba](https://www.samba.org/samba/)

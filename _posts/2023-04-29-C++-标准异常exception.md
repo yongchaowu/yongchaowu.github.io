@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-标准异常`<exception>`"
+title: C++-标准异常`<exception>`
 date: 2023-04-29 18:03:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 std::exception 定义于头文件 `<exception>` class exception;

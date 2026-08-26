@@ -1,26 +1,33 @@
 ---
 layout: page
-title: 关于
+title: About
 permalink: /about/
 icon: heart
 type: page
 ---
 
-* content
-{:toc}
+## About
 
-## 关于我
+I'm Yc.W, a software engineer interested in systems programming, C++, Linux, and AI infrastructure.
 
-工程师，记录技术与生活。这里汇总了我在 [博客园（Theseus'Ship）](https://www.cnblogs.com/yongchao) 的文章，主题包括 C++、操作系统、开发工具、AI/LLM 部署等。
+This site is my engineering notebook. I write about:
 
-## 联系我
+- **C++ and systems programming** — language features, libraries, CMake, debugging
+- **Linux and development environments** — setup, configuration, troubleshooting
+- **LLM inference and deployment** — vLLM, Ray, quantization, multi-node serving
+- **GPU / CUDA / NVIDIA** — driver installation, performance tuning
+- **Developer tooling** — IDE, CLI tools, automation
 
-* GitHub：[yongchaowu](https://github.com/yongchaowu)
-* email：wyclswq@163.com
-* [Weibo](http://weibo.com/Owen-InnocentWu)
+Some older articles were migrated from my previous blogs. AI-assisted articles are explicitly marked.
 
-## 友情链接
+## Elsewhere
 
-## Comments
+- [GitHub](https://github.com/yongchaowu)
+- [博客园](https://www.cnblogs.com/yongchao)
+- [CSDN](https://blog.csdn.net/wyclswq)
+- [Gitee](https://gitee.com/yongchaospace)
+- Email: wyclswq@163.com
 
-{% include comments.html %}
+## About This Site
+
+Built with Jekyll and hosted on GitHub Pages.

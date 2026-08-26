@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Windbg-Debugging Tools for Windows网上搜集资料整理"
+title: Windbg-Debugging Tools for Windows网上搜集资料整理
 date: 2020-07-08 02:04:00
-categories: ["Windbg"]
-tags: ["Windbg", "Windows", "Tool"]
+categories:
+- Security & Networking
+tags:
+- Windbg
+- Windows
+- Tool
 ---
 
 官方下载地址：

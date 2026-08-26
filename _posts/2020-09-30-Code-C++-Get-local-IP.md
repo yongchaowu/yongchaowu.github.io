@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Code-C++-Get local IP"
+title: C++-Get local IP
 date: 2020-09-30 13:23:00
-categories: ["Code"]
-tags: ["Code", "C++"]
+categories:
+- Programming
+tags:
+- Code
+- C++
 ---
 
 September 30, 2020 1:17 PM

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-Gitlab-CICD"
+title: Gitlab-CICD
 date: 2023-06-29 19:59:00
-categories: ["Tool"]
-tags: ["GitLab", "Tool"]
+categories:
+- Developer Tools
+tags:
+- GitLab
+- Tool
 ---
 
 ## Attention

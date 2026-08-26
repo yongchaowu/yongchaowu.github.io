@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Google test"
+title: Google test
 date: 2020-07-09 08:07:00
-categories: ["Open source library"]
-tags: ["GoogleTest", "Open source library", "Test Engineer&QC"]
+categories:
+- Personal / Misc
+tags:
+- GoogleTest
+- Open source library
+- Test Engineer&QC
 ---
 
 ## Building

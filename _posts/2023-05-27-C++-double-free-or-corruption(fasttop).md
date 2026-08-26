@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-double free or corruption(fasttop)"
+title: C++-double free or corruption(fasttop)
 date: 2023-05-27 11:28:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 出现double free or corruption(fasttop)

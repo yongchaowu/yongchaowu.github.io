@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Model-MiniCPM5-1B-Deploy-llama.cpp(Docker)"
+title: MiniCPM5-1B-Deploy-llama.cpp
 date: 2026-06-10 07:47:00
-categories: ["Model"]
-tags: ["Model", "OS"]
+categories:
+- AI & LLM
+tags:
+- Model
+- OS
+- Docker
 ---
 
 CPU版本

@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Visual Studio-编译优化问题"
+title: Visual Studio-编译优化问题
 date: 2020-07-06 22:33:00
-categories: ["Visual Studio"]
-tags: ["Visual Studio", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio
+- IDE
 ---
 
 July 6, 2020 9:58 PM

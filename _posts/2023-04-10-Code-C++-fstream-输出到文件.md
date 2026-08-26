@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++-fstream-输出到文件"
+title: C++-fstream-输出到文件
 date: 2023-04-10 23:44:00
-categories: ["Code"]
-tags: ["C++", "Code", "Linux"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Linux
 ---
 
 - 利用fstream文件流输出

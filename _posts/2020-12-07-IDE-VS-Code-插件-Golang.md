@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "IDE- VS Code-插件-Golang"
+title: VS Code-插件-Golang
 date: 2020-12-07 21:17:00
-categories: ["IDE"]
-tags: ["Golang", "Visual Studio Code", "IDE"]
+categories:
+- Developer Tools
+tags:
+- Golang
+- Visual Studio Code
+- IDE
 ---
 
 ## 安装Golang插件

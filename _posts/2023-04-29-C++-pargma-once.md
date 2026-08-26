@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-#pragma once"
+title: C++-#pragma once
 date: 2023-04-29 18:32:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 >https://baike.baidu.com/item/%23pragma%20once/9468158?fr=aladdin

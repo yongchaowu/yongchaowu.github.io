@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "QT-Deploying a Qt5 Application Linux"
+title: QT-Deploying a Qt5 Application Linux
 date: 2020-07-03 23:22:00
-categories: ["QT"]
-tags: ["cqtdeployer", "linuxdeployqt", "Deploying", "QT", "IDE"]
+categories:
+- C & C++
+tags:
+- cqtdeployer
+- linuxdeployqt
+- Deploying
+- QT
+- IDE
 ---
 
 July 3, 2020 11:11 PM

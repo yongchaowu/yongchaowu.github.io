@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Windows-bat-Path"
+title: Windows-bat-Path
 date: 2020-07-10 08:18:00
-categories: ["Windows"]
-tags: ["Windows", "Windows批处理 (cmd/bat)", "OS"]
+categories:
+- Systems
+tags:
+- Windows
+- Windows批处理 (cmd/bat)
+- OS
 ---
 
 ```language

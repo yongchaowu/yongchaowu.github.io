@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-GitLab"
+title: GitLab
 date: 2023-04-14 22:50:00
-categories: ["Tool"]
-tags: ["Tool", "GitLab"]
+categories:
+- Developer Tools
+tags:
+- Tool
+- GitLab
 ---
 
 >[https://about.gitlab.com/](https://about.gitlab.com/ "gitlab")

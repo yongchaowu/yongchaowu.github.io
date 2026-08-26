@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-list"
+title: CMake-list
 date: 2023-04-29 14:18:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 >https://www.visgraf.impa.br/seminar/slides/rodlima_cmake_presentation.pdf

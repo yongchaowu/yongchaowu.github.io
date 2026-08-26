@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Code-C++-chrono to tm (format time)"
+title: C++-chrono to tm (format time)
 date: 2023-10-12 12:54:00
-categories: ["Code"]
-tags: ["C++", "Code", "Time"]
+categories:
+- Programming
+tags:
+- C++
+- Code
+- Time
 ---
 
 ```cpp

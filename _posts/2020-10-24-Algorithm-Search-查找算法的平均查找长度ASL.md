@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Algorithm-Search-查找算法的平均查找长度ASL"
+title: Algorithm-Search-查找算法的平均查找长度ASL
 date: 2020-10-24 23:38:00
-categories: ["Algorithm"]
-tags: ["Algorithm"]
+categories:
+- Computer Science
+tags:
+- Algorithm
 ---
 
 <!--more-->

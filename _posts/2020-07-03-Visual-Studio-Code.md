@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Visual Studio Code"
+title: Visual Studio Code
 date: 2020-07-03 23:39:00
-categories: ["IDE"]
-tags: ["Visual Studio Code", "IDE", "JavaScript"]
+categories:
+- Developer Tools
+tags:
+- Visual Studio Code
+- IDE
+- JavaScript
 ---
 
 [Homepage](https://code.visualstudio.com/)

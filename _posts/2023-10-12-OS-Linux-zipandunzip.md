@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Linux-zip&unzip"
+title: Linux-zip&unzip
 date: 2023-10-12 12:58:00
-categories: ["OS"]
-tags: ["Linux", "OS"]
+categories:
+- Systems
+tags:
+- Linux
+- OS
 ---
 
 - `zip -rP password filename.zip filename`  加密

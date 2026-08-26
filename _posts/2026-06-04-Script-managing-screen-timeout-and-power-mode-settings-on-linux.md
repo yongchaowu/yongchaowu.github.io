@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Script-managing screen timeout and power mode settings on linux"
+title: managing screen timeout and power mode settings on linux
 date: 2026-06-04 19:35:00
-categories: ["Script"]
-tags: ["OS", "Script"]
+categories:
+- DevOps & Infrastructure
+tags:
+- OS
+- Script
 ---
 
 背景：需要控制笔记本屏幕时间和电源模式

@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "OS-Ubuntu-thunderbird包版本过低不兼容"
+title: Ubuntu-thunderbird包版本过低不兼容
 date: 2023-04-09 23:51:00
-categories: ["OS"]
-tags: ["OS", "Tool", "Ubuntu"]
+categories:
+- Systems
+tags:
+- OS
+- Tool
+- Ubuntu
 ---
 
 在安装搜狗输入法时，遇到过thunderbird包版本过低不兼容的问题，

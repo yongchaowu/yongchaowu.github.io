@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Linux-环境变量-LD_LIBRARY_PATH"
+title: Linux-环境变量-LD_LIBRARY_PATH
 date: 2023-04-09 21:55:00
-categories: ["OS"]
-tags: ["Linux", "OS"]
+categories:
+- Systems
+tags:
+- Linux
+- OS
 ---
 
 ----------

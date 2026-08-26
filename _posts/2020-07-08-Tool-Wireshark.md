@@ -1,9 +1,13 @@
 ---
 layout: post
-title: "Tool-Wireshark"
+title: Wireshark
 date: 2020-07-08 23:44:00
-categories: ["Tool"]
-tags: ["Wireshark", "Tool", "Capture Packet"]
+categories:
+- Developer Tools
+tags:
+- Wireshark
+- Tool
+- Capture Packet
 ---
 
 July 8, 2020 11:03 PM

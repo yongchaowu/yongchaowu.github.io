@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C++-template class-模板类"
+title: C++-template class-模板类
 date: 2023-04-16 23:31:00
-categories: ["C++"]
-tags: ["C++"]
+categories:
+- C & C++
+tags:
+- C++
 ---
 
 >【C++高级教程，C++类模板一次讲透，必须收藏！】 https://www.bilibili.com/video/BV1v84y1x7Qp/?share_source=copy_web&vd_source=3809390a14c335e7731c9e076c03eeba

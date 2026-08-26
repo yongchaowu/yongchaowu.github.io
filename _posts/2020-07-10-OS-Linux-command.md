@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Linux-command"
+title: Linux-command
 date: 2020-07-10 01:22:00
-categories: ["OS"]
-tags: ["Linux", "OS"]
+categories:
+- Systems
+tags:
+- Linux
+- OS
 ---
 
 http://man.linuxde.net/

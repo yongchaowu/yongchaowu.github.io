@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "OS-Ubuntu-NVIDIA Driver Install"
+title: Ubuntu-NVIDIA Driver Install
 date: 2026-06-10 20:34:00
-categories: ["OS"]
-tags: ["Nvidia", "OS"]
+categories:
+- Systems
+tags:
+- Nvidia
+- OS
 ---
 
 ## 安装前置准备

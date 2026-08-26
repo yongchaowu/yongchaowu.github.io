@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Windows API-SwitchToThread"
+title: Windows API-SwitchToThread
 date: 2020-07-09 08:10:00
-categories: ["Windows API"]
-tags: ["Windows API", "C++"]
+categories:
+- Systems
+tags:
+- Windows API
+- C++
 ---
 
 May 6, 2020 8:58 AM

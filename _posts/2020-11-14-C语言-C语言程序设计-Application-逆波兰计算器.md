@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C语言-C语言程序设计-Application-逆波兰计算器"
+title: C语言-C语言程序设计-Application-逆波兰计算器
 date: 2020-11-14 10:45:00
-categories: ["C语言"]
-tags: ["C语言", "C"]
+categories:
+- C & C++
+tags:
+- C
 ---
 
 最近软考的时候才知道的逆波兰表达式，这个竟然是C的内容之一，把书上的抄下来了。

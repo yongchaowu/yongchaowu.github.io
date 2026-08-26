@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "C++-GUID from string"
+title: C++-GUID from string
 date: 2020-07-07 22:16:00
-categories: ["C++"]
-tags: ["GUID", "C++"]
+categories:
+- C & C++
+tags:
+- GUID
+- C++
 ---
 
 July 7, 2020 9:26 PM

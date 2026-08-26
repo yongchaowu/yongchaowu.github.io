@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "Linux-C-信号&信号量"
+title: Linux-C-信号&信号量
 date: 2020-07-10 00:53:00
-categories: ["Linux"]
-tags: ["信号量", "signal", "Linux", "C#", "C"]
+categories:
+- Systems
+tags:
+- 信号量
+- signal
+- Linux
+- C#
+- C
 ---
 
 July 10, 2020 12:49 AM

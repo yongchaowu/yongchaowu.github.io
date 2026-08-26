@@ -1,9 +1,12 @@
 ---
 layout: post
-title: "Tool-CMake-A Simple CMake Example"
+title: CMake-A Simple CMake Example
 date: 2023-04-29 10:12:00
-categories: ["Tool"]
-tags: ["CMake", "Tool"]
+categories:
+- Developer Tools
+tags:
+- CMake
+- Tool
 ---
 
 https://cmake.org/examples/

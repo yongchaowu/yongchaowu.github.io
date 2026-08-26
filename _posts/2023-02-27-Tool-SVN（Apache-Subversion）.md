@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Tool-SVN（Apache Subversion）"
+title: SVN（Apache Subversion）
 date: 2023-02-27 10:08:00
-categories: ["Tool"]
-tags: ["Tool"]
+categories:
+- Developer Tools
+tags:
+- Tool
 ---
 
 # Tool-SVN

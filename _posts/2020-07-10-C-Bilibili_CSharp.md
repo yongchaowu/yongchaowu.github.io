@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "C#-Bilibili_CSharp"
+title: C#-Bilibili_CSharp
 date: 2020-07-10 00:03:00
-categories: ["C#"]
-tags: ["C#"]
+categories:
+- C & C++
+tags:
+- C#
 ---
 
 https://www.bilibili.com/video/av2357992
