@@ -207,7 +207,7 @@ std::vector<const TreeNode*> getNodesByPath(
 
 // Introspection
 uint16_t getUID();                              // Incrementing unique numeric ID
-std::shared_ptr<WakeUpSignal> wakeUpSignal() const;  // Shared wake-up mechanism
+// NOTE: Tree only exposes emitWakeUpSignal(); there is no wakeUpSignal() accessor
 Blackboard::Ptr rootBlackboard();               // Root blackboard (for @ prefix)
 ```
 
@@ -847,7 +847,6 @@ TreeNode* child();                  // Mutable child access
 
 // Halting
 virtual void halt() override;       // Halt this decorator
-void haltChild();                   // Same as resetChild()
 
 // Reset
 void resetChild();                   // Reset child to IDLE + halt if RUNNING
@@ -2232,7 +2231,7 @@ namespace BT {
 |---|---|
 | `UseBlockingAction` | `ThreadedAction` (manual) or `StatefulActionNode` (recommended) |
 | `BlackboardCheckInt/Double/String` | `ScriptCondition` or `_failureIf` pre-condition |
-| `SetBlackboard` (for simple values) | `<Script code="key := value" />` |
+| `SetBlackboard` (for simple values) | `<Script code="key := value" />` (SetBlackboard still exists in v4 but `<Script>` is preferred for simple constant values) |
 | `SubTreePlus` | `SubTree` (new default) |
 
 ### 19.3 XML Changes
@@ -2478,7 +2477,7 @@ int main()
   factory.registerNodeType<ApproachObject>("ApproachObject");
 
   // 2. Simple condition from a free function
-  factory.registerSimpleCondition("CheckBattery", CheckBattery);
+  factory.registerSimpleCondition("CheckBattery", [](BT::TreeNode&){ return CheckBattery(); });
 
   // 3. Simple action wrapping class methods
   GripperInterface gripper;

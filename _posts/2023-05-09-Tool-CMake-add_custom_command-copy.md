@@ -25,7 +25,7 @@ add_custom_command(TARGET <target>
 ```
 add_custom_command(
 	TARGET ${CURR_EXE_NAME}
-	POST BUILD
+	POST_BUILD
 	COMMAND ${CMAKE_COMMAND} ARGS -E copy ${CURR_EXE_NAME} ${PROJECT_BINARY_DIR}
 )
 ```

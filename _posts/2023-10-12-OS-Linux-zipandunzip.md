@@ -6,5 +6,5 @@ categories: ["OS"]
 tags: ["Linux", "OS"]
 ---
 
-- `zip -rP passwork filename.zip filename`  加密
-- `unzip -O GBK XXX.zip` 或GBK18030      中文乱码
+- `zip -rP password filename.zip filename`  加密
+- `unzip -O GBK XXX.zip` 或GB18030      中文乱码

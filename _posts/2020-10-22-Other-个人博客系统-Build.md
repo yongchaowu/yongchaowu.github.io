@@ -20,7 +20,7 @@ October 20, 2020 5:31 PM
 - Joomla
 - Drupal
 
-[2019个人博客系统汇总](https://www.simcf.cc/5475.html)   https://www.simcf.cc/5475.html
+2019个人博客系统汇总
 
 ## WordPress
 https://wordpress.org/download/
@@ -41,7 +41,7 @@ https://www.apachefriends.org/index.html
 
 ### 安装方法
 1.先安装XAMPP，比如C:\xampp，然后双击C:\xampp目录里的xampp-control.exe 启动XAMPP控制面板
-2.在再启用“Apache 服务器”和“MySQL数据库”，开启后就可以用浏览器访问 http://localhost 以登陆XAMPP的设置页面
+2.再启用“Apache 服务器”和“MySQL数据库”，开启后就可以用浏览器访问 http://localhost 以登陆XAMPP的设置页面
 3.进入http://localhost/phpmyadmin数据库管理页面，点击顶部菜单中的【数据库】，创建一个新数据库，比如：personalblog，数据库服务器地址是 localhost ，数据库超级用户root ，本地测试用密码可以先留空
 4.将WordPress解压，并放到XAMPP默认网站目录C:\xampp\htdocs（你可以将“wordpress文件夹”随意改个你要的名字，比如：PersonalBlog，必须是英文，最好简单好记）
 5.浏览器访问 http://localhost/PersonalBlog，点“创建配置文件”按钮，在“数据库名”里输入刚才你创建的数据库，在用户名里输入默认的root，密码因为刚才我们在XAMPP留空了，所以可以不填就好，最后点提交进行安装
@@ -57,7 +57,7 @@ https://www.apachefriends.org/index.html
     2.将表中的siteurl和home字段修改为当前的新域名
 ```
 2.wordpress在本地局域网跨网段无法访问
-web服务器只能在相同网段访问，如bai果想跨网段访问应该是下级du网络可以访问上级网络。要装在一台公司网络顶段的机器才能让所有下属网络及同网段机器访问到
+web服务器只能在相同网段访问，如果想跨网段访问应该是下级网络可以访问上级网络。要装在一台公司网络顶端的机器才能让所有下属网络及同网段机器访问到
 
 3.公司内部局域网结构，以及笔记本不能做web服务器原因
 公司的网络环境：

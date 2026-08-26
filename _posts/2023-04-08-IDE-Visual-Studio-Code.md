@@ -42,7 +42,7 @@ Visual Studio Code is a lightweight but powerful source code editor which runs o
 
 ----------
 
-- KeyBingings - keyboard-shortcuts
+- KeyBindings - keyboard-shortcuts
  `Ctrl+Shift+P` is bound to Show All Commands
   View > Command Palette
 https://code.visualstudio.com/docs/getstarted/keybindings 
@@ -338,7 +338,7 @@ The task's properties have the following semantic:
 - options: Override the defaults for cwd (current working directory), env (environment variables), or shell (default shell). Options can be set per task but also globally or per platform. Environment variables configured here can only be referenced from within your task script or process and will not be resolved if they are part of your args, command, or other task attributes.
 - runOptions: Defines when and how a task is run.
 
-[https://code.visualstudio.com/docs/editor/tasks-appendix](https://code.visualstudio.com/docs/editor/tasks-appendix "tasks.json schema")
+[https://code.visualstudio.com/docs/reference/tasks-appendix](https://code.visualstudio.com/docs/reference/tasks-appendix "tasks.json schema")
 
 
 ### Debug C++ in Visual Studio Code
@@ -359,7 +359,7 @@ The task's properties have the following semantic:
 The C/C++ extension for VS Code also has the ability to debug memory dumps. To debug a memory dump, open your `launch.json` file and add the `coreDumpPath` (for GDB or LLDB) or `dumpPath` (for the Visual Studio Windows Debugger) property to the C++ Launch configuration, set its value to be a string containing the path to the memory dump. This will even work for x86 programs being debugged on an x64 machine.
 
 #### Additional symbols
-If there are additional directories where the debugger can find symbol files (for example, `.pd`b files for the Visual Studio Windows Debugger), they can be specified by adding the `additionalSOLibSearchPath` (for GDB or LLDB) or `symbolSearchPath` (for the Visual Studio Windows Debugger).
+If there are additional directories where the debugger can find symbol files (for example, `.pdb` files for the Visual Studio Windows Debugger), they can be specified by adding the `additionalSOLibSearchPath` (for GDB or LLDB) or `symbolSearchPath` (for the Visual Studio Windows Debugger).
 
 For example:
 `"additionalSOLibSearchPath": "/path/to/symbols;/another/path/to/symbols" `

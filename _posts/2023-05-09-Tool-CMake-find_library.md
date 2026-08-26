@@ -45,7 +45,7 @@ find_library (
 unset(LibPath CACHE)
 find_library(LibPath 
 	NAMES libname
-	PATHS ${PROJECT_SOURCE_CIR}
+	PATHS ${PROJECT_SOURCE_DIR}
 	NO_DEFAULT_PATH
 	)
 message("LibPath::${LibPath}")

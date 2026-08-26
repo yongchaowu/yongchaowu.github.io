@@ -39,7 +39,7 @@ source .bashrc或者 source .bash_profile文件
 
 
 ### 示例
-当执行函数动态链接`.so`时，如果此文件不在缺省目录下`/lib`和`/usr/lib`.那么就需要指定环境变量`LD_LIBRARY_PATH`
+当执行函数动态链接`.so`时，如果此文件不在缺省目录下`/lib`和`/usr/lib`，那么就需要指定环境变量`LD_LIBRARY_PATH`
 
 假如需要在已有的环境变量上添加新的路径名，则采用如下方式：
 `LD_LIBRARY_PATH=NEWDIRS:$LD_LIBRARY_PATH`.（newdirs是新的路径串）
@@ -47,7 +47,7 @@ source .bashrc或者 source .bash_profile文件
 
 ### 设置方法
 在linux下可以用`export`命令来设置这个值，比如
-在linux终端下输入:`export LD_LIBRARY_PATH=/opt/au1200_rm/build_tools/bin: $LD_LIBRARY_PATH:`
+在linux终端下输入:`export LD_LIBRARY_PATH=/opt/au1200_rm/build_tools/bin:$LD_LIBRARY_PATH`
 然后再输入:`export`即会显示是否设置正确
 
 **export方式在重启后失效**，所以也可以用 `vim /etc/bashrc` ，修改其中的`LD_LIBRARY_PATH`变量。

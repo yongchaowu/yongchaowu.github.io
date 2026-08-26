@@ -30,10 +30,10 @@ July 10, 2020 2:23 AM
     CTimeSpan timespan(0,0,1,0); // days,hours,minutes,seconds
     timespan = CTime::GetCurrentTime() - time;
 4) 把时间转换为字符串。
-    CString sDate,sTime,sElapsed Time ;
+    CString sDate,sTime,sElapsedTime ;
     sDate = time.Format("%m/%d/%y"); //ex: 12/10/98
     sTime = time.Format("%H:%M:%S"); //ex: 9:12:02
-    sElapsed Time = timespan.Format("%D:%H:%M:%S"); // %D is total elapsed days
+    sElapsedTime = timespan.Format("%D:%H:%M:%S"); // %D is total elapsed days
 
     CString strTemp;
     COleDateTime aCOleDateTime((time_t)time);
@@ -65,6 +65,6 @@ July 10, 2020 2:23 AM
 说明
 ■ CTime和COleDateTime具有几乎同样的功能。然而，COleDateTime允许用户获得一年中的某一天(创建Julian日期的一种好方法)，以及分析一个时间文本串。
 ■ 与CTime相比， COleDateTime的优点在于它支持DWORD变量。COleDateTime使用的位数是双浮点的两倍，既然CTime只是简单地计算从1970年1月1日之后经过的秒数，所以到了2037年它将达到4294967295，从而不能再使用。相反,COleDateTime是一个
-浮点数，它表示是从1900年12月30号之后的天数(小时是天的小数部分)，几千年之内不会溢出。
+浮点数，它表示是从1899年12月30号之后的天数(小时是天的小数部分)，几千年之内不会溢出。
 
 ```

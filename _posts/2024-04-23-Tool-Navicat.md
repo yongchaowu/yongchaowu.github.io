@@ -15,7 +15,7 @@ Navicat Premium16
 
 * [Navicat 中国 | 支持 MySQL、Redis、MariaDB、MongoDB、SQL Server、SQLite、Oracle 和 PostgreSQL 的数据库管理](https://www.navicat.com.cn/)
   
-* [Download]([Navicat | 下载 Navicat Premium 14 天免费 Windows、macOS 和 Linux 的试用版](https://www.navicat.com.cn/download/navicat-premium))
+* [Download - Navicat | 下载 Navicat Premium 14 天免费 Windows、macOS 和 Linux 的试用版](https://www.navicat.com.cn/download/navicat-premium)
   
 
 软件包`navicat16-premium-cs.AppImage`

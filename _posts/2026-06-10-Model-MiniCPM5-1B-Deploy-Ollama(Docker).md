@@ -16,7 +16,7 @@ CPU版本
     - MiniCPM5-1B-F16.gguf
     - MiniCPM5-1B-Q8_0.gguf
     - MiniCPM5-1B-Q4_K_M.gguf
-- Modefile Ollama模型配置文件
+- Modelfile Ollama模型配置文件
 - [ollama.md](https://github.com/OpenBMB/MiniCPM/blob/main/docs/deployment/ollama.md)
 
 ## 部署步骤
@@ -24,7 +24,7 @@ CPU版本
 1. 导入镜像
 
     - `docker load -i ollama_docker_image.tar`
-    - `ocker load -i open-webui_image.tar`
+    - `docker load -i open-webui_image.tar`
 
 2. 启动并导入模型
 
@@ -38,7 +38,7 @@ CPU版本
 
     `FROM /path/to/MiniCPM5-1B-F16.gguf  # 从本机路径加载模型文件`
 
-4.进入容器
+4. 进入容器
 
     - `docker exec -it ollama /bin/bash`
     - `cd /root/.ollama #model_data`
@@ -66,7 +66,7 @@ CPU版本
     curl http://localhost:11434/v1/chat/completions \
         -H "Content-Type: application/json" \
         -d '{
-            "model": "minicpm",
+            "model": "MiniCPM5-1B-Q4_K_M",
             "messages": [{"role": "user", "content": "用一句话解释 GQA。"}],
             "temperature": 0.9, "top_p": 0.95, "max_tokens": 1024
         }'
@@ -75,7 +75,7 @@ CPU版本
     - Ollama-native API
     ```shell
     curl http://localhost:11434/api/chat -d '{
-            "model": "minicpm",
+            "model": "MiniCPM5-1B-Q4_K_M",
             "messages": [{"role":"user","content":"1+1=?"}],
             "stream": false,
             "options": {"temperature": 0.7, "top_p": 0.95}

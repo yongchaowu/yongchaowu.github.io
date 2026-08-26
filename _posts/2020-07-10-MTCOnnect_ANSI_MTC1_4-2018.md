@@ -11,7 +11,7 @@ MTCOnnect_ANSI_MTC1_4-2018
 
 <!--more-->
 # Part 1.0 Overview and Fundamentals  Version 1.4.0
-## 1.Overview of MTConnect®
+## 1. Overview of MTConnect®
 MTConnect®是一种数据和信息交换标准，它基于描述与制造操作相关的信息的术语数据字典。该标准还定义了一系列语义数据模型，这些模型可以清楚明确地表示该信息与制造业务的关系。 MTConnect标准旨在增强制造设施中设备的数据采集能力，扩大制造业务中数据驱动决策的使用，并使软件应用和制造设备能够转向即插即用环境。 降低制造软件系统集成的成本。
 
 MTConnect标准支持两种主要通信方法 - 请求/响应和发布/订阅类型的通信。 本文档中使用请求/响应通信结构来描述MTConnect提供的功能。 有关描述MTConnect代理可用的发布/预订通信结构功能的详细信息，请参见第8.3.6节“数据流”
@@ -110,10 +110,10 @@ revision  - 补充标识符，仅表示对次要版本文档的组织或编辑�
 #### 4.2.1 Document Releases
 主要的修订变更代表了MTConnect标准的重大变化。在进行重大修订更改时，代表MTConnect标准的所有文件都将是
 更新并一起发布。
-次要修订更改表示MTConnect标准支持的某种级别的扩展功能。在发布次要版本时，将根据需要更新表示标​​准更改或增强的MTConnect文档。
+次要修订更改表示MTConnect标准支持的某种级别的扩展功能。在发布次要版本时，将根据需要更新表示标准更改或增强的MTConnect文档。
 但是，所有文件，无论是否更新，都将与新的次要版本号一起发布。以通用主要版本和次要版本提供所有场景使得实施者更容易管理并入到制造软件系统中的不同软件工具的兼容性和升级。
-由于修订版不代表TConnect标准的功能变更，并且仅包含编辑或描述性更改，以加强对标准所支持的功能的理解，因此标准中的单个文档可随时使用新版本进行更新，并且该版本不会影响与MTConnect标准相关的任何其他文档。
-为TConnect标准提供的每个文档的最新发布版本以及这些文档的历史版本在http://www.mtconnect.org上提供。
+由于修订版不代表MTConnect标准的功能变更，并且仅包含编辑或描述性更改，以加强对标准所支持的功能的理解，因此标准中的单个文档可随时使用新版本进行更新，并且该版本不会影响与MTConnect标准相关的任何其他文档。
+为MTConnect标准提供的每个文档的最新发布版本以及这些文档的历史版本在http://www.mtconnect.org上提供。
 
 ### 4.3 MTConnect Document Naming Convention
 MTConnect Documents are identified as follows:
@@ -133,7 +133,7 @@ Title – Description of the type of information contained in the MTConnect Docu
 
 M – Indicator of the major version of the MTConnect Document
 
-N– Indicator of the minor version of the MTConnect Document
+N – Indicator of the minor version of the MTConnect Document
 
 R – Indicator of the revision of the MTConnect Document
 
@@ -145,7 +145,7 @@ Ve r s i o n   1 . 2 . 0
 
 #### 4.3.2 Electronic Document File Naming
 MTConnect文档的电子版将以PDF格式提供。 代表每份文件的电子文件的命名惯例将如下：
-MTC_Part_＃.＃_ Title_M.N.R.pdf
+MTC_Part_#.#_Title_M.N.R.pdf
 相同的密钥用于区分如上文针对文档标题定义的电子文档。
 第2.0部分 - 设备信息模型的同一版本的电子版将是：
 MTC_Part_2.0_Devices Information Model_1.2.0.pdf
@@ -181,13 +181,13 @@ MTC_Part_2.0_Devices Information Model_1.2.0.pdf
 These conventions are:
 
 ·    XML Code examples:
-        1.    <MTConnectStreamsxmlns:m="urn:mtconnect.com:MTConnectStreams:1.1"
+        1.    <MTConnectStreams xmlns:m="urn:mtconnect.com:MTConnectStreams:1.1"
         2.        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         3.        xmlns="urn:mtconnect.com:MTConnectStreams:1.1"
 
 ·    HTTP URL examples:
 
-‒  http://<authority>/<path>[?<query>]When a portion of a URL is enclosed in anglebrackets (“<” and “>”), that section of the URL is a place holder for specific information that will replace the term between the angle brackets.
+‒  http://<authority>/<path>[?<query>] When a portion of a URL is enclosed in angle brackets (“<” and “>”), that section of the URL is a place holder for specific information that will replace the term between the angle brackets.
 Note:  The angle brackets in a URL do not relate to the angle brackets used as the tag elements in an XML example.
 ‒  A portion of a URL that is enclosed in square brackets “[“ and “]” indicates that the enclosed content is optional.
 ‒  All other characters in the URL are literal.
@@ -251,7 +251,7 @@ MTConnect代理是可以作为设备的一部分安装的软件，也可以单�
 MTConnect代理的一个功能是以有组织的方式存储它从一台设备接收的信息。 MTConnect代理的第二个功能是从一个或多个客户端软件应用程序接收信息请求，然后通过发布包含所请求信息的响应文档来响应这些请求。
 
 MTConnect代理存储的信息有三种类型，可以在响应文档中发布。 这些是：
-•设备元数据定义结构元素，表示可以向代理发布数据的每个设备的物理和逻辑部分和子部分，这些部分和子部分之间的关​​系，以及与每个部分相关联的数据实体结构要素。此设备元数据在MTConnectDevices响应文档中提供。有关设备元数据的更多信息，请参见第2部分，设备信息模型。
+•设备元数据定义结构元素，表示可以向代理发布数据的每个设备的物理和逻辑部分和子部分，这些部分和子部分之间的关系，以及与每个部分相关联的数据实体结构要素。此设备元数据在MTConnectDevices响应文档中提供。有关设备元数据的更多信息，请参见第2部分，设备信息模型。
 •流数据提供由设备元数据定义的数据实体的设备发布的值。流数据在MTConnectStreams响应文档中提供。有关Streaming Data的更多信息，请参阅第2部分，Streams信息模型。
 •MTConnect资产表示在多个设备和/或软件应用程序之间共享的制造操作中使用的信息。
 MTConnect资产在MTConnectAssets响应文档中提供。有关MTConnect资产的更多信息，请参见第4部分，资产信息模型。
@@ -326,7 +326,7 @@ MTConnect代理的缓冲区中的信息可以被认为是四列数据表。 表�
 ##### 5.1.3.4 Time Stamp
 向MTConnect代理发布信息的每个设备应该提供一个时间戳，指示何时测量或确定每条信息。 如果没有提供时间戳，代理必须根据代理收到该信息的时间提供信息的时间戳。
 MTConnect代理将与每条信息关联的时间戳记录为时间戳。 时间戳必须以UTC（协调世界时）格式报告;
-例如，“2010-04-01T21：22：43Z”。
+例如，“2010-04-01T21:22:43Z”。
 注意：Z表示UTC / GMT时间，而不是当地时间。
 
 客户端软件应用程序应使用为每条信息报告的时间戳值作为生成信息时的排序方式，而不是为此目的使用序列。
@@ -384,7 +384,7 @@ MTConnect代理仅在资产缓冲区中保留有限数量的资产文档。
 •如果资产文档表示当前未在资产缓冲区中表示的MTConnect资产，则代理必须将新文档添加到资产缓冲区的前面。 如果资产缓冲区已满，则将从资产缓冲区中删除最早的资产文档。
 •如果资产文档代表已在资产缓冲区中表示的MTConnect资产，则代理必须从资产缓冲区中删除表示该MTConnect资产的现有资产文档，并将新的资产文档添加到资产缓冲区的前面。
 
-MTConnect标准未指定可存储在资产缓冲区中的最大资产文档数; 该限制由特定MTConnect代理的实现决定。 可以存储在MTConnect代理中的资产文档数由assetBufferSize的值定义（有关assetBufferSize的更多信息，请参见第6.5节“文档头”）。 可以为assetBufferSize提供值4,294,967,296或232以指示无限存储。
+MTConnect标准未指定可存储在资产缓冲区中的最大资产文档数; 该限制由特定MTConnect代理的实现决定。 可以存储在MTConnect代理中的资产文档数由assetBufferSize的值定义（有关assetBufferSize的更多信息，请参见第6.5节“文档头”）。 可以为assetBufferSize提供值4,294,967,296或2^32以指示无限存储。
 
 MTConnect代理不需要为存储在资产缓冲区中的资产文档提供持久性。 如果MTConnect代理失败，则存储在资产缓冲区中的所有资产文档都可能丢失。 实施者有责任确定是否可以恢复存储在MTConnect代理中的资产文档，或者是否某些其他软件应用程序保留了这些资产文档。
 
@@ -447,7 +447,7 @@ MTConnect代理和客户端软件应用程序之间的信息传输基于请求/�
 为请求/响应信息交换定义了两个请求，要求MTConnect代理提供存储在代理缓冲区中的信息的不同视图。
 这些请求是Current和Sample。
 下面的示例演示了MTConnect代理如何解释存储在缓冲区中的信息，以根据客户端软件应用程序发出的特定请求提供在不同版本的MTConnectStreams响应文档中发布的内容。
-对于此示例，我们演示了一个MTConnect代理，其缓冲区最多可容纳八（8）个日期实体; 即，bufferSize的值为8.该代理正在收集两条数据的信息 - 表示位置的Pos和表示控制程序中的一行逻辑或命令的Line。
+对于此示例，我们演示了一个MTConnect代理，其缓冲区最多可容纳八（8）个数据实体; 即，bufferSize的值为8.该代理正在收集两条数据的信息 - 表示位置的Pos和表示控制程序中的一行逻辑或命令的Line。
 In this buffer, the value for firstSequence is 12 and the value for lastSequence is 19.
 There are five (5) different values for Pos and three (3) different values for Line.
 
@@ -487,7 +487,7 @@ See the original
 ### 6.2 XML Declaration
 用XML编码的响应文档的第一部分应该是XML声明。 声明是一个单一元素。
 XML声明的一个例子是：
-    2. <？xml version =“1.0”encoding =“UTF-8”？>
+    2. <?xml version="1.0" encoding="UTF-8"?>
 此元素提供有关如何编码XML文档以及用于该编码的字符类型的信息。 有关XML声明的更多详细信息，请访问W3C网站。
 
 ### 6.3 Root Element
@@ -500,7 +500,7 @@ See the original for details
 XML提供了标准方法，用于声明与XML编码的文档关联的模式和命名空间。 MTConnect响应文档的模式和命名空间的声明必须在文档的根元素中构造为属性。
 XML将这些属性定义为伪属性，因为它们为整个文档提供了额外的信息，而不仅仅是针对根元素本身。
 注意：如果响应文档包含使用不同模式和/或命名空间的部分，则应使用W3C定义的标准约定声明的其他伪属性应出现在文档中。
-有关声明的更多信息，请参阅附录C.
+有关声明的更多信息，请参阅附录C。
 
 ### 6.5 Document Header
 文档标题是MTConnect响应文档中的XML容器，它提供来自MTConnect代理的信息，定义版本信息，存储容量以及与代理内数据管理相关的参数。 此XML元素称为Header。
@@ -574,7 +574,7 @@ Example forms for authority are:
 
 #### 8.2.2 path Portion of an HTTP Request Line
 
-The <Path> portion of the HTTP Request Line has the follow segments:
+The <Path> portion of the HTTP Request Line has the following segments:
 •    /<name   or   uuid>/<request>
 在HTTP请求行的这一部分中，name或uuid指定要在响应文档中返回的信息与已向MTConnect代理发布数据的特定设备相关联。 有关设备名称或uuid的详细信息，请参阅第2部分 - 设备信息模型。
 注意：如果HTTP请求行中未指定name或uuid，则MTConnect代理必须在响应文档中将已发布数据的所有设备的信息返回给代理。
@@ -583,8 +583,8 @@ defined in Section 5.4.  The value for <request> MUST be probe, current, sample,
 asset(s) representing the Probe Request, Current Request, Sample Request, and Asset
 Request respectively.
 
- #### 8.2.3 query Portion of an HTTP Request Line
-The [?<query portion of the HTTP Request Line designates an HTTP Query.
+#### 8.2.3 query Portion of an HTTP Request Line
+The [?<query>] portion of the HTTP Request Line designates an HTTP Query.
  Query是一系列参数，用于定义用于优化响应HTTP请求而发布的响应文档内容的过滤器。
 
 ### 8.3 MTConnect Request/Response Information Exchange Implemented with HTTP

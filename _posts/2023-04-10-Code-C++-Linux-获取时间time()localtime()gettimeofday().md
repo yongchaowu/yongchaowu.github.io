@@ -6,6 +6,8 @@ categories: ["Code"]
 tags: ["C++", "Code", "Time"]
 ---
 
+<!--more-->
+
 ```cpp
 #include <iostream>
 //#include <time.h>

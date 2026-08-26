@@ -6,7 +6,7 @@ categories: ["IDE"]
 tags: ["Visual Studio Code", "IDE"]
 ---
 
->[https://www.hd2y.net/archives/plantuml-installation-and-use](https://www.hd2y.net/archives/plantuml-installation-and-use)
+>[https://www.hd2y.net/archives/plantuml-installation-and-use](http://web.archive.org/web/20260416181302/https://www.hd2y.net/archives/plantuml-installation-and-use)
 
 <!--more-->
 PlantUML + Graphviz + Java
@@ -15,7 +15,7 @@ PlantUML + Graphviz + Java
 1. [vscode marketplace](https://marketplace.visualstudio.com/vscode "Visual Studio Code Marketplace" ) *注意路径，我第一次下载的vs的插件。*
 https://marketplace.visualstudio.com/vscode
 
-2. https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml
+2. http://web.archive.org/web/20260619130217/https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml
 3. 安装插件
 - 搜索vscode的位置：`whereis code`
 
@@ -30,7 +30,7 @@ code: /usr/bin/code /usr/share/code
 `cp jebbs.plantuml-2.17.5.vsix /usr/share/code/bin`
 `cd /usr/share/code/bin`
 `code --install-extension jebbs.plantuml-2.17.5.vsix`
-或者vscode的插件管理右上角...有从visx安装
+或者vscode的插件管理右上角...有从VSIX安装
 
 ```
 yongchao@yongchao-virtual-machine:/usr/share/code/bin$ code --install-extension jebbs.plantuml-2.17.5.vsix 
@@ -78,11 +78,11 @@ Graphviz : PlantUML requires it to calculate positions in diagram.
 ## Graphviz Extension
 ### Graphviz (dot) language 
 support for Visual Studio Code
-[https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz](https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz)
+[http://web.archive.org/web/20230927192452/https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz](http://web.archive.org/web/20230927192452/https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz)
 joaompinto.vscode-graphviz-0.0.6.vsix
 
 ### Graphviz Interactive Preview
-[https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview](https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview)
+[https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview](http://web.archive.org/web/20260417053736/https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview)
 tintinweb.graphviz-interactive-preview-0.3.5.vsix
 
 Language Features 
@@ -119,7 +119,7 @@ export JAVA_LIB=$JAVA_HOME/lib
 export CLASSPATH=.:$JAVA_LIB/tools.jar:$JAVA_LIB/dt.jar 
 export PATH=$JAVA_BIN:$PATH
 
-source ~/.bahsrc
+source ~/.bashrc
 
 java -version
 java version "1.8.0_361"

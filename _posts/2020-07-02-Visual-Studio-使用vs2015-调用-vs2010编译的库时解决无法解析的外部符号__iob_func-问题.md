@@ -8,6 +8,8 @@ tags: ["Visual Studio", "IDE"]
 
 当使用高版本的Visual Studio调用低版本lib时，编译器会发生错误
 解决方式如下：
+
+<!--more-->
 ```cpp
 // 使用vs2015 调用 vs2010编译的库时解决"无法解析的外部符号__iob_func 问题"
 #if _MSC_VER>=1900  

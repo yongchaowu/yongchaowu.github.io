@@ -149,7 +149,7 @@ namespace link_table
 #pragma once
 #include <vector>
 #include <map>
-//V表示的事我们点中的数据类型
+    //V表示的是我们点中的数据类型
 // weight代表权重
 //Direction表示是有向图还是无向图
 namespace matrix
@@ -304,7 +304,7 @@ void _DFS(size_t srci, vector<bool>& visited)
 
 #### 广度优先遍历
 ```c++
-//传入起点`
+//传入起点
         void BFS(const V& src)
         {
             //计算起点的下标
@@ -553,7 +553,7 @@ void TestGraphMinTree()
                     Y[min._dsti] = false;
                     ++size;
                     totalW += min._w;
-                    //如果选出了了n-1条边，那么我们选边就已经结束了
+                    //如果选出了n-1条边，那么我们选边就已经结束了
                     if (size == n - 1)
                         break;
 

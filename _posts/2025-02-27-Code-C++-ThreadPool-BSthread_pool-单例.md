@@ -99,7 +99,7 @@ int main()
  * ██████  ███████          ██    ██   ██ ██   ██ ███████ ██   ██ ██████  ███████ ██       ██████   ██████  ███████
  *
  * @file BS_thread_pool.hpp
- * @author Barak Shoshany (baraksh@gmail.com) (https://baraksh.com/)
+ * @author Barak Shoshany (baraksh@gmail.com) (http://web.archive.org/web/20260801210706/https://baraksh.com/)
  * @version 5.0.0
  * @date 2024-12-19
  * @copyright Copyright (c) 2024 Barak Shoshany. Licensed under the MIT license. If you found this project useful, please consider starring it on GitHub! If you use this library in software of any kind, please provide a link to the GitHub repository https://github.com/bshoshany/thread-pool in the source code and documentation. If you use this library in published research, please cite it as follows: Barak Shoshany, "A C++17 Thread Pool for High-Performance Scientific Computing", doi:10.1016/j.softx.2024.101687, SoftwareX 26 (2024) 101687, arXiv:2105.00613

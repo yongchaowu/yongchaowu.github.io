@@ -175,7 +175,7 @@ https://github.com/Ericsson/codechecker
 
 是编译器级别的检查，它们需要编译文件从而检查代码
 
-所以理论上他们的可靠性会比cpplint和cppcheck要强一些，同时它的耗时也会它们长一些。
+所以理论上它们的可靠性会比cpplint和cppcheck要强一些，同时它的耗时也会比它们长一些。
 
 >https://clang-analyzer.llvm.org/
 >http://clang.llvm.org/extra/clang-tidy/
@@ -206,11 +206,11 @@ clang-tidy -list-checks -checks=*查看所有支持的检查
 
 #### C/C++ Advanced Lint for VS Code
 
->https://marketplace.visualstudio.com/items?itemName=jbenden.c-cpp-flylint
+>http://web.archive.org/web/20260411051622/https://marketplace.visualstudio.com/items?itemName=jbenden.c-cpp-flylint
 
 ----------
 
->https://marketplace.visualstudio.com/items?itemName=QiuMingGe.cpp-check-lint
+>http://web.archive.org/web/20260610180411/https://marketplace.visualstudio.com/items?itemName=QiuMingGe.cpp-check-lint
 ```bash
 http://cppcheck.net/
 sudo apt-get install cppcheck
@@ -247,7 +247,7 @@ Visual Studio 提供了多种用于分析和提升 C++ 代码质量的工具。
 
 
 ----------
-### concultion
+### conclusion
 
 *（图片缺失，未随博客园迁移：`.Static Analyzers.jpeg`）*
 ![](https://images.cnblogs.com/cnblogs_com/yongchao/2296107/o_230527125337_Static%20Analyzers.jpeg)

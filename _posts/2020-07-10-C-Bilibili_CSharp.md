@@ -13,25 +13,25 @@ C#本质论.pdf
 文件以.cs保存
 C#支持中文
 
-输出 `System.Console.WrtieLine();`
+输出 `System.Console.WriteLine();`
 输入 `System.Console.Read();`
-占位符` System.Console.WrtieLine("{0}{1}",,);`
+占位符` System.Console.WriteLine("{0}{1}",,);`
 
 字面值有默认类型 int double
 `1.1f//float`
 `1.1m//decimal`
 指数写法 2E2 //200
 十六进制 0xff //255
-字符串中 使用@ 可以不适用转义（写路径时）
+字符串中 使用@ 可以不使用转义（写路径时）
 
 //判断代码执行时间
 ```csharp
 using System.Diagnostics;
 Stopwatch 计时器=new Stopwatch(); //支持中文
-计时器.start();
+计时器.Start();
 ....
-计时器.start();
-System.Console.WrtieLine(计时器.ElapsedMilliseconds);
+计时器.Start();
+System.Console.WriteLine(计时器.ElapsedMilliseconds);
 ```
 
 //StringBuilder 在多次操作string时 可能比string 快，需要测试
@@ -44,13 +44,13 @@ System.Console.WrtieLine(计时器.ElapsedMilliseconds);
 null //含义不固定，需要设置
 
 //可空修饰
-`int？ number=null; （和数据库交互）`
+`int? number=null; （和数据库交互）`
 
 //
 var //声明
 
 //类型转换
-//显示转换  高到低
+//显式转换  高到低
 `int.MaxValue;// int 最大值`
 `checked{} //检测溢出。`
 //隐式转换 低到高
@@ -87,7 +87,7 @@ nums.Remove();
 ref string//字符串不变性
 
 重载 参数  //操作符重载，赋值操作符不能被重载
-重载自定义的类型转换操作符，须用implicit（隐式转换）或 explicit（显示转换）关键字
+重载自定义的类型转换操作符，须用implicit（隐式转换）或 explicit（显式转换）关键字
 
 泛型 模板 T   Func<T>()
 可变参数 关键字：params 必须放在参数的最后 //  int Func(params int[] nums);
@@ -114,7 +114,7 @@ long FileOrDirCount(string path){
 	}
 	catch( UnauthorizedAccessException ex)
 	{
-	 System.Console.WriteLine(ex.Message);\
+	 System.Console.WriteLine(ex.Message);
 	//throw;
 	}
 	return count;
@@ -139,7 +139,7 @@ public string Name{get; set;}
 /*
  public string Name
 {
- 	get{return _Name};
+ 	get{return _Name;}
 	set{_Name=value;}//这里可以抛出异常
 }
 */
@@ -164,8 +164,8 @@ readonly  运行时 //仅能在声明、构造函数中赋值
 const  编译时
 
 嵌套类
-分布类 ，partial
-分布方法，在分布类中  partial void Func();// 必须是void
+分部类 ，partial
+分部方法，在分部类中  partial void Func();// 必须是void
 
 //继承  冒号：
 单一继承
@@ -202,11 +202,11 @@ interface
 	成员都是public
 	标准术语：实现接口
 	无法实例化一个接口
-显示/隐式接口
+显式/隐式接口
 	隐式的接口,必须要有public访问修饰符
 	显式的接口不能有任何的访问修饰符
-	隐示实现对象声明为接口和类都可以访问到其行为
-	显示实现只有声明为接口可以访问
+	隐式实现对象声明为接口和类都可以访问到其行为
+	显式实现只有声明为接口可以访问
 
 //UML Unified Modeling Language (_UML_)又称统一建模语言或标准建模语言
 vs可以查看类图  需要安装时选择类设计器组件
@@ -225,7 +225,7 @@ where T:struct//约束，值类型
 命名空间 （避免一个项目中 重命名）
 
 dll// 动态链接库
-	导入dll： 1.手动   2.[DLLImport(...)],仅用于方法
+	导入dll： 1.手动   2.[DllImport(...)],仅用于方法
 
 //垃圾回收
 内存管理的一种方式
@@ -244,7 +244,7 @@ sw.WriteLine("123");
 sw.Close();
 */
 /*
-using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAccess.Write)
+using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAccess.Write))
 {sw.WriteLine("123");}
 */
 
@@ -259,7 +259,7 @@ using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAcce
 Lambda
 简化：
 ```javascript
-语句Lambada	:
+语句Lambda	:
 		(type var,...)=>{...};
 		(var,..)=>{...};
 		var=>{...};
@@ -300,7 +300,7 @@ yield break;
 
 
 //集合
-实现IEunmerablede接口的类
+实现IEnumerable接口的类
 foreach 具有不可修改的特性  //与for相比
 常用集合:
 ```language
@@ -330,7 +330,7 @@ IEnumerable<T>中每一个方法
 所有的方法定义在System.Linq.Enumerable中
 使用时，只需要using System.Linq
 
-//Linq ////https://www.bilibili.com/video/av2357992/index_14.html?t=3369#page=15
+//Linq ////http://web.archive.org/web/20171028111558/http://www.bilibili.com:80/video/av2357992/
 Language INtegrated Query  语言集成查询
 查询表达式
 Where
@@ -376,7 +376,7 @@ public class RequiredAttribute:System.Attribute
 	public static bool IsPropertyRequired(object obj)
 	{
 	var type =obj.GetType();
-	var properties =type.GerProperties();
+	var properties =type.GetProperties();
  	
 	foreach(var propetry in properties)
 	{
@@ -415,7 +415,7 @@ dynamic
 ```
 第二种方法，可有可无返回值
 ```language
- 	var tast = Task.Factory.StartNew(..);
+ 	var task = Task.Factory.StartNew(..);
   注  task.Result()会阻塞   
 	  直接执行，无需Start();
 ```
@@ -459,11 +459,11 @@ Interlocked.Increment();
 `//Debug.Assert();///断言`
 
 ```language
-//Datetime
-var dt=Datetime.Now;
+//DateTime
+var dt=DateTime.Now;
 dt.ToString("格式")
 使用前导0格式。 ///可以比较大小
-Datetime.Parse();
+DateTime.Parse();
 ```
 
 //internal   ///用于dll修饰
@@ -475,7 +475,7 @@ Datetime.Parse();
 
 //GUID
 全局唯一标识符
-`var guid=GUID.NewGuid().ToString("D");`
+`var guid=Guid.NewGuid().ToString("D");`
 
 //访问excel
 com组件
@@ -489,7 +489,7 @@ OleDbConnection
 `Clipboard.SetText(...)`
 对于控制台稍微要麻烦点
 添加了Forms引用后，还需将Main函数头上加上[STAThread]特性
-对于多线程使用Clipbroad这个类也是要将线程模式设置为STA
+对于多线程使用Clipboard这个类也是要将线程模式设置为STA
 
 
 //避免硬编码，参数化配置

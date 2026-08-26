@@ -24,12 +24,12 @@ Linux的可执行程序异常退出时，提示“核心已转储”。
 
 core设置主要命令解析：
 ```
- //控制core文件的文件名中是否添加pid作为扩展
+# 控制core文件的文件名中是否添加pid作为扩展
 echo "1" > /proc/sys/kernel/core_uses_pid  
-//设置core文件的输出路径和输出文件名，这里我的路径是/home/boy/corefile，文件名就是后面的部分
+# 设置core文件的输出路径和输出文件名，这里我的路径是/home/boy/corefile，文件名就是后面的部分
 echo "/home/boy/corefile/core-%e-%p-%t"> /proc/sys/kernel/core_pattern 
  
-//参数说明
+# 参数说明
 %p - insert pid into filename 添加pid
 %u - insert current uid into filename 添加当前uid
 %g - insert current gid into filename 添加当前gid
@@ -43,15 +43,15 @@ echo "/home/boy/corefile/core-%e-%p-%t"> /proc/sys/kernel/core_pattern
 
 因为ubuntu官方为了自动收集错误，设置了服务`apport.service`，用于自动生成崩溃报告，我们还是无法获取core文件，可以暂时将该服务关闭。
 ```bash
-//1.关闭错误报告
+#1.关闭错误报告
 sudo systemctl disable apport.service
-//或
+#或
 sudo service apport stop
  
  
-//2.启用错误报告
+#2.启用错误报告
 sudo systemctl enable apport.service
-//或
+#或
 sudo service apport start
 ```
 重新运行程序即可。

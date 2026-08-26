@@ -6,7 +6,7 @@ categories: ["OS"]
 tags: ["OS", "Ubuntu", "Grub"]
 ---
 
-##现象
+## 现象
 Ubuntu系统启动后提示：
 ```text
 GNU GRUB version 2.02

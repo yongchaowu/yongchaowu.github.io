@@ -33,7 +33,7 @@ ld.so.conf 文件包含一个所有目录（/lib 和 /usr/lib 除外，它们会
 $ldconfig
 LD_LIBRARY_PATH
 　　要指示动态装入器首先检查某个目录，请将 LD_LIBRARY_PATH 变量设置成您希望搜索的目录。多个路径之间用冒号分隔；例如：
-　　$ export LD_LIBRARY_PATH=”/usr/lib/old:/opt/lib”
+　　$ export LD_LIBRARY_PATH="/usr/lib/old:/opt/lib"
 　　导出 LD_LIBRARY_PATH 后，如有可能，所有从当前 shell 启动的可执行程序都将使用 /usr/lib/old 或 /opt/lib 中的库，如果仍不能满足一些共享库相关性要求，则转回到 /etc/ld.so.conf 中指定的库。
 
 $ldd命令查看程序依赖的动态库，可以判断是否有动态库缺失

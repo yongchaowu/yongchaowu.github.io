@@ -7,7 +7,7 @@ tags: ["C语言", "C"]
 ---
 
 直接抄的书上的，编译没过，应该和系统有关，用的windows系统去编译unix上的函数。
-就功能理解上还是可以的，所以没有在去linux上重新编译。
+就功能理解上还是可以的，所以没有再去linux上重新编译。
 
 <!--more-->
 ```C
@@ -42,10 +42,10 @@ FILE* fopen(char *name, char *mode)
         return NULL;
 
     if(*mode == 'w')
-        fd = create(name, PERMS);
+        fd = creat(name, PERMS);
     else if(*mode == 'a'){
         if((fd = open(name, O_WRONLY, 0)) == -1)
-            fd = create(name, PERMS);
+            fd = creat(name, PERMS);
         lseek(fd, 0L, 2);
     }
     else
@@ -63,7 +63,7 @@ FILE* fopen(char *name, char *mode)
 /*
     以上未涉及标准C的所有访问模式。
     不能识别标识二进制访问方式的b标志
-    不能识别允许同时进行读和些的+标志
+    不能识别允许同时进行读和写的+标志
 */
 
 ```

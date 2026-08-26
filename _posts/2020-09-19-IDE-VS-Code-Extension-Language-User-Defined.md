@@ -7,7 +7,7 @@ tags: ["Visual Studio Code", "IDE"]
 ---
 
 September 19, 2020 5:08 PM
-上次想做vscode自定义语言的高亮显示，最后调研结果事用vs cdoe的插件实现，以下是总结。
+上次想做vscode自定义语言的高亮显示，最后调研结果是用vs code的插件实现，以下是总结。
 
 <!--more-->
 ## 官网介绍 https://code.visualstudio.com/api

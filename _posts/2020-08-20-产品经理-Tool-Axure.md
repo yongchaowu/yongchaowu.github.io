@@ -15,4 +15,4 @@ https://www.cnblogs.com/luchaoshuai/p/10199444.html
 http://www.woshipm.com/rp/854412.html
 http://www.axureux.com/help/Q006.html
 ### 案例
-http://demo.axureshop.com/?url=http://y9zqci.axshare.cn&buyurl=https://www.axureshop.com/a/246479.html
+http://web.archive.org/web/20220424124346/http://demo.axureshop.com/

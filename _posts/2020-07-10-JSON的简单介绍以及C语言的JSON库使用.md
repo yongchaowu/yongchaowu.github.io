@@ -31,8 +31,7 @@ tags: ["Json", "Open Source Library", "C"]
     {
       "name": "eddie",
       "address": "台湾"
-    },
-    
+    }
   ]
 }
 ```
@@ -44,7 +43,7 @@ JSON 语法是 JavaScript 对象表示法语法的子集。
           　方括号保存数组， 每个数组成员用逗号隔开， 并且每个数组成员可以是文档对象或者数组或者键值对 。
 
 JSON基于两种结构：
-　　　　“名称/值”对的集合（A collection of name/value pairs）。不同的编程语言中，它被理解为对象（object），纪录（record），结构（struct），字（dictionary），哈希表（hashtable），有键列表（keyed list），或者关联数组 （associative array）。
+　　　　“名称/值”对的集合（A collection of name/value pairs）。不同的编程语言中，它被理解为对象（object），纪录（record），结构（struct），字典（dictionary），哈希表（hashtable），有键列表（keyed list），或者关联数组 （associative array）。
 　　　　值的有序列表（An ordered list of values）。在大部分语言中，它被实现为数组（array），矢量（vector），列表（list），序列（sequence）。
 
 JSON的三种语法： 
@@ -103,8 +102,7 @@ cJSON_AddItemToObject(object, name, cJSON_CreateString(s))
 
 遍历数组 ：
 ```language
-#define cJSON_ArrayForEach(pos, head)        
-for(pos = (head)->child; pos != NULL; pos = pos->next)
+#define cJSON_ArrayForEach(pos, head) for(pos = (head)->child; pos != NULL; pos = pos->next)
 ```
 
 ### other
@@ -121,7 +119,7 @@ JSON.stringify(value[, replacer [, space]])
 
 `replacer` 可选
 
-如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为null或者未提供，则对象所有的属性都会被序列化；关于该参数更详细的解释和示例，请参考[使用原生的 JSON 对象](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_native_JSON#The_replacer_parameter)一文。
+如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为null或者未提供，则对象所有的属性都会被序列化；关于该参数更详细的解释和示例，请参考[使用原生的 JSON 对象](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)一文。
 
 `space` 可选
 
@@ -136,7 +134,7 @@ JSON.stringify()将值转换为相应的JSON格式：
 *   转换值如果有toJSON()方法，该方法定义什么值将被序列化。
 *   非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中。
 *   布尔值、数字、字符串的包装对象在序列化过程中会自动转换成对应的原始值。
-*   `undefined、`任意的函数以及 symbol 值，在序列化过程中会被忽略（出现在非数组对象的属性值中时）或者被转换成 `null`（出现在数组中时）。函数、undefined被单独转换时，会返回undefined，如`JSON.stringify(function(){})` or `JSON.stringify(undefined).`
+*   `undefined`、任意的函数以及 symbol 值，在序列化过程中会被忽略（出现在非数组对象的属性值中时）或者被转换成 `null`（出现在数组中时）。函数、undefined被单独转换时，会返回undefined，如`JSON.stringify(function(){})` or `JSON.stringify(undefined).`
 *   对包含循环引用的对象（对象之间相互引用，形成无限循环）执行此方法，会抛出错误。
 *   所有以 symbol 为属性键的属性都会被完全忽略掉，即便 `replacer` 参数中强制指定包含了它们。
 *   Date日期调用了toJSON()将其转换为了string字符串（同Date.toISOString()），因此会被当做字符串处理。

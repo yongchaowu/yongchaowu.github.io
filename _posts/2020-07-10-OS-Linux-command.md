@@ -42,7 +42,7 @@ reboot 重启(2)
 logout 注销 
 
 **文件和目录** 
-cd /home 进入 '/ home' 目录' 
+cd /home 进入 '/ home' 目录 
 cd .. 返回上一级目录 
 cd ../.. 返回上两级目录 
 cd 进入个人的主目录 
@@ -56,11 +56,11 @@ ls -a 显示隐藏文件
 ls *[0-9]* 显示包含数字的文件名和目录名 
 tree 显示文件和目录由根目录开始的树形结构(1) 
 lstree 显示文件和目录由根目录开始的树形结构(2) 
-mkdir dir1 创建一个叫做 'dir1' 的目录' 
+mkdir dir1 创建一个叫做 'dir1' 的目录 
 mkdir dir1 dir2 同时创建两个目录 
 mkdir -p /tmp/dir1/dir2 创建一个目录树 
-rm -f file1 删除一个叫做 'file1' 的文件' 
-rmdir dir1 删除一个叫做 'dir1' 的目录' 
+rm -f file1 删除一个叫做 'file1' 的文件 
+rmdir dir1 删除一个叫做 'dir1' 的目录 
 rm -rf dir1 删除一个叫做 'dir1' 的目录并同时删除其内容 
 rm -rf dir1 dir2 同时删除两个目录及它们的内容 
 mv dir1 new_dir 重命名/移动 一个目录 
@@ -105,7 +105,7 @@ mount -t smbfs -o username=user,password=pass //WinClient/share /mnt/share 挂�
 **磁盘空间 **
 df -h 显示已经挂载的分区列表 
 ls -lSr |more 以尺寸大小排列文件和目录 
-du -sh dir1 估算目录 'dir1' 已经使用的磁盘空间' 
+du -sh dir1 估算目录 'dir1' 已经使用的磁盘空间 
 du -sk * | sort -rn 以容量大小为依据依次显示文件和目录的大小 
 rpm -q -a --qf '%10{SIZE}t%{NAME}n' | sort -k1,1n 以大小为依据依次显示已安装的rpm包所使用的空间 (fedora, redhat类系统) 
 dpkg-query -W -f='${Installed-Size;10}t${Package}n' | sort -k1,1n 以大小为依据显示已安装的deb包所使用的空间 (ubuntu, debian类系统) 
@@ -139,8 +139,8 @@ chmod u+s /bin/file1 设置一个二进制文件的 SUID 位 - 运行该文件�
 chmod u-s /bin/file1 禁用一个二进制文件的 SUID位 
 chmod g+s /home/public 设置一个目录的SGID 位 - 类似SUID ，不过这是针对目录的 
 chmod g-s /home/public 禁用一个目录的 SGID 位 
-chmod o+t /home/public 设置一个文件的 STIKY 位 - 只允许合法所有人删除文件 
-chmod o-t /home/public 禁用一个目录的 STIKY 位 
+chmod o+t /home/public 设置一个文件的 STICKY 位 - 只允许合法所有人删除文件 
+chmod o-t /home/public 禁用一个目录的 STICKY 位 
 
 **文件的特殊属性 - 使用 "+" 设置权限，使用 "-" 用于取消 **
 chattr +a file1 只允许以追加方式读写文件 
@@ -177,7 +177,7 @@ unzip file1.zip 解压一个zip格式压缩包
 
 **RPM 包 - （Fedora, Redhat及类似系统）** 
 rpm -ivh package.rpm 安装一个rpm包 
-rpm -ivh --nodeeps package.rpm 安装一个rpm包而忽略依赖关系警告 
+rpm -ivh --nodeps package.rpm 安装一个rpm包而忽略依赖关系警告 
 rpm -U package.rpm 更新一个rpm包但不改变其配置文件 
 rpm -F package.rpm 更新一个确定已经安装的rpm包 
 rpm -e package_name.rpm 删除一个rpm包 
@@ -189,7 +189,7 @@ rpm -ql package_name 显示一个已经安装的rpm包提供的文件列表
 rpm -qc package_name 显示一个已经安装的rpm包提供的配置文件列表 
 rpm -q package_name --whatrequires 显示与一个rpm包存在依赖关系的列表 
 rpm -q package_name --whatprovides 显示一个rpm包所占的体积 
-rpm -q package_name --scripts 显示在安装/删除期间所执行的脚本l 
+rpm -q package_name --scripts 显示在安装/删除期间所执行的脚本 
 rpm -q package_name --changelog 显示一个rpm包的修改历史 
 rpm -qf /etc/httpd/conf/httpd.conf 确认所给的文件由哪个rpm包所提供 
 rpm -qp package.rpm -l 显示由一个尚未安装的rpm包提供的文件列表 
@@ -347,7 +347,7 @@ ifconfig eth0 192.168.1.1 netmask 255.255.255.0 控制IP地址
 ifconfig eth0 promisc 设置 'eth0' 成混杂模式以嗅探数据包 (sniffing) 
 dhclient eth0 以dhcp模式启用 'eth0' 
 route -n show routing table 
-route add -net 0/0 gw IP_Gateway configura default gateway 
+route add -net 0/0 gw IP_Gateway configure default gateway 
 route add -net 192.168.0.0 netmask 255.255.0.0 gw 192.168.1.1 configure static route to reach network '192.168.0.0/16' 
 route del 0/0 gw IP_gateway remove static route 
 echo "1" > /proc/sys/net/ipv4/ip_forward activate ip routing 
@@ -381,7 +381,7 @@ mount -t smbfs -o username=user,password=pass //WinClient/share /mnt/share mount
 ## Some Cut
 
 ### [Linux初始root密码设置](https://www.cnblogs.com/mecy1222/p/7063954.html)
-由于ubtun系统默认是没有激活root用户的，需要我们手工进行操作，在命令行界面下，或者在终端中输入如下命令： 
+由于ubuntu系统默认是没有激活root用户的，需要我们手工进行操作，在命令行界面下，或者在终端中输入如下命令： 
 ```bash
 sudo passwd 或者sudo passwd root
 Password：你当前的密码 
@@ -395,5 +395,5 @@ Retype new UNIX password：重复root的密码 
 新建用户的命令 
 ```bash
 sudo useradd lijiangwei
-sudo passwd 456
+sudo passwd lijiangwei
 ```

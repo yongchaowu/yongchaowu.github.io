@@ -39,7 +39,7 @@ Open projects/log4cxx.dsw with Microsoft Visual Studio 6 or later at which time 
 Select log4cxx as active project and build.
 
 ### Running unit tests
-To pass the unit tests, gzip, zip and sed must be on the path. Also three environment variables need to be defined: TOTO=wonderful, key1=value1 and key2=value2. These must be done outside of Microsoft Visual Studio, either in the Control Panel or in a Command Prompt uses to launch Microsoft Visual Studio.
+To pass the unit tests, gzip, zip and sed must be on the path. Also three environment variables need to be defined: TOTO=wonderful, key1=value1 and key2=value2. These must be done outside of Microsoft Visual Studio, either in the Control Panel or in a Command Prompt used to launch Microsoft Visual Studio.
 
 Open projects/testsuite.dsw or projects/testsuite-standalone.dsw (test suite and implementation in one project) in Microsoft Visual Studio, select active project and build.
 
@@ -71,7 +71,7 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
     请双击第一行出错输出, 将 #if MCAST_JOIN_SOURCE_GROUP 注释, 替换为 #if defined (group_source_req)
     ```
 
-- 若出现：error C2039: “insert_iterator”: 不是“std”的成员' 等错误.
+- 若出现：error C2039: “insert_iterator”: 不是“std”的成员等错误.
 	```
     在该 .cpp 中加入头文件 #include<iterator>, 使用vs2019时，可以通过编译器的修补功能自动添加
 	```
@@ -85,7 +85,7 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
 	[apr_arch_misc.h error](https://www.apachelounge.com/viewtopic.php?p=38033)
      set in apr/include/apr.hw : #define _WIN32_WINNT 0x0600 (was 502).
 - expat.h 不存在
-	apr.xml.c中需要expat.h，这个是一个c的xml解析库。 需要自己下载编译。 用的绝对路径编译的。
+	apr_xml.c中需要expat.h，这个是一个c的xml解析库。 需要自己下载编译。 用的绝对路径编译的。
     [expat-win32bin-2.2.9](https://sourceforge.net/projects/expat/)
     [Github:expat](https://github.com/libexpat/libexpat/tree/master/expat)
 - warning MSB8012：TargetPath与Linker的OutputFile属性值不匹配
@@ -99,7 +99,6 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
 	```
     最后，	链接器->输入->附加依赖项：增加Rpcrt4.lib，最后通过。
 
--
 ### Demo
 [Demo](https://www.cnblogs.com/lovelp/articles/3719735.html)
 ```code

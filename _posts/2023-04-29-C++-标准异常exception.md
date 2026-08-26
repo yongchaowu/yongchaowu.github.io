@@ -13,7 +13,6 @@ std::exception 定义于头文件 `<exception>` class exception;
 标准库头文件 `<stdexcept>`
 >https://www.apiref.com/cpp-zh/cpp/header/stdexcept.html
 
-## 
 std::exception
 std::bad_alloc
 std::bad_cast
@@ -36,7 +35,7 @@ std::underflow_error		报告算术下溢的异常类
 https://www.apiref.com/cpp-zh/cpp/error/exception.html
 
 std::exception 
-定义于头文件 `<exception> `
+定义于头文件 `<exception>`
 class exception;
 提供一致的接口，以通过 throw 表达式处理错误。
 标准库所生成的所有异常继承自 std::exception

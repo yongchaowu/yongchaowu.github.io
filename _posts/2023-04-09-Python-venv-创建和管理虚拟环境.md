@@ -43,7 +43,7 @@ Python 3.5.1 (default, May  6 2016, 10:59:36)
 >>>
 ```
 
-To deactivate a virtual environment,type:`deactivate`into the terminal.
+To deactivate a virtual environment, type: `deactivate` into the terminal.
 
 ## 使用pip管理包
 You can install, upgrade, and remove packages using a program called `pip`. By default pip will install packages from the Python Package Index. You can browse the Python Package Index by going to it in your web browser.
@@ -115,7 +115,7 @@ novas==3.1.1.3
 numpy==1.9.2
 requests==2.7.0
 ```
-然后可以将 `requirements.txt` 提交给版本控制并作为应用程序的一部分提供。然后用户可以使用 `install -r`安装所有必需的包：
+然后可以将 `requirements.txt` 提交给版本控制并作为应用程序的一部分提供。然后用户可以使用 `install -r` 安装所有必需的包：
 ```
 (tutorial-env) $ python -m pip install -r requirements.txt
 Collecting novas==3.1.1.3 (from -r requirements.txt (line 1))

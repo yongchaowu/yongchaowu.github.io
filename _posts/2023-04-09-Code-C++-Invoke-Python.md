@@ -12,14 +12,14 @@ tags: ["C++", "Code", "Python"]
 - [使用 C 或 C++ 扩展 Python](https://docs.python.org/zh-cn/3.10/extending/extending.html#extracting-parameters-in-extension-functions "使用 C 或 C++ 扩展 Python")
 - [扩展和嵌入 Python 解释器](https://docs.python.org/zh-cn/3.10/extending/index.html "扩展和嵌入 Python 解释器")
 - [Python 3.10.11 Python/C API 参考手册](https://docs.python.org/zh-cn/3.10/c-api/index.html#c-api-index "Python 3.10.11 Python/C API 参考手册")
-- [Python 3.11.3 Python/C API 参考手册](https://docs.python.org/zh-cn/3/c-api/index.html#c-api-index "Python 3.10.11 Python/C API 参考手册")
+- [Python 3.11.3 Python/C API 参考手册](https://docs.python.org/zh-cn/3/c-api/index.html#c-api-index "Python 3.11.3 Python/C API 参考手册")
 
 >1. https://www.cnblogs.com/lidabo/p/17043302.html
 >2. https://blog.csdn.net/zong596568821xp/article/details/115690713
 
 在调试过程中遇到以下问题：
-1.window环境中，由于只有python39.lib，所以需要使用Release版本运行
-2.linux环境中，Ubuntu22.04系统自带的python缺少Python.h文件，需要安装Python-dev。参考文章：[https://www.cnblogs.com/yongchao/p/17299892.html](https://www.cnblogs.com/yongchao/p/17299892.html "C++ invoke Python")
+1.Windows环境中，由于只有python39.lib，所以需要使用Release版本运行
+2.Linux环境中，Ubuntu22.04系统自带的python缺少Python.h文件，需要安装Python-dev。参考文章：[https://www.cnblogs.com/yongchao/p/17299892.html](https://www.cnblogs.com/yongchao/p/17299892.html "C++ invoke Python")
 
 
 ## Code Demo
@@ -200,7 +200,7 @@ int PyList_Reverse( PyObject *list)
 ```
 对于PyList_Append()函数，其参数含义如下。
 `·list：要进行操作的列表。`
-`·item：要参加的项。`
+`·item：要添加的项。`
 
 对于PyList_Sort()和PyList_Reverse()函数，其参数含义相同。
 `·list：要进行操作的列表。`

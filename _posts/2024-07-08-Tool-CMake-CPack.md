@@ -6,7 +6,7 @@ categories: ["Tool"]
 tags: ["CMake", "Tool"]
 ---
 
-`CMakeList.txt:Cpack`
+`CMakeLists.txt:Cpack`
 
 <!--more-->
 ```shell
@@ -17,9 +17,9 @@ set(CPACK_PACKAGE_NAME XXX)
 
 set(CPACK_PACKAGE_VERSION 0.0.1) #Default value is 0.1.1
 
-set(CPACK_PACKAGE_VERSION_MAJOR 0)# Defalut value is CMAKE_PROJECT_VERSION_MAJOR
-set(CPACK_PACKAGE_VERSION_MINOR 0)# Defalut value is CMAKE_PROJECT_VERSION_MINOR
-set(CPACK_PACKAGE_VERSION_PATCH 1)# Defalut value is CMAKE_PROJECT_VERSION_PATCH
+set(CPACK_PACKAGE_VERSION_MAJOR 0)# Default value is CMAKE_PROJECT_VERSION_MAJOR
+set(CPACK_PACKAGE_VERSION_MINOR 0)# Default value is CMAKE_PROJECT_VERSION_MINOR
+set(CPACK_PACKAGE_VERSION_PATCH 1)# Default value is CMAKE_PROJECT_VERSION_PATCH
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Brief")
 
@@ -51,8 +51,8 @@ set(CPACK_GENERATOR "TGZ;ZIP")
 # NSIS64 (Null Soft Installer (64-bit))
 # NuGet (NuGet packages)
 # RPM (RPM packages)
-# STGZ (Self extracting Tar GZip compression
-# TBZ2 (Tar GZip compression)
+# STGZ (Self extracting Tar GZip compression)
+# TBZ2 (Tar BZip2 compression)
 # TXZ (Tar XZ compression)
 # TZ (Tar Compress compression)
 # ZIP (ZIP file format)

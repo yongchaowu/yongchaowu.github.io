@@ -15,12 +15,12 @@ Libevent 是一个用C语言编写的、轻量级的开源高性能事件通知�
 - 事件驱动（ event-driven），高性能；
 - 轻量级，专注于网络，不如 ACE 那么臃肿庞大；
 - 源代码相当精炼、易读；
-- 跨平台，支持 Windows、 Linux、 *BSD 和 Mac Os；
-- 支持多种 I/O 多路复用技术， epoll、 poll、 dev/poll、select 和 kqueue 等；
+- 跨平台，支持 Windows、 Linux、 *BSD 和 Mac OS；
+- 支持多种 I/O 多路复用技术， epoll、 poll、 /dev/poll、select 和 kqueue 等；
 - 支持 I/O，定时器和信号等事件；注册事件优先级。
 
 ## Introduce
-The *libevent* API provides a mechanism to execute a callback function when a specific event occurs on a file descriptor or after a timeout has been reached. Furthermore, *libevent* also support callbacks due to `signals` or regular `timeouts`.
+The *libevent* API provides a mechanism to execute a callback function when a specific event occurs on a file descriptor or after a timeout has been reached. Furthermore, *libevent* also supports callbacks due to `signals` or regular `timeouts`.
 
 *libevent* is meant to replace the event loop found in event driven network servers. An application just needs to call `event_dispatch()` and then add or remove events dynamically without having to change the event loop.
 

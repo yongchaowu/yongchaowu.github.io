@@ -28,15 +28,15 @@ https://packages.gitlab.com/gitlab/gitlab-ce
 账户名称：root
 账户密码：不显示，但提示在 /etc/gitlab/initial_root_password(24h后删除)[可以备份一下]
 
-重置密码：https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-rootpassword.
+重置密码：https://docs.gitlab.com/ee/security/reset_user_password.html#reset-the-root-password.
 
 ## 防火墙与端口
 ```bash
 sudo ufw status		#查看ufw的状态 
 sudo ufw enable		#开启ufw
 sudo ufw reload		#重启防火墙ufw
-suod ufw allow 9999	#对外开放9999端口
-suod ufw staus		#
+sudo ufw allow 9999	#对外开放9999端口
+sudo ufw status		#
 ```
 
 ## 其他命令
@@ -61,8 +61,8 @@ suod ufw staus		#
 ## 提交一份代码步骤
 ```bash
 git init\git clone
-git staus
-got diff
+git status
+git diff
 git add .
 git pull\git fetch
 git commit -m "备注"
@@ -88,12 +88,12 @@ git branch -m branch_old_name branch_new_name
 #删除远程自己的原分支 
 git push --delete origin branch_old_name
 #ps:我删除的默认分支的名字，push被拒绝
-#我就直接用当前工程remoteadd了一个新分支，然后删除原来的默认分支，我确认了commit记录都在。
+#我就直接用当前工程remote add了一个新分支，然后删除原来的默认分支，我确认了commit记录都在。
 -----------------------------------------
 #推送新命名的分支
 git push origin branch_new_name
 #修改后的本地分支与远程分支关联
-git branch --set-upstream-to origin/branc_new_name
+git branch --set-upstream-to origin/branch_new_name
 
 ```
 

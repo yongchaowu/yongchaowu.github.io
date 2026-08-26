@@ -7,7 +7,7 @@ tags: ["TCP", "TCP/IP ECN", "Unclassified"]
 ---
 
 ```
-//SetEnable.bat
+::SetEnable.bat
 ::version1.0.0.1
 @echo off
 ::先延时启动20s
@@ -19,7 +19,7 @@ netsh interface tcp set global ecncapability=enabled
 
 <!--more-->
 ```
-//SetDisabled.bat
+::SetDisabled.bat
 ::version1.0.0.1
 @echo off
 ::先延时启动20s

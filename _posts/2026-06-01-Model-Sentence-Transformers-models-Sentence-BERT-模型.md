@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Model-Sentence Transformers models- Sentence-BERT 模型"
+title: "Model-Sentence Transformers models-Sentence-BERT 模型"
 date: 2026-06-01 21:39:00
 categories: ["Model"]
 tags: ["Model", "Sentence-BERT"]
@@ -11,7 +11,7 @@ tags: ["Model", "Sentence-BERT"]
 <!--more-->
 ---
 
-- [Sentence Transformers ](https://www.sbert.net/index.html)
+- [Sentence Transformers](https://www.sbert.net/index.html)
 
 Sentence Transformers (a.k.a. SBERT) is the go-to Python module for using and training state-of-the-art embedding and reranker models. It can be used to compute embeddings from text, images, audio, or video using Sentence Transformer models (quickstart), to calculate similarity scores using Cross-Encoder (a.k.a. reranker) models (quickstart), or to generate sparse embeddings using Sparse Encoder models (quickstart). This unlocks a wide range of applications, including semantic search, semantic textual similarity, and paraphrase mining.
 

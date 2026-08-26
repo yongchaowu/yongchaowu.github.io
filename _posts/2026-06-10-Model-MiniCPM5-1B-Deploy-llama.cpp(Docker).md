@@ -125,7 +125,6 @@ RUN unzip -q llama.cpp.zip \
         -DGGML_CUDA=OFF \
         -DLLAMA_CURL=OFF \
         -DCMAKE_BUILD_TYPE=Release \
-    # 编译全部工具（包含server）
     && cmake --build . --config Release -j $(nproc) \
     && cd ../.. \
     && rm -f llama.cpp.zip
@@ -149,11 +148,11 @@ CMD ["./llama-server", "--help"]
 huggingface-cli download openbmb/MiniCPM5-1B-GGUF MiniCPM5-1B-Q4_K_M.gguf --local-dir ./minicpm5
 
 # Interactive chat (auto-applies the chat template)
-llama-cli -m ./MiniCPM5-1B-Q4_K_M.gguf -n 2048 --temp 0.7 --top-p 0.95 -ngl 99
+llama-cli -m ./minicpm5/MiniCPM5-1B-Q4_K_M.gguf -n 2048 --temp 0.7 --top-p 0.95 -ngl 99
 
 # server
 
-llama-server -m ./MiniCPM5-1B-Q4_K_M.gguf --host 0.0.0.0 --port 8080 -ngl 0 -c 4096 --jinja -t 6 -b 512 --alias MiniCPM5-1B-Q4
+llama-server -m ./minicpm5/MiniCPM5-1B-Q4_K_M.gguf --host 0.0.0.0 --port 8080 -ngl 0 -c 4096 --jinja -t 6 -b 512 --alias MiniCPM5-1B-Q4
 
 curl http://localhost:8080/v1/chat/completions \
     -H "Content-Type: application/json" \

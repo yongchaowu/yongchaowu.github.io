@@ -29,7 +29,7 @@ OpenCode is a Go-based CLI application that brings AI assistance to your termina
 brew install opencode-ai/tap/opencode
  
 # Using npm
-npm install -g opencode
+npm install -g opencode-ai
  
 # Using Go
 go install github.com/opencode-ai/opencode@latest
@@ -45,12 +45,12 @@ opencode      # Run command
 
 ## Docs
 
-- [opencode docs]( https://opencode.ai/docs)
+- [opencode docs](https://opencode.ai/docs)
 
 
 ## Custom Provider 
 
-Config opencode.json to set opencode default model with openai format.
+Config opencode.json to set opencode's default model with OpenAI format.
 
 ```json
 #~/.config/opencode/opencode.json
@@ -64,7 +64,7 @@ Config opencode.json to set opencode default model with openai format.
       "name": "vLLM本地模型",
       "options": {
         "baseURL": "https://api.deepseek.com/v1",
-        "apiKey": "sk-dummpy"
+        "apiKey": "sk-dummy"
       },
       "models": {
         "deepseek-v4-flash": {

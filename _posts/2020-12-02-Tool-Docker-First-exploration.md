@@ -112,7 +112,7 @@ docker run microsoft/windowsservercore hostname
 
 ### Building and pushing Windows container images
 
-Pushing images to Docker Cloud requires a [free Docker ID](https://cloud.docker.com/). Storing images on Docker Cloud is a great way to save build artifacts for later user, to share base images with co-workers or to create build-pipelines that move apps from development to production with Docker.
+Pushing images to Docker Cloud requires a [free Docker ID](https://cloud.docker.com/). Storing images on Docker Cloud is a great way to save build artifacts for later use, to share base images with co-workers or to create build-pipelines that move apps from development to production with Docker.
 
 Docker images are typically built with [docker build](https://docs.docker.com/engine/reference/commandline/build/) from a [Dockerfile](https://docs.docker.com/engine/reference/builder/) recipe, but for this example, we’re going to just create an image on the fly in PowerShell.
 
@@ -203,8 +203,8 @@ Images stored on Docker Cloud are available in the web interface and public imag
 - Docker Cloud: [https://cloud.docker.com](https://cloud.docker.com/)
 - Docker Hub: [https://hub.docker.com](https://hub.docker.com/)
 - Docker 的源代码仓库: https://github.com/moby/moby
-- Docker 发布版本历史: https://docs.docker.com/release-notes/
-- Docker 常见问题: https://docs.docker.com/engine/faq/
+- Docker 发布版本历史: https://docs.docker.com/engine/release-notes/
+- Docker 常见问题: https://docs.docker.com/
 - Docker 远端应用 API: https://docs.docker.com/develop/sdk/
 
 - Docker 国内镜像

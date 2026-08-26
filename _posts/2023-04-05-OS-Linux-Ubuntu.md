@@ -194,7 +194,7 @@ sudo apt-get upgrade
 `sudo service xrdp restart`
 
 7.远程连接
-打开远程桌面连接[Win+R--->mstsc]，在计算机（Computer）栏输localhost:3390，用户名使用当前配置的用户名密码。
+打开远程桌面连接[Win+R--->mstsc]，在计算机（Computer）栏输入localhost:3390，用户名使用当前配置的用户名密码。
 
 8.设置为中文
 `sudo dpkg-reconfigure locales`，选择zh_CN UTF-8, 然后按空格勾选，再tab切换到ok上回车，接下来的界面选zh再回车。

@@ -73,7 +73,6 @@ fi
 echo "=== 启动vLLM OpenAI服务 ==="
 python -m vllm.entrypoints.openai.api_server \
   --model /data/models/minimax-m2.5-awq \
-  --local-files-only \
   --tensor-parallel-size 16 \
   --pipeline-parallel-size 1 \
   --host 0.0.0.0 \
@@ -267,7 +266,7 @@ docker exec -it vllm-ray-worker bash
 `--gpu-memory-utilization 0.95` 极限榨取显存，搭配`196608`模型原生最大上下文；若出现 OOM，下调至 0.90 稳定生产。
 
 2. 离线保障
-容器环境变量 + vLLM `--local-files-only` 双重锁死，完全不会访问 huggingface 外网。
+容器环境变量（`HF_HUB_OFFLINE=1` 等）多重锁死，完全不会访问 huggingface 外网。
 
 3. 常驻原理
 Worker 用`tail -f /dev/null`保活 Ray 进程；Head 同方式保活，vLLM 后台异步运行不阻塞常驻 PID1。

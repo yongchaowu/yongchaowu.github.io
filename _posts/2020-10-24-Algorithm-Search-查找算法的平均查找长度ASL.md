@@ -6,6 +6,8 @@ categories: ["Algorithm"]
 tags: ["Algorithm"]
 ---
 
+<!--more-->
+
 <table class="table table-bordered table-striped table-condensed">
    <tr>
 	  <th colspan="2">查找方法</th>
@@ -14,7 +16,7 @@ tags: ["Algorithm"]
    </tr>
    <tr>
       <th colspan="2">顺序查找</th>
-      <td>(x+1)/2</td>
+      <td>(n+1)/2</td>
    </tr>
    <tr>
       <th colspan="2">二分查找</th>

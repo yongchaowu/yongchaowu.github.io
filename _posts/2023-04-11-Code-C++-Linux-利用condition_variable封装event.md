@@ -13,7 +13,7 @@ C++11使用condition_variable加上mutex封装event类，实现等同于windows�
 ```cpp
 #include <iostream>
 #include <string>
-#include <thread> //-std=0x -pthead
+#include <thread> //-std=c++0x -pthread
 #include <chrono>
 #include <mutex>
 #include <condition_variable>

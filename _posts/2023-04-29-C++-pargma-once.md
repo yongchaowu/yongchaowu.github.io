@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "C++-#pargma once"
+title: "C++-#pragma once"
 date: 2023-04-29 18:32:00
 categories: ["C++"]
 tags: ["C++"]

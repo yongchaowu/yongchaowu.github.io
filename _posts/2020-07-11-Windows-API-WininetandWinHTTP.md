@@ -35,7 +35,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ InternetSetOption 设置一个 Internet 选项
 
-⊙ InternetSetStausCallback 安装一个[回调函数](https://baike.baidu.com/item/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0)，供 API [函数调用](https://baike.baidu.com/item/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8)
+⊙ InternetSetStatusCallback 安装一个[回调函数](https://baike.baidu.com/item/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0)，供 API [函数调用](https://baike.baidu.com/item/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8)
 
 ⊙ InternetQueryOption 查询在一个指定句柄上的 Internet 选项
 
@@ -45,7 +45,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ InternetFindNextFile 继续文件搜寻
 
-⊙ InetrnetSetFilePointer 为 InternetReadFile 设置一个文件位置
+⊙ InternetSetFilePointer 为 InternetReadFile 设置一个文件位置
 
 ⊙ InternetWriteFile 将数据写到一个打开的 Internet 文件
 
@@ -63,13 +63,13 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ InternetErrorDlg 显示错误信息对话框
 
-⊙ InternetGetLastResponesInfo 获取最近发送的 API函数的错误
+⊙ InternetGetLastResponseInfo 获取最近发送的 API函数的错误
 
 2、HTTP 处理函数
 
 ⊙ HttpOpenRequest 打开一个 HTTP 请求的句柄
 
-⊙ HttpSendRequert(Ex) 向 HTTP 服务器发送指定的请求
+⊙ HttpSendRequest(Ex) 向 HTTP 服务器发送指定的请求
 
 ⊙ HttpQueryInfo 查询有关一次 HTTP 请求的信息
 
@@ -81,7 +81,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ FtpCreateDirectory 在 Ftp 服务器新建一个目录
 
-⊙ FtpDelectFile 删除存储在 Ftp 服务器上的文件
+⊙ FtpDeleteFile 删除存储在 Ftp 服务器上的文件
 
 ⊙ FtpFindFirstFile 查找给定 Ftp 会话中的指定目录
 
@@ -93,7 +93,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ FtpPutFile 向 Ftp 服务器上传文件
 
-⊙ FtpRemoveDirectory 在 Ftp 服务器删除指定的文件
+⊙ FtpRemoveDirectory 在 Ftp 服务器删除指定的目录
 
 ⊙ FtpRenameFile 为 Ftp 服务器上的指定文件改名
 
@@ -113,11 +113,9 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 1、首先通过 [InternetOpen](https://baike.baidu.com/item/InternetOpen) 函数创建位于根部的 Hinternet 句柄，然后才能通过其进一步建立 HTTP、FTP 的连接。
 
-2、使用 InternetConnect 函数创建一个指定的连接，它将通过传递给它的参数为指定的站点初始化 HTTP、FTP 连接并创建一个从根句柄分支出去的 Hinernet 句柄。
+2、使用 InternetConnect 函数创建一个指定的连接，它将通过传递给它的参数为指定的站点初始化 HTTP、FTP 连接并创建一个从根句柄分支出去的 Hinternet 句柄。
 
-3、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest) 和 FtpOpenFile、FtpFindFirstFile等函数将使用 InternetConnect
-
-所创建的句柄以建立到指定站点的连接。
+3、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest) 和 FtpOpenFile、FtpFindFirstFile等函数将使用 InternetConnect 所创建的句柄以建立到指定站点的连接。
 
 ### HTTP 函数层次关系
 
@@ -137,14 +135,14 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ### 典型的 HTTP 客户端程序的处理流程
 1、目的：开始 HTTP会话，建立 HTTP 连接
-方法：InetrnetOpen、InternetAttemptConnect、InternetConnect
+方法：InternetOpen、InternetAttemptConnect、InternetConnect
 结果：初始化 WinInet.dll 并联接服务器，返回相应的句柄
 
 2、目的：创建一个 HTTP请求
 方法：[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest)
 结果：
 
-3、目的：发送一个 HTTP请示
+3、目的：发送一个 HTTP请求
 方法：HttpAddRequestHeaders
 HttpSendRequest(Ex)
 结果：
@@ -158,7 +156,7 @@ HttpSendRequest(Ex)
 结果：从服务器获取 HTTP 请求头信息
 
 6、目的：[异常处理](https://baike.baidu.com/item/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86)
-方法：InternetGetLastResponesInfo、InternetErrorDlg
+方法：InternetGetLastResponseInfo、InternetErrorDlg
 结果：处理所有普通的异常类型
 
 7、目的：结束 HTTP 会话
@@ -166,7 +164,7 @@ HttpSendRequest(Ex)
 结果：自动清除打开的句柄的连接
 
 
-### InetrnetOpen 初始化
+### InternetOpen 初始化
 
 #### InternetOpen(lpszAgent: PChar;
 dwAccessType: DWORD;
@@ -200,7 +198,7 @@ dwContext: DWORD): HINTERNET; stdcall;
 2、参数：
 
 1、hInet 由 InternetOpen返回的句柄
-2、lpszUrl 文件 Url 地址，以 http：，ftp：打头的 Url 地址；
+2、lpszUrl 文件 Url 地址，以 http:，ftp: 打头的 Url 地址；
 3、lpszHeaders 发送到服务器的数据头；
 4、dwHeadersLength 发送到服务器的数据头长度
 5、dwFlags 标记，可以是：
@@ -289,7 +287,7 @@ dwBufferLength: DWORD): BOOL; stdcall;
 1、hInet 句柄
 2、dwOption Internet 选项，可以是：
 ①INTERNET_OPTION_SEND_TIMEOUT 设置，发送请求和连接时的超时时间
-②INTERNET_OPTION_RECEIVE_TIMEOUT 设置，接收请求和连接时的超时间间
+②INTERNET_OPTION_RECEIVE_TIMEOUT 设置，接收请求和连接时的超时时间
 3、lpBuffer 值
 4、dwBufferLength 值大小
 
@@ -461,5 +459,4 @@ WinHttpQueryDataAvailable\WinHttpReadData
     if (hRequest) WinHttpCloseHandle(hRequest);
     if (hConnect) WinHttpCloseHandle(hConnect);
     if (hSession) WinHttpCloseHandle(hSession);
-```
 ```

@@ -23,7 +23,7 @@ Graphify 将静态分析、语义抽取和图聚类统一为一个可被 AI 编�
 
 - 多模态抽取
 
-解析代码（.py、.js、.go、.java 等）、Markdown、PDF 与图片。Tree-sitter 提取 AST、调用图和注释；LLM 从文本抽取概-念；视觉模型读取图示。
+解析代码（.py、.js、.go、.java 等）、Markdown、PDF 与图片。Tree-sitter 提取 AST、调用图和注释；LLM 从文本抽取概念；视觉模型读取图示。
 
 - 知识图谱构建
 

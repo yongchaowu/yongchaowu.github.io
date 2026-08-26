@@ -7,12 +7,12 @@ tags: ["Visual Studio", "IDE"]
 ---
 
 转载[Visual Studio基本使用](https://blog.csdn.net/dadan1314/article/details/89519300)
-##卸载
+## 卸载
 从 https://github.com/Microsoft/VisualStudioUninstaller/releases
 下载Setup.ForcedUninstall.exe，并以管理员运行，输入Y，等待完成...
 
 <!--more-->
-##调试
+## 调试
 库调试两种方式
 1. 启动调试
   库工程属性 > 配置属性 > 调试 > 命令
@@ -27,24 +27,24 @@ release下调试四步设置
 	链接器 --> 常规--> 启动增量链接 --> 是 (/INCREMENTAL)；
 	链接器 --> 调试 --> 生成调试信息 --> 生成调试信息 (/DEBUG)。
 
-##工具
-###集成工具
+## 工具
+### 集成工具
 在VS的安装目录下有个Common7/Tools目录下
-- errlook.exe   通过 [Visua Studio ->工具->错误查找]   启动 ---  查看GetLastError()错误码描述 
-- guidgen.exe 通过 [Visua Studio ->工具->创建GUID] 启动 --- 创建GUID
+- errlook.exe   通过 [Visual Studio ->工具->错误查找]    启动 ---  查看GetLastError()错误码描述 
+- guidgen.exe 通过 [Visual Studio ->工具->创建GUID] 启动 --- 创建GUID
 
-##快捷键
+## 快捷键
 Ctrl+K Ctrl+D   代码格式化
 Ctrl+U          小写
 Shift+Ctrl+U    大写
 Tab             前进一个tab键
 Shift+Tab       后退一个tab键
 
-##版本
+## 版本
 WIN_VER	系统版本
 0x500	Windows 2000
-0x501	Windows xp
-0x600	Windows vista
+0x501	Windows XP
+0x600	Windows Vista
 0x601	Windows 7
 0x0602	Windows 8
 0x0A00	Windows 10

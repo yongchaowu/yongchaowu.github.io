@@ -9,7 +9,7 @@ tags: ["Visual Studio", "IDE"]
 July 6, 2020 9:58 PM
 
 <!--more-->
-##编译优化问题
+## 编译优化问题
 [编译优化问题](https://blog.csdn.net/xinqingwuji/article/details/79557712)
 如果发生错误，多数是优化时的命名返回值优化产生的问题，这样的优化会导致程序在优化与未优化之间的不同行为
 下面是vs的优化选项说明：
@@ -29,6 +29,6 @@ July 6, 2020 9:58 PM
 版权声明：本文为CSDN博主「道格拉斯范朋克」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/xinqingwuji/java/article/details/79557712
 
-##一次/O2 崩溃
+## 一次/O2 崩溃
 [O2导致程序崩溃](https://blog.csdn.net/vonger/article/details/7533242)
 函数定义类型说明少了STDAPICALLTYPE,即Windows的CALLTYPE(_stdcall),少了这个导致堆栈错误,程序崩溃.

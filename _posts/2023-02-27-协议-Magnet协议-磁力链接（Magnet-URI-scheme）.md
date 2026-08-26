@@ -11,11 +11,11 @@ tags: ["协议"]
 <!--more-->
 一个常见的磁力链接形式为“magnet:?xt=urn:btih:”
 
-磁力链接（Magnet URI scheme）实际就是以“magnet：？”开头的一种链接协议，与传统BT不同的是，它不再需要tracker服务器储存和解析BT种子文件。
+磁力链接（Magnet URI scheme）实际就是以“magnet:?”开头的一种链接协议，与传统BT不同的是，它不再需要tracker服务器储存和解析BT种子文件。
 
 通过不同文件内容的Hash结果生成一个纯文本的“数字指纹”，并用它来识别文件，有点类似于ISBN。任何拥有此文件的人可以生成基于文件内容的指纹。
 
-Magnet URI表征了下载文件的特征，其值是基于对文件内容的运算而的来，而非具体的文件名和文件位置。
+Magnet URI表征了下载文件的特征，其值是基于对文件内容的运算而来，而非具体的文件名和文件位置。
 
 磁力链接不需要任何“中心机构”的支持，且识别准确度极高。因此任何人都可以生成一个Magnet链接并确保通过该链接下载的文件准确无误。
 
@@ -40,7 +40,7 @@ xt：exact topic的缩写，包含文件哈希值的统一资源名称。BTIH（
 dn：display name的缩写，表示向用户显示的文件名。这一项是选填的。
 tr：tracker的缩写，表示tracker服务器的地址。这一项也是选填的。
 ws:webseed的缩写，表示网络种子。
-urn:(Uniform Resource Name, URN 表示资源名
+urn:(Uniform Resource Name, URN)表示资源名
 btih：BitTorrent info hash，种子散列函数
 
 应用程序定义的实验参数，必须以“x.”开头

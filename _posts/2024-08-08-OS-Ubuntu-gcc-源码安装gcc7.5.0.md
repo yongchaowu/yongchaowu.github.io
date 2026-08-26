@@ -7,7 +7,7 @@ tags: ["C++", "OS", "Ubuntu"]
 ---
 
 - [GNU Mirror List](https://www.gnu.org/prep/ftp.html)
-- [FTP server of the the GNU project--gcc](https://ftp.gnu.org/gnu/gcc/)
+- [FTP server of the GNU project--gcc](https://ftp.gnu.org/gnu/gcc/)
 - [Gcc-依赖](https://gcc.gnu.org/pub/gcc/infrastructure/)
 
 <!--more-->
@@ -17,24 +17,24 @@ tags: ["C++", "OS", "Ubuntu"]
 ## 解压、配置、编译gcc7.5.0
 操作指令序列：
 ```shell
-//解压源代码
+#解压源代码
 tar -xzf gcc-7.5.0.tar.gz
-cd gcc-X.Y.Z
+cd gcc-7.5.0
 
-//安装依赖（以Ubuntu为例）
+#安装依赖（以Ubuntu为例）
 sudo apt-get build-dep gcc
 sudo apt-get install build-essential
 
-//配置安装选项
+#配置安装选项
 ./configure --prefix=/opt/gcc --enable-languages=c,c++ --disable-multilib
 
-//编译GCC
+#编译GCC
 make -j$(nproc)
 
-//安装GCC
+#安装GCC
 sudo make install
 
-//清理编译产生的临时文件
+#清理编译产生的临时文件
 make distclean
 ```
 
@@ -57,23 +57,23 @@ GMP（GNU Multiple Precision Arithmetic Library）版本4.2或更高
 MPFR（Multiple-Precision Floating-Point Computations With Correct Rounding）版本2.4.0或更高
 MPC（Multiple-Precision Complex Floating-Point Library）版本0.8.0或更高
 	```shell
-	apt install libgmp-dev   6.3.0
-    apt install libmpfr-dev  4.2.1
-    apt install libmpc-dev   1.3.1
+	apt install libgmp-dev   # 6.3.0
+    apt install libmpfr-dev  # 4.2.1
+    apt install libmpc-dev   # 1.3.1
 	```
 3. gcc依赖:https://gcc.gnu.org/pub/gcc/infrastructure/
 
 ---
 ## 查看gcc版本
 
-- `ls - /usr/bin/gcc* `:查看已安装gcc版本
+- `ls /usr/bin/gcc*`:查看已安装gcc版本
 - `gcc --version`
 
 ## 修改gcc默认版本
-使用`update-alternatives`修改gcc默认版本，其 是系统自带指令，不需安装
+使用`update-alternatives`修改gcc默认版本，其是系统自带指令，不需安装
 
 ```shell
-update-alternatives --help    // 
+update-alternatives --help    # 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 gcc --version
 

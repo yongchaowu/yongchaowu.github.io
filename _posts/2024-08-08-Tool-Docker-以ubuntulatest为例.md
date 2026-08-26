@@ -29,7 +29,7 @@ tags: ["Docker", "Tool", "Ubuntu"]
     - `--driver bridge`
     - `--subnet 192.168.0.0/24`
     - `--gateway 192.168.0.1`
-  - `connect nerwork-name container-name`
+  - `connect network-name container-name`
     - `--ip 192.168.0.2`
   - `disconnect`
   - `rm network-name`
