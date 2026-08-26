@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "C++-改变终端（cout/printf)输出不同颜色的字体-Linux"
+title: "C++-改变终端（cout/printf）输出不同颜色的字体-Linux"
 date: 2023-04-29 18:18:00
 categories: ["C++"]
 tags: ["C++"]
@@ -9,7 +9,7 @@ tags: ["C++"]
 >https://blog.csdn.net/qq_41972382/article/details/90311102
 
 <!--more-->
-不同颜色的输出主要依据格式`ESC[*m`，`ESC`的八进制为`\033`，`*`可以是多个属性的组合，用`，`隔开。
+不同颜色的输出主要依据格式`ESC[*m`，`ESC`的八进制为`\033`，`*`可以是多个属性的组合，用`;`隔开。
 
 ## printf
 ```cpp
@@ -17,7 +17,7 @@ tags: ["C++"]
 using namespace std;
 int main()
 {
-    printf("\033[**31m**红色\033[**0m**");
+    printf("\033[31m红色\033[0m");
     return 0;
 }
 ```
@@ -75,8 +75,8 @@ int main()
 90-109 又是设置前景背景的，比之前的颜色浅
 \033[nA 光标上移n行
 \033[nB 光标下移n行
-\033[nC 光标右移n行
-\033[nD 光标左移n行
+\033[nC 光标右移n列
+\033[nD 光标左移n列
 \033[y;xH设置光标位置
 \033[2J 清屏
 \033[K 清除从光标到行尾的内容

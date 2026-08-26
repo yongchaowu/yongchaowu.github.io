@@ -16,7 +16,7 @@ tags: ["CMake", "Tool", "CPack"]
     Version: @PROJECT_VERSION@
     XXXX: @XXXX@
     ```
-注意：其中 `@XXXX@`为CMakeList.txt中的变量或CMAKE的参数。
+注意：其中 `@XXXX@`为CMakeLists.txt中的变量或CMAKE的参数。
 
 2. 使用 `configure_file` 配置信息文件
 

@@ -6,7 +6,7 @@ categories: ["Script"]
 tags: ["OS", "Script"]
 ---
 
-背景： 需要控制笔记本 屏幕时间 和 电源模式
+背景：需要控制笔记本屏幕时间和电源模式
 
 <!--more-->
 ---
@@ -71,7 +71,7 @@ get_screen_timeout() {
     if [[ "$idle" == "uint32 0" || -z "$idle" ]]; then
         echo "Disabled (never)"
     else
-        local seconds=$(echo "$idle" | grep -oP '\d+')
+        local seconds=$(echo "$idle" | grep -oP '\d+$')
         echo "$((seconds / 60)) min ($seconds s)"
     fi
 }
@@ -95,7 +95,7 @@ get_lock_timeout() {
     if [[ "$lock" == "uint32 0" || -z "$lock" ]]; then
         echo "Immediate"
     else
-        local seconds=$(echo "$lock" | grep -oP '\d+')
+        local seconds=$(echo "$lock" | grep -oP '\d+$')
         echo "$((seconds / 60)) min ($seconds s)"
     fi
 }

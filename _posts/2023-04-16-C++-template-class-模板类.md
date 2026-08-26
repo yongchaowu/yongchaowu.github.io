@@ -50,7 +50,7 @@ public:
 	DemoArray();
 	T indexof(int index);
 	void addValue(T value);
-}
+};
 
 template <typename T>
 DemoArray<T>::DemoArray()
@@ -60,16 +60,16 @@ DemoArray<T>::DemoArray()
 }
 
 template <typename T>
-DemoArray<T>::indexof(int index)
+T DemoArray<T>::indexof(int index)
 {
 	return data[index];
 }
 
 template <typename T>
-DemoArray<T>::addValue(T value)
+void DemoArray<T>::addValue(T value)
 {
 	if(len<20)
-		data[len++] = vale;
+		data[len++] = value;
 }
 
 

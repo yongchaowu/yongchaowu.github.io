@@ -6,6 +6,8 @@ categories: ["Code"]
 tags: ["C++", "Code", "Snowflake"]
 ---
 
+<!--more-->
+
 ```cpp
 #include <iostream>
 #include <chrono>

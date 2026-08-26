@@ -9,7 +9,7 @@ tags: ["AI model hub", "Model", "NewAPI"]
 Connect all AI providers, manage your AI assets.
 
 <!--more-->
-- [Home](https://www.newapi.ai/en)
+- [Home](https://www.newapi.ai/)
 - [GitHub](https://github.com/QuantumNous/new-api)
 - [AtomGit](https://atomgit.com/QuantumNous/new-api)
 
@@ -19,16 +19,16 @@ A unified AI model hub for aggregation & distribution. It supports cross-convert
 ---
 
 ## Deployment Method Selection
-- [Docker Compose Deployment](https://www.newapi.ai/en/docs/installation/deployment-methods/docker-compose-installation)
-- [Docker Deployment](https://www.newapi.ai/en/docs/installation/deployment-methods/docker-installation)
-- [1Panel Panel Deployment](https://www.newapi.ai/en/docs/installation/deployment-methods/1panel-installation)
-- [Deploying with Baota Panel](https://www.newapi.ai/en/docs/installation/deployment-methods/bt-docker-installation)
-- [Cluster Deployment](https://www.newapi.ai/en/docs/installation/deployment-methods/cluster-deployment)
-- [Local Development and Deployment](https://www.newapi.ai/en/docs/installation/deployment-methods/local-development)
+- [Docker Compose Deployment](https://docs.newapi.pro/en/docs/installation/deployment-methods/docker-compose-installation)
+- [Docker Deployment](https://docs.newapi.pro/en/docs/installation/deployment-methods/docker-installation)
+- [1Panel Panel Deployment](https://docs.newapi.pro/en/docs/installation/deployment-methods/1panel-installation)
+- [Deploying with Baota Panel](https://docs.newapi.pro/en/docs/installation/deployment-methods/bt-docker-installation)
+- [Cluster Deployment](https://docs.newapi.pro/en/docs/installation/deployment-methods/cluster-deployment)
+- [Local Development and Deployment](https://docs.newapi.pro/en/docs/installation/deployment-methods/local-development)
 
 
 ## Conclusion
-- [docs](https://www.newapi.ai/en/docs)
+- [docs](https://docs.newapi.pro/en/docs)
 
 ---
 

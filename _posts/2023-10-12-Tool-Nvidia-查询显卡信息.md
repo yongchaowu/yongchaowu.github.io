@@ -7,4 +7,4 @@ tags: ["Tool", "Nvidia"]
 ---
 
 - `nvidia-smi -L`
-- `lscpi  |grep -i  nvidia`
+- `lspci |grep -i nvidia`

@@ -56,7 +56,7 @@ Generation parameters
 Skills 链接：`https://github.com/OpenBMB/MiniCPM/tree/minicpm5#agent-skills--one-click-deploy--finetune`
 
 ## 数据治理相关成果
-包括开源高质量预训练数据集 UltraData（含最新版本 Ultra‑FineWeb‑L3）。
+包括开源高质量预训练数据集 UltraData（含最新版本 Ultra-FineWeb-L3）。
 
 
 ## 参考链接

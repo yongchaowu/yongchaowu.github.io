@@ -47,7 +47,7 @@ Record, replay, and analyze state transitions for easier debugging.
 The most widely used Robot Deliberation library in the ROS2 ecosystem. The main library is ROS-agnostic, but we provide seamless ROS2 integration.
 
 
-[Document-Inroduce](//www.behaviortree.dev/docs/intro)
+[Document-Introduce](https://www.behaviortree.dev/docs/intro)
 
 ### Documentation
 
@@ -79,7 +79,7 @@ The most widely used Robot Deliberation library in the ROS2 ecosystem. The main 
     - You can store as value any C++ type (we use a type erasure technique similar to std::any).
 
 
-- xml shcema
+- xml schema
 
 ```xml
  <root BTCPP_format="4">
@@ -121,7 +121,7 @@ Compact vs Explicit representation
  <Action ID="SaySomething"   name="action_hello" message="Hello World"/>
 ```
 
-Tools like Groot require either the explicit syntax or additional information,that can be added using the tag `<TreeNodeModel>`.
+Tools like Groot require either the explicit syntax or additional information, that can be added using the tag `<TreeNodeModel>`.
 
 Subtrees,`<SubTree ID="xxx"/>`
 
@@ -351,7 +351,7 @@ namespace BT
         auto parts = splitString(str, ';');
         if (parts.size() != 2)
         {
-            throw RuntimeError("invalid input)");
+            throw RuntimeError("(invalid input)");
         }
         else
         {
@@ -673,7 +673,7 @@ Robot says: Executing Sub_A
 
 ##### Pass additional arguments to your Nodes
 
-using ports or the blackboard is highly discourage:
+using ports or the blackboard is highly discouraged:
 - The arguments are known at deployment-time (when building the tree).
 - The arguments don't change at run-time.
 - The arguments don't need to be set from the XML.
@@ -772,7 +772,7 @@ Script and Precondition nodes
 
 supported : numbers (integers and reals), strings and registered ENUM
 
-magic_enums:default range is [-128, 128]
+magic_enums:default range is [-128, 127]
 
 ```xml
 <root BTCPP_format="4">
@@ -918,7 +918,7 @@ Example:
 // The following application will:
 
 //     Print the structure of the tree recursively.
-//     Attach the TreeObserverto the tree.
+//     Attach the TreeObserver to the tree.
 //     Print the UID / fullPath pairs.
 //     Collect the statistics of a specific node called "last_action".
 //     Show all the statistics collected by the observer.
@@ -1506,7 +1506,7 @@ int main()
 
 Notes:
 
-- The prefix "@" works both when used in an Input / Output Port or in the- scripting language.
+- The prefix "@" works both when used in an Input / Output Port or in the scripting language.
 - No remapping is needed in the Subtrees.
 - When accessing the blackboard directly in the main loop, no prefix "@" is needed.
 
@@ -1591,7 +1591,7 @@ val_D := (val_A && val_B) || !val_C
 |:---|:---|
 |true/false	|Booleans. Castable to 1 and 0 respectively|
 |&&	|Logic and|
-|||	|Logic or|
+||	|Logic or|
 |!	|Negation|
 |==	|Equality|
 |!=	|Inequality|
@@ -1747,7 +1747,7 @@ class ThreadedSleepNode : public BT::ThreadedAction
 {
   public:
     ThreadedSleepNode(const std::string& name, const BT::NodeConfig& config)
-      : BT::ActionNodeBase(name, config)
+      : BT::ThreadedAction(name, config)
     {}
 
     static BT::PortsList providedPorts()
@@ -2286,7 +2286,7 @@ cd BehaviorTree.CPP-master
 mkdir build
 
 cmake -S . -B build
-# -DBTCPP_GROOT_INTERFACE=OFF  connect to groot by zeromq.
+# -DBTCPP_GROOT_INTERFACE=ON  enable Groot2 connection via ZeroMQ (default ON)
 # -DBUILD_TESTING=OFF          disable gtest function.
 # -DBTCPP_SQLITE_LOGGING=OFF   disable sqlite3.
 # -DCMAKE_BUILD_TYPE=Debug     compile with debug type, carry symbol link.
@@ -2308,7 +2308,7 @@ set(BTCPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 set(BTCPP_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 # add_subdirectory(BehaviorTree.CPP-master behaviortree_cpp)
-include_directoies(/include)
+include_directories(/include)
 link_directories(/lib)
 ```
 
@@ -2362,7 +2362,7 @@ The most advanced IDE to create and debug Behavior Trees.
 
 ### Real-time Monitor
 
-- Connect to a running BT.CPP executor and visualize the state of the tree in - real-time.
+- Connect to a running BT.CPP executor and visualize the state of the tree in real-time.
 - Record all transitions into a log file, that you can analyze later.
 - PRO: Visualize the content of the blackboard.
 - PRO: Add interactive breakpoints and fault injection.
@@ -2371,7 +2371,7 @@ The most advanced IDE to create and debug Behavior Trees.
 ### Log Visualization
 
 - Open logs and replay the execution of the tree at different speeds.
-- Visualize how long a Node was in the RUNNING state and how many times it - returned a new status.
+- Visualize how long a Node was in the RUNNING state and how many times it returned a new status.
 - Filter transitions by name or time range.
 
 

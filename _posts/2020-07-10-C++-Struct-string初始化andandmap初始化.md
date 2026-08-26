@@ -11,7 +11,7 @@ July 10, 2020 2:16 AM
 <!--more-->
 - swap：vector map
 std::vector<struct T>().swap(m_vStruct);
-std::vector<sturct T>().swap(m_mStruct);
+std::vector<struct T>().swap(m_mStruct);
 
 - struct memset
 结构体成员有string时不可以memset,会导致内存无法释放掉（即使是结构体对象，也无法释放）

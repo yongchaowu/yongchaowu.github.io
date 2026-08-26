@@ -101,11 +101,11 @@ Linking CXX executable helloworld
 
 ----------
 
-## Part 2：Advanced build system
+## Part 2: Advanced build system
 https://brunoabinader.github.io/2009/12/09/how-cmake-simplifies-the-build-process-part-2-advanced-build-system/
 
 
-####./stc/CMakeFiles.txt
+#### ./src/CMakeLists.txt
 `# Installs the header files into the {build_dir}/include/itemviews-ng directory
 install(FILES ${itemviews-ng_HEADERS} DESTINATION include/itemviews-ng)`
  

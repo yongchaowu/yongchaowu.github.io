@@ -9,7 +9,7 @@ tags: ["Code", "C++"]
 September 30, 2020 1:17 PM
 
 <!--more-->
-##使用Windows Socket API
+## 使用Windows Socket API
 库：wsock32.lib
 头文件：
 - winsock.h
@@ -40,7 +40,7 @@ int main()
 	WORD wVersionRequested = MAKEWORD(1, 1);
 	WSADATA wsaData;
 	if (WSAStartup(wVersionRequested, &wsaData)) {
-		printf("WSAStartup failed %s\n", WSAGetLastError());
+		printf("WSAStartup failed %u\n", WSAGetLastError());
 		return -1;
 	}
 

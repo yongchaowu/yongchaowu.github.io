@@ -52,9 +52,9 @@ tags: ["Blog Theme"]
                 alipay: 'https://x1.jpg',
                 wechatpay: 'https://x2.jpg'
             },
-            downScrollDom: '#blog_post_info_block', //????  跳至底部位置定义，配置为 JQuery 选择器。
+            downScrollDom: '#blog_post_info_block', //跳至底部位置定义，配置为 JQuery 选择器。
         },
-        switchDayNight: {  //???? //日/夜间模式配置。页面使用日/夜间模式优先级：用户设置 > 自动切换 > 默认。
+        switchDayNight: {  //日/夜间模式配置。页面使用日/夜间模式优先级：用户设置 > 自动切换 > 默认。
             enable: true,
             auto: {
                 enable: true,
@@ -69,10 +69,10 @@ tags: ["Blog Theme"]
                     radius: 15,
                 }
             },
-            articleTitle: {   //????  //文章页标题动效配置
+            articleTitle: {   //文章页标题动效配置
                 enable: true,
             },
-            articleBanner: {  //????  //文章页动效配置
+            articleBanner: {  //文章页动效配置
                 enable: true,
             },
             background: {     //背景动效配置

@@ -19,12 +19,12 @@ lock_guard 通常用来管理一个 std::mutex 类型的对象，通过定义一
 (2) 不能中途解锁，必须等作用域结束才解锁
 (3) 不能复制
 注意：
-lock_guard 并不管理 std::mutex 对象的声明周期，也就是说在使用 lock_guard 的过程中，如果 std::mutex 的对象被释放了，那么在 lock_guard 析构的时候进行解锁就会出现空指针错误。
+lock_guard 并不管理 std::mutex 对象的生命周期，也就是说在使用 lock_guard 的过程中，如果 std::mutex 的对象被释放了，那么在 lock_guard 析构的时候进行解锁就会出现空指针错误。
 
 - unique_lock：
 创建时可以不锁定（通过指定第二个参数为 std::defer_lock），而在需要时再锁定
 可以随时加锁解锁
-作用域规则同 lock_grard，析构时自动释放锁
+作用域规则同 lock_guard，析构时自动释放锁
 不可复制，可移动
 
 

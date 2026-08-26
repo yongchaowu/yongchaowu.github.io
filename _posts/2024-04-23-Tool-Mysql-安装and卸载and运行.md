@@ -45,7 +45,7 @@ tags: ["DB", "Ubuntu", "MySQL", "Tool"]
 
 - 登录，终端`mysql -u root -p`
 
-- 启动服务，终端`sudo service mysql start` 或终端`sudo systemctl mysql.service start`
+- 启动服务，终端`sudo service mysql start` 或终端`sudo systemctl start mysql.service`
 
 - 修改密码，登录mysql后，终端`ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';` ，然后刷新权限，终端`FLUSH PRIVILEGES;`
 
@@ -76,7 +76,7 @@ tags: ["DB", "Ubuntu", "MySQL", "Tool"]
     - `update user set Host='%' where User='root';`
     - `FLUSH PRIVILEGES;`
 
-#### 启动失败，`su:warning:cannot change director to /nonexistent:No such file or directory`
+#### 启动失败，`su: warning: cannot change directory to /nonexistent: No such file or directory`
 原因：一般是mysql服务器异常关机导致
 
 方法：

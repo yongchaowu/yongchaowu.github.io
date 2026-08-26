@@ -78,8 +78,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#878d94',endCo
 让div元素靠右一般常用的有三种方法
 
 - 第一种方法就是添加浮动float样式  `style:"float:right;"`
-若是与下侧的div重合，可以考虑增加高度属性`style:"height:40；"`
-- 第二种方法就是添加外边距margin-right样式 `style:"margin-left:80%;`
+若是与下侧的div重合，可以考虑增加高度属性`style:"height:40px;"`
+- 第二种方法就是添加外边距margin-right样式 `style:"margin-left:80%;"`
 - 第三种方法就是设置position样式之absolute属性 `style:"position:absolute;"`
 
 ## 对话框居中显示
@@ -134,13 +134,13 @@ B Page:
 ` $('#id').textbox().textbox('setValue', currPath);`
 text-box设置值只能使用id选择器选择表单元素，然后使用textbox("setValue", value); 的方式设置值
 
-很奇怪，如果先设置属性在赋值就可以：
+很奇怪，如果先设置属性再赋值就可以：
 ```
     $('#id').textbox({width:350});
     $('#id').textbox('setValue', currPath);
 ```
 表单元素使用easyui时，textbox和validatebox设置值和获取值的方式不一样
-- 为text-box设置值只能使用id选择器选择表单元素，只能使用textbox("setValue", value) 或 textbox("seText", value) 的方式设置值，使用textbox("getValue") 或textbox("getText") 获取值；
+- 为text-box设置值只能使用id选择器选择表单元素，只能使用textbox("setValue", value) 或 textbox("setText", value) 的方式设置值，使用textbox("getValue") 或textbox("getText") 获取值；
 - 为validatebox设置值可以使用id选择器和表单选择器，只能使用val()获取值和设置值。
 
 ## 获取Title
@@ -162,7 +162,7 @@ $.extend($.fn.validatebox.defaults.rules, {
     }
 });
 
-用法：data-options="validType:'valueBettween[0,50]'"
+用法：data-options="validType:'ValueBetween[0,50]'"
 ```
 
 ## easyui datagrid 清空
@@ -177,7 +177,7 @@ for(var i=rows.length-1;i>=0;i--){
 }
 ```
 填充空数据：
-`('#dg_careersystem').datagrid('loadData',{total:0,rows:[]})`
+`$('#dg_careersystem').datagrid('loadData',{total:0,rows:[]})`
 
 ## easyui PropertyGrid 表格内文字显示不全的内容
 `data-options="nowrap:false"`
@@ -187,7 +187,7 @@ for(var i=rows.length-1;i>=0;i--){
 可先通过jquery获取父节点的方法parents()，获取该行tr标签，再通过attr()获取属性"datagrid-row-index"，即可获取index。
 `var rowIndex = $(this).parents('.datagrid-row').attr('datagrid-row-index');`
 
-## easyui +html imput 文件导入
+## easyui +html input 文件导入
 ```
 <label for="PathCnt" class="easyui-linkbutton" >程序文件</label>
 <input id="PathCnt" type="file" accept="text" style="opacity: 0;width:60px">
@@ -212,7 +212,7 @@ $('#PathCnt').change(function(datas){
     //   layer.alert("该上传的文件不是视频文件类型！", { icon: 5 , anim: 6 });
     //   break;
     //  }
-    //将参数以键值对的形式添加到formDate构造函数
+    //将参数以键值对的形式添加到formData构造函数
     formData.append('uploadDatas', FilePath);
     formData.append(strname, f.files[i]);
     }

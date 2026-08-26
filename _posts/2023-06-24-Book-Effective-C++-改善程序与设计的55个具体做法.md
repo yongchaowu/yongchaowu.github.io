@@ -11,13 +11,13 @@ Accustoming Yourself to C++
 
 <!--more-->
 - 条款 01:视 C++ 为一个语言联邦/View C++ as a federation of languages.
-- 条款 02:尽量以`const,enum, inline`替换`#define` /Prefer consts,enums, and inlines to #defines.
+- 条款 02:尽量以`const,enum, inline`替换`#define` /Prefer consts, enums, and inlines to #defines.
 - 条款 03:尽可能使用 const/Use const whenever possible.
 - 条款 04:确定对象被使用前已先被初始化/Make sure that objects are initialized before they're used.
 
 ---
-2. 构造/析构/赋值运算..
-Constructors, Destructors, and Assignment Operators .
+2. 构造/析构/赋值运算
+Constructors, Destructors, and Assignment Operators.
 
 - 条款 05:了解 C++ 默默编写并调用哪些函数/Know what functions C++ silently writes and calls.
 - 条款 06:若不想使用编译器自动生成的函数，就该明确拒绝/Explicitly disallow the use of compiler-generated functions you do not want.
@@ -33,7 +33,7 @@ Constructors, Destructors, and Assignment Operators .
 Resource Management
 
 - 条款 13:以对象管理资源/Use objects to manage resources.
-- 条款 14:在资源管理类中小心 coping 行为/Think carefully about copying behavior in resource-managing classes.
+- 条款 14:在资源管理类中小心 copying 行为/Think carefully about copying behavior in resource-managing classes.
 - 条款 15:在资源管理类中提供对原始资源的访问/Provide access to raw resources in resource-managing classes.
 - 条款 16:成对使用 new 和 delete 时要采取相同形式/Use the same form in corresponding uses of new and delete.
 - 条款 17:以独立语句将 newed 对象置入智能指针/Store newed objects in smart pointers in standalone statements.
@@ -57,7 +57,7 @@ Implementations
 
 - 条款 26: 尽可能延后变量定义式的出现时间/Postpone variable definitions as long as possible.
 - 条款 27: 尽量少做转型动作./Minimize casting.
-- 条款 28: 避免返回 handles 指向对象内部成分/Avoid returning "handles" to object internal.
+- 条款 28: 避免返回 handles 指向对象内部成分/Avoid returning "handles" to object internals.
 - 条款 29: 为“异常安全”而努力是值得的/Strive for exception-safe code.
 - 条款 30: 透彻了解 inlining 的里里外外/Understand the ins and outs of inlining.
 - 条款 31: 将文件间的编译依存关系降至最低/Minimize compilation dependencies between files.
@@ -66,13 +66,13 @@ Implementations
 6. 继承与面向对象设计
 Inheritance and Object-Oriented Design
 
-- 条款 32:确定你的 public 继承塑模出 is-a 关系/Make sure public inheritance models "is-a.".
+- 条款 32:确定你的 public 继承塑模出 is-a 关系/Make sure public inheritance models "is-a."
 - 条款 33:避免遮掩继承而来的名称/Avoid hiding inherited names.
 - 条款 34:区分接口继承和实现继承/Differentiate between inheritance of interface and inheritance of implementation.
 - 条款 35:考虑 virtual 函数以外的其他选择/Consider alternatives to virtual functions.
 - 条款 36:绝不重新定义继承而来的 non-virtual 函数/Never redefine an inherited non-virtual function.
 - 条款 37:绝不重新定义继承而来的缺省参数值/Never redefine a function's inherited default parameter value.
-- 条款 38:通过复合塑模出 has-a 或"根据某物实现出"/Model "has-a" or "is-implemented-in-terms-of' through composition.
+- 条款 38:通过复合塑模出 has-a 或"根据某物实现出"/Model "has-a" or "is-implemented-in-terms-of" through composition.
 - 条款 39:明智而审慎地使用 private 继承/Use private inheritance judiciously.
 - 条款 40:明智而审慎地使用多重继承/Use multiple inheritance judiciously.
 
@@ -81,10 +81,10 @@ Inheritance and Object-Oriented Design
 Templates and Generic Programming
 
 - 条款 41:了解隐式接口和编译期多态/Understand implicit interfaces and compile-time polymorphism.
-- 条款 42:了解typename 的双重意义/Understand the two meanings of typename.
+- 条款 42:了解 typename 的双重意义/Understand the two meanings of typename.
 - 条款 43:学习处理模板化基类内的名称/Know how to access names in templatized base classes.
 - 条款 44:将与参数无关的代码抽离 templates/Factor parameter-independent code out of templates.
-- 条款 45:运用成员函数模板接受所有兼容类型/Use member function templates to accept "all compatible types.
+- 条款 45:运用成员函数模板接受所有兼容类型/Use member function templates to accept all compatible types.
 - 条款 46:需要类型转换时请为模板定义非成员函数/Define non-member functions inside templates when type conversions are desired.
 - 条款 47:请使用 traits classes 表现类型信息/Use traits classes for information about types.
 - 条款 48:认识 template 元编程/Be aware of template metaprogramming.
@@ -94,8 +94,7 @@ Templates and Generic Programming
 Customizing new and delete
 
 - 条款 49:了解 new-handler 的行为/Understand the behavior of the new-handler.
-- 条款 50:了解 new 和 delete 的合理替换时机
-/Understand when it makes sense to replace new and delete.
+- 条款 50:了解 new 和 delete 的合理替换时机/Understand when it makes sense to replace new and delete.
 - 条款 51:编写 new 和 delete 时需固守常规/Adhere to convention when writing new and delete.
 - 条款 52:写了 placement new 也要写 placement delete/Write placement delete if you write placement new.
 

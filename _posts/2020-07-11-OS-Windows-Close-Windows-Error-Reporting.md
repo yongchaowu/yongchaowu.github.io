@@ -20,7 +20,7 @@ Windows Registry Editor Version 5.00
 "Disabled"=dword:00000001 
 ```
 
-2. 方法：关闭提示信息窗口
+2. 方法：显示提示信息窗口
 ```language
 Windows Registry Editor Version 5.00 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting] 

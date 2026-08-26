@@ -37,7 +37,7 @@ tags: ["DeepAgents"]
 
 * [DaytonaSandbox 集成 - LangChain 文档 - LangChain 教程](https://docs.langchain.org.cn/oss/python/integrations/sandboxes/daytona)
   
-* [[ModalSandbox 集成 - LangChain 文档 - LangChain 教程](https://docs.langchain.org.cn/oss/python/integrations/sandboxes/modal)
+* [ModalSandbox 集成 - LangChain 文档 - LangChain 教程](https://docs.langchain.org.cn/oss/python/integrations/sandboxes/modal)
   
 * [RunloopSandbox 集成 - LangChain 文档 - LangChain 教程](https://docs.langchain.org.cn/oss/python/integrations/sandboxes/runloop)
   

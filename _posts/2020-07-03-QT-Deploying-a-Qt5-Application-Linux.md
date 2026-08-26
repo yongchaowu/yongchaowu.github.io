@@ -18,6 +18,6 @@ Multiple Ways to deploy a Qt 5 application for desktop Linux systems:
 - Another is to create a self-contained application bundle that contains the application and everything the application needs to run that cannot be expected to be present on each target system, and still another is to create an installer for it.
 
 ## Tool&Code
-- linuxdeployqt:A [deployment tool](https://github.com/probonopd/linuxdeployqt) is available that automates the prodecures described here and provide an [AppImage](https://appimage.org/).
+- linuxdeployqt:A [deployment tool](https://github.com/probonopd/linuxdeployqt) is available that automates the procedures described here and provide an [AppImage](https://appimage.org/).
 
 - cqtdeployer:If you want one utility for cross platform deploy use a [cqtdeployer](https://github.com/QuasarApp/CQtDeployer) tool for deploy qt on linux and windows.

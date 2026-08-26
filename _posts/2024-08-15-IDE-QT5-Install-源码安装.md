@@ -7,7 +7,7 @@ tags: ["QT", "IDE"]
 ---
 
 引用：
-- [CSDN:编译源码安装 Qt 5.15](http://t.csdnimg.cn/oaGuY)
+- CSDN:编译源码安装 Qt 5.15
 
 <!--more-->
 ---

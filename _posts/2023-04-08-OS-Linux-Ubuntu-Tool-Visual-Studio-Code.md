@@ -13,7 +13,7 @@ Visual Studio Code官网如下：[https://code.visualstudio.com/](https://code.v
 
 <!--more-->
 Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图标。
-添加收藏->鼠标右键vscode图标，提示可以添加到收藏，能快速启动VS从的。
+添加收藏->鼠标右键vscode图标，提示可以添加到收藏，能快速启动VS Code。
 
 ## Visual Studio Code Extension
 1. C/C++ v1.14.5
@@ -27,9 +27,9 @@ Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图
 
 1. `sudo apt-get install g++ gcc cmake`
 2. `g++ -v` `gcc -v` `cmake -version`
-3. 打开vscode，创建main.cpp,写一个Demo(main.cpp)。
+3. 打开vscode，创建main.cpp，写一个Demo(main.cpp)。
 4. F5(Start Debugging)即可。
-- 因为是第一次Debug，先选择调试器，生成相对应的配置文件夹`.vscode`,以及json格式配置文件，如tasks.json。
+- 因为是第一次Debug，先选择调试器，生成相对应的配置文件夹`.vscode`，以及json格式配置文件，如tasks.json。
 同时生成输出文件如main。
 - 可以先添加配置文件，再Debug。
 	- 菜单栏->Run->Add Configurations

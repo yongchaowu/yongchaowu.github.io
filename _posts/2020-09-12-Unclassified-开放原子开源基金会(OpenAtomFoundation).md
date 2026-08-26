@@ -19,6 +19,6 @@ tags: ["OpenAtomFoundation", "Unclassified"]
 ##网址
 开放原子开源基金会官方网站：
 官网：https://www.harmonyos.com
-基金会地址：https://www.openatom.org/openharmony
+基金会地址：https://www.openharmony.cn/
 HarmonyOS技术社区：https://bbs.elecfans.com/harmonyos
 码云地址：https://openharmony.gitee.com

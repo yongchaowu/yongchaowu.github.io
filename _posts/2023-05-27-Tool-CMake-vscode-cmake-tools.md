@@ -75,7 +75,7 @@ Some settings support the replacement of special values in their string value by
 
 ### Environment variables
 
-Environment variables are expanded using the `${env:VARNAME}` and `${env.VARNAME}` syntax, where `VARNAME` is the environment to variable to expand. If the named environment variable is undefined, the expansion is an empty string.
+Environment variables are expanded using the `${env:VARNAME}` and `${env.VARNAME}` syntax, where `VARNAME` is the environment variable to expand. If the named environment variable is undefined, the expansion is an empty string.
 
 ### Variant substitution
 
@@ -103,7 +103,7 @@ Supported commands for substitution:
 |`cmake.buildDirectory`|The full path to the directory where CMake cache files are located.|
 |`cmake.tasksBuildCommand`|The CMake command used to build your project based on the currently selected Kit + Variant + Target. Suitable for use within `tasks.json`.|
 |`cmake.activeFolderName`|The name of the active folder (e.g. in a multi-root workspace)|
-|`cmake.activeFolderPath`|The asolute path of the active folder (e.g. in a multi-root workspace)|
+|`cmake.activeFolderPath`|The absolute path of the active folder (e.g. in a multi-root workspace)|
 |`cmake.activeConfigurePresetName`|The name of the active configure preset.|
 |`cmake.activeBuildPresetName`|The name of the active build preset.|
 |`cmake.activeTestPresetName`|The name of the active test preset.|

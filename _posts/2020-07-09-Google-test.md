@@ -12,13 +12,13 @@ tags: ["GoogleTest", "Open source library", "Test Engineer&QC"]
 - 测试项目:
     1.创建Win32控制台应用程序，创建完成后把include和lib文件夹拷贝到项目路径下
     2.项目配置：
-        击项目属性》c/c++》代码生成中运行库中修改为“多线程调试(/MTd)”
+        点击项目属性》c/c++》代码生成中运行库中修改为“多线程调试(/MTd)”
         点击项目属性》c/c++》常规中附加包含目录中添加头文件路径
         点击项目属性》链接器》常规中附加包含目录中添加lib路径
-        点击项目属性》链接器》输入中附加包依赖项中添加gtestd.lib
+        点击项目属性》链接器》输入中附加依赖项中添加gtestd.lib
 
 <!--more-->
-## Inroduce
+## Introduction
 [Googletest入门](https://www.cnblogs.com/zjutzz/p/10304075.html)
 
 ## Code Test

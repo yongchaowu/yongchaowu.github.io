@@ -83,7 +83,7 @@ test.member1;
 ## 修改vscode的配置文件
 比如JavaScript类型的，配置文件地址如下：
 `Microsoft VS Code\resources\app\extensions\javascript\syntaxes\JavaScript.tmLanguage.json`
-具体信息可以参考ReadMe。原码是在github上，本地文件经过后缀替换。
+具体信息可以参考ReadMe。源码是在github上，本地文件经过后缀替换。
 内部匹配规则依赖于正则，因为没有vscode源码，所以这里是复制已有的项进行的实现，如下：
 ```language
 原有的关于变量类型显示-显示为深绿色

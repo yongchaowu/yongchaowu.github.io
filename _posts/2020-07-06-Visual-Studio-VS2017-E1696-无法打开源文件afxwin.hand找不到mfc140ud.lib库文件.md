@@ -6,7 +6,7 @@ categories: ["Visual Studio"]
 tags: ["Visual Studio", "IDE"]
 ---
 
-#Visua Studio-VS2017  E1696 无法打开源文件“afxwin.h”&找不到“mfc140ud.lib”库文件
+#Visual Studio-VS2017  E1696 无法打开源文件“afxwin.h”&找不到“mfc140ud.lib”库文件
 缺少编译环境或编译环境默认配置路径不正确导致的。
 解决方案：
 1.需要安装"用于 x86 和 x64 的 Visual C++ MFC"

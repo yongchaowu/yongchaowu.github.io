@@ -16,7 +16,7 @@ GetLocalTime(&st);
 CString strTime;
 strTime.Format(_T(" %d-%02d-%02d %02d:%02d:%02d.%03d"),st.wYear,st.wMonth,st.wDay,st.wHour,st.wMinute,st.wSecond,st.wMilliseconds);
 
-string strIPAddr="192.168.0.1"
+string strIPAddr="192.168.0.1";
 string temp = "D://mess//"+strIPAddr + ".txt";
 ofstream outfile(temp.c_str(),std::ios::app|std::ios::out); 
 outfile<<strIPAddr<<"-"<<GetCurrentThreadId()<<"-"<<"TryConnect"<<"-"<<"errorNum"<<m_ierrNum<<strTime.GetBuffer()<<endl;

@@ -13,7 +13,7 @@ tags: ["Tool"]
 <!--more-->
 Apache Subversion 通常被缩写成 SVN，是一个开放源代码的版本控制系统，Subversion 在 2000 年由 CollabNet Inc 开发，现在发展成为 Apache 软件基金会的一个项目，同样是一个丰富的开发者和用户社区的一部分。
 
-SVN相对于的RCS、CVS，采用了分支管理系统，它的设计目标就是取代CVS。互联网上免费的版本控制服务多基于Subversion。
+SVN相对于RCS、CVS，采用了分支管理系统，它的设计目标就是取代CVS。互联网上免费的版本控制服务多基于Subversion。
 
 相关链接
 SVN 官网：https://subversion.apache.org/
@@ -48,7 +48,7 @@ CVS 只能跟踪单个文件的历史, 不过 Subversion 实作了一个 "虚拟
 Subversion 有抽象的档案库存取概念, 可以让人很容易地实作新的网络机制。 Subversion 可以作为一个扩展模块嵌入到 Apache HTTP 服务器中。这个为 Subversion 提供了非常先进的稳定性和协同工作能力，除此之外还提供了许多重要功能: 举例来说, 有身份认证, 授权, 在线压缩, 以及文件库浏览等等。还有一个轻量级的独立 Subversion 服务器， 使用的是自定义的通信协议, 可以很容易地通过 ssh 以 tunnel 方式使用。
 
 （6）一致的数据处理方式
-Subversion 使用二进制差异算法来异表示文件的差异, 它对文字(人类可理解的)与二进制文件(人类无法理解的) 两类的文件都一视同仁。 这两类的文件都同样地以压缩形式储存在档案库中, 而且文件差异是以两个方向在网络上传输的。
+Subversion 使用二进制差异算法来表示文件的差异, 它对文字(人类可理解的)与二进制文件(人类无法理解的) 两类的文件都一视同仁。 这两类的文件都同样地以压缩形式储存在档案库中, 而且文件差异是以两个方向在网络上传输的。
 
 （7）有效的分支(branch)与标签(tag)
 在分支与标签上的消耗并不必一定要与项目大小成正比。 Subversion 建立分支与标签的方法, 就只是复制该项目, 使用的方法就类似于硬连接（hard-link）。 所以这些操作只会花费很小, 而且是固定的时间。
@@ -168,7 +168,7 @@ user2=r
 
 使用 svn 命令创建资源库：`svnadmin create /opt/svn/runoob01`
 
-进入` /opt/svn/runoob01/conf` 目录，修改默认配置文件配置，包括 svnserve.conf、passwd、authz 配置相关用户和权限。
+进入 `/opt/svn/runoob01/conf` 目录，修改默认配置文件配置，包括 svnserve.conf、passwd、authz 配置相关用户和权限。
 
 1、svn 服务配置文件 svnserve.conf
 
@@ -299,7 +299,7 @@ Committed revision 7.
 
 ## SVN 提交操作
 
-在库本版中需要增加一个readme的说明文件。
+在版本库中需要增加一个readme的说明文件。
 ```
 root@runoob:~/svn/runoob01/trunk# cat readme 
 this is SVN tutorial.
@@ -373,7 +373,7 @@ revert 操作不单单可以使单个文件恢复原状， 而且可以使整个
 
 ## SVN 查看历史信息
 
-通过svn命令可以根据时间或修订号去除过去的版本，或者某一版本所做的具体的修改。以下四个命令可以用来查看svn 的历史：
+通过svn命令可以根据时间或修订号取出过去的版本，或者某一版本所做的具体的修改。以下四个命令可以用来查看svn 的历史：
 - svn log: 用来展示svn 的版本作者、日期、路径等等。
 - svn diff: 用来显示特定修改的行级详细信息。
 - svn cat: 取得在特定版本的某文件显示在当前屏幕。
@@ -435,7 +435,7 @@ first file
 
 带有目录的信息要加 -v。
 
-示限定N条记录的目录信息`svn log -l N -v`。
+显示限定N条记录的目录信息`svn log -l N -v`。
 ```
 root@runoob:~/svn/runoob01/trunk# svn log -l 5 -v 
 -----------------------------------------------------

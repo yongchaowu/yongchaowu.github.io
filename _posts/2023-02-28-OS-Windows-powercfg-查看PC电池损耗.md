@@ -6,7 +6,7 @@ categories: ["OS"]
 tags: ["OS", "Tool", "Windows"]
 ---
 
-windows系统相关命令 `powercfg`
+Windows系统相关命令 `powercfg`
 
 <!--more-->
 `powercfg /?` 可以查看命令提示，

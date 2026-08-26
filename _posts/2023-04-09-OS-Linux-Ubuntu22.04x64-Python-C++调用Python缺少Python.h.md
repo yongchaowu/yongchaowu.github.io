@@ -9,7 +9,7 @@ tags: ["C++", "Python", "Ubuntu", "Visual Studio Code", "IDE", "OS"]
 - [使用 C 或 C++ 扩展 Python](https://docs.python.org/zh-cn/3.10/extending/extending.html#extracting-parameters-in-extension-functions "使用 C 或 C++ 扩展 Python")
 - [扩展和嵌入 Python 解释器](https://docs.python.org/zh-cn/3.10/extending/index.html "扩展和嵌入 Python 解释器")
 - [Python 3.10.11 Python/C API 参考手册](https://docs.python.org/zh-cn/3.10/c-api/index.html#c-api-index "Python 3.10.11 Python/C API 参考手册")
-- [Python 3.11.3 Python/C API 参考手册](https://docs.python.org/zh-cn/3/c-api/index.html#c-api-index "Python 3.10.11 Python/C API 参考手册")
+- [Python 3.11.3 Python/C API 参考手册](https://docs.python.org/zh-cn/3/c-api/index.html#c-api-index "Python 3.11.3 Python/C API 参考手册")
 
 <!--more-->
 参考
@@ -90,7 +90,7 @@ ERROR: No matching distribution found for Python-dev
 ```
 
 4.*Python.h 所在位置*
-`locate Python.h`时因为未`updatedb`,所以显示没找到文件，这导致我不确定是此时就已经存在Python.h还是再步骤5、步骤6之后才存在的。
+`locate Python.h`时因为未`updatedb`,所以显示没找到文件，这导致我不确定是此时就已经存在Python.h还是在步骤5、步骤6之后才存在的。
 ps：关于`locate`的问题，在后面章节中`python 3.11.3-->Build Instructions`中又出现过一次，才了解到需要使用更新命令`sudo updatedb`。（所以修改此处描述）
 
 ```
@@ -132,9 +132,9 @@ Python-3.11.3.tar.xz
 On Unix, Linux, BSD, macOS, and Cygwin::
 ```bash
     ./configure  --enable-optimizations  
-	//--prefix=/usr/local
+	# --prefix=/usr/local
     make
-    //make test
+    # make test
     sudo make install
 ```
 This will install Python as `python3`.
@@ -182,7 +182,7 @@ yongchao@yongchao-virtual-machine:/usr/local/lib$
 - 好处是定位速度快，缺点就是有时候找不到文件。
 - 若找不到文件，终端执行：`updatedb`，重新建立整个系统所有文件和目录的资料库，方便以后再查找文件。
 
-find命令进行文件查找执行速度要比locate慢的多，find是使用时再从硬盘查找，比较耗磁盘空间，所以一般优先使用locate查找。
+find命令进行文件查找执行速度要比locate慢得多，find是使用时再从硬盘查找，比较耗磁盘空间，所以一般优先使用locate查找。
 - `locate file_name` 
 - `find -name file_name`
 
@@ -237,7 +237,7 @@ tasks.json中args值如下：
 
 ## loading shared libraries: libpython3.11.so.1.0: cannot open shared object file: No such file or directory
 因为动态链接库找不到，所以要在你的配置文件里加入库的路径。
-解决方法是在·`etc/ld.so.conf.d`中添加`python3.conf`文件，并添加lib路径，最后`ldconfig`。
+解决方法是在`/etc/ld.so.conf.d`中添加`python3.conf`文件，并添加lib路径，最后`ldconfig`。
 ```bash
 cd  /etc/ld.so.conf.d
 sudo gedit python3.conf

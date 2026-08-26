@@ -132,7 +132,7 @@ Creating and working on Python projects, i.e., with a `pyproject.toml`.
 - `uv remove`: Remove a dependency from the project.
 - `uv sync`: Sync the project's dependencies with the environment.
 - `uv lock`: Create a lockfile for the project's dependencies.
-- `uv run:` Run a command in the project environment.
+- `uv run`: Run a command in the project environment.
 - `uv tree`: View the dependency tree for the project.
 - `uv build`: Build the project into distribution archives.
 - `uv publish`: Publish the project to a package index.
@@ -178,7 +178,7 @@ Locking packages in an environment (replacing pip-tools):
 [Locking environments](https://docs.astral.sh/uv/pip/compile/)
 
 
-###  Utility
+### Utility
 Managing and inspecting uv's state, such as the cache, storage directories, or performing a self-update:
 
 - `uv cache clean`: Remove cache entries.

@@ -14,7 +14,7 @@ tags: ["Libevent", "Open Source Library"]
 
 ### 编译libevent遇到编译错误
 下载地址：http://libevent.org/ ，下载版本：libevent-2.1.11-stable.tar.gz
-解压， 目录为...\libevent-2.1.11-stable.tar.gz(自己的目录)
+解压， 目录为...\libevent-2.1.11-stable(自己的目录)
 修改以下三个文件，添加宏定义：
 在以下3个文件开头添加"#define _WIN32_WINNT 0x0500"
 libevent-2.1.11-stable\event_iocp.c
@@ -55,7 +55,7 @@ VC++目录：
 C/C++：
     代码生成-->运行库：
     Debug模式下选：多线程调试 (/MTd)，
-    Release下模式下选：多线程 (/MT)
+    Release模式下选：多线程 (/MT)
 连接器：
 输入->附加依赖项：
     ws2_32.lib

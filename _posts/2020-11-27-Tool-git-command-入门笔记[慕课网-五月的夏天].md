@@ -58,7 +58,7 @@ xxxx是提交的说明内容
 `git log`
 
 查看指定作者的改动：
-`git log --author='<usetName>'`
+`git log --author='<userName>'`
 
 ###配置用户名和邮箱
 ```plain
@@ -135,7 +135,7 @@ git branch -D xxx //强制删除
 git merge xxx     //合并分支
 合并分支冲突：
 - 手动修改
-- git merge -abort //保留原分支内容，忽略其他分支内容
+- git merge --abort //保留原分支内容，忽略其他分支内容
 ```
 ### 创建并检出一个分支
 `git checkout -b xxx remotes/origin/xxx`

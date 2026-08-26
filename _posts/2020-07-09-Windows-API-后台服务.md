@@ -39,7 +39,7 @@ int main (int argc, const char *argv[])
     return 0;
 }
 
-首先声明几个全局变量，以便在程序的多个函数之间共享它们值。之后在主函数中创建一个分派表。分派表是SERVICE_TABLE_ENTRY 类型结构，它有两个域：
+首先声明几个全局变量，以便在程序的多个函数之间共享它们的值。之后在主函数中创建一个分派表。分派表是SERVICE_TABLE_ENTRY 类型结构，它有两个域：
 
 - lpServiceName: 指向表示服务名称字符串的指针；当定义了多个服务时，那么这个域必须指定
 - lpServiceProc: 指向服务主函数的指针（服务入口点）
@@ -83,7 +83,7 @@ void WINAPI service_main(int argc, char** argv)
 
 }
 
-上面给出的是是服务的入口点函数示例代码。它运行在一个单独的线程当中，这个线程由控制分派器创建。该函数应尽快调用 RegisterServiceCtrlHadler 函数为服务注册控制处理器，注册完控制处理器之后，获得状态句柄（hServiceStatusHandle）。
+上面给出的是是服务的入口点函数示例代码。它运行在一个单独的线程当中，这个线程由控制分派器创建。该函数应尽快调用 RegisterServiceCtrlHandler 函数为服务注册控制处理器，注册完控制处理器之后，获得状态句柄（hServiceStatusHandle）。
 
 ServiceStatus 结构的每个域的用途如下：
 - dwServiceType ：指示服务类型，创建 Win32 服务。赋值 SERVICE_WIN32
@@ -121,7 +121,7 @@ void WINAPI ServiceHandler(DWORD fdwControl)
         DWORD nError = GetLastError();
     }
 }
-在第二步中，我们用 RegisterServiceCtrlHadler函数注册了控制处理器函数。控制处理器与处理各种 Windows 消息的窗口回调函数非常类似。它检查 SCM 发送了什么请求并采取相应行动。
+在第二步中，我们用 RegisterServiceCtrlHandler函数注册了控制处理器函数。控制处理器与处理各种 Windows 消息的窗口回调函数非常类似。它检查 SCM 发送了什么请求并采取相应行动。
 
 STOP 请求是 SCM 终止服务的时候发送的。例如，如果用户在“ 服务” 控制面板中手动终止服务。SHUTDOWN 请求是关闭机器时，由 SCM 发送给所有运行中服务的请求。两种情况的处理方式相同。
 
@@ -130,7 +130,7 @@ STOP 请求是 SCM 终止服务的时候发送的。例如，如果用户在“ 
 ```
 
 - 创建一个服务
-`sc cteate ServiceName binPath= "D:\server.exe"`
+`sc create ServiceName binPath= "D:\server.exe"`
 注意：该指令运行时需要管理员权限，且“=”后面必须空一格。
 - 启动服务
 `sc start ServiceName` 或 通过windows提供的控制界面来启动服务
@@ -143,7 +143,7 @@ STOP 请求是 SCM 终止服务的时候发送的。例如，如果用户在“ 
 
 main函数及service_main函数中均有argc、argv参数，可以向这两个函数中传递参数.
 - 向main函数中传递参数需要在创建服务时指定:
-`sc create atest binPath= "D:\Project Files\ImosServer\x64\Release  -port=1024"`
+`sc create atest binPath= "D:\Project Files\ImosServer\x64\Release" -port=1024`
 - 向service_main函数中传递参数需要在启动服务时指定
 `sc start atest -port=1024`
 - 测试代码段
@@ -157,4 +157,4 @@ fclose(log);
 ```
 ————————————————
 版权声明：本文为CSDN博主「blade1080」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/blade1080/java/article/details/82015323
+原文链接：https://blog.csdn.net/blade1080/article/details/82015323

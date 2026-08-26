@@ -10,7 +10,7 @@ tags: ["CMake", "Tool"]
 
 <!--more-->
 ## includes a component
-As an example, consider a project that optionally includes a component that communiates via USB and allows the user, at compile time, to specify whether to include that component or not. 
+As an example, consider a project that optionally includes a component that communicates via USB and allows the user, at compile time, to specify whether to include that component or not. 
 The CMakeLists.txt file to do that looks like this:
 ```
 PROJECT(myproject)
@@ -22,9 +22,9 @@ ENDIF(WITH_USB)
 ADD_EXECUTABLE(myproject ${SRCS})
 ```
 
-The `OPTION(...)` line creates a parameter `WITH_USB` and set its default value to `OFF`. CMake also includes a help string to describe what the option does. Based on the value of `WITH_USB`, the variable `SRCS` either includes or excludes the two USB-related files `usbfile1.c` and `usbfile2.c`. `SRCS` is then passed to the `ADD_EXECUTABLE` call to define the program’s source files. 
+The `OPTION(...)` line creates a parameter `WITH_USB` and sets its default value to `OFF`. CMake also includes a help string to describe what the option does. Based on the value of `WITH_USB`, the variable `SRCS` either includes or excludes the two USB-related files `usbfile1.c` and `usbfile2.c`. `SRCS` is then passed to the `ADD_EXECUTABLE` call to define the program’s source files. 
 To include USB support, simply enable `WITH_USB` like this:
-`$ cmake –DWITH_USB=ON /path/to/source/files`
+`$ cmake -DWITH_USB=ON /path/to/source/files`
 
 
 ----------
@@ -37,7 +37,7 @@ OPTION(WITH_USB "Include our USB component" OFF)
 SET(SRCS file1.c file2.c file3.c)
 ADD_EXECUTABLE(myproject ${SRCS})
 IF(WITH_USB)
-  ADD_DIRECTORY(usblib)
+  ADD_SUBDIRECTORY(usblib)
   TARGET_LINK_LIBRARIES(myproject usblib)
 ENDIF(WITH_USB)
 ```
@@ -47,9 +47,9 @@ PROJECT(usblib)
 SET(SRCS usbfile1.c usbfile2.c)
 ADD_LIBRARY(usblib ${SRCS})
 ```
-Now, if USB support is enabled, CMake builds the USB library and link sit into the executable.
+Now, if USB support is enabled, CMake builds the USB library and links it into the executable.
 
-### But how does the code code know to use the optional USB code? 
+### But how does the code know to use the optional USB code?
 First, the USB-specific code should be surrounded with a `#ifdef WITH_USB`. 
 Next, CMake processes a special configuration file, substituting placeholders with CMake variables.
 

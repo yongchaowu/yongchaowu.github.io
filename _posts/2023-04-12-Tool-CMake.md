@@ -59,9 +59,9 @@ and bootstrap as above.
 ## Building CMake with CMake
 You can build CMake as any other project with a CMake-based build system: run the installed CMake on the sources of this CMake with your preferred options and generators. Then build it and install it. For instructions how to do this, see documentation on [Running CMake](https://cmake.org/runningcmake/).
 
-To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_HTML=ON` and/or` -DSPHINX_MAN=ON` to enable the "html" or "man" builder. Add `-DSPHINX_EXECUTABLE=/path/to/sphinx-build` if the tool is not found automatically.
+To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_HTML=ON` and/or `-DSPHINX_MAN=ON` to enable the "html" or "man" builder. Add `-DSPHINX_EXECUTABLE=/path/to/sphinx-build` if the tool is not found automatically.
 
-##Running CMake
+## Running CMake
 >https://cmake.org/runningcmake/
 
 1. Running CMake for Windows / Microsoft Visual C++ (MSVC)
@@ -75,9 +75,9 @@ To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_
 ## CMake Reference Documentation
 [https://cmake.org/cmake/help/latest/index.html](https://cmake.org/cmake/help/latest/index.html)
 
-- User Interaction Guide:build a source code package downloaded from the internet
-- Using Dependencies Guide:using a third-party library.
-- CMake Tutorial:start a project using CMake
+- User Interaction Guide: build a source code package downloaded from the internet
+- Using Dependencies Guide: using a third-party library.
+- CMake Tutorial: start a project using CMake
 [https://cmake.org/cmake/help/latest/guide/tutorial/index.html](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
 
 ### Command-Line Tools
@@ -316,7 +316,7 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
 ```
 
 
-```javascript
+```bash
 ctest -N 
 ctest -VV
 ctest -C <mode>
@@ -760,7 +760,7 @@ export(EXPORT MathFunctionsTargets
 CMakeLists.txt
 set(CMAKE_DEBUG_POSTFIX d)
 
-add_library(tutorial_compiler_flags INTERFACE
+add_library(tutorial_compiler_flags INTERFACE)
 
 
 CMakeLists.txt
@@ -794,7 +794,8 @@ include("release/CPackConfig.cmake")
 
 set(CPACK_INSTALL_CMAKE_PROJECTS
     "debug;Tutorial;ALL;/"
-    "re
+    "release;Tutorial;ALL;/"
+)
 
 cpack --config MultiCPackConfig.cmake
 ```

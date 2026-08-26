@@ -13,13 +13,13 @@ tags: ["OS", "macOS"]
 
 1、macOS Monterey.app直接双击安装；
 
-2、 InstallESD.Dmg安装，一般用于U盘制作启动引导盘；
+2、InstallESD.Dmg安装，一般用于U盘制作启动引导盘；
 
 3、InstallAssistant.pkg双击安装。
 
 这3种都是官方的原版安装
 
-macOS Monterey系统下载地址：https://swcdn.apple.com/content/downloads/39/60/002-23774-A_KNETE2LDIN/4ll6ahj3st7jhqfzzjt1bjp1nhwl4p4zx7/InstallAssistant.pkg
+macOS Monterey系统下载地址
 
 
 
@@ -37,7 +37,7 @@ macOS Monterey系统下载地址：https://swcdn.apple.com/content/downloads/39/
 | macOS Big Sur         | 11.6.0    | 20G165 | [原版镜像](https://www.apple114.com/threads/240/) | [引导镜像](https://www.apple114.com/threads/241/) | [IPSW镜像](https://updates.cdn-apple.com/2021FallFCS/fullrestores/071-97388/C361BF5E-0E01-47E5-8D30-5990BC3C9E29/UniversalMac_11.6_20G165_Restore.ipsw) | [-](https://www.apple114.com/pages/macos/#)                  | [CDR/ISO格式](https://www.apple114.com/threads/242/) | 2021-09-14 |               |
 | macOS Catalina        | 10.15.7   | 19H2   | [原版镜像](https://www.apple114.com/threads/28/)  | [引导镜像](https://www.apple114.com/threads/35/)  | N/A                                                          | [Combo Update](https://support.apple.com/kb/DL2052?locale=zh_CN) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2020-09-24 |               |
 | macOS Mojave          | 10.14.6   | 18G103 | [原版镜像](https://www.apple114.com/threads/27/)  | [引导镜像](https://www.apple114.com/threads/34/)  | N/A                                                          | [Combo Update](https://updates.cdn-apple.com/2019/macos/041-88926-20190719-e6bdfc65-d22b-46a9-b8c8-3cd39c0bc675/macOSUpdCombo10.14.6.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2019-07-22 |               |
-| macOS High Sierra     | 10.13.6   | 17G66  | [原版镜像](https://www.apple114.com/threads/26/)  | [引导镜像](https://www.apple114.com/threads/33/)  | N/A                                                          | [Combo Update](http://updates-http.cdn-apple.com/2019/macos/041-32279-20190124-BBE902D6-D788-11E8-B555-8E91F34A5CAA/macOSUpdCombo10.14.3.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2018-07-13 | 17G66         |
+| macOS High Sierra     | 10.13.6   | 17G66  | [原版镜像](https://www.apple114.com/threads/26/)  | [引导镜像](https://www.apple114.com/threads/33/)  | N/A                                                          | [Combo Update](https://updates.cdn-apple.com/2019/cert/041-91759-20191011-01650bca-c2ef-42de-b8a8-63c3fd7d55bc/macOSUpdCombo10.13.6.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2018-07-13 | 17G66         |
 | macOS Sierra          | 10.12.6   | 16G29  | [原版镜像](https://www.apple114.com/threads/25/)  | [引导镜像](https://www.apple114.com/threads/32/)  | N/A                                                          | [Combo Update](http://support.apple.com/downloads/DL1931/en_US/macosupdcombo10.12.6.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2017-07-19 | -             |
 | OS X El Capitan       | 10.11.6   | 15G31  | [原版镜像](https://www.apple114.com/threads/24/)  | [引导镜像](https://www.apple114.com/threads/31/)  | N/A                                                          | [Combo Update](http://support.apple.com/downloads/DL1885/zh_CN/osxupdcombo10.11.6.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2016-07-18 | -             |
 | OS X Yosemite         | 10.10.5   | 14F27  | [原版镜像](https://www.apple114.com/threads/23/)  | [引导镜像](https://www.apple114.com/threads/30/)  | N/A                                                          | [Combo Update](http://support.apple.com/downloads/DL1832/zh_CN/osxupdcombo10.10.5.dmg) | [CDR/ISO格式](https://www.apple114.com/threads/36/)  | 2015-08-13 | -             |
@@ -82,12 +82,12 @@ macOS系统重装恢复请看这里:http://www.apple114.com/threads/38/
 
 #### 软件
 
-macos镜像
+macOS镜像
 
 | **macOS 12 正式版下载**                                      | **Ver** | **Build** | **App** | **有效** | **日期** |
 | ------------------------------------------------------------ | ------- | --------- | ------- | -------- | -------- |
-| [InstallAssistant.pkg](http://swcdn.apple.com/content/downloads/06/34/002-42435-A_MA7OBDUK86/6xzypeod1xebasc92qkw2iv44e1j9pv09f/InstallAssistant.pkg) | 12.1.0  | 21C52     | 17.1.04 | 是       | 12/13/21 |
-| [InstallAssistant.pkg](https://swcdn.apple.com/content/downloads/39/60/002-23774-A_KNETE2LDIN/4ll6ahj3st7jhqfzzjt1bjp1nhwl4p4zx7/InstallAssistant.pkg) | 12.0.1  | 21A559    | 17.0.07 | 是       | 10/25/21 |
+| InstallAssistant.pkg | 12.1.0  | 21C52     | 17.1.04 | 是       | 12/13/21 |
+| InstallAssistant.pkg | 12.0.1  | 21A559    | 17.0.07 | 是       | 10/25/21 |
 
 虚拟机及相关unlocker：
 
@@ -145,7 +145,7 @@ macos镜像
    \EFI\<小写系统名，如：ubuntu>\grubx64.efi
    ```
 
-   按下Ctrl S再按下Enter键保存文件，然后按下Ctrl Q再按下Enter退出编辑
+   按下Ctrl+S再按下Enter键保存文件，然后按下Ctrl+Q再按下Enter退出编辑
 
    ```
    <ctrl+s 保存>

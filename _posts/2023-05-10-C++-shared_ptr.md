@@ -6,6 +6,8 @@ categories: ["C++"]
 tags: ["C++"]
 ---
 
+<!--more-->
+
 ```cpp
 #include <iostream>
 #include <memory>

@@ -239,11 +239,8 @@ export NCCL_DEBUG=INFO             # 调试时可打开
 **验证节点间通信**：
 
 ```bash
-# 通过 torchrun 快速验证 NCCL 通信（自动设置环境变量）
-torchrun --nnodes=2 --nproc_per_node=1 \
-  --rdzv_id=100 --rdzv_backend=c10d \
-  --rdzv_endpoint=<头节点IP>:29500 \
-  -c "import torch.distributed as dist; \
+# 通过 python 快速验证 NCCL 通信（需先设置 MASTER_ADDR/MASTER_PORT 等环境变量，或由 torchrun 拉起后执行）
+python -c "import torch.distributed as dist; \
       dist.init_process_group(backend='nccl'); \
       print(f'Rank {dist.get_rank()} / World size {dist.get_world_size()} connected'); \
       dist.destroy_process_group()"
@@ -263,7 +260,7 @@ torchrun --nnodes=2 --nproc_per_node=1 \
 | 6 | 模型权重可访问 | `ls -la /path/to/model/config.json` | 所有节点同一路径可见 |
 | 7 | 存储读写速度 | `dd if=/dev/zero of=/mnt/test bs=1G count=1` | 10GbE 以上或本地 NVMe |
 | 8 | 软件版本一致 | `python -c "import torch; ..."` | PyTorch/CUDA/NCCL 版本相同 |
-| 9 | 防火墙规则 | `nc -zv <节点IP> 29500-29600` | NCCL 端口可达 |
+| 9 | 防火墙规则 | `nc -zv <节点IP> 29500-29600` | 29500 是 torch.distributed 的 rendezvous 端口（由 torchrun 使用）；NCCL 实际通信使用的是动态临时端口（ephemeral ports）。请保持节点间 TCP/UDP 可达，确保 rendezvous 端口与这些动态端口均不被防火墙拦截 |
 | 10 | Ray 集群健康 | `ray status` | 所有节点 Online，GPU 可用 |
 | 11 | 显存足够 | 按公式估算（见 7.1） | 模型权重 + KV Cache ≤ 总显存 |
 | 12 | SSH 免密（如需） | `ssh <其他节点IP> hostname` | 无需密码即可登录 |
@@ -342,7 +339,7 @@ docker run -d --gpus all --network=host \
 
 vllm/vllm-openai 在vllm0.18.0之后的版本中不包含ray，需要单独安装，版本可考虑最新版本
 
-**此外，实际部署时，应该先启动容器并保持，先worker后head，容器内启动ray，等head的ray status状态满足后再启动vllm(vllm serve xxx)**
+**此外，实际部署时，应该先启动容器并保持，先启动 head 节点（容器内先执行 `ray start --head --port=6379`），待 head 的 ray status 状态满足后，再启动各 worker 节点（`ray start --address=<head>:6379` 让 worker 加入集群），最后在 head 上启动 vllm（vllm serve xxx）**
 
 ---
 
@@ -904,7 +901,7 @@ export NCCL_IB_GID_INDEX=3       # RoCEv2 使用 GID index 3
 
 | 问题 | 排查命令 / 解决方案 |
 |------|---------------------|
-| NCCL超时或卡住 | `export NCCL_DEBUG=INFO` 查看日志；检查防火墙是否放行了 NCCL 端口（TCP/UDP 29500+）；确认 `ping` 和 `ib_write_bw` 节点间可达 |
+| NCCL超时或卡住 | `export NCCL_DEBUG=INFO` 查看日志；注意 29500 是 torch.distributed 的 rendezvous 端口（由 torchrun 使用），而 NCCL 实际通信使用的是动态临时端口（ephemeral ports），需确保节点间 TCP/UDP 对这些端口均可达；确认 `ping` 和 `ib_write_bw` 节点间可达 |
 | 模型加载OOM | 调整 `--max-model-len` 降低 KV Cache 上限；减少 `--gpu-memory-utilization`；考虑 INT4/INT8 量化 |
 | Ray 集群连接失败 | `ray status` 检查集群状态；确认 head 节点的 `6379` 端口可达；检查 worker 是否在同一 Ray version |
 | 部分节点 OOM 而其他正常 | PP 切分不均——检查各 stage 的层数分配是否均衡；手动调整 `--pipeline-parallel-split-points` |
@@ -934,8 +931,10 @@ export NCCL_IB_GID_INDEX=3       # RoCEv2 使用 GID index 3
 vLLM 内置 Prometheus 指标端点：
 
 ```bash
-vllm serve /path/to/model --port 8000 --metrics-port 8001
+vllm serve /path/to/model --port 8000
 ```
+
+> **注意**：vLLM 的 Prometheus 指标并不使用独立的 `--metrics-port`，而是与 API 共用同一个端口，暴露在 `http://host:8000/metrics` 上（即 API 端口 8000 的 `/metrics` 路径）。在 Prometheus 中直接抓取该端点即可。
 
 Grafana Dashboard 推荐搜索 `vllm` 模板，可直接导入。关键看三个面板：吞吐量趋势、延迟分布（P50/P95/P99）、GPU 显存与计算利用率。
 
@@ -1063,7 +1062,7 @@ receivers:
 
 | 组件 | 作用 | 数据来源 |
 |------|------|---------|
-| vLLM Metrics | 推理性能指标（吞吐、延迟、队列深度） | vLLM 内置 `--metrics-port` |
+| vLLM Metrics | 推理性能指标（吞吐、延迟、队列深度） | vLLM API 端口的 `/metrics` 端点（默认 `http://host:8000/metrics`，无独立 `--metrics-port` 标志） |
 | DCGM Metrics | GPU 硬件指标（温度、功耗、显存、利用率） | NVIDIA DCGM Exporter |
 | Node Exporter | 主机指标（CPU、内存、磁盘、网络） | Prometheus 官方 Exporter |
 | AlertManager | 告警去重、分组、通知 | Prometheus 告警规则 |
@@ -1091,7 +1090,7 @@ receivers:
 | A100 80G | 80 GB | 312 TFLOPS | 600 GB/s | 大模型主力 |
 | H100 80G | 80 GB | 990 TFLOPS | 900 GB/s | 最高性能 |
 | H200 141G | 141 GB | 990 TFLOPS | 900 GB/s | 超大模型 |
-| A10 24G | 24 GB | 125 TFLOPS | 600 GB/s | 小模型/成本敏感 |
+| A10 24G | 24 GB | 125 TFLOPS | 无 NVLink（仅 PCIe Gen4，互连约 64 GB/s；600 GB/s 为其显存带宽） | 小模型/成本敏感 |
 
 **成本意识**：如果模型能通过 INT4 量化装在更少的 GPU 上，优先量化而不是堆卡。一张 H100 的云上租赁费用约 $3-4/小时，4 张 A100 的费用相近但部署复杂度更高。
 

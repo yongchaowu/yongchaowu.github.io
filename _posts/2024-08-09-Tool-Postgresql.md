@@ -32,4 +32,4 @@ alter user postgres with password '123456';//修改密码
 
 ## 其他
 - `journalctl -r -u postgresql`:服务系统启动日志 
-- `natstat -alnt`:服务端口工作
+- `netstat -alnt`:服务端口工作

@@ -42,7 +42,7 @@ tags: ["OS", "Ubuntu"]
 
 ## 安装文件位置
 
-一般的deb包(包括新立得或者apt-get下载的)都在`**/usr/share**`。 
+一般的deb包(包括新立得或者apt-get下载的)都在`/usr/share`。 
 
 
 
@@ -59,7 +59,7 @@ tags: ["OS", "Ubuntu"]
 | apt-get update                   | 更新源                                                       |
 | apt-get upgrade                  | 更新所有已安装的包                                           |
 | **apt-get install <pkg>**        | 安装软件包<pkg>，**多个**软件包用空格隔开                    |
-| apt-get install –reinstall <pkg> | 重新安装软件包<pkg>                                          |
+| apt-get install --reinstall <pkg> | 重新安装软件包<pkg>                                          |
 | apt-get install -f <pkg>         | 修复安装（破损的依赖关系）软件<pkg>                          |
 | **apt-get remove <pkg>**         | 删除软件包<pkg>（不包括配置文件）                            |
 | **apt-get purge <pkg>**          | 删除软件包<pkg>（包括配置文件）                              |
@@ -68,7 +68,7 @@ tags: ["OS", "Ubuntu"]
 | **apt-cache search <pkg>**       | 使用关键字pkg搜索软件包                                      |
 | **apt-cache show**               | 显示软件包pkg_name的详细信息                                 |
 | **apt-cache depends <pkg>**      | 查看pkg所依赖的软件包                                        |
-| apt-cache rdepends <pkg>         | 查看pkg被那些软件包所依赖                                    |
+| apt-cache rdepends <pkg>         | 查看pkg被哪些软件包所依赖                                    |
 | **apt-get build-dep <pkg>**      | 构建pkg源码包的编译依赖 (这条命令很神奇，一步搞定所有编译依赖) |
 
 
@@ -86,7 +86,7 @@ tags: ["OS", "Ubuntu"]
 ```bash
 apt-get update                  # 更新源  
 apt-get upgrade                 # 更新所有已安装的包  
-apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）123
+apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）
 ```
 
 2. 安装或重装类操作：
@@ -94,14 +94,14 @@ apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）123
 ```bash
 apt-get install <pkg>             # 安装软件包<pkg>，多个软件包用空格隔开  
 apt-get install --reinstall <pkg> # 重新安装软件包<pkg>  
-apt-get install -f <pkg>          # 修复安装（破损的依赖关系）软件包<pkg>  123
+apt-get install -f <pkg>          # 修复安装（破损的依赖关系）软件包<pkg>  
 ```
 
 3. 卸载类操作：
 
 ```bash
 apt-get remove <pkg>          # 删除软件包<pkg>（不包括配置文件）  
-apt-get purge <pkg>           # 删除软件包<pkg>（包括配置文件）  12
+apt-get purge <pkg>           # 删除软件包<pkg>（包括配置文件）  
 ```
 
 4. 下载清除类操作：
@@ -113,7 +113,7 @@ apt-get source -d <pkg>           # 下载完源码包后，编译
 apt-get build-dep   <pkg>         # 构建pkg源码包的依赖环境（编译环境？）  
 apt-get clean                     # 清除缓存(/var/cache/apt/archives/{,partial}下)中所有已下载的包  
 apt-get autoclean                 # 类似于clean，但清除的是缓存中过期的包（即已不能下载或者是无用的包）  
-apt-get autoremove                # 删除因安装软件自动安装的依赖，而现在不需要的依赖包  1234567
+apt-get autoremove                # 删除因安装软件自动安装的依赖，而现在不需要的依赖包  
 ```
 
 5. 查询类操作：
@@ -123,7 +123,7 @@ apt-cache stats             # 显示系统软件包的统计信息
 apt-cache search <pkg>            # 使用关键字pkg搜索软件包  
 apt-cache show   <pkg_name>   # 显示软件包pkg_name的详细信息  
 apt-cache depends <pkg>       # 查看pkg所依赖的软件包  
-apt-cache rdepends <pkg>      # 查看pkg被那些软件包所依赖  
+apt-cache rdepends <pkg>      # 查看pkg被哪些软件包所依赖  
 ```
 
 
