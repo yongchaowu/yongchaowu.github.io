@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-time_t
+display_title: 'Linux time_t'
 date: 2020-07-10 22:58:00
 categories:
 - Programming

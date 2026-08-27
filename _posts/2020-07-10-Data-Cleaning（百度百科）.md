@@ -3,7 +3,7 @@ layout: post
 title: Data Cleaning（百度百科）
 date: 2020-07-10 00:43:00
 categories:
-- Personal / Misc
+- Personal
 tags:
 - Data Cleaning
 ---

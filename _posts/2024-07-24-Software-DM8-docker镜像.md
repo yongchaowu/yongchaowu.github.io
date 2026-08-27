@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Software-DM8-docker镜像
+display_title: 'DM8 Docker 镜像'
 date: 2024-07-24 16:59:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - Software
 - DB

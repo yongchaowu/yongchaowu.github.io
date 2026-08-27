@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-C-GetUserName
+display_title: 'Linux C GetUserName'
 date: 2021-01-08 19:52:00
 categories:
 - Systems

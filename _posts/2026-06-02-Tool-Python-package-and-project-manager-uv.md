@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Python package and project manager-uv
+title: 'Python Package and Project Manager: uv'
 date: 2026-06-02 06:51:00
 categories:
 - Developer Tools

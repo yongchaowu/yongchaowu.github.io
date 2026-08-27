@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-重置数据库，修复server迁移token异常
+display_title: 'GitLab 重置数据库，修复 server 迁移 token 异常'
 date: 2024-07-08 13:41:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

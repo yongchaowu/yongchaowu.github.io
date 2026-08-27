@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-command
+display_title: 'Linux Command'
 date: 2020-07-10 01:22:00
 categories:
 - Systems

@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-CICD
+display_title: 'GitLab CI/CD'
 date: 2023-06-29 19:59:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

@@ -1,9 +1,10 @@
 ---
 layout: post
 title: 产品经理-Tool-Axure
+display_title: '产品经理 Tool Axure'
 date: 2020-08-20 20:39:00
 categories:
-- Personal / Misc
+- Personal
 tags:
 - 产品经理
 - PM

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Windows11-系统盘安装-DVD[4.7GB]
+display_title: 'Windows 11 系统盘安装 DVD 4.7GB'
 date: 2024-04-23 08:52:00
 categories:
 - Systems

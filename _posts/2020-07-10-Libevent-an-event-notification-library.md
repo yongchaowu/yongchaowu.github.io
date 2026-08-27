@@ -3,9 +3,9 @@ layout: post
 title: Libevent - an event notification library
 date: 2020-07-10 01:00:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
-- Open source library
+- Open Source
 - Libevent
 ---
 

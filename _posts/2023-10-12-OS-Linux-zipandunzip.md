@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-zip&unzip
+display_title: 'Linux zip 与 unzip'
 date: 2023-10-12 12:58:00
 categories:
 - Systems

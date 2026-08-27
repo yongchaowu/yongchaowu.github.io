@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Capture Packet
+display_title: 'Capture Packet'
 date: 2020-07-08 23:01:00
 categories:
 - Developer Tools
 tags:
 - Capture Packet
-- Open source library
+- Open Source
 - Tool
 ---
 

@@ -1,0 +1,33 @@
+topics:
+  - id: ai
+    name: "AI & LLM"
+
+  - id: systems
+    name: "Systems"
+
+  - id: cpp
+    name: "C & C++"
+
+  - id: devops
+    name: "DevOps & Infrastructure"
+
+  - id: tools
+    name: "Developer Tools"
+
+  - id: programming
+    name: "Programming"
+
+  - id: computer-science
+    name: "Computer Science"
+
+  - id: security
+    name: "Security & Networking"
+
+  - id: database
+    name: "Database"
+
+  - id: photography
+    name: "Photography"
+
+  - id: personal
+    name: "Personal"

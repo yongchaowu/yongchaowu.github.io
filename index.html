@@ -1,14 +1,15 @@
 ---
 layout: default
+title: "Yc.W | C++ Backend & AI Agent"
+description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
 ---
 
 <div class="page clearfix" index>
     <div class="left">
         <div class="hero">
             <h1>Yc.W</h1>
-            <p class="hero-subtitle">Systems &amp; AI Engineering</p>
-            <p class="hero-tags">C++ · Linux · AI/LLM · Infrastructure</p>
-            <p class="hero-desc">Engineering notes, experiments and troubleshooting from real-world development.</p>
+            <p class="hero-subtitle">C++ Backend &amp; AI Agent</p>
+            <p class="hero-desc">Engineering notes on C++ backend development, AI Agents, LLM applications, and practical development.</p>
             <div class="hero-links">
                 <a href="https://github.com/yongchaowu" target="_blank" rel="noopener"><i class="fa fa-github"></i> GitHub</a>
                 <a href="{{ '/about/' | prepend: site.baseurl }}"><i class="fa fa-user"></i> About</a>
@@ -26,7 +27,7 @@ layout: default
                     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
                 </div>
                 <h3 class="post-card-title">
-                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.display_title | default: post.title }}</a>
                 </h3>
                 {% include content-badge.html %}
                 <div class="excerpt">
@@ -71,16 +72,19 @@ layout: default
                     Topics
                 </div>
                 <ul class="content-ul" cate>
-                    {% assign sorted_categories = site.categories | sort %}
-                    {% for category in sorted_categories limit:11 %}
+                    {% for topic in site.data.topics.topics %}
+                        {% for category in site.categories %}
+                            {% if category[0] == topic.name %}
                     <li>
-                        <a href="{{ root_url }}/{{ site.category_dir }}#{{ category | first }}" class="categories-list-item" cate="{{ category | first }}">
+                        <a href="{{ root_url }}/{{ site.category_dir }}#{{ topic.name | slugify }}" class="categories-list-item" cate="{{ topic.name }}">
                             <span class="name">
-                                {{ category | first }}
+                                {{ topic.name }}
                             </span>
-                            <span class="badge">{{ category | last | size }}</span>
+                            <span class="badge">{{ category[1] | size }}</span>
                         </a>
                     </li>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </ul>
                 <a class="view-all" href="{{ root_url }}/{{ site.category_dir }}">View all topics →</a>
@@ -89,14 +93,13 @@ layout: default
             <div class="side ">
                 <div>
                     <i class="fa fa-tags"></i>
-                    Popular Tags
+                    Featured Tags
                 </div>
-                <div class="tags-cloud">
-                    {% assign sorted_tags = site.tags | sort %}
-                    {% assign tarr = sorted_tags | reverse %}
-                    {% assign tarr = tarr | slice: 0, 15 %}
-                    {% for t in tarr %}
-                      <a href="{{ root_url }}/{{ site.tag_dir }}#{{ t[0] }}">{{ t[0] }}</a>
+                <div class="tags-cloud" id="popular-tags">
+                    {% for tag_name in site.data.featured_tags.tags %}
+                      {% if site.tags[tag_name] %}
+                      <a href="{{ root_url }}/{{ site.tag_dir }}#{{ tag_name | slugify }}" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
+                      {% endif %}
                     {% endfor %}
                 </div>
                 <a class="view-all" href="{{ root_url }}/{{ site.tag_dir }}">View all tags →</a>

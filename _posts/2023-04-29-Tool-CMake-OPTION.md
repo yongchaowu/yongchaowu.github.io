@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-OPTION
+display_title: 'CMake OPTION'
 date: 2023-04-29 13:26:00
 categories:
 - Developer Tools

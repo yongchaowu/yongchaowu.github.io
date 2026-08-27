@@ -1,13 +1,12 @@
 ---
 layout: post
-title: BehaviorTree.CPP_v4.9_Complete_Guide
+title: BehaviorTree.CPP 4.9 Complete Guide
 date: 2026-07-15 23:52:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - Open Source
 - LLM
-- Open source library
 content_origin: ai-assisted
 ---
 

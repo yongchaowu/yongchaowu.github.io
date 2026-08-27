@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Log4cxx Building
+display_title: 'Log4cxx Building'
 date: 2020-07-09 00:05:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - Log4cxx
-- Open Source Library
+- Open Source
 ---
 
 ## Building Apache log4cxx with Microsoft Visual Studio

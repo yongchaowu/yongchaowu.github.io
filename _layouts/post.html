@@ -4,7 +4,7 @@ layout: default
 
 <div class="page clearfix" post>
     <div class="left">
-        <h1>{{page.title}}</h1>
+        <h1>{{ page.display_title | default: page.title }}</h1>
         {% include content-badge.html %}
         <div class="post-meta">
 
@@ -14,6 +14,10 @@ layout: default
 
             <span class="label-card">
                 <i class="fa fa-pencil"></i>{{ content | strip_html | size }} 字
+                {% assign char_count = content | strip_html | strip_newlines | size %}
+                {% assign reading_time = char_count | divided_by: 800 %}
+                {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
+                · ~{{ reading_time }} min
             </span>
 
             {% if page.content_type %}
@@ -48,7 +52,7 @@ layout: default
                         <ul>
                         {% endif %}
                         <li class="relatedPost">
-                            <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}
+                            <a href="{{ site.baseurl }}{{ post.url }}">{{ post.display_title | default: post.title }}
                             {% if post.series %}
                                 (Series: {{ post.series }})
                             {% endif %}
@@ -78,21 +82,12 @@ layout: default
                     <i class="fa fa-bookmark-o"></i> On This Page
                 </div>
                 <ul id="content-side" class="content-ul">
-                    {% if hasSimilar.size > 0 %}
-                    <li><a href="#similar_posts">Related Posts</a></li>
-                    {% endif %}
                 </ul>
             </div>
-            <!-- TOC -->
-            <div class="side">
-                <div id="toc"></div>
-            </div>
-            <!-- 其他div框放到这里 -->
-            <!-- <div class="side">bbbb</div> -->
         </div>
     </div>
 </div>
-<script src="{{ "/js/toc.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+<script src="{{ '/js/toc.js' | relative_url }}" charset="utf-8"></script>
 <script>
 /**
  * target _blank
@@ -104,4 +99,4 @@ layout: default
     }
 }());
 </script>
-<script src="{{ "/js/pageContent.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

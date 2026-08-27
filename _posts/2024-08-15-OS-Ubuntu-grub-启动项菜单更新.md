@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Ubuntu-grub-启动项菜单更新
+display_title: 'Ubuntu GRUB 启动项菜单更新'
 date: 2024-08-15 09:57:00
 categories:
 - Systems

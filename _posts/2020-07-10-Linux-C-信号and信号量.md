@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-C-信号&信号量
+display_title: 'Linux C 信号与信号量'
 date: 2020-07-10 00:53:00
 categories:
 - Systems

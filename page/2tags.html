@@ -10,51 +10,83 @@ type: page
     <div class="left">
         <h1>{{page.title}}</h1>
         <hr>
-        {% assign sortedpairs = site.tags | sort %}
 
-        <ul>
-        {% for pair in sortedpairs %}
-          {% assign tag = pair | first %}
-          <h2 id="{{ tag }}">{{ tag }}</h2>
-          {% for post in pair.last %}
-            <li>
-                <time>
-                {{ post.date | date:"%F" }} {{ post.date | date: "%a" }}.
-                </time>
-                <a class="title" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+        <h2 class="section-title">Featured Tags</h2>
+        <div class="tags-cloud" id="featured-tags"
+             data-index-url="{{ '/search.json' | relative_url }}"
+             data-featured="{{ site.data.featured_tags.tags | jsonify | escape }}"></div>
 
-                {% include category.html %}
-                {% include tag.html %}
-            </li>
-          {% endfor %}
-        {% endfor %}
-        </ul>
+        <hr>
+        <h2 class="section-title">All Tags</h2>
+        <div class="tags-cloud" id="all-tags"></div>
 
+        <hr>
+        <div id="tag-posts" style="display:none">
+            <h2 class="section-title" id="tag-heading"></h2>
+            <ul id="tag-post-list" class="post-list"></ul>
+        </div>
+
+        <noscript>
+            <p>Select a tag above. JavaScript is required to display matching posts.</p>
+        </noscript>
     </div>
     <button class="anchor"><i class="fa fa-anchor"></i></button>
     <div class="right">
         <div class="wrap">
-
-            <!-- Content -->
             <div class="side content">
                 <div>
                     <i class="fa fa-bookmark-o"></i> Tags
                 </div>
-                <ul id="content-side" class="content-ul">
-                    {% for pair in sortedpairs %}
-                    {% assign tag = pair | first %}
-                    <li>
-                        <a data-scroll href="#{{ tag | url_encode }}">
-                            {{ tag }} ({{ pair.last.size }})
-                        </a>
-                    </li>
-                    {% endfor %}
-
-                </ul>
+                <ul id="content-side" class="content-ul"></ul>
             </div>
-            <!-- 其他div框放到这里 -->
-            <!-- <div class="side">bbbb</div> -->
         </div>
     </div>
 </div>
-<script src="{{ "/js/pageContent.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+<script src="{{ '/js/tags.js' | relative_url }}" charset="utf-8"></script>
+<style>
+#all-tags, #featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 0;
+}
+.tag-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: 4px;
+    font-size: 13px;
+    transition: 0.2s;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+.tag-btn:hover, .tag-btn.active {
+    background: var(--badge-text);
+    color: var(--bg-content);
+}
+.tag-btn .tag-count {
+    font-size: 11px;
+    opacity: 0.7;
+}
+#tag-post-list {
+    list-style: none;
+    padding: 0;
+}
+#tag-post-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color, #f0f0f0);
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+}
+#tag-post-list time {
+    color: var(--text-muted);
+    font-size: 13px;
+    white-space: nowrap;
+    min-width: 100px;
+}
+</style>

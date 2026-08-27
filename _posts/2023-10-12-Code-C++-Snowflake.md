@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C++-Snowflake
+display_title: 'C++ Snowflake'
 date: 2023-10-12 12:49:00
 categories:
 - Programming

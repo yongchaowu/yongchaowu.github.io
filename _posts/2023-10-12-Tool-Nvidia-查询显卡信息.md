@@ -6,7 +6,7 @@ categories:
 - Developer Tools
 tags:
 - Tool
-- Nvidia
+- NVIDIA
 ---
 
 - `nvidia-smi -L`

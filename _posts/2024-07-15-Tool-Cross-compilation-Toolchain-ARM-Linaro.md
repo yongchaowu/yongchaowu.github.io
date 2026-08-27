@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Cross-compilation-Toolchain-ARM-Linaro
+display_title: 'Cross-compilation Toolchain ARM Linaro'
 date: 2024-07-15 10:50:00
 categories:
 - Developer Tools

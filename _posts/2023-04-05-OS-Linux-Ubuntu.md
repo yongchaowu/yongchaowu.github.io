@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-Ubuntu
+display_title: 'Linux Ubuntu'
 date: 2023-04-05 12:38:00
 categories:
 - Systems

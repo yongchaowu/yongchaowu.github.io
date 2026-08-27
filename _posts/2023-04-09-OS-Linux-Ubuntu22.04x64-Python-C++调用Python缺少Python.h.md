@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-Ubuntu22.04x64-Python-C++调用Python缺少Python.h
+display_title: 'Linux Ubuntu 22.04 C++ 调用 Python 缺少 Python.h'
 date: 2023-04-09 10:07:00
 categories:
 - Systems

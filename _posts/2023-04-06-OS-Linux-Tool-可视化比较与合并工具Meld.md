@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-Tool-可视化比较与合并工具Meld
+display_title: 'Linux 可视化比较与合并工具 Meld'
 date: 2023-04-06 21:37:00
 categories:
 - Systems

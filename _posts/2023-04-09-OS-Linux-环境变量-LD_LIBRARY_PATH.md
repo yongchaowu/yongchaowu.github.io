@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-环境变量-LD_LIBRARY_PATH
+display_title: 'Linux 环境变量 LD_LIBRARY_PATH'
 date: 2023-04-09 21:55:00
 categories:
 - Systems

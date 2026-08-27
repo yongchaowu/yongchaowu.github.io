@@ -3,7 +3,7 @@ layout: post
 title: Linux/UNIX 系统编程手册-下册(部分章节)
 date: 2023-05-04 07:07:00
 categories:
-- Personal / Misc
+- Personal
 tags:
 - Linux_UNIX 系统编程手册
 - Book

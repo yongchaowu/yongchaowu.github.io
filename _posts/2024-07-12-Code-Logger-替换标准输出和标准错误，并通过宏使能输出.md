@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Logger-替换标准输出和标准错误，并通过宏使能输出
+display_title: 'Logger 替换标准输出和标准错误，并通过宏使能输出'
 date: 2024-07-12 13:18:00
 categories:
 - Programming

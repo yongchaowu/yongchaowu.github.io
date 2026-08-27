@@ -1,6 +1,6 @@
 ---
 layout: post
-title: managing screen timeout and power mode settings on linux
+title: Managing Screen Timeout and Power Mode Settings on Linux
 date: 2026-06-04 19:35:00
 categories:
 - DevOps & Infrastructure

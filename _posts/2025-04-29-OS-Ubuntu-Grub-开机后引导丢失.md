@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ubuntu-Grub-开机后引导丢失
+title: Ubuntu Grub 开机后引导丢失
 date: 2025-04-29 20:35:00
 categories:
 - Systems

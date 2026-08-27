@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Mysql-安装&卸载&运行
+display_title: 'MySQL 安装、卸载与运行'
 date: 2024-04-23 08:12:00
 categories:
-- Developer Tools
+- Database
 tags:
 - DB
 - Ubuntu

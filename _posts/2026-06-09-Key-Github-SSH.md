@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Github-SSH
+title: GitHub SSH
 date: 2026-06-09 19:56:00
 categories:
 - Developer Tools
 tags:
 - Key
-- git
+- Git
 - OS
 ---
 

@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Unclassified-开放原子开源基金会(OpenAtomFoundation)
+display_title: '开放原子开源基金会 (OpenAtom Foundation)'
 date: 2020-09-12 16:57:00
 categories:
-- Personal / Misc
+- Developer Tools
 tags:
 - OpenAtomFoundation
-- Unclassified
 ---
 
 ##百度百科资料

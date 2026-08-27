@@ -1,6 +1,7 @@
 ---
 layout: post
 title: codeblocks常用操作快捷键
+display_title: 'CodeBlocks 常用操作快捷键'
 date: 2023-02-24 01:57:00
 categories:
 - Developer Tools

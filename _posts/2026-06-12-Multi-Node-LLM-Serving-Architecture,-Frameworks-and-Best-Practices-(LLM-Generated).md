@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Node LLM Serving: Architecture, Frameworks & Best Practices'
+title: 'Multi-Node LLM Serving: Architecture, Frameworks & Best Practices'
 date: 2026-06-12 21:13:00
 categories:
 - AI & LLM
@@ -10,9 +10,6 @@ tags:
 - LLM
 content_origin: ai-assisted
 ---
-
-{% raw %}
-**Use MiMo Code to modify the whole content with MiMo-v2.5.**
 
 <!--more-->
 ---
@@ -1472,5 +1469,3 @@ spec:
 ---
 
 > **Generated & Optimized by MiMo Code** | 文档版本：v2.0 | 最后更新：2025年1月
-
-{% endraw %}

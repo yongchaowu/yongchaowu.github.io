@@ -3,7 +3,7 @@ layout: post
 title: Postgresql
 date: 2024-08-09 09:15:00
 categories:
-- Developer Tools
+- Database
 tags:
 - DB
 - Tool

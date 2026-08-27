@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-备份恢复-迁移
+display_title: 'GitLab 备份恢复与迁移'
 date: 2023-07-24 19:26:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

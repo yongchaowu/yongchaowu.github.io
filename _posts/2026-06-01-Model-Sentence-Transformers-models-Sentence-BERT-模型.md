@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Sentence Transformers models-Sentence-BERT 模型
+title: 'Sentence Transformers: Sentence-BERT'
 date: 2026-06-01 21:39:00
 categories:
 - AI & LLM

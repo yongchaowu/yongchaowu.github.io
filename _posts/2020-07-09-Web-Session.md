@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Web-Session
+display_title: 'Web Session'
 date: 2020-07-09 00:09:00
 categories:
 - Programming

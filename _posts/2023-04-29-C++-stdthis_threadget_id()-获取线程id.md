@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C++-std::this_thread::get_id()-获取线程id
+display_title: 'C++ std::this_thread::get_id() 获取线程 ID'
 date: 2023-04-29 18:42:00
 categories:
 - C & C++

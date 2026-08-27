@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-CPack
+display_title: 'CMake CPack'
 date: 2024-07-08 13:32:00
 categories:
 - Developer Tools

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-Cpack-生成版本信息文件
+display_title: 'CMake CPack 生成版本信息文件'
 date: 2024-07-20 16:30:00
 categories:
 - Developer Tools

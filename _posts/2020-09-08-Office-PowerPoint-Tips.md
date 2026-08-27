@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Office-PowerPoint-Tips
+display_title: 'Office PowerPoint Tips'
 date: 2020-09-08 22:42:00
 categories:
 - Developer Tools

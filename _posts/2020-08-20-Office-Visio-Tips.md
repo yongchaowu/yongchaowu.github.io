@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Office-Visio-Tips
+display_title: 'Office Visio Tips'
 date: 2020-08-20 20:29:00
 categories:
 - Developer Tools

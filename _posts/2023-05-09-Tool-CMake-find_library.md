@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-find_library
+display_title: 'CMake find_library'
 date: 2023-05-09 06:09:00
 categories:
 - Developer Tools

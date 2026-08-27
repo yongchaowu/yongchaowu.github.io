@@ -3,7 +3,7 @@ layout: post
 title: 以ubuntu:latest为例
 date: 2024-08-08 16:48:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - Docker
 - Tool

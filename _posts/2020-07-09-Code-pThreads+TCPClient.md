@@ -1,13 +1,14 @@
 ---
 layout: post
 title: pThreads+TCPClient
+display_title: 'pThreads + TCP Client'
 date: 2020-07-09 21:02:00
 categories:
 - Programming
 tags:
 - Code
 - C++
-- Open Source Library
+- Open Source
 ---
 
 ` rc:return code`

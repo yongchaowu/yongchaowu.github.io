@@ -1,15 +1,15 @@
 ---
 layout: post
 title: Other-个人博客系统-Build
+display_title: '个人博客系统 Build'
 date: 2020-10-22 18:50:00
 categories:
-- Personal / Misc
+- Developer Tools
 tags:
 - Other
 - WordPress
 - Blog
 - Website
-- Unclassified
 ---
 
 October 20, 2020 5:31 PM

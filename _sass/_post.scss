@@ -168,31 +168,41 @@
 }
 
 /* TOC sidebar */
-#toc {
-    .toc-ul {
-        padding-left: 0;
-        li {
-            list-style: none;
-            margin: 4px 0;
-            a {
-                font-size: 13px;
-                color: var(--text-secondary);
-                display: block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                &:hover {
-                    color: var(--text-link);
-                }
-            }
-            &.toc-h3 {
-                padding-left: 14px;
-                a {
-                    font-size: 12px;
-                    color: var(--text-muted);
-                }
+#content-side {
+    .toc-h2, .toc-h3, .toc-related {
+        list-style: none;
+        margin: 4px 0;
+        a {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            &:hover, &.active {
+                color: var(--text-link);
             }
         }
+    }
+    .toc-h3 {
+        padding-left: 14px;
+        a {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    }
+    .toc-related {
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border-color, #eee);
+        a {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    }
+    .toc-toggle {
+        margin-top: 8px;
+        list-style: none;
     }
 }
 
@@ -244,4 +254,32 @@
             }
         }
     }
+}
+
+/* Technical article callouts */
+.page[post] article blockquote,
+.page[post] article .highlight {
+    /* base styling handled by existing theme */
+}
+.page[post] article blockquote > p:first-child strong {
+    font-weight: 700;
+}
+.page[post] article blockquote:has(strong:first-child) {
+    border-left-width: 4px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 4px;
+    background: var(--bg-hover, #f8f9fa);
+}
+.page[post] article blockquote > p:first-child:has(strong:only-child) {
+    margin-bottom: 4px;
+}
+.page[post] article blockquote > p:first-child:has(strong:only-child) + p {
+    margin-top: 0;
+}
+
+/* Reading time display */
+.reading-time {
+    font-size: 13px;
+    color: var(--text-muted);
 }

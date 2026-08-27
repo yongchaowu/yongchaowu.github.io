@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Python-venv-创建和管理虚拟环境
+display_title: 'Python venv 创建和管理虚拟环境'
 date: 2023-04-09 13:38:00
 categories:
 - Programming
