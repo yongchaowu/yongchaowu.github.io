@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Ubuntu-显卡驱动异常导致花屏-nomodeset
+display_title: 'Ubuntu 显卡驱动异常导致花屏 nomodeset'
 date: 2024-08-15 10:17:00
 categories:
 - Systems

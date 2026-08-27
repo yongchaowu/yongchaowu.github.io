@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Linux-Ubuntu-apt-get
+display_title: 'Linux Ubuntu apt-get'
 date: 2023-04-08 21:16:00
 categories:
 - Systems

@@ -60,6 +60,21 @@
   }
 }());
 
+//////////////////////////popular tags sorting////////////////////////////
+(function() {
+  var tagsCloud = document.getElementById('popular-tags')
+  if (!tagsCloud) return
+  var links = Array.prototype.slice.call(tagsCloud.querySelectorAll('a'))
+  links.sort(function(a, b) {
+    return parseInt(b.getAttribute('data-count') || 0) - parseInt(a.getAttribute('data-count') || 0)
+  })
+  var top15 = links.slice(0, 15)
+  tagsCloud.innerHTML = ''
+  top15.forEach(function(link) {
+    tagsCloud.appendChild(link)
+  })
+}());
+
 //////////////////////////back to top////////////////////////////
 (function() {
   var backToTop = document.querySelector('.back-to-top')

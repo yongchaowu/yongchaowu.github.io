@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Visual Studio Code-Extensions-Continue
+title: 'Visual Studio Code Extensions: Continue'
 date: 2026-06-02 07:10:00
 categories:
 - Developer Tools

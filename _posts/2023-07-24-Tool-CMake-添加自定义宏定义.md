@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-添加自定义宏定义
+display_title: 'CMake 添加自定义宏定义'
 date: 2023-07-24 19:32:00
 categories:
 - Developer Tools

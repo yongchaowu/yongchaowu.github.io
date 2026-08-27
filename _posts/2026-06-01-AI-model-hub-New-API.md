@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AI model hub-New API
+title: 'AI Model Hub: New API'
 date: 2026-06-01 22:07:00
 categories:
 - AI & LLM

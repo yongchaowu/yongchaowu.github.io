@@ -1,6 +1,6 @@
 ---
 layout: post
-title: MiniCPM5-1B-Deploy-llama.cpp
+title: MiniCPM5 1B Deploy llama.cpp
 date: 2026-06-10 07:47:00
 categories:
 - AI & LLM

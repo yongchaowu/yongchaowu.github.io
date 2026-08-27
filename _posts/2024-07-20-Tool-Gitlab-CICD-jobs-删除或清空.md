@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-CICD-jobs-删除或清空
+display_title: 'GitLab CI/CD Jobs 删除或清空'
 date: 2024-07-20 16:31:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

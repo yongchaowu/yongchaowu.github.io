@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Windows-bat-Path
+display_title: 'Windows bat Path'
 date: 2020-07-10 08:18:00
 categories:
 - Systems

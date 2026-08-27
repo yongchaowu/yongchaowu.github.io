@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Windows-计算机内存型号配置查看
+display_title: 'Windows 计算机内存型号配置查看'
 date: 2023-04-05 08:07:00
 categories:
 - Systems

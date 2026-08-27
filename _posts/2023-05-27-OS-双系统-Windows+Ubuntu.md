@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 双系统-Windows+Ubuntu
+display_title: '双系统 Windows + Ubuntu'
 date: 2023-05-27 11:20:00
 categories:
 - Systems

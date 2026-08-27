@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-MESSAGE
+display_title: 'CMake MESSAGE'
 date: 2023-04-29 13:48:00
 categories:
 - Developer Tools

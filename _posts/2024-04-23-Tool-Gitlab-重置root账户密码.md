@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-重置root账户密码
+display_title: 'GitLab 重置 root 账户密码'
 date: 2024-04-23 08:37:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

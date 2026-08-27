@@ -1,14 +1,13 @@
 ---
 layout: post
-title: BehaviorTree.CPP-ManualNotes
+title: BehaviorTree.CPP Manual Notes
 date: 2026-07-15 23:51:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - Open Source
 - C++
 - Code
-- Open source library
 - UML
 ---
 

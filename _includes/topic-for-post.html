@@ -1,0 +1,12 @@
+{% comment %}
+  Resolves a post's category to canonical topic name from _data/topics.yml.
+  Usage: {% include topic-for-post.html post=post %}
+{% endcomment %}
+{% assign _target_post = include.post | default: post %}
+{% assign canonical_topic = nil %}
+{% for topic in site.data.topics.topics %}
+  {% if _target_post.categories contains topic.name %}
+    {% assign canonical_topic = topic.name %}
+    {% break %}
+  {% endif %}
+{% endfor %}

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Node LLM Serving-vLLM+Ray
+title: 'Multi-Node LLM Serving: vLLM + Ray'
 date: 2026-06-12 22:04:00
 categories:
 - AI & LLM

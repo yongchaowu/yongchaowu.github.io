@@ -3,7 +3,7 @@ layout: post
 title: Ubuntu18.04
 date: 2024-07-15 10:01:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - Docker
 - Tool

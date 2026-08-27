@@ -3,10 +3,9 @@ layout: post
 title: CSCI-CSCI计算机软件配置项(Computer Software Configuration Item)
 date: 2023-05-22 21:19:00
 categories:
-- Personal / Misc
+- Computer Science
 tags:
 - CSCI
-- Unclassified
 ---
 
 CSCI计算机软件配置项

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-vscode-cmake-tools
+display_title: 'CMake VS Code CMake Tools'
 date: 2023-05-27 12:33:00
 categories:
 - Developer Tools

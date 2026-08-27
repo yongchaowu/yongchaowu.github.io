@@ -2,10 +2,13 @@
 ---
 [
 {% for post in site.posts %}
+{% include topic-for-post.html post=post %}
 {
 "title": {{ post.title | jsonify }},
+"display_title": {{ post.display_title | default: post.title | jsonify }},
 "url": {{ post.url | jsonify }},
 "date": "{{ post.date | date: '%F' }}",
+"topic": {{ canonical_topic | default: post.categories.first | jsonify }},
 "categories": {{ post.categories | jsonify }},
 "tags": {{ post.tags | jsonify }},
 "text": {{ post.content | strip_html | normalize_whitespace | slice: 0, 6000 | jsonify }}

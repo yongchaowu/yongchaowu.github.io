@@ -3,7 +3,7 @@ layout: post
 title: First exploration
 date: 2020-12-02 18:28:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - Docker
 - Tool

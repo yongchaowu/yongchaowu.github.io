@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C++-标准异常`<exception>`
+display_title: 'C++ 标准异常 exception'
 date: 2023-04-29 18:03:00
 categories:
 - C & C++

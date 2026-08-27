@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Python-ConvertUTF-8ToUTF-8WithBom
+title: 'Python: Convert UTF-8 to UTF-8 with BOM'
 date: 2025-10-25 09:34:00
 categories:
 - Programming

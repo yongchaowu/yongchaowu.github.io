@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C++-CTime&ColeDateTime
+display_title: 'C++ CTime 与 COleDateTime'
 date: 2020-07-10 02:24:00
 categories:
 - Programming

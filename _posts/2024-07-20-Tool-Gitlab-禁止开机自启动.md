@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Gitlab-禁止开机自启动
+display_title: 'GitLab 禁止开机自启动'
 date: 2024-07-20 17:22:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - GitLab
 - Tool

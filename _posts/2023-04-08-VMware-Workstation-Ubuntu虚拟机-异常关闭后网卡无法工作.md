@@ -3,7 +3,7 @@ layout: post
 title: VMware Workstation-Ubuntu虚拟机-异常关闭后网卡无法工作
 date: 2023-04-08 16:42:00
 categories:
-- Personal / Misc
+- Systems
 tags:
 - VMware Workstation
 - Ubuntu

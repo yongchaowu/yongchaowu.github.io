@@ -8,7 +8,7 @@
 # Site settings
 title: Yc.W
 brief-intro: Engineer
-description: "Systems & AI Engineering — C++, Linux, AI/LLM deployment notes by Yc.W"
+description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.wyclswq.top" # the base hostname & protocol for your site
 

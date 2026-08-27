@@ -3,10 +3,10 @@ layout: post
 title: JSON的简单介绍以及C语言的JSON库使用
 date: 2020-07-10 02:13:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - Json
-- Open Source Library
+- Open Source
 - C
 ---
 

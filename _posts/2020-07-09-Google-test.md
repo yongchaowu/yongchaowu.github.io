@@ -1,12 +1,13 @@
 ---
 layout: post
 title: Google test
+display_title: 'Google Test'
 date: 2020-07-09 08:07:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - GoogleTest
-- Open source library
+- Open Source
 - Test Engineer&QC
 ---
 

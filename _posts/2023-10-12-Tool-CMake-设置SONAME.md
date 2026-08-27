@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-设置SONAME
+display_title: 'CMake 设置 SONAME'
 date: 2023-10-12 12:47:00
 categories:
 - Developer Tools

@@ -3,7 +3,7 @@ layout: post
 title: GitLab
 date: 2023-04-14 22:50:00
 categories:
-- Developer Tools
+- DevOps & Infrastructure
 tags:
 - Tool
 - GitLab

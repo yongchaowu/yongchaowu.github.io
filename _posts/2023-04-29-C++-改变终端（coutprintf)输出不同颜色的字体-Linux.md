@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C++-改变终端（cout/printf）输出不同颜色的字体-Linux
+display_title: 'C++ 改变终端输出不同颜色的字体 (Linux)'
 date: 2023-04-29 18:18:00
 categories:
 - C & C++

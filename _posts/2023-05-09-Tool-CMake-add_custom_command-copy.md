@@ -1,6 +1,7 @@
 ---
 layout: post
 title: CMake-add_custom_command-copy
+display_title: 'CMake add_custom_command copy'
 date: 2023-05-09 05:58:00
 categories:
 - Developer Tools

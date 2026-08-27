@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ubuntu2204 install input method-Sougoupinyin
+title: 'Ubuntu 22.04 Install Input Method: Sougoupinyin'
 date: 2026-05-31 11:57:00
 categories:
 - Systems

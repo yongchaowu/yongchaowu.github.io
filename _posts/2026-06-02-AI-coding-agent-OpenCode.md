@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AI coding agent-OpenCode
+title: 'AI Coding Agent: OpenCode'
 date: 2026-06-02 07:27:00
 categories:
 - AI & LLM

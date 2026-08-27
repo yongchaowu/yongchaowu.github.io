@@ -3,10 +3,10 @@ layout: post
 title: Libevent-windows 编译&引用
 date: 2020-07-09 00:06:00
 categories:
-- Personal / Misc
+- C & C++
 tags:
 - Libevent
-- Open Source Library
+- Open Source
 ---
 
 # Libevent

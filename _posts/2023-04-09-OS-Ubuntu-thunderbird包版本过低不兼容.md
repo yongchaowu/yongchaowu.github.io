@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Ubuntu-thunderbird包版本过低不兼容
+display_title: 'Ubuntu thunderbird 包版本过低不兼容'
 date: 2023-04-09 23:51:00
 categories:
 - Systems
