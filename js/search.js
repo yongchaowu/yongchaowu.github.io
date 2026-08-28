@@ -150,6 +150,12 @@
                     results.appendChild(renderHit(allHits[i], terms))
                 }
                 shownCount = end
+                if (shownCount < allHits.length) {
+                    stats.textContent = allHits.length + ' results \u00b7 showing ' + shownCount
+                } else {
+                    stats.textContent = allHits.length + ' results'
+                }
+
                 renderShowMore()
             }
             results.parentElement.appendChild(btn)
@@ -165,6 +171,10 @@
         if (!terms.length && !selectedTopic) {
             results.innerHTML = ''
             stats.textContent = ''
+            allHits = []
+            shownCount = 0
+            var oldMore = document.getElementById('search-show-more')
+            if (oldMore) oldMore.remove()
             return
         }
         var hits = []
