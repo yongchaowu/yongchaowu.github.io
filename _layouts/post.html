@@ -15,7 +15,7 @@ layout: default
             <span class="label-card">
                 <i class="fa fa-pencil"></i>{{ content | strip_html | size }} 字
                 {% assign char_count = content | strip_html | strip_newlines | size %}
-                {% assign reading_time = char_count | divided_by: 450 %}
+                {% assign reading_time = char_count | divided_by: 800 %}
                 {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
                 · ~{{ reading_time }} min
             </span>
