@@ -12,33 +12,37 @@ type: page
         <hr>
 
         <h2 class="section-title">Featured Tags</h2>
-        <div class="tags-cloud" id="featured-tags"
-             data-index-url="{{ '/search.json' | relative_url }}"
-             data-featured="{{ site.data.featured_tags.tags | jsonify | escape }}"></div>
+        <div class="tags-cloud" id="featured-tags">
+            {% for tag_name in site.data.featured_tags.tags %}
+              {% if site.tags[tag_name] %}
+              <a class="tag-btn"
+                 data-tag="{{ tag_name | escape }}"
+                 href="{{ '/tag/' | relative_url }}?tag={{ tag_name | url_encode }}">
+                {{ tag_name }}
+                <span class="tag-count">({{ site.tags[tag_name].size }})</span>
+              </a>
+              {% endif %}
+            {% endfor %}
+        </div>
 
         <hr>
         <h2 class="section-title">All Tags</h2>
-        <div class="tags-cloud" id="all-tags"></div>
+        <div class="tags-cloud" id="all-tags">
+            {% assign sorted_tags = site.tags | sort %}
+            {% for pair in sorted_tags %}
+            <a class="tag-btn"
+               data-tag="{{ pair[0] | escape }}"
+               href="{{ '/tag/' | relative_url }}?tag={{ pair[0] | url_encode }}">
+                {{ pair[0] }}
+                <span class="tag-count">({{ pair[1].size }})</span>
+            </a>
+            {% endfor %}
+        </div>
 
         <hr>
         <div id="tag-posts" style="display:none">
             <h2 class="section-title" id="tag-heading"></h2>
             <ul id="tag-post-list" class="post-list"></ul>
-        </div>
-
-        <noscript>
-            <p>Select a tag above. JavaScript is required to display matching posts.</p>
-        </noscript>
-    </div>
-    <button class="anchor"><i class="fa fa-anchor"></i></button>
-    <div class="right">
-        <div class="wrap">
-            <div class="side content">
-                <div>
-                    <i class="fa fa-bookmark-o"></i> Tags
-                </div>
-                <ul id="content-side" class="content-ul"></ul>
-            </div>
         </div>
     </div>
 </div>

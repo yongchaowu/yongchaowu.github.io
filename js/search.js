@@ -34,6 +34,8 @@
                 buildTopicFilter()
             } catch (e) {
                 stats.textContent = 'Index failed to parse'
+                LOADING = false
+                return
             }
             LOADING = false
             cb()
@@ -160,9 +162,12 @@
         stats.textContent = hits.length ? hits.length + ' results' : 'No matching posts found'
         results.innerHTML = hits.slice(0, 30).map(function(h) {
             var titleText = h.p.display_title || h.p.title
-            var t = esc(titleText).replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
-                return '<mark>' + m + '</mark>'
-            })
+            var t = esc(titleText)
+            if (terms.length) {
+                t = t.replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
+                    return '<mark>' + m + '</mark>'
+                })
+            }
             var topic = h.p.topic ? '<span class="search-topic">' + esc(h.p.topic) + '</span> ' : ''
             return '<li class="search-hit"><time>' + h.p.date + '</time> ' + topic +
                 '<a href="' + h.p.url + '">' + t + '</a>' +

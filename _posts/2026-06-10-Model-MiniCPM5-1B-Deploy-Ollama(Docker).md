@@ -1,6 +1,7 @@
 ---
 layout: post
 title: MiniCPM5 1B Deploy Ollama
+display_title: 'Deploying MiniCPM5-1B with Ollama'
 date: 2026-06-10 07:45:00
 categories:
 - AI & LLM
