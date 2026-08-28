@@ -2,7 +2,7 @@
     <div class="wrapper">
         <a href="{{ site.baseurl }}/" class="brand">{{ site.title }}</a>
         <small>{{site.brief-intro}}</small>
-        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <button id="headerMenu" class="menu" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false"><i class="fa fa-bars"></i></button>
         <nav id="headerNav">
             <ul>
                 <li>
@@ -34,7 +34,7 @@
                     </a>
                 </li>
                 <li>
-                    <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">
+                    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
                         <i class="fa fa-moon-o"></i>
                     </button>
                 </li>

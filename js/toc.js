@@ -26,7 +26,10 @@
 
         // Ensure stable ID
         if (!h.id) {
-            var base = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+            var base = text.toLowerCase()
+                .replace(/[\s_]+/g, '-')
+                .replace(/[^\p{L}\p{N}-]+/gu, '')
+                .replace(/^-+|-+$/g, '')
             if (!base) base = 'heading'
             headingCount[base] = (headingCount[base] || 0) + 1
             if (headingCount[base] > 1) {
