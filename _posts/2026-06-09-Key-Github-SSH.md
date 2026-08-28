@@ -1,6 +1,7 @@
 ---
 layout: post
 title: GitHub SSH
+display_title: 'Generating and Configuring a GitHub SSH Key'
 date: 2026-06-09 19:56:00
 categories:
 - Developer Tools

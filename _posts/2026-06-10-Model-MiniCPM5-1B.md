@@ -1,6 +1,7 @@
 ---
 layout: post
 title: MiniCPM5 1B
+display_title: 'MiniCPM5-1B Overview'
 date: 2026-06-10 19:56:00
 categories:
 - AI & LLM

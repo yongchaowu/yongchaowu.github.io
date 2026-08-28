@@ -98,7 +98,7 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
                 <div class="tags-cloud" id="popular-tags">
                     {% for tag_name in site.data.featured_tags.tags %}
                       {% if site.tags[tag_name] %}
-                      <a href="{{ root_url }}/{{ site.tag_dir }}#{{ tag_name | slugify }}" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
+                      <a href="{{ root_url }}/{{ site.tag_dir }}?tag={{ tag_name | url_encode }}" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
                       {% endif %}
                     {% endfor %}
                 </div>
