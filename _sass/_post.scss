@@ -254,6 +254,22 @@
             }
         }
     }
+    .search-show-more {
+        display: block;
+        width: 100%;
+        margin: 12px 0;
+        padding: 10px;
+        border: 1px solid var(--border-strong);
+        border-radius: 6px;
+        background: var(--bg-card);
+        color: var(--text-link);
+        cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+        &:hover {
+            background: var(--bg-hover);
+        }
+    }
 }
 
 /* Technical article callouts */

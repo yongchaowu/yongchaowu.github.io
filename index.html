@@ -4,7 +4,7 @@ title: "Yc.W | C++ Backend & AI Agent"
 description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
 ---
 
-<div class="page clearfix" index>
+<div class="page clearfix" index id="main-content">
     <div class="left">
         <div class="hero">
             <h1>Yc.W</h1>
@@ -47,7 +47,7 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
         <!-- Pagination links -->
         <div class="pagination">
           {% if paginator.previous_page %}
-            <a href="{{ site.baseurl }}/index.html" class="previous"><i class="fa fa-angle-double-left"></i></a>
+            <a href="{{ site.baseurl }}/" class="previous"><i class="fa fa-angle-double-left"></i></a>
             <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous"><i class="fa fa-angle-left"></i></a>
           {% else %}
             <span class="previous disable"><i class="fa fa-angle-double-left"></i></span>
@@ -55,8 +55,8 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
           {% endif %}
           <span class="page_number ">{{ paginator.page }}/{{ paginator.total_pages }}</span>
           {% if paginator.next_page %}
-            <a href="{{ paginator.next_page_path }}" class="next"><i class="fa fa-angle-right"></i></a>
-            <a href="{{ site.baseurl }}/page{{ paginator.total_pages }}" class="next"><i class="fa fa-angle-double-right"></i></a>
+            <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="next"><i class="fa fa-angle-right"></i></a>
+            <a href="{{ site.baseurl }}/page{{ paginator.total_pages }}/" class="next"><i class="fa fa-angle-double-right"></i></a>
           {% else %}
             <span class="next disable"><i class="fa fa-angle-right"></i></span>
             <span class="next disable"><i class="fa fa-angle-double-right"></i></span>

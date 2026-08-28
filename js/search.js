@@ -84,6 +84,10 @@
         history.replaceState(null, '', url)
     }
 
+    var PAGE_SIZE = 30
+    var allHits = []
+    var shownCount = 0
+
     function esc(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     }
@@ -96,6 +100,60 @@
         return esc(frag).replace(new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), function(m) {
             return '<mark>' + m + '</mark>'
         })
+    }
+
+    function renderHit(hit, terms) {
+        var li = document.createElement('li')
+        li.className = 'search-hit'
+        var time = document.createElement('time')
+        time.textContent = hit.p.date
+        li.appendChild(time)
+        li.appendChild(document.createTextNode(' '))
+        if (hit.p.topic) {
+            var span = document.createElement('span')
+            span.className = 'search-topic'
+            span.textContent = hit.p.topic
+            li.appendChild(span)
+            li.appendChild(document.createTextNode(' '))
+        }
+        var a = document.createElement('a')
+        a.href = hit.p.url
+        var titleText = hit.p.display_title || hit.p.title
+        if (terms.length) {
+            a.innerHTML = esc(titleText).replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
+                return '<mark>' + m + '</mark>'
+            })
+        } else {
+            a.textContent = titleText
+        }
+        li.appendChild(a)
+        if (terms.length) {
+            var p = document.createElement('p')
+            p.innerHTML = snippet(hit.p.text, terms[0])
+            li.appendChild(p)
+        }
+        return li
+    }
+
+    function renderShowMore() {
+        var existing = document.getElementById('search-show-more')
+        if (existing) existing.remove()
+        if (shownCount < allHits.length) {
+            var btn = document.createElement('button')
+            btn.id = 'search-show-more'
+            btn.className = 'search-show-more'
+            btn.textContent = 'Show more (' + shownCount + ' / ' + allHits.length + ')'
+            btn.onclick = function() {
+                var terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean)
+                var end = Math.min(shownCount + PAGE_SIZE, allHits.length)
+                for (var i = shownCount; i < end; i++) {
+                    results.appendChild(renderHit(allHits[i], terms))
+                }
+                shownCount = end
+                renderShowMore()
+            }
+            results.parentElement.appendChild(btn)
+        }
     }
 
     function doSearch() {
@@ -159,20 +217,24 @@
             if (b.score !== a.score) return b.score - a.score
             return (b.date > a.date) ? 1 : (b.date < a.date) ? -1 : 0
         })
-        stats.textContent = hits.length ? hits.length + ' results' : 'No matching posts found'
-        results.innerHTML = hits.slice(0, 30).map(function(h) {
-            var titleText = h.p.display_title || h.p.title
-            var t = esc(titleText)
-            if (terms.length) {
-                t = t.replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
-                    return '<mark>' + m + '</mark>'
-                })
-            }
-            var topic = h.p.topic ? '<span class="search-topic">' + esc(h.p.topic) + '</span> ' : ''
-            return '<li class="search-hit"><time>' + h.p.date + '</time> ' + topic +
-                '<a href="' + h.p.url + '">' + t + '</a>' +
-                '<p>' + (terms.length ? snippet(h.p.text, terms[0]) : '') + '</p></li>'
-        }).join('')
+        allHits = hits
+        shownCount = 0
+        var existingMore = document.getElementById('search-show-more')
+        if (existingMore) existingMore.remove()
+        if (!hits.length) {
+            stats.textContent = 'No matching posts found'
+            results.innerHTML = ''
+            return
+        }
+        var visible = Math.min(PAGE_SIZE, hits.length)
+        var suffix = hits.length > PAGE_SIZE ? ' · showing ' + visible : ''
+        stats.textContent = hits.length + ' results' + suffix
+        results.innerHTML = ''
+        for (var n = 0; n < visible; n++) {
+            results.appendChild(renderHit(hits[n], terms))
+        }
+        shownCount = visible
+        renderShowMore()
     }
 
     var timer = null

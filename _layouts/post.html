@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<div class="page clearfix" post>
+<div class="page clearfix" post id="main-content">
     <div class="left">
         <h1>{{ page.display_title | default: page.title }}</h1>
         {% include content-badge.html %}
@@ -15,7 +15,7 @@ layout: default
             <span class="label-card">
                 <i class="fa fa-pencil"></i>{{ content | strip_html | size }} 字
                 {% assign char_count = content | strip_html | strip_newlines | size %}
-                {% assign reading_time = char_count | divided_by: 800 %}
+                {% assign reading_time = char_count | divided_by: 450 %}
                 {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
                 · ~{{ reading_time }} min
             </span>
@@ -90,13 +90,16 @@ layout: default
 <script src="{{ '/js/toc.js' | relative_url }}" charset="utf-8"></script>
 <script>
 /**
- * target _blank
+ * target _blank for external links only
  */
 (function() {
-    var aTags = document.querySelectorAll('article a:not([id])')
-    for (var i = 0; i < aTags.length; i++) {
-        aTags[i].setAttribute('target', '_blank')
-    }
+    var hostname = location.hostname
+    document.querySelectorAll('article a[href]').forEach(function(a) {
+        if (a.hostname && a.hostname !== hostname) {
+            a.target = '_blank'
+            a.rel = 'noopener noreferrer'
+        }
+    })
 }());
 </script>
 <script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

@@ -30,11 +30,19 @@
     }
 
     function renderPostList(posts) {
-        listEl.innerHTML = posts.map(function(p) {
-            var title = p.display_title || p.title
-            return '<li><time>' + p.date + '</time> ' +
-                '<a href="' + p.url + '">' + title.replace(/</g, '&lt;') + '</a></li>'
-        }).join('')
+        listEl.innerHTML = ''
+        posts.forEach(function(p) {
+            var li = document.createElement('li')
+            var time = document.createElement('time')
+            time.textContent = p.date
+            li.appendChild(time)
+            li.appendChild(document.createTextNode(' '))
+            var a = document.createElement('a')
+            a.href = p.url
+            a.textContent = p.display_title || p.title
+            li.appendChild(a)
+            listEl.appendChild(li)
+        })
     }
 
     function selectTag(tag) {

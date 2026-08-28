@@ -13,17 +13,20 @@
     var nav = document.querySelector('#headerNav')
     menuBtn.onclick = function(e) {
       e.stopPropagation()
-      if (menuBtn.classList.contains('active')) {
+      var isOpen = menuBtn.classList.contains('active')
+      if (isOpen) {
         menuBtn.classList.remove('active')
         nav.classList.remove('nav-show')
       } else {
         nav.classList.add('nav-show')
         menuBtn.classList.add('active')
       }
+      menuBtn.setAttribute('aria-expanded', !isOpen)
     }
     document.querySelector('body').addEventListener('click', function() {
       nav.classList.remove('nav-show')
       menuBtn.classList.remove('active')
+      menuBtn.setAttribute('aria-expanded', 'false')
     })
   }
 }());
