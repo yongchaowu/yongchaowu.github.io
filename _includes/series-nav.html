@@ -1,7 +1,7 @@
 {% if page.series %}
 <div class="series-nav">
     <div class="series-nav-header">
-        <i class="fa fa-list-ol"></i> Series: {{ page.series }}
+        {% include icon.html name="list-ol" %} Series: {{ page.series }}
     </div>
     {% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
     {% if series_posts.size > 1 %}

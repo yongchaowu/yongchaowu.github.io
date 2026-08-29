@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'Ubuntu 22.04 Install Input Method: Sougoupinyin'
+summary: >
+  Install Sogou Pinyin on Ubuntu 22.04 by replacing IBus with Fcitx 4,
+  resolving Qt dependencies, and configuring environment variables.
+lang: zh-CN
 date: 2026-05-31 11:57:00
 categories:
 - Systems

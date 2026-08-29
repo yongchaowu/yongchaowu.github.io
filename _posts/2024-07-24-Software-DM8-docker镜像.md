@@ -2,6 +2,10 @@
 layout: post
 title: Software-DM8-docker镜像
 display_title: 'DM8 Docker 镜像'
+summary: >
+  Running DM8 (达梦数据库) in Docker, including image pull, initialization,
+  and basic SQL client configuration for development and testing.
+lang: zh-CN
 date: 2024-07-24 16:59:00
 categories:
 - DevOps & Infrastructure

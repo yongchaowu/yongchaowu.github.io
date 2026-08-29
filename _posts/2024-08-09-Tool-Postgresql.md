@@ -1,6 +1,10 @@
 ---
 layout: post
 title: Postgresql
+summary: >
+  PostgreSQL installation on Ubuntu 18.04, including password reset,
+  SQL import, and basic configuration for development environments.
+lang: zh-CN
 date: 2024-08-09 09:15:00
 categories:
 - Database

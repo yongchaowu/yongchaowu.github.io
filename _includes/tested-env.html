@@ -1,10 +1,14 @@
-{% if page.tested_env %}
-<div class="tested-env">
-    <div class="tested-env-header"><i class="fa fa-flask"></i> Test Environment</div>
-    <table>
-        {% for item in page.tested_env %}
-        <tr><td class="te-key">{{ item.first }}</td><td class="te-val">{{ item.last }}</td></tr>
+{% if page.tested %}
+<div class="post-tested">
+    <div class="post-tested-title">{% include icon.html name="flask" %} Tested environment</div>
+    <dl>
+        {% for item in page.tested %}
+        <div class="post-tested-row">
+            <dt>{{ item[0] }}</dt>
+            <dd>{{ item[1] }}</dd>
+        </div>
         {% endfor %}
-    </table>
+    </dl>
+    <div class="post-tested-note">Verified on this environment.</div>
 </div>
 {% endif %}

@@ -1,6 +1,10 @@
 ---
 layout: post
 title: Managing Screen Timeout and Power Mode Settings on Linux
+summary: >
+  Bash script to configure screen blank timeout and power management profiles
+  on Linux laptops, with interactive prompts for quick switching.
+lang: en
 date: 2026-06-04 19:35:00
 categories:
 - DevOps & Infrastructure

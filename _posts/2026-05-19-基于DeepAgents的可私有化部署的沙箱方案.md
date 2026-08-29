@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 基于DeepAgents的可私有化部署的沙箱方案
+summary: >
+  Private deployment of DeepAgents using sandbox backends for isolated code
+  execution, with Docker-based sandboxes and custom backend configuration.
+lang: zh-CN
 date: 2026-05-19 18:47:00
 categories:
 - AI & LLM

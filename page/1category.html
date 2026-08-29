@@ -6,58 +6,58 @@ icon: th-list
 type: page
 ---
 
-<div class="page clearfix">
+<div class="page clearfix" id="main-content" tabindex="-1">
     <div class="left">
-        <h1>{{page.title}}</h1>
+        <h1>{{ page.title }}</h1>
+        {% assign topic_count = site.data.topics.topics | size %}
+        <p class="topics-meta">{{ topic_count }} topics</p>
         <hr>
-        <div class="topic-cards">
-            {% for topic in site.data.topics.topics %}
-                {% for category in site.categories %}
-                    {% if category[0] == topic.name %}
-                        {% assign category_name = category[0] %}
-                        {% assign category_posts = category[1] %}
-                        {% assign category_slug = category_name | slugify %}
-                        {% assign post_count = category_posts | size %}
-            <div class="topic-card">
-                <div class="topic-card-header">
-                    <h2 id="{{ category_slug }}">{{ category_name }}</h2>
-                    <span class="topic-count">{{ post_count }}</span>
-                </div>
-                <ul class="topic-post-list" id="posts-{{ category_slug }}">
-                    {% for post in category_posts limit:5 %}
-                        {% if post.url %}
-                    <li>
-                        <time>{{ post.date | date: "%b %d, %Y" }}</time>
-                        <a class="title" href="{{ post.url | prepend: site.baseurl }}">{{ post.display_title | default: post.title }}</a>
-                    </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-                {% if post_count > 5 %}
-                <button class="topic-expand" onclick="var list=document.getElementById('posts-{{ category_slug }}');this.textContent=this.textContent==='Show all {{ post_count }} posts ▾'?'Show less ▴':'Show all {{ post_count }} posts ▾';list.classList.toggle('expanded')">
-                    Show all {{ post_count }} posts ▾
-                </button>
-                {% endif %}
+
+        {% for topic in site.data.topics.topics %}
+            {% for category in site.categories %}
+                {% if category[0] == topic.name %}
+                    {% assign category_name = category[0] %}
+                    {% assign category_posts = category[1] %}
+                    {% assign post_count = category_posts | size %}
+        <div class="topic-hub">
+            <div class="topic-hub-header">
+                <h2>{{ category_name }}</h2>
+                <span class="topic-hub-count">{{ post_count }} posts</span>
             </div>
-                    {% endif %}
+            {% if topic.description %}
+            <p class="topic-hub-desc">{{ topic.description }}</p>
+            {% endif %}
+            <ul class="topic-hub-posts">
+                {% for post in category_posts limit:3 %}
+                <li>
+                    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+                    <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                </li>
                 {% endfor %}
-            {% endfor %}
+            </ul>
+            <div class="topic-hub-footer">
+                <a href="{{ '/tag/' | prepend: site.baseurl }}{{ category_name | slugify }}/" class="topic-hub-viewall">
+                    View all {{ category_name }} posts →
+                </a>
+            </div>
         </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
     </div>
-    <button class="anchor"><i class="fa fa-anchor"></i></button>
+
     <div class="right">
         <div class="wrap">
             <div class="side content">
                 <div>
-                    <i class="fa fa-bookmark-o"></i> Content
+                    {% include icon.html name="th-list" %} Topics
                 </div>
                 <ul id="content-side" class="content-ul">
                     {% for topic in site.data.topics.topics %}
                         {% for category in site.categories %}
                             {% if category[0] == topic.name %}
-                                {% assign category_slug = topic.name | slugify %}
                     <li>
-                        <a data-scroll href="#{{ category_slug }}">
+                        <a href="#{{ topic.id }}">
                             {{ topic.name }} ({{ category[1] | size }})
                         </a>
                     </li>
@@ -70,85 +70,3 @@ type: page
     </div>
 </div>
 <script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>
-<style>
-.topic-cards {
-    display: grid;
-    gap: 20px;
-}
-.topic-card {
-    background: var(--bg-content);
-    border: 1px solid var(--border-color, #e0e0e0);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: var(--shadow);
-}
-.topic-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-.topic-card-header h2 {
-    margin: 0;
-    font-size: 20px;
-}
-.topic-count {
-    background: var(--badge-bg);
-    color: var(--badge-text);
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: bold;
-}
-.topic-post-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: none;
-    overflow: hidden;
-}
-.topic-post-list li {
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border-color, #f0f0f0);
-    display: flex;
-    gap: 12px;
-    align-items: baseline;
-}
-.topic-post-list li:last-child {
-    border-bottom: none;
-}
-.topic-post-list time {
-    color: var(--text-muted);
-    font-size: 13px;
-    white-space: nowrap;
-    min-width: 100px;
-}
-.topic-post-list .title {
-    color: var(--text-primary);
-    font-weight: normal;
-}
-.topic-expand {
-    background: none;
-    border: 1px solid var(--border-color, #ccc);
-    border-radius: 4px;
-    padding: 6px 14px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--text-muted);
-    transition: 0.2s;
-}
-.topic-expand:hover {
-    border-color: var(--text-primary);
-    color: var(--text-primary);
-}
-.topic-post-list.expanded {
-    max-height: none;
-}
-.topic-post-list li:nth-child(n+6) {
-    display: none;
-}
-.topic-post-list.expanded li:nth-child(n+6) {
-    display: flex;
-}
-</style>

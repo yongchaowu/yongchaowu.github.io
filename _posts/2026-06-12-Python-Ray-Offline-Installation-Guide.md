@@ -1,6 +1,14 @@
 ---
 layout: post
 title: Python Ray Offline Installation Guide
+summary: >
+  Step-by-step guide for installing Ray in air-gapped environments using
+  pre-downloaded wheel packages, with pip configuration and verification steps.
+lang: en
+tested:
+  Python: "3.12"
+  Package Manager: "pip >= 21.0"
+  Environment: "Air-gapped / offline"
 date: 2026-06-12 22:17:00
 categories:
 - Programming
@@ -43,3 +51,10 @@ tags:
    ```bash
    pip install --no-index --find-links=./ray_offline_pkgs ray[default]==2.40.0
    ```
+
+## Next Steps
+
+After installing Ray, you can proceed to:
+
+- [Multi-Node LLM Serving: vLLM + Ray]({% post_url 2026-06-12-Multi-Node-LLM-Serving-vLLM+Ray(Docker) %}) — Deploy vLLM across multiple nodes using Ray
+- [Multi-Node LLM Serving: Architecture, Frameworks & Best Practices]({% post_url 2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated) %}) — Compare multi-node serving frameworks

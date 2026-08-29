@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'AI Model Hub: New API'
+summary: >
+  Self-hosted gateway for unifying access to multiple AI providers, with
+  usage tracking, key management, and OpenAI-compatible API endpoints.
+lang: en
 date: 2026-06-01 22:07:00
 categories:
 - AI & LLM

@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'Python Package and Project Manager: uv'
+summary: >
+  Quick reference for uv, a Rust-based Python package manager that handles
+  virtual environments, dependency resolution, and script execution at high speed.
+lang: en
 date: 2026-06-02 06:51:00
 categories:
 - Developer Tools

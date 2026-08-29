@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'C++ ThreadPool: BS::thread_pool 单例'
+summary: >
+  Singleton pattern for BS::thread_pool that provides a global thread pool
+  instance for parallel task submission without repeated pool construction.
+lang: zh-CN
 date: 2025-02-27 21:26:00
 categories:
 - Programming

@@ -2,8 +2,61 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {%- if page.noindex -%}
+    <meta name="robots" content="noindex,follow">
+    {%- endif -%}
 
-    {% seo %}
+    {% assign seo_description = page.summary
+        | default: page.description
+        | default: site.description
+        | strip_html
+        | strip_newlines
+        | truncate: 180 %}
+
+    {% assign seo_title = page.display_title | default: page.title %}
+    {% assign seo_url = page.url | absolute_url %}
+
+    {% if page.layout == 'post' %}
+        <title>{{ seo_title }} | {{ site.title }}</title>
+    {% elsif page.url == '/' %}
+        <title>{{ site.title }} — {{ site.brief-intro }}</title>
+    {% else %}
+        <title>{{ seo_title }} | {{ site.title }}</title>
+    {% endif %}
+
+    <meta name="description" content="{{ seo_description | escape }}">
+    <link rel="canonical" href="{{ seo_url }}">
+
+    <!-- OpenGraph -->
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:title" content="{{ seo_title | escape }}">
+    <meta property="og:description" content="{{ seo_description | escape }}">
+    <meta property="og:url" content="{{ seo_url }}">
+    <meta property="og:locale" content="{{ page.lang | default: site.lang | default: 'en' | replace: '-', '_' }}">
+    {% if page.layout == 'post' %}
+        <meta property="og:type" content="article">
+    {% else %}
+        <meta property="og:type" content="website">
+    {% endif %}
+    {% if page.image %}
+        <meta property="og:image" content="{{ page.image | absolute_url }}">
+    {% elsif site.default_social_image %}
+        <meta property="og:image" content="{{ site.default_social_image | absolute_url }}">
+    {% else %}
+        <meta property="og:image" content="{{ '/icon-512.png' | absolute_url }}">
+    {% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ seo_title | escape }}">
+    <meta name="twitter:description" content="{{ seo_description | escape }}">
+    {% if page.image %}
+        <meta name="twitter:image" content="{{ page.image | absolute_url }}">
+    {% else %}
+        <meta name="twitter:image" content="{{ '/icon-512.png' | absolute_url }}">
+    {% endif %}
+
+    {% include seo-jsonld.html %}
 
     <link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon-32x32.png?v=3' | relative_url }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ '/favicon-16x16.png?v=3' | relative_url }}">
@@ -18,7 +71,6 @@
             document.documentElement.setAttribute('data-theme', 'dark');
     })();
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ '/css/main.css' | relative_url }}">
     <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | absolute_url }}">
 

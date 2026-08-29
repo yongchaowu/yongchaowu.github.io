@@ -1,6 +1,10 @@
 ---
 layout: post
 title: Graphify
+summary: >
+  Graphify turns code, documentation, and papers into a queryable knowledge
+  graph, giving AI coding assistants deeper context across your codebase.
+lang: zh-CN
 date: 2026-06-03 07:49:00
 categories:
 - Developer Tools

@@ -1,0 +1,64 @@
+---
+layout: default
+---
+
+<script>
+// Legacy redirect: /tag/?tag=C++ -> /tag/cpp/
+(function() {
+    var params = new URLSearchParams(location.search);
+    var tag = params.get('tag');
+    if (tag) {
+        var slugs = {{ site.data.tag_slugs | jsonify }};
+        var slug = slugs[tag];
+        if (!slug) {
+            slug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+        if (slug) {
+            location.replace('/tag/' + slug + '/');
+        }
+    }
+})();
+</script>
+
+<main class="page clearfix" id="main-content" tabindex="-1">
+    <div class="left">
+        <h1>Tags</h1>
+        <p>Browse all {{ site.tags | size }} tags</p>
+        <hr>
+
+        <div class="tag-cloud">
+            {% assign sorted_tags = site.tags | sort %}
+            {% for tag in sorted_tags %}
+                {% assign tag_name = tag[0] %}
+                {% assign tag_count = tag[1] | size %}
+                {% assign tag_slug = nil %}
+                {% for slug_map in site.data.tag_slugs %}
+                    {% if slug_map[1] == tag_name %}
+                        {% assign tag_slug = slug_map[0] %}
+                    {% endif %}
+                {% endfor %}
+                {% unless tag_slug %}
+                    {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                {% endunless %}
+                <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" class="tag-item">
+                    {{ tag_name }}
+                    <span class="tag-count">{{ tag_count }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="wrap">
+            <div class="side">
+                <div>
+                    {% include icon.html name="tags" %}
+                    Tag Index
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted);">
+                    {{ site.tags | size }} tags across {{ site.posts | size }} posts
+                </p>
+            </div>
+        </div>
+    </div>
+</main>

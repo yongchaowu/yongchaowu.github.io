@@ -64,5 +64,6 @@ Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图
   width="630"
   height="355" 
   frameborder="0"
-  scrolling="no">
+  scrolling="no"
+  loading="lazy">
 </iframe>

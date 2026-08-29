@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'Sentence Transformers: Sentence-BERT'
+summary: >
+  Notes on using Sentence Transformers for semantic search and text similarity,
+  covering embedding generation, reranking, and integration with vector stores.
+lang: en
 date: 2026-06-01 21:39:00
 categories:
 - AI & LLM

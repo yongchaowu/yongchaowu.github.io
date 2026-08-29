@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 以ubuntu:latest为例
+summary: >
+  Docker engine installation on Ubuntu using the official repository method,
+  with post-install permissions and basic container management commands.
+lang: zh-CN
 date: 2024-08-08 16:48:00
 categories:
 - DevOps & Infrastructure

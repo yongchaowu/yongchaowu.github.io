@@ -1,6 +1,10 @@
 ---
 layout: post
 title: BehaviorTree.CPP Manual Notes
+summary: >
+  Hands-on notes on BehaviorTree.CPP and Groot2, covering tree design,
+  ZeroMQ-based remote tree communication, and practical debugging workflows.
+lang: en
 date: 2026-07-15 23:51:00
 categories:
 - C & C++
@@ -14,6 +18,8 @@ tags:
 - [Introduce](https://www.behaviortree.dev/)
 - [BehaviorTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP#)
 - [Groot2](https://www.behaviortree.dev/groot/)
+
+> For a structured, version-specific reference, see [BehaviorTree.CPP 4.9 Complete Guide]({% post_url 2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated) %}).
 
 <!--more-->
 - [ZeroMQ Project](https://github.com/zeromq?q=zmqp&type=all&language=&sort=)
