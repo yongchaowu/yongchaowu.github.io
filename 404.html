@@ -1,0 +1,74 @@
+---
+layout: default
+title: Page Not Found
+permalink: /404.html
+noindex: true
+---
+
+<main class="page clearfix" id="main-content" tabindex="-1">
+    <div class="left">
+        <div class="error-404">
+            <div class="error-code">&#9679; 404</div>
+            <h1>Page not found</h1>
+            <p>The page you're looking for isn't here. It may have moved, been renamed, or no longer exists.</p>
+
+            <form class="error-search" action="{{ '/search/' | relative_url }}" method="get">
+                <label for="404-search" class="sr-only">Search articles</label>
+                <input
+                    id="404-search"
+                    type="search"
+                    name="q"
+                    placeholder="Search articles…"
+                    autocomplete="off">
+            </form>
+        </div>
+
+        <div class="error-section">
+            <h2>Popular Topics</h2>
+            <div class="error-topics">
+                {% for topic in site.data.topics.topics %}
+                    {% assign topic_count = 0 %}
+                    {% for post in site.posts %}
+                        {% if post.categories contains topic.name %}
+                            {% assign topic_count = topic_count | plus: 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if topic_count > 0 %}
+                        <a href="{{ '/category/' | prepend: site.baseurl }}#{{ topic.name | slugify }}">{{ topic.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="error-section">
+            <h2>Recent Notes</h2>
+            <ul class="error-recent">
+                {% for post in site.posts limit:4 %}
+                <li>
+                    <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="error-actions">
+            <a href="{{ '/' | relative_url }}" class="btn">Back Home</a>
+            <a href="{{ '/search/' | relative_url }}" class="btn">Browse All</a>
+        </div>
+    </div>
+</main>
+
+<script>
+// Pre-fill search from URL path
+(function() {
+    var path = location.pathname
+        .replace(/^\/|\/$/g, '')
+        .replace(/[-_\/]+/g, ' ')
+        .trim();
+    if (path && path !== '404.html') {
+        var input = document.getElementById('404-search');
+        if (input) input.value = path;
+    }
+})();
+</script>

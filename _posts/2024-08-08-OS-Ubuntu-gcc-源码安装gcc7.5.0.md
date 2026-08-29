@@ -2,6 +2,10 @@
 layout: post
 title: Ubuntu-gcc-源码安装gcc7.5.0
 display_title: 'Ubuntu 源码安装 GCC 7.5.0'
+summary: >
+  Build GCC 7.5.0 from source on Ubuntu for legacy project compatibility,
+  covering prerequisite packages, mirror selection, and multi-stage build.
+lang: zh-CN
 date: 2024-08-08 17:59:00
 categories:
 - Systems

@@ -1,0 +1,63 @@
+---
+layout: default
+---
+
+<main class="page clearfix" id="main-content" tabindex="-1">
+    <div class="left">
+        <h1>{{ page.tag }} Articles</h1>
+        <p class="tag-count">{{ site.tags[page.tag] | size }} articles</p>
+        <hr>
+
+        {% assign tag_posts = site.tags[page.tag] %}
+        {% for post in tag_posts %}
+        <div class="post-card">
+            <div class="post-card-meta">
+                <span class="post-card-cat">
+                    {% for cat in post.categories %}{{ cat }}{% unless forloop.last %} / {% endunless %}{% endfor %}
+                </span>
+                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+                {% if post.version %}<span class="post-card-version"> · {{ post.version }}</span>{% endif %}
+            </div>
+            <h2 class="post-card-title">
+                <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+            </h2>
+            {% if post.summary %}
+            <div class="excerpt">{{ post.summary }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="right">
+        <div class="wrap">
+            <div class="side">
+                <div>
+                    {% include icon.html name="tags" %}
+                    All Tags
+                </div>
+                <ul class="content-ul">
+                    {% assign sorted_tags = site.tags | sort %}
+                    {% for tag in sorted_tags %}
+                    {% assign tag_name = tag[0] %}
+                    {% assign tag_count = tag[1] | size %}
+                    {% assign tag_slug = nil %}
+                    {% for slug_map in site.data.tag_slugs %}
+                        {% if slug_map[1] == tag_name %}
+                            {% assign tag_slug = slug_map[0] %}
+                        {% endif %}
+                    {% endfor %}
+                    {% unless tag_slug %}
+                        {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                    {% endunless %}
+                    <li>
+                        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" {% if tag_name == page.tag %}class="active"{% endif %}>
+                            {{ tag_name }}
+                            <span class="badge">{{ tag_count }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,6 +1,10 @@
 ---
 layout: post
 title: CC Switch
+summary: >
+  CC Switch unifies management of AI coding assistants — routing, usage tracking,
+  session handling, and skill configuration across seven supported apps.
+lang: zh-CN
 date: 2026-06-02 07:16:00
 categories:
 - Developer Tools

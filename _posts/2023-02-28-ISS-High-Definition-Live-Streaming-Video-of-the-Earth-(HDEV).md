@@ -26,7 +26,7 @@ NASA 地球直播影像(流媒体)
 		src="https://isstracker.spaceflight.esa.int/" 
 		width="630"
 		height="355" 
-		frameborder="0"
+		frameborder="0" loading="lazy"
 		scrolling="no">
 	</iframe>
 	<ul>
@@ -56,7 +56,7 @@ NASA 地球直播影像(流媒体)
 		src="https://isstracker.spaceflight.esa.int/" 
 		width="630"
 		height="355" 
-		frameborder="0"
+		frameborder="0" loading="lazy"
 		scrolling="no">
 	</iframe>
 	<ul>

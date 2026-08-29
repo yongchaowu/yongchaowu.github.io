@@ -11,9 +11,9 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
             <p class="hero-subtitle">C++ Backend &amp; AI Agent</p>
             <p class="hero-desc">Engineering notes on C++ backend development, AI Agents, LLM applications, and practical development.</p>
             <div class="hero-links">
-                <a href="https://github.com/yongchaowu" target="_blank" rel="noopener"><i class="fa fa-github"></i> GitHub</a>
-                <a href="{{ '/about/' | prepend: site.baseurl }}"><i class="fa fa-user"></i> About</a>
-                <a href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}"><i class="fa fa-rss"></i> RSS</a>
+                <a href="https://github.com/yongchaowu" target="_blank" rel="noopener">{% include icon.html name="github" %} GitHub</a>
+                <a href="{{ '/about/' | prepend: site.baseurl }}">{% include icon.html name="user" %} About</a>
+                <a href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">{% include icon.html name="rss" %} RSS</a>
             </div>
         </div>
         <hr>
@@ -31,14 +31,18 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
                 </h3>
                 {% include content-badge.html %}
                 <div class="excerpt">
-                    {% assign excerpt_text = post.excerpt | strip_html | normalize_whitespace | strip %}
-                    {% if excerpt_text == empty or excerpt_text.size < 50 %}
-                        {% assign excerpt_text = post.content | strip_html | normalize_whitespace | strip %}
+                    {% if post.summary %}
+                        {{ post.summary }}
+                    {% else %}
+                        {% assign excerpt_text = post.excerpt | strip_html | normalize_whitespace | strip %}
+                        {% if excerpt_text == empty or excerpt_text.size < 50 %}
+                            {% assign excerpt_text = post.content | strip_html | normalize_whitespace | strip %}
+                        {% endif %}
+                        {{ excerpt_text | truncate: 140 }}
                     {% endif %}
-                    {{ excerpt_text | truncate: 140 }}
                 </div>
                 <div class="read-all">
-                    <a href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i> Read →</a>
+                    <a href="{{ post.url | prepend: site.baseurl }}">{% include icon.html name="newspaper-o" %} Read →</a>
                 </div>
               </li>
             {% endfor %}
@@ -47,28 +51,28 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
         <!-- Pagination links -->
         <div class="pagination">
           {% if paginator.previous_page %}
-            <a href="{{ site.baseurl }}/" class="previous"><i class="fa fa-angle-double-left"></i></a>
-            <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous"><i class="fa fa-angle-left"></i></a>
+            <a href="{{ site.baseurl }}/" class="previous">{% include icon.html name="angle-double-left" %}</a>
+            <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous">{% include icon.html name="angle-left" %}</a>
           {% else %}
-            <span class="previous disable"><i class="fa fa-angle-double-left"></i></span>
-            <span class="previous disable"><i class="fa fa-angle-left"></i></span>
+            <span class="previous disable">{% include icon.html name="angle-double-left" %}</span>
+            <span class="previous disable">{% include icon.html name="angle-left" %}</span>
           {% endif %}
           <span class="page_number ">{{ paginator.page }}/{{ paginator.total_pages }}</span>
           {% if paginator.next_page %}
-            <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="next"><i class="fa fa-angle-right"></i></a>
-            <a href="{{ site.baseurl }}/page{{ paginator.total_pages }}/" class="next"><i class="fa fa-angle-double-right"></i></a>
+            <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="next">{% include icon.html name="angle-right" %}</a>
+            <a href="{{ site.baseurl }}/page{{ paginator.total_pages }}/" class="next">{% include icon.html name="angle-double-right" %}</a>
           {% else %}
-            <span class="next disable"><i class="fa fa-angle-right"></i></span>
-            <span class="next disable"><i class="fa fa-angle-double-right"></i></span>
+            <span class="next disable">{% include icon.html name="angle-right" %}</span>
+            <span class="next disable">{% include icon.html name="angle-double-right" %}</span>
           {% endif %}
         </div>
     </div>
-    <!-- <button class="anchor"><i class="fa fa-anchor"></i></button> -->
+    <!-- <button class="anchor">{% include icon.html name="anchor" %}</button> -->
     <div class="right">
         <div class="wrap">
             <div class="side">
                 <div>
-                    <i class="fa fa-th-list"></i>
+                    {% include icon.html name="th-list" %}
                     Topics
                 </div>
                 <ul class="content-ul" cate>
@@ -92,17 +96,26 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
 
             <div class="side ">
                 <div>
-                    <i class="fa fa-tags"></i>
+                    {% include icon.html name="tags" %}
                     Featured Tags
                 </div>
                 <div class="tags-cloud" id="popular-tags">
                     {% for tag_name in site.data.featured_tags.tags %}
                       {% if site.tags[tag_name] %}
-                      <a href="{{ root_url }}/{{ site.tag_dir }}?tag={{ tag_name | url_encode }}" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
+                        {% assign tag_slug = nil %}
+                        {% for slug_map in site.data.tag_slugs %}
+                            {% if slug_map[1] == tag_name %}
+                                {% assign tag_slug = slug_map[0] %}
+                            {% endif %}
+                        {% endfor %}
+                        {% unless tag_slug %}
+                            {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                        {% endunless %}
+                      <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
                       {% endif %}
                     {% endfor %}
                 </div>
-                <a class="view-all" href="{{ root_url }}/{{ site.tag_dir }}">View all tags →</a>
+                <a class="view-all" href="{{ '/tag/' | prepend: site.baseurl }}">View all tags →</a>
             </div>
         </div>
     </div>

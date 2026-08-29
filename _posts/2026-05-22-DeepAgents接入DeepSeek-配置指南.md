@@ -1,6 +1,10 @@
 ---
 layout: post
 title: DeepAgents 接入 DeepSeek 配置指南
+summary: >
+  Guide for integrating DeepSeek as the LLM backend for DeepAgents, covering
+  uv package management, API key setup, and Windows verification.
+lang: zh-CN
 date: 2026-05-22 02:06:00
 categories:
 - AI & LLM

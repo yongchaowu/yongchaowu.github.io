@@ -2,6 +2,10 @@
 layout: post
 title: QT5-Install-源码安装
 display_title: 'QT5 源码安装'
+summary: >
+  Build Qt5 from source on Ubuntu, covering dependency installation,
+  configure options, and resolution of common compilation issues.
+lang: zh-CN
 date: 2024-08-15 10:27:00
 categories:
 - Developer Tools

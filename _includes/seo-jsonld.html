@@ -1,0 +1,69 @@
+{% assign jsonld_description = page.summary
+    | default: page.description
+    | default: site.description
+    | strip_html
+    | strip_newlines
+    | truncate: 300 %}
+
+{% assign jsonld_modified = page.updated | default: page.date | date: "%Y-%m-%d" %}
+{% assign jsonld_published = page.date | date: "%Y-%m-%d" %}
+{% assign jsonld_lang = page.lang | default: site.lang | default: 'en' %}
+
+{% if page.url == '/' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ site.title | jsonify }},
+  "url": {{ site.url | append: site.baseurl | jsonify }},
+  "description": {{ site.description | jsonify }},
+  "inLanguage": {{ jsonld_lang | jsonify }},
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.title | jsonify }}
+  }
+}
+</script>
+
+{% elsif page.layout == 'post' %}
+{% assign jsonld_keywords = page.tags | join: ", " %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["TechArticle", "BlogPosting"],
+  "headline": {{ page.display_title | default: page.title | jsonify }},
+  "description": {{ jsonld_description | jsonify }},
+  "url": {{ page.url | absolute_url | jsonify }},
+  "datePublished": {{ jsonld_published | jsonify }},
+  "dateModified": {{ jsonld_modified | jsonify }},
+  "inLanguage": {{ jsonld_lang | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ site.github_username | default: site.title | jsonify }}
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.title | jsonify }}
+  }{% if jsonld_keywords %},
+  "keywords": {{ page.tags | jsonify }}{% endif %}{% if page.categories.size > 0 %},
+  "articleSection": {{ page.categories.first | jsonify }}{% endif %}{% if page.image %},
+  "image": {{ page.image | absolute_url | jsonify }}{% endif %}
+}
+</script>
+
+{% elsif page.layout == 'page' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "headline": {{ page.display_title | default: page.title | jsonify }},
+  "description": {{ jsonld_description | jsonify }},
+  "url": {{ page.url | absolute_url | jsonify }},
+  "inLanguage": {{ jsonld_lang | jsonify }},
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.title | jsonify }}
+  }
+}
+</script>
+{% endif %}

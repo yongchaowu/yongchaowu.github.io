@@ -1,6 +1,11 @@
 ---
 layout: post
 title: BehaviorTree.CPP 4.9 Complete Guide
+summary: >
+  Comprehensive reference covering BehaviorTree.CPP 4.9 node types, tree XML
+  definition, tick model, Groot2 integration, and migration from v3 to v4.
+lang: en
+version: "4.9.0"
 date: 2026-07-15 23:52:00
 categories:
 - C & C++
@@ -14,6 +19,8 @@ content_origin: ai-assisted
 > Version: **4.9.0** | Last updated: 2026-07 | License: MIT
 > Based on official documentation, Doxygen API reference, and source code verification (v4.9.0).
 > For official docs: https://www.behaviortree.dev/ | API: https://behaviortree.github.io/BehaviorTree.CPP/
+>
+> For hands-on notes and Groot2 debugging workflows, see [BehaviorTree.CPP Manual Notes]({% post_url 2026-07-15-OpenSource-BehaviorTree.CPP-ManualNotes %}).
 
 <!--more-->
 ---

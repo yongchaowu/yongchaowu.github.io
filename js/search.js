@@ -162,6 +162,26 @@
         }
     }
 
+    function renderDiscovery() {
+        var existing = document.getElementById('search-discovery')
+        if (existing) return
+        var div = document.createElement('div')
+        div.id = 'search-discovery'
+        div.className = 'search-discovery'
+        div.innerHTML = '<h3>Popular Tags</h3>' +
+            '<div class="search-discovery-tags">' +
+            '<a href="/tag/cpp/">C++</a>' +
+            '<a href="/tag/llm/">LLM</a>' +
+            '<a href="/tag/docker/">Docker</a>' +
+            '<a href="/tag/nvidia/">NVIDIA</a>' +
+            '<a href="/tag/ray/">Ray</a>' +
+            '<a href="/tag/python/">Python</a>' +
+            '<a href="/tag/linux/">Linux</a>' +
+            '<a href="/tag/cmake/">CMake</a>' +
+            '</div>'
+        results.parentElement.insertBefore(div, results)
+    }
+
     function doSearch() {
         render(input.value.trim())
     }
@@ -175,8 +195,13 @@
             shownCount = 0
             var oldMore = document.getElementById('search-show-more')
             if (oldMore) oldMore.remove()
+            // Show discovery content
+            renderDiscovery()
             return
         }
+        // Hide discovery when searching
+        var discovery = document.getElementById('search-discovery')
+        if (discovery) discovery.remove()
         var hits = []
         for (var i = 0; i < DATA.length; i++) {
             var p = DATA[i]
@@ -232,8 +257,20 @@
         var existingMore = document.getElementById('search-show-more')
         if (existingMore) existingMore.remove()
         if (!hits.length) {
-            stats.textContent = 'No matching posts found'
+            var hint = document.createElement('div')
+            hint.className = 'search-empty'
+            hint.innerHTML = '<p>No matching posts found.</p>' +
+                '<p>Try: fewer keywords, a broader topic, or browse tags.</p>' +
+                '<div class="search-suggestion-tags">' +
+                '<a href="/tag/cpp/">C++</a>' +
+                '<a href="/tag/linux/">Linux</a>' +
+                '<a href="/tag/docker/">Docker</a>' +
+                '<a href="/tag/llm/">LLM</a>' +
+                '<a href="/tag/nvidia/">NVIDIA</a>' +
+                '</div>'
             results.innerHTML = ''
+            results.appendChild(hint)
+            stats.textContent = ''
             return
         }
         var visible = Math.min(PAGE_SIZE, hits.length)

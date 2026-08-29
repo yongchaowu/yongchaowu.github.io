@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'Multi-Node LLM Serving: Architecture, Frameworks & Best Practices'
+summary: >
+  Overview of multi-node LLM serving architectures comparing vLLM, TensorRT-LLM,
+  and SGLang, with deployment strategies for 70B+ models across GPU clusters.
+lang: zh-CN
 date: 2026-06-12 21:13:00
 categories:
 - AI & LLM
@@ -1469,3 +1473,9 @@ spec:
 ---
 
 > **Note:** AI-assisted article — generated and optimized with MiMo Code.
+
+## See Also
+
+- [Multi-Node LLM Serving: vLLM + Ray]({% post_url 2026-06-12-Multi-Node-LLM-Serving-vLLM+Ray(Docker) %}) — End-to-end deployment guide for vLLM + Ray
+- [Python Ray Offline Installation Guide]({% post_url 2026-06-12-Python-Ray-Offline-Installation-Guide %}) — Install Ray in air-gapped environments
+- [Ubuntu NVIDIA Driver Install]({% post_url 2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install %}) — GPU driver setup

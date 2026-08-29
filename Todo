@@ -1,0 +1,9 @@
+Excellent results:
+- 313/321 exact matches with cnblogs metadata.
+- 8 unmatched: 
+  - 4 Private Diary (never published on cnblogs → _drafts)
+  - 团建-后记 20200707 (personal team-building note → _drafts too, it's personal)
+  - 国家图书馆-孤独星人自救指南 (a lecture note; probably never posted)
+  - Todo-Book List (reading list; keep as draft or publish? It's a todo list. Put in _drafts? Hmm — it could be a nice public "书单" post. But it's thin and titled Todo. I'll publish it under Book category? The user wants formal blog. Book lists are common blog content. Keep published, date fallback from body.)
+  - 开篇·序 (the pinned intro post! It IS on cnblogs: "开篇·序" — entity-contaminated filename 开篇&amp;#183;序 normalized differently: html.unescape once gives 开篇&#183;序, need double unescape. Fix: unescape repeatedly in norm()).
+

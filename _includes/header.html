@@ -2,7 +2,7 @@
     <div class="wrapper">
         <a href="{{ site.baseurl }}/" class="brand">{{ site.title }}</a>
         <small>{{site.brief-intro}}</small>
-        <button id="headerMenu" class="menu" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false"><i class="fa fa-bars"></i></button>
+        <button id="headerMenu" class="menu" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false">{% include icon.html name="bars" %}</button>
         <nav id="headerNav">
             <ul>
                 <li>
@@ -11,7 +11,7 @@
                         {% else %}
                     <a href="{{site.baseurl}}/">
                     {% endif %}
-                        <i class="fa fa-home"></i>Home
+                        {% include icon.html name="home" %}Home
                     </a>
                 </li>
 
@@ -23,19 +23,24 @@
                             {% else %}
                         <a href="{{ my_page.url | prepend: site.baseurl }}">
                         {% endif %}
-                            <i class="fa fa-{{my_page.icon}}"></i>{{ my_page.title }}
+                            {% include icon.html name=my_page.icon %}{{ my_page.title }}
                         </a>
                     </li>
                     {% endif %}
                 {% endfor %}
                 <li>
                     <a href="https://github.com/yongchaowu" target="_blank" rel="noopener">
-                        <i class="fa fa-github"></i>GitHub
+                        {% include icon.html name="github" %}GitHub
                     </a>
                 </li>
                 <li>
                     <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-                        <i class="fa fa-moon-o"></i>
+                        <span class="theme-icon theme-icon--moon">
+                            {% include icon.html name="moon-o" %}
+                        </span>
+                        <span class="theme-icon theme-icon--sun">
+                            {% include icon.html name="sun-o" %}
+                        </span>
                     </button>
                 </li>
             </ul>

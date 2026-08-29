@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'Visual Studio Code Extensions: Continue'
+summary: >
+  Getting started with Continue, an open-source AI code agent for VS Code
+  that provides inline completion, code generation, and chat-based assistance.
+lang: en
 date: 2026-06-02 07:10:00
 categories:
 - Developer Tools

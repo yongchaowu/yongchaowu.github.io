@@ -2,6 +2,10 @@
 layout: post
 title: MiniCPM5 1B
 display_title: 'MiniCPM5-1B Overview'
+summary: >
+  Overview of MiniCPM5-1B, a 1B-parameter on-device language model from
+  面壁智能, with benchmarks, architecture details, and deployment considerations.
+lang: zh-CN
 date: 2026-06-10 19:56:00
 categories:
 - AI & LLM
@@ -53,6 +57,13 @@ Generation parameters
 
 ## 推理侧
 推理侧支持 `SGLang、vLLM、llama.cpp、Ollama、Hugging Face、ArcLight` 等工具和框架
+
+### Deployment Guides
+
+Ready to deploy? Choose your preferred method:
+
+- [Deploying MiniCPM5-1B with Ollama]({% post_url 2026-06-10-Model-MiniCPM5-1B-Deploy-Ollama(Docker) %}) — Docker-based deployment with Open-WebUI
+- [Deploying MiniCPM5-1B with llama.cpp]({% post_url 2026-06-10-Model-MiniCPM5-1B-Deploy-llama.cpp(Docker) %}) — CPU inference with llama.cpp server
 
 ## Skills
 面壁还提供了安装部署相关的 skills

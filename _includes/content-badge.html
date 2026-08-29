@@ -1,9 +1,9 @@
 {% if page.content_origin %}
 <span class="content-badge content-badge--{{ page.content_origin }}">
   {% if page.content_origin == 'ai-assisted' %}
-    <i class="fa fa-magic"></i> AI-assisted
+    {% include icon.html name="magic" %} AI-assisted
   {% elsif page.content_origin == 'imported' %}
-    <i class="fa fa-archive"></i> Imported
+    {% include icon.html name="archive" %} Imported
   {% endif %}
 </span>
 {% endif %}

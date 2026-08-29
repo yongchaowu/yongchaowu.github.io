@@ -36,7 +36,6 @@
   var toggle = document.querySelector('#themeToggle')
   if (!toggle) return
 
-  var icon = toggle.querySelector('i')
   var STORAGE_KEY = 'ycw-theme'
 
   function getPreferred() {
@@ -47,9 +46,9 @@
 
   function apply(theme) {
     document.documentElement.setAttribute('data-theme', theme)
-    if (icon) {
-      icon.className = theme === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o'
-    }
+    toggle.setAttribute('aria-label',
+      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+    )
   }
 
   // Apply on load

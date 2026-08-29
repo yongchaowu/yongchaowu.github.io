@@ -1,33 +1,55 @@
 topics:
   - id: ai
     name: "AI & LLM"
-
-  - id: systems
-    name: "Systems"
+    order: 1
+    description: "LLM deployment, inference, agents and local AI."
 
   - id: cpp
     name: "C & C++"
+    order: 2
+    description: "Systems programming, libraries and backend engineering."
+
+  - id: systems
+    name: "Systems"
+    order: 3
+    description: "Linux, GPU, networking and system administration."
 
   - id: devops
     name: "DevOps & Infrastructure"
+    order: 4
+    description: "Docker, CI/CD, deployment and infrastructure tooling."
 
   - id: tools
     name: "Developer Tools"
+    order: 5
+    description: "IDEs, editors, extensions and development workflow."
 
   - id: programming
     name: "Programming"
+    order: 6
+    description: "Languages, frameworks and software design."
 
   - id: computer-science
     name: "Computer Science"
+    order: 7
+    description: "Algorithms, data structures and theory."
 
   - id: security
     name: "Security & Networking"
+    order: 8
+    description: "Cryptography, protocols and network tooling."
 
   - id: database
     name: "Database"
+    order: 9
+    description: "Database setup, queries and administration."
 
   - id: photography
     name: "Photography"
+    order: 10
+    description: "Camera techniques, composition and post-processing."
 
   - id: personal
     name: "Personal"
+    order: 11
+    description: "Notes, reflections and personal projects."

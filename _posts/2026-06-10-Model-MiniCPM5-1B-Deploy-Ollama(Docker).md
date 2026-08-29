@@ -2,6 +2,14 @@
 layout: post
 title: MiniCPM5 1B Deploy Ollama
 display_title: 'Deploying MiniCPM5-1B with Ollama'
+summary: >
+  Offline deployment of MiniCPM5-1B using Ollama and Open-WebUI in Docker,
+  covering image loading, model import, and CPU-only inference setup.
+lang: zh-CN
+tested:
+  Runtime: "Ollama + Open-WebUI"
+  Inference: "CPU"
+  Model: "MiniCPM5-1B"
 date: 2026-06-10 07:45:00
 categories:
 - AI & LLM
@@ -10,6 +18,8 @@ tags:
 - OS
 - Docker
 ---
+
+> For model overview, benchmarks, and quantization options, see [MiniCPM5-1B Overview]({% post_url 2026-06-10-Model-MiniCPM5-1B %}).
 
 CPU版本
 ## 必备文件

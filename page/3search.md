@@ -4,6 +4,7 @@ title: Search
 permalink: /search/
 icon: search
 type: page
+noindex: true
 ---
 
 <div class="search-wrap" id="search-app" data-index-url="{{ '/search.json' | relative_url }}">

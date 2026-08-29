@@ -12,6 +12,6 @@
 {% capture category_size %}{{ categories | strip_newlines | replace: ' ', '' | size }}{% endcapture %}
 {% unless category_size == '0' %}
 <span class="categories">
-  <i class="fa fa-th-list"></i>{{ categories }}
+  {% include icon.html name="th-list" %}{{ categories }}
 </span>
 {% endunless %}

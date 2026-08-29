@@ -1,0 +1,143 @@
+{% assign related_score_min = 1 %}
+{% assign related_max = 4 %}
+{% assign related_count = 0 %}
+{% assign related_output = '' %}
+
+{% comment %}Score: same tag +3, same category +1{% endcomment %}
+
+{% comment %}Pass 1: Find posts with score >= 6 (2+ shared tags){% endcomment %}
+{% for post in site.posts %}
+    {% if post.url == page.url %}{% continue %}{% endif %}
+    {% if related_count >= related_max %}{% break %}{% endif %}
+
+    {% assign score = 0 %}
+    {% for tag in post.tags %}
+        {% if page.tags contains tag %}
+            {% assign score = score | plus: 3 %}
+        {% endif %}
+    {% endfor %}
+    {% for cat in post.categories %}
+        {% if page.categories contains cat %}
+            {% assign score = score | plus: 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if score >= 6 %}
+        {% unless related_output contains post.url %}
+            {% assign related_count = related_count | plus: 1 %}
+            {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
+            {% if related_count == 1 %}
+                <section class="related-posts">
+                    <h2>Related Articles</h2>
+                    <ul>
+            {% endif %}
+            <li>
+                <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                {% if post.version %}<span class="related-version">{{ post.version }}</span>{% endif %}
+            </li>
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}Pass 2: Find posts with score = 3-5 (1 shared tag, possibly same category){% endcomment %}
+{% for post in site.posts %}
+    {% if post.url == page.url %}{% continue %}{% endif %}
+    {% if related_count >= related_max %}{% break %}{% endif %}
+    {% if related_output contains post.url %}{% continue %}{% endif %}
+
+    {% assign score = 0 %}
+    {% for tag in post.tags %}
+        {% if page.tags contains tag %}
+            {% assign score = score | plus: 3 %}
+        {% endif %}
+    {% endfor %}
+    {% for cat in post.categories %}
+        {% if page.categories contains cat %}
+            {% assign score = score | plus: 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if score >= 3 and score < 6 %}
+        {% unless related_output contains post.url %}
+            {% assign related_count = related_count | plus: 1 %}
+            {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
+            {% if related_count == 1 %}
+                <section class="related-posts">
+                    <h2>Related Articles</h2>
+                    <ul>
+            {% endif %}
+            <li>
+                <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                {% if post.version %}<span class="related-version">{{ post.version }}</span>{% endif %}
+            </li>
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}Pass 3: Find posts with score = 1-2 (same category only, no shared tags){% endcomment %}
+{% for post in site.posts %}
+    {% if post.url == page.url %}{% continue %}{% endif %}
+    {% if related_count >= related_max %}{% break %}{% endif %}
+    {% if related_output contains post.url %}{% continue %}{% endif %}
+
+    {% assign score = 0 %}
+    {% for tag in post.tags %}
+        {% if page.tags contains tag %}
+            {% assign score = score | plus: 3 %}
+        {% endif %}
+    {% endfor %}
+    {% for cat in post.categories %}
+        {% if page.categories contains cat %}
+            {% assign score = score | plus: 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if score >= 1 and score < 3 %}
+        {% unless related_output contains post.url %}
+            {% assign related_count = related_count | plus: 1 %}
+            {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
+            {% if related_count == 1 %}
+                <section class="related-posts">
+                    <h2>Related Articles</h2>
+                    <ul>
+            {% endif %}
+            <li>
+                <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                {% if post.version %}<span class="related-version">{{ post.version }}</span>{% endif %}
+            </li>
+        {% endunless %}
+    {% endif %}
+{% endfor %}
+
+{% comment %}Pass 4: If still less than 4, fill with recent posts from same category{% endcomment %}
+{% if related_count < related_max %}
+    {% for post in site.posts %}
+        {% if post.url == page.url %}{% continue %}{% endif %}
+        {% if related_count >= related_max %}{% break %}{% endif %}
+        {% if related_output contains post.url %}{% continue %}{% endif %}
+
+        {% for cat in post.categories %}
+            {% if page.categories contains cat %}
+                {% unless related_output contains post.url %}
+                    {% assign related_count = related_count | plus: 1 %}
+                    {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
+                    {% if related_count == 1 %}
+                        <section class="related-posts">
+                            <h2>Related Articles</h2>
+                            <ul>
+                    {% endif %}
+                    <li>
+                        <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
+                        {% if post.version %}<span class="related-version">{{ post.version }}</span>{% endif %}
+                    </li>
+                {% endunless %}
+                {% break %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+
+{% if related_count > 0 %}
+    </ul>
+</section>
+{% endif %}

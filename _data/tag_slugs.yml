@@ -1,0 +1,46 @@
+# Explicit tag slug overrides
+# Format: "Tag Name": slug
+# Unlisted tags will auto-generate slugs via: lowercase + replace non-alphanum with hyphen
+
+"C++": cpp
+"C#": csharp
+"C": c
+"AI & LLM": ai-llm
+"AI Coding Agent": ai-coding-agent
+"AI Model Hub": ai-model-hub
+"Backstage Service": backstage-service
+"BehaviorTree.CPP": behaviortree-cpp
+"Blog Theme": blog-theme
+"C++Plug-In": cpp-plugin
+"Capture Packet": capture-packet
+"Cross-compilation": cross-compilation
+"Data Structure": data-structure
+"Design Patterns": design-patterns
+"Front-End": front-end
+"Linux UNIX 系统编程手册": linux-unix-system-programming
+"Memory Bank": memory-bank
+"NewAPI": newapi
+"NotePad++": notepad-plus-plus
+"Open Source": open-source
+"PL SQL": pl-sql
+"Product Manager(PM)": product-manager
+"Reverse Engineering": reverse-engineering
+"Sentence-BERT": sentence-bert
+"Static Analyzers": static-analyzers
+"TCP/IP ECN": tcp-ip-ecn
+"Test Engineer&QC": test-engineer
+"Time Management": time-management
+"Triple DES": triple-des
+"Visual Studio Code": vscode
+"Visual Studio": visual-studio
+"VMware Workstation": vmware-workstation
+"Windows API": windows-api
+"Windows内核": windows-kernel
+"Windows批处理 (cmd/bat)": windows-batch
+"Yuxi": yuxi
+"llama.cpp": llama-cpp
+"macOS": macos
+"uv": uv
+"v8": v8
+"javascript": javascript
+"JavaScript": javascript

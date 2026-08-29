@@ -2,6 +2,10 @@
 layout: post
 title: GitHub SSH
 display_title: 'Generating and Configuring a GitHub SSH Key'
+summary: >
+  Quick reference for generating an ed25519 SSH key, adding it to the ssh-agent,
+  and configuring it for GitHub authentication on a new machine.
+lang: en
 date: 2026-06-09 19:56:00
 categories:
 - Developer Tools

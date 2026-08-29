@@ -1,15 +1,33 @@
 {% capture tags %}
   {% if post %}
     {% for tag in post.tags %}
-        <a href="{{ root_url }}/{{ site.tag_dir }}?tag={{ tag | url_encode }}" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        {% assign tag_slug = nil %}
+        {% for slug_map in site.data.tag_slugs %}
+            {% if slug_map[1] == tag %}
+                {% assign tag_slug = slug_map[0] %}
+            {% endif %}
+        {% endfor %}
+        {% unless tag_slug %}
+            {% assign tag_slug = tag | downcase | replace: ' ', '-' %}
+        {% endunless %}
+        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% else %}
     {% for tag in page.tags %}
-        <a href="{{ root_url }}/{{ site.tag_dir }}?tag={{ tag | url_encode }}" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        {% assign tag_slug = nil %}
+        {% for slug_map in site.data.tag_slugs %}
+            {% if slug_map[1] == tag %}
+                {% assign tag_slug = slug_map[0] %}
+            {% endif %}
+        {% endfor %}
+        {% unless tag_slug %}
+            {% assign tag_slug = tag | downcase | replace: ' ', '-' %}
+        {% endunless %}
+        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% endif %}
 {% endcapture %}
 <!-- <span class="point">•</span> -->
 <span class="pageTag">
-  <i class="fa fa-tags"></i>{{ tags }}
+  {% include icon.html name="tags" %}{{ tags }}
 </span>

@@ -1,6 +1,10 @@
 ---
 layout: post
 title: 'AI Coding Agent: OpenCode'
+summary: >
+  Overview of OpenCode, an open-source AI coding assistant with intelligent
+  completion, multi-model support, and a CLI-based conversational workflow.
+lang: en
 date: 2026-06-02 07:27:00
 categories:
 - AI & LLM

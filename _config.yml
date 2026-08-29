@@ -11,6 +11,7 @@ brief-intro: C++ Backend & AI Agent
 description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.wyclswq.top" # the base hostname & protocol for your site
+lang: en
 
 permalink: /:year/:month/:day/:title/
 
