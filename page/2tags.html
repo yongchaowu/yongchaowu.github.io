@@ -15,9 +15,18 @@ type: page
         <div class="tags-cloud" id="featured-tags">
             {% for tag_name in site.data.featured_tags.tags %}
               {% if site.tags[tag_name] %}
+                {% assign tag_slug = nil %}
+                {% for slug_map in site.data.tag_slugs %}
+                    {% if slug_map[1] == tag_name %}
+                        {% assign tag_slug = slug_map[0] %}
+                    {% endif %}
+                {% endfor %}
+                {% unless tag_slug %}
+                    {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                {% endunless %}
               <a class="tag-btn"
                  data-tag="{{ tag_name | escape }}"
-                 href="{{ '/tag/' | relative_url }}?tag={{ tag_name | url_encode }}">
+                 href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/">
                 {{ tag_name }}
                 <span class="tag-count">({{ site.tags[tag_name].size }})</span>
               </a>
@@ -30,10 +39,20 @@ type: page
         <div class="tags-cloud" id="all-tags">
             {% assign sorted_tags = site.tags | sort %}
             {% for pair in sorted_tags %}
+                {% assign tag_name = pair[0] %}
+                {% assign tag_slug = nil %}
+                {% for slug_map in site.data.tag_slugs %}
+                    {% if slug_map[1] == tag_name %}
+                        {% assign tag_slug = slug_map[0] %}
+                    {% endif %}
+                {% endfor %}
+                {% unless tag_slug %}
+                    {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                {% endunless %}
             <a class="tag-btn"
-               data-tag="{{ pair[0] | escape }}"
-               href="{{ '/tag/' | relative_url }}?tag={{ pair[0] | url_encode }}">
-                {{ pair[0] }}
+               data-tag="{{ tag_name | escape }}"
+               href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/">
+                {{ tag_name }}
                 <span class="tag-count">({{ pair[1].size }})</span>
             </a>
             {% endfor %}

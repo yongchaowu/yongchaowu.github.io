@@ -33,7 +33,8 @@ vLLM+Ray(Docker) 双节点离线一键部署完整方案。
 ### Prerequisites
 
 - 两台 GPU 节点，各 8 张 GPU
-- Docker 已安装（见 [Ubuntu NVIDIA Driver Install]({% post_url 2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install %})）
+- GPU 驱动已安装（见 [Ubuntu NVIDIA Driver Install]({% post_url 2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install %})）
+- Docker 已安装
 - 两台节点间网络互通（Ray 端口 6379、vLLM 端口 8000）
 - Ray 已安装（离线环境见 [Python Ray Offline Installation Guide]({% post_url 2026-06-12-Python-Ray-Offline-Installation-Guide %})）
 - 模型文件已下载到两台节点的 `/data/models/minimax-m2.5-awq`
@@ -112,6 +113,8 @@ curl http://192.168.1.10:8000/v1/chat/completions \
 │  8× GPU          │     │  8× GPU          │
 └─────────────────┘     └─────────────────┘
 ```
+
+> **Why TP16 cross-node?** This deployment uses `--tensor-parallel-size 16` across two nodes for simplicity — one vLLM instance serves the entire model. Cross-node TP is sensitive to inter-node bandwidth (NCCL AllReduce on every layer). For Ethernet or bandwidth-constrained clusters, prefer `TP8 + PP2` (intra-node TP, cross-node pipeline) to avoid latency spikes. See [Architecture, Frameworks & Best Practices]({% post_url 2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated) %}) for the full comparison of parallelism strategies.
 
 ## 完整部署
 
