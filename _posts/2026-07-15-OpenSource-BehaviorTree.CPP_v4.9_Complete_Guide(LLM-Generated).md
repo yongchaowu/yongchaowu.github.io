@@ -11,7 +11,6 @@ categories:
 - C & C++
 tags:
 - Open Source
-- LLM
 content_origin: ai-assisted
 ---
 
