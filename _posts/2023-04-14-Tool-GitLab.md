@@ -69,7 +69,7 @@ git diff
 git add .
 git pull\git fetch
 git commit -m "备注"
-git push -uf origin master
+git push -u origin master
 ```
 
 gitlab创建项目自动生成的Readme中提到的方法：

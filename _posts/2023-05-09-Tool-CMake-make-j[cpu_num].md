@@ -20,7 +20,7 @@ tags:
 一般来说，最大并行任务数为`cpu_num * 2`
 
 ```bash
-cpu_num = `cat /proc/stat |grep cpu[0-9] -c`
+cpu_num=$(nproc)
 echo "make -j${cpu_num}"
 make -j${cpu_num}
 ```

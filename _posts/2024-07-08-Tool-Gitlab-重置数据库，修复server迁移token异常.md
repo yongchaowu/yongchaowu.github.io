@@ -26,6 +26,6 @@ UPDATE ci_runners SET token = null,token_encrypted = null;
 
 
 sudo gitlab-rails console -e production
-Applicationsetting.first.delete
-Applicationsetting.first
+ApplicationSetting.first.delete
+ApplicationSetting.first
 ```

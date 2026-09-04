@@ -153,7 +153,6 @@ docker run -d \
 
 - docker-compose.yml `docker compose up -d`
 ```shell
-version: "3.8"
 services:
   ollama:
     image: ollama/ollama

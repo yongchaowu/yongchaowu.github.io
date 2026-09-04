@@ -99,7 +99,7 @@ docker pull microsoft/windowsservercore:10.0.14393.321
 //-阿里云：https://<你的ID>.mirror.aliyuncs.com  
 ///阿里云镜像获取地址：https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
 //-七牛云加速器：https://reg-mirror.qiniu.com
-//-Docker 官方加速器 https://registry.docker-cn.com (可能不能用了)
+//-Docker 官方加速器 https://registry.docker-cn.com (已停用，推荐使用阿里云或七牛云镜像)
 //回到原有指令，3.738GB
 //2020/12/02 最后还是没下下来，真的放弃了，这是要让人用AWS来实现啊
 ```

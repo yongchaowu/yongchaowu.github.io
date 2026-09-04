@@ -106,5 +106,5 @@ AI Agent 的核心特征是**不可预测性**。即使是最先进的模型，�
 | E2B 兼容 | 部分  | Drop-in 级别 | 原生  |
 
 
-## 基于DeepSeek生成的解决方案
-[deepagents后端沙盒设计实现](https://chat.deepseek.com/share/jmsc4yn6co2q3bdxew)
+## 参考方案
+基于大模型生成的解决方案，仅供参考。

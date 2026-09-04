@@ -82,8 +82,6 @@ docker run -d -p 3000:8080 \
 ## docker-compose.yml
 
 ```yaml
-version: '3.8'
-
 services:
   llama-server:
     image: llama-cpp-server:cpu
@@ -97,7 +95,7 @@ services:
       -m /models/MiniCPM5-1B-Q4_K_M.gguf
       --host 0.0.0.0
       --port 8080
-      -ngl 99
+      -ngl 0
       -c 8192
       --jinja
       --alias MiniCPM5-1B-Q4
@@ -164,7 +162,7 @@ docker build -t llama-cpp-server:cpu .
 huggingface-cli download openbmb/MiniCPM5-1B-GGUF MiniCPM5-1B-Q4_K_M.gguf --local-dir ./minicpm5
 
 # 交互式聊天
-llama-cli -m ./minicpm5/MiniCPM5-1B-Q4_K_M.gguf -n 2048 --temp 0.7 --top-p 0.95 -ngl 99
+llama-cli -m ./minicpm5/MiniCPM5-1B-Q4_K_M.gguf -n 2048 --temp 0.7 --top-p 0.95 -ngl 0
 
 # 启动服务
 llama-server -m ./minicpm5/MiniCPM5-1B-Q4_K_M.gguf --host 0.0.0.0 --port 8080 -ngl 0 -c 4096 --jinja -t 6 -b 512 --alias MiniCPM5-1B-Q4

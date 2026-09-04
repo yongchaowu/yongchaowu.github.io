@@ -13,7 +13,7 @@ tags:
 - LLM
 ---
 
-引用[DeepAgents接入DeepSeek 配置指南](https://chat.deepseek.com/share/52ikg61qsi9au9e3wf)
+引用 DeepAgents 接入 DeepSeek 配置指南
 
 <!--more-->
 ---
@@ -28,7 +28,7 @@ tags:
 Use irm to download the script and execute it with iex:`powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 安装完成后重新启动CMD，键入`uv`识别到相应指令
 2. 安装python
-`uv install python`
+`uv python install`
 3. 初始化工程
 `uv init`
 4. 创建虚拟环境

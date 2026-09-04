@@ -44,7 +44,7 @@ tags:
    --python-version 312 \
    --platform manylinux2014_x86_64 \
    --only-binary :all: \
-   ray[default]==2.56.0
+   ray[default]==2.40.0
    ```
 
 3. Offline install:
