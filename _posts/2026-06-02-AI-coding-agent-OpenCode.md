@@ -20,7 +20,7 @@ tags:
 OpenCode is an open-source AI coding assistant that provides intelligent code completion, code generation, and conversational programming experience.
 
 - [repository](https://github.com/opencode-ai/opencode)
-- [crush repository](https://github.com/charmbracelet/crush)
+- [crush repository](https://github.com/anomalyco/opencode)
 
 A powerful AI coding agent. Built for the terminal. 
 

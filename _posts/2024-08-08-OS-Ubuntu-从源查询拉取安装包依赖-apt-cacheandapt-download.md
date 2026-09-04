@@ -112,7 +112,7 @@ apt-get purge <pkg>           # 删除软件包<pkg>（包括配置文件）
 ```bash
 apt-get source <pkg>              # 下载pkg包的源代码到当前目录  
 apt-get download <pkg>            # 下载pkg包的二进制包到当前目录  
-apt-get source -d <pkg>           # 下载完源码包后，编译  
+apt-get source --download-only <pkg>  # 仅下载源码包，不编译  
 apt-get build-dep   <pkg>         # 构建pkg源码包的依赖环境（编译环境？）  
 apt-get clean                     # 清除缓存(/var/cache/apt/archives/{,partial}下)中所有已下载的包  
 apt-get autoclean                 # 类似于clean，但清除的是缓存中过期的包（即已不能下载或者是无用的包）  

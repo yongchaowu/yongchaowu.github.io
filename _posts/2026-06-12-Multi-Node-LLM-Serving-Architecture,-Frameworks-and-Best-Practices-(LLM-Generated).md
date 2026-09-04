@@ -823,7 +823,6 @@ curl -X POST http://localhost:9997/v1/models \
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
 services:
   supervisor:
     image: xprobe/xinference:latest

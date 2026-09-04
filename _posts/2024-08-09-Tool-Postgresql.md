@@ -20,11 +20,11 @@ Ubuntu18.04 安装postgresql
 ```shell
 apt install postgresql
 
-su postgres //postgres账户
+su postgres # postgres账户
 
-psql -h localhost -U postgres  //localhost 用户postgres
+psql -h localhost -U postgres  # localhost 用户postgres
 
-alter user postgres with password '123456';//修改密码
+alter user postgres with password '123456'; # 修改密码
 \i xx.sql
 \q
 

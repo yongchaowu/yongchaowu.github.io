@@ -21,7 +21,7 @@ tags:
 int main()
 {
 	pthread_t m_pThtid;
-	pthread_create(&m_pThtid, NULL, thFunction, this);
+	pthread_create(&m_pThtid, NULL, thFunction, NULL);
     while(1)
     {
     	Sleep(1000);
@@ -71,7 +71,7 @@ void* thFunction(LPVOID lpParam)
 			}
 			char szBuf[65535];
 			memset(szBuf, 0, sizeof(szBuf));
-			int nLen;
+			socklen_t nLen;
             //int recvLen = recv(s_fd, szBuf, 65535, 0);
 			int recvLen = recvfrom(s_fd, szBuf, 65535, 0, (SOCKADDR*)&s_fdServer, &nLen);
 			if (recvLen < 0) {
@@ -156,7 +156,7 @@ int GetResponseByCmd(const char* pszCmd)
 	char szBuf[65535];
 	memset(szBuf, 0, sizeof(szBuf));
 
-	int nLen;
+	socklen_t nLen;
 	int recvLen = recvfrom(s_fd, szBuf, 65535, 0, (SOCKADDR*)&s_fdServer, &nLen);
 	if (recvLen < 0) {
 		closesocket(s_fd);

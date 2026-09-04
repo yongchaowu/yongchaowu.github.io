@@ -58,7 +58,7 @@ export HF_ENDPOINT=https://hf-mirror.com
 
 
 # huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 --local-dir ./all-MiniLM-L6-v2
-uvx hf download sentence-transformers/all-MiniLM-L6-v2 --local-dir ./all-MiniLM-L6-v2
+uvx huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 --local-dir ./all-MiniLM-L6-v2
 ```
 
 - 手动从 Hugging Face 网页下载

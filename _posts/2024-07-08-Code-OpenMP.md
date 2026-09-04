@@ -30,7 +30,7 @@ OpenMP是由OpenMP Architecture Review Board牵头提出的，并已被广泛接
 ```c++
 // #include <omp.h>
 omp_set_num_threads(3); // 设置进程的线程数为 3（在此后的分支区，一共会有三个线程参与进行）
-int thread_num = omp_get_thread_num(); // 获取当前进程中的线程数，此处 thread_num = 3
+int thread_num = omp_get_thread_num(); // 获取当前线程的编号（id），此处示例 thread_num = 0~2
 int max_thread_num = omp_get_max_threads(); // 获取最多可以用于并行计算的线程数目
 int thread_id = omp_get_thread_num();  // 获取当前线程的 id
 int curTime = omp_get_wtime(); // 获取当前时间，秒为单位
