@@ -83,7 +83,7 @@ add_library(json_adapter INTERFACE)
 target_link_libraries(json_adapter INTERFACE nlohmann_json::nlohmann_json)
 ```
 
-查找结果应支持用户传入 `CMAKE_PREFIX_PATH`、toolchain 或 package registry，而不是把开发机路径硬编码进项目。相关历史记录见 [find_library](#source-posts-title)、[CMake 总览](#source-posts-title) 和 [交叉编译工具链](#source-posts-title)。
+查找结果应支持用户传入 `CMAKE_PREFIX_PATH`、toolchain 或 package registry，而不是把开发机路径硬编码进项目。相关历史记录见 [find_library](#source-note-3)、[CMake 总览](#source-note-1) 和 [交叉编译工具链](#source-note-11)。
 
 ## 3. 自定义命令要声明输入输出
 
@@ -133,7 +133,7 @@ CMake generator：
 测试运行方式（原生或 emulator）：
 ```
 
-[ARM/Linaro 工具链记录](#source-posts-title) 可以作为离线环境的起点，但应在 CI 或干净容器中验证完整 configure、build、install 和 package 流程。
+[ARM/Linaro 工具链记录](#source-note-11) 可以作为离线环境的起点，但应在 CI 或干净容器中验证完整 configure、build、install 和 package 流程。
 
 ## 6. CPack 是发布流程的一部分
 
@@ -143,7 +143,7 @@ CPack 适合从已经安装的 staging 目录生成压缩包或安装包。推�
 configure → build → test → install 到 staging → package → 在干净环境安装并运行 smoke test
 ```
 
-版本信息、依赖清单、许可证和校验值应进入发布元数据，而不是只写在聊天记录里。历史 [CPack 记录](#source-posts-title) 和 [版本文件生成记录](#source-posts-title) 可以作为起点，但不要把开发机绝对路径写进包。
+版本信息、依赖清单、许可证和校验值应进入发布元数据，而不是只写在聊天记录里。历史 [CPack 记录](#source-note-9) 和 [版本文件生成记录](#source-note-10) 可以作为起点，但不要把开发机绝对路径写进包。
 
 ## 7. 交付前检查
 

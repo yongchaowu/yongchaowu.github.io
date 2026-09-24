@@ -15,6 +15,8 @@ tags:
 ---
 {% raw %}
 > 在生产环境中部署大语言模型时，单点故障和性能瓶颈是常见的挑战。本文将详细介绍如何通过 New-API 部署同一模型的两个独立进程，并配置不同端口，实现负载均衡和高可用架构。
+>
+> **重要勘误（2026-09-25）**：New-API 是网关/控制面，不是内置模型推理 Worker。官方当前文档使用 `calciumion/new-api` 镜像，并通过 Channel 接入外部 vLLM、llama.cpp 或云端 Provider；本文旧版中的 `newapi/new-api`、`MODEL_PATH`、`WORKERS`、`DB_*` 和“内置 Worker”示例不可作为当前部署依据。请以[官方仓库](https://github.com/QuantumNous/new-api)和[安装文档](https://docs.newapi.ai/en/docs/installation)为准，并把示例中的 `REVIEWED_VERSION` 替换为经过审查的具体版本。
 
 {% endraw %}
 
@@ -28,7 +30,7 @@ tags:
 - [架构概览](#架构概览)
 - [环境准备](#环境准备)
 - [方案一：独立 Worker + New-API 网关（推荐）](#方案一独立-worker--new-api-网关推荐)
-- [方案二：两个 New-API 实例（内置 Worker 模式）](#方案二两个-new-api-实例内置-worker-模式)
+- [方案二：两个 New-API 网关实例（旧版内置 Worker 方案已废弃）](#方案二两个-new-api-网关实例旧版内置-worker-方案已废弃)
 - [Docker Compose 完整部署](#docker-compose-完整部署)
 - [验证与测试](#验证与测试)
 - [性能调优](#性能调优)
@@ -194,18 +196,25 @@ ls -la /data/models/Qwen2.5-7B-Instruct/
 
 ## 方案一：独立 Worker + New-API 网关（推荐）
 
-这是最灵活、最可控的部署方式，适用于生产环境。
+这是最灵活、最可控的部署方式，适用于生产环境。New-API 只负责网关、渠道和访问控制；模型推理由独立的 vLLM/llama.cpp 服务承担。
+
+先创建一个共享 Docker 网络，让网关和两个推理服务能够通过容器名互相解析：
+
+```bash
+docker network create new-api-network
+```
 
 ### 步骤 1：启动 Worker 1（端口 8000）
 
 ```bash
 docker run -d \
   --name vllm-worker-1 \
+  --network new-api-network \
   --gpus '"device=0"' \
   --shm-size=8g \
   -p 8000:8000 \
   -v /data/models:/models \
-  vllm/vllm-openai:latest \
+  vllm/vllm-openai:REVIEWED_VERSION \
   --model /models/Qwen2.5-7B-Instruct \
   --port 8000 \
   --host 0.0.0.0 \
@@ -233,11 +242,12 @@ docker run -d \
 ```bash
 docker run -d \
   --name vllm-worker-2 \
+  --network new-api-network \
   --gpus '"device=1"' \
   --shm-size=8g \
   -p 8001:8001 \
   -v /data/models:/models \
-  vllm/vllm-openai:latest \
+  vllm/vllm-openai:REVIEWED_VERSION \
   --model /models/Qwen2.5-7B-Instruct \
   --port 8001 \
   --host 0.0.0.0 \
@@ -260,10 +270,10 @@ docker run -d \
 ```bash
 docker run -d \
   --name new-api-gateway \
+  --network new-api-network \
   -p 3000:3000 \
-  -e LISTEN=0.0.0.0:3000 \
   -e TZ=Asia/Shanghai \
-  newapi/new-api:latest
+  calciumion/new-api:REVIEWED_VERSION
 ```
 
 ### 步骤 4：配置 New-API Channel
@@ -351,93 +361,17 @@ curl -X POST http://localhost:3000/api/channel/ \
 
 ---
 
-## 方案二：两个 New-API 实例（内置 Worker 模式）
+## 方案二：两个 New-API 网关实例（旧版“内置 Worker”方案已废弃）
 
-如果使用 New-API 内置的 Worker（而非外部 vLLM/llama.cpp），可以启动两个独立的 New-API 实例。
+New-API 是网关和控制面，不提供本文旧版所写的内置模型推理 Worker。官方当前配置通过外部 vLLM、llama.cpp 或云端 Provider 的 Channel 接入模型；`MODEL_PATH`、`WORKERS`、`WORKERConcurrency`、`DB_TYPE` 和 `DB_PATH` 不是本文可以继续沿用的官方部署契约。
 
-### 实例 1：端口 3000
+如果需要多个网关实例，应把它们视为同一服务的多个副本：共享主数据库、`SESSION_SECRET`/`CRYPTO_SECRET`，并按官方文档配置共享 Redis、代理信任和持久化存储。然后将方案一中的两个外部推理服务注册为 Channel；不要给 New-API 容器分配 GPU，也不要把它当作模型服务器。多实例的限流、会话和故障转移行为必须按所部署的版本和拓扑验证。
 
-创建 `.env.1`：
+官方部署入口：
 
-```env
-# New-API 实例 1 配置
-LISTEN=0.0.0.0:3000
-MODEL_PATH=/data/models/Qwen2.5-7B-Instruct
-WORKERS=1
-WORKERConcurrency=4
-MAX_REQUESTS=1000
-TZ=Asia/Shanghai
-
-# 数据库配置（可选，用于持久化）
-DB_TYPE=sqlite
-DB_PATH=/data/new-api-1.db
-
-# 管理员配置
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-secure-password
-```
-
-启动命令：
-
-```bash
-docker run -d \
-  --name new-api-worker-1 \
-  --gpus '"device=0"' \
-  --env-file .env.1 \
-  -p 3000:3000 \
-  -v /data/new-api-1:/data \
-  newapi/new-api:latest
-```
-
-### 实例 2：端口 3001
-
-创建 `.env.2`：
-
-```env
-# New-API 实例 2 配置
-LISTEN=0.0.0.0:3001
-MODEL_PATH=/data/models/Qwen2.5-7B-Instruct
-WORKERS=1
-WORKERConcurrency=4
-MAX_REQUESTS=1000
-TZ=Asia/Shanghai
-
-# 数据库配置
-DB_TYPE=sqlite
-DB_PATH=/data/new-api-2.db
-
-# 管理员配置
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-secure-password
-```
-
-启动命令：
-
-```bash
-docker run -d \
-  --name new-api-worker-2 \
-  --gpus '"device=1"' \
-  --env-file .env.2 \
-  -p 3001:3001 \
-  -v /data/new-api-2:/data \
-  newapi/new-api:latest
-```
-
-### 配置网关
-
-启动第三个 New-API 实例作为纯网关（不加载模型）：
-
-```bash
-docker run -d \
-  --name new-api-gateway \
-  -p 8080:3000 \
-  -e LISTEN=0.0.0.0:3000 \
-  -e WORKERS=0 \
-  -e TZ=Asia/Shanghai \
-  newapi/new-api:latest
-```
-
-然后将两个 Worker 实例注册为 Channel，方式与方案一相同。
+- [New API 仓库](https://github.com/QuantumNous/new-api)
+- [安装与部署文档](https://docs.newapi.ai/en/docs/installation)
+- [环境变量参考](https://docs.newapi.ai/en/docs/installation/config-maintenance/environment-variables)
 
 ---
 
@@ -457,7 +391,7 @@ new-api-multi-process/
 services:
   # Worker 1 - 使用 GPU 0
   vllm-worker-1:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:REVIEWED_VERSION
     container_name: vllm-worker-1
     restart: unless-stopped
     ports:
@@ -493,7 +427,7 @@ services:
 
   # Worker 2 - 使用 GPU 1
   vllm-worker-2:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:REVIEWED_VERSION
     container_name: vllm-worker-2
     restart: unless-stopped
     ports:
@@ -529,13 +463,13 @@ services:
 
   # New-API 网关
   new-api:
-    image: newapi/new-api:latest
+    image: calciumion/new-api:REVIEWED_VERSION
     container_name: new-api-gateway
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - LISTEN=0.0.0.0:3000
+      # New-API listens on its container port by default
       - TZ=Asia/Shanghai
     volumes:
       - ./config:/app/config
@@ -867,7 +801,7 @@ docker logs --tail 50 vllm-worker-1 2>&1 | grep -i error
 
 ```bash
 # 正确：只暴露网关端口
-docker run ... -p 3000:3000 newapi/new-api:latest
+docker run ... -p 3000:3000 calciumion/new-api:REVIEWED_VERSION
 
 # 错误：暴露 Worker 端口
 # docker run ... -p 8000:8000 vllm/vllm-openai ...
@@ -912,7 +846,7 @@ environment:
 | 场景 | 推荐方案 | 原因 |
 |------|----------|------|
 | 生产环境，需要高可用 | 方案一（独立 Worker） | 更灵活，更可控 |
-| 开发测试环境 | 方案二（内置 Worker） | 更简单，资源占用少 |
+| 开发测试环境 | 外部 vLLM/llama.cpp Worker | 更简单，资源占用少 |
 | 多 GPU 服务器 | 多进程或张量并行 | 根据显存和性能需求选择 |
 | 单 GPU 服务器 | 单 Worker 部署 | 避免显存不足 |
 
@@ -936,7 +870,7 @@ environment:
 
 ## 参考资料
 
-- [New-API 官方仓库](https://github.com/Calcium-Ion/new-api/blob/main/README_ZH.md)
+- [New-API 官方仓库](https://github.com/QuantumNous/new-api/blob/main/README.zh_CN.md)
 - [vLLM 官方文档](https://docs.vllm.ai/)
 - [llama.cpp 官方仓库](https://github.com/ggerganov/llama.cpp)
 - [Docker Compose 文档](https://docs.docker.com/compose/)

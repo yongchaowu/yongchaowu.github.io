@@ -16,6 +16,9 @@ content_origin: ai-assisted
 ---
 
 <!--more-->
+
+> **来源勘误（2026-09-25）**：本文早期版本把 `1,000,000 × 500` 写成了 500B token/天，并进一步写成约 580 万 token/s；正确算术是 500,000,000 token/天、约 5,800 token/s。文中的性能、容量和成本表没有附命令、日志、模型摘要、软件版本或测试日期，只能作为待验证的历史估算，不应当作生产保证。
+
 ---
 
 ## 10 分钟快速部署
@@ -61,7 +64,7 @@ vllm serve meta-llama/Meta-Llama-3-70B-Instruct \
 
 > 显存估算公式：**参数量(B) × 每参数字节数 × 1.2（开销系数）**。FP16 下每参数 2 字节，INT4 量化后约 0.5 字节。1.2 倍系数覆盖了 KV Cache 和激活值的额外开销。
 
-除了单卡装不下，推理场景本身也有吞吐压力。以在线客服为例，假设日均 100 万次对话请求，每次平均 500 token 输出，就是 500B token/天——折合约 580万 tokens/秒 的平均吞吐需求。单节点很难撑住这样的流量。
+除了单卡装不下，推理场景本身也有吞吐压力。以在线客服为例，假设日均 100 万次对话请求，每次平均 500 token 输出总量是 **500,000,000 token/天**（约 5,000 万 token/天），折合约 **5,800 token/s** 的平均吞吐需求，而不是 500B token/天或 580 万 token/s。真实容量还要用输入 token、并发、延迟分位数、模型规格和实测数据重新估算；单节点是否足够不能只由这个平均值决定。
 
 部署的核心是利用**模型并行**（张量并行、流水线并行）把模型切分到多个GPU，跨节点协同推理。
 
@@ -870,7 +873,7 @@ python -m sglang.launch_server --model /path/to/model --kv-cache-dtype int8
 **调整显存分配比例**：
 
 ```bash
-# 默认 GPU 显存利用率 0.9，可适当调低以留空间给 KV Cache
+# 这是 vLLM 模型执行器的显存预算，不是“剩余显存”保证；调整前先观察权重、KV Cache 和工作区占用
 vllm serve /path/to/model --gpu-memory-utilization 0.85
 ```
 
@@ -907,7 +910,7 @@ export NCCL_IB_GID_INDEX=3       # RoCEv2 使用 GID index 3
 | 问题 | 排查命令 / 解决方案 |
 |------|---------------------|
 | NCCL超时或卡住 | `export NCCL_DEBUG=INFO` 查看日志；注意 29500 是 torch.distributed 的 rendezvous 端口（由 torchrun 使用），而 NCCL 实际通信使用的是动态临时端口（ephemeral ports），需确保节点间 TCP/UDP 对这些端口均可达；确认 `ping` 和 `ib_write_bw` 节点间可达 |
-| 模型加载OOM | 调整 `--max-model-len` 降低 KV Cache 上限；减少 `--gpu-memory-utilization`；考虑 INT4/INT8 量化 |
+| 模型加载OOM | 调整 `--max-model-len`、`--max-num-seqs` 或 batch 上限；检查 `--gpu-memory-utilization` 覆盖的模型执行器预算，而不是把它当作剩余显存；再考虑 INT4/INT8 量化 |
 | Ray 集群连接失败 | `ray status` 检查集群状态；确认 head 节点的 `6379` 端口可达；检查 worker 是否在同一 Ray version |
 | 部分节点 OOM 而其他正常 | PP 切分不均——检查各 stage 的层数分配是否均衡；手动调整 `--pipeline-parallel-split-points` |
 | 权重加载卡住 | 检查共享存储是否可用 `ls -la /mnt/nfs/models/`；确认所有节点挂载了相同的路径；检查 NFS 挂载权限 |
@@ -1326,7 +1329,7 @@ kubectl logs -f deployment/vllm-head -n llm-serving
 ### 10.3 自动扩缩配置
 
 ```yaml
-# HPA - 基于 GPU 利用率自动扩缩
+# HPA - GPU busy percentage 必须由 DCGM exporter、Prometheus Adapter 或 KEDA 等提供
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -1339,12 +1342,13 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
-    - type: Resource
-      resource:
-        name: nvidia.com/gpu
+    - type: Pods
+      pods:
+        metric:
+          name: vllm_gpu_utilization_percent
         target:
-          type: Utilization
-          averageUtilization: 80
+          type: AverageValue
+          averageValue: "80"
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 60

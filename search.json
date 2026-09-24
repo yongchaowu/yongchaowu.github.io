@@ -31,6 +31,7 @@
 "verification": {{ search_verification | jsonify }},
 "risk": {{ search_risk | jsonify }},
 "origin": {{ search_origin | jsonify }},
+"attribution": {{ search_editorial.attribution | jsonify }},
 "series": {{ search_series | jsonify }},
 "text": {{ post.content | strip_html | normalize_whitespace | jsonify }}
 }{% unless forloop.last %},{% endunless %}

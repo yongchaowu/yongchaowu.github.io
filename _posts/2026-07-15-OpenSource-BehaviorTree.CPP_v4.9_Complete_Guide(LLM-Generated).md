@@ -19,6 +19,7 @@ content_origin: ai-assisted
 > Based on official documentation, Doxygen API reference, and source code verification (v4.9.0).
 > For official docs: https://www.behaviortree.dev/ | API: https://behaviortree.github.io/BehaviorTree.CPP/
 >
+> **Concurrency caveat (review 2026-09-25):** The normal tree executor visits synchronous nodes in tree order, but `ThreadedAction` runs its `tick()` in a separate thread. The sequential-execution wording elsewhere in this guide is therefore a description of the normal path, not a universal guarantee; carry the node's threading and synchronization contract into the design.
 {% endraw %}
 
 > For hands-on notes and Groot2 debugging workflows, see [BehaviorTree.CPP Manual Notes]({{ '/2026/07/15/OpenSource-BehaviorTree.CPP-ManualNotes/' | relative_url }}).

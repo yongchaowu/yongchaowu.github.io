@@ -12,7 +12,7 @@
 
 ## Content and URL rules
 
-- Preserve historical source files, dates, bodies, and generated post URLs unless the user explicitly asks for a destructive migration. If historical edits are intentional, record formatting-only exceptions in `_data/format_fixes.yml` and update URL/reference audits in the same change.
+- Preserve historical source files, dates, bodies, and generated post URLs unless the user explicitly asks for a destructive migration. If a historical file needs an intentional formatting or evidence-backed safety correction, record its approved resulting blob and reason in `_data/format_fixes.yml` and update URL/reference audits in the same change.
 - The curated layer is additive: curated posts use `curated: true`, `content_origin: curated`, `summary`, `lang`, and repository-relative `source_posts`; validate every source path.
 - Editorial metadata is descriptive, not evidence. Do not call a note independently verified/current/authoritative unless the repository or an attached source supports that claim; keep version-sensitive, AI-assisted, imported, historical, and unverified states visible.
 - Use `relative_url` for internal links. Keep the canonical routes `/`, `/pageN/`, `/curated/`, `/category/`, `/archive/`, `/tag/`, `/tag/<slug>/`, `/search/`, and `/about/` compatible.
@@ -24,7 +24,8 @@ Run from the repository root. The local Bundler is vendored; use `bundle exec`.
 
 ```bash
 # Only needed after changing post tags or tag slug data:
-python3 scripts/generate_tag_pages.py
+uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py
+uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check
 
 ruby scripts/audit-content.rb
 ruby scripts/validate-curation.rb
@@ -42,11 +43,12 @@ ruby scripts/verify-post-history.rb
 ```
 
 - `ruby scripts/validate-curation.rb` checks front matter, curated source paths, reading-path references, editorial sidecar paths, topic IDs, and topic relations.
+- `uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check` verifies that committed generated tag pages match the current front matter and slug data without rewriting them.
 - `ruby scripts/validate-tags.rb` is read-only: it checks every active tag has a route and rejects unapproved slug collisions.
-- `ruby scripts/smoke-test.rb` expects a successful build and checks generated routes, both JSON indexes, exact post/pagination counts, source notes, artifact exclusions, unresolved Liquid/empty links, base-path URL wiring, and shipped JavaScript copies in `_site/`.
-- `ruby scripts/verify-post-history.rb` compares the 331 pre-curation post blobs; it allows new posts and only the explicit formatting exceptions in `_data/format_fixes.yml`, rejecting other baseline edits/deletions.
-- CI uses Ruby 3.2 and runs a clean build, curation validation, smoke tests, JavaScript syntax checks, and a baseline-aware historical-post blob check before Pages deployment; see `.github/workflows/pages.yml`.
-- Historical articles may contain excerpt/Liquid syntax that must be fixed through `_data/format_fixes.yml`; never hide a new warning by weakening the build.
+- `ruby scripts/smoke-test.rb` expects a successful build and checks generated routes, all source tag routes, sitemap/404, both JSON indexes, exact post/pagination counts, source notes, attribution, artifact exclusions, unresolved Liquid/empty links, a generated-site internal-link crawl, base-path URL wiring, and shipped JavaScript copies in `_site/`.
+- `ruby scripts/verify-post-history.rb` compares the 331 pre-curation post blobs; it allows new posts and only the explicit, blob-bound exceptions in `_data/format_fixes.yml`, rejecting other baseline edits/deletions.
+- CI uses Ruby 3.2, provisions uv, runs the explicit Python tag-generator dependency through `uv run`, checks generated tag-page consistency, and runs a clean build, curation validation, smoke tests, JavaScript syntax checks, and a baseline-aware historical-post blob check before Pages deployment; see `.github/workflows/pages.yml`.
+- Historical articles may contain excerpt/Liquid syntax or evidence-backed safety corrections that must be recorded in `_data/format_fixes.yml`; never hide a new warning by weakening the build.
 - Changes to `_config.yml` require restarting `jekyll serve`; GitHub Pages builds with the Pages base path, so avoid hard-coded root-relative links in templates or JavaScript.
 
 ## Safe workflow

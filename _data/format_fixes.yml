@@ -1,5 +1,5 @@
 version: 1
-policy: Explicit, reviewable formatting-only exceptions to the pre-curation blob baseline.
+policy: Explicit, reviewable formatting and technical-correction exceptions to the pre-curation blob baseline; every exception is bound to an approved resulting blob.
 fixes:
   - post: _posts/2020-07-11-Code-OPC-DA-OPC-Client-Code-Demo.md
     fixed_blob: 1444cc52494f2338cb3bea38bc0697b2f8148991
@@ -7,30 +7,30 @@ fixes:
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the imported code.
   - post: _posts/2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated).md
-    fixed_blob: 7ebcd30075de75de851fcf35a9e9f38b2da7f5d0
+    fixed_blob: 6c8a713050f0374a2fddf6b6288495404f214f46
     date: 2026-09-25
-    kind: excerpt-link-and-raw-wrapper
-    reason: Move the excerpt separator outside raw and replace a literal post_url tag with a baseurl-safe link.
+    kind: excerpt-link-and-raw-wrapper-and-technical-correction
+    reason: Move the excerpt separator outside raw, replace a literal post_url tag with a baseurl-safe link, and qualify sequential tick wording with the documented ThreadedAction exception.
   - post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
-    fixed_blob: 8fa6aab8e07d014f5d84e58acaceb1d6edc5a795
+    fixed_blob: b7c7d90b9fdf9b5e20666afa12dc7363e9bb1a50
     date: 2026-09-25
-    kind: excerpt-and-raw-wrapper
-    reason: Move the excerpt separator outside the raw wrapper without changing deployment claims.
+    kind: excerpt-and-raw-wrapper-and-technical-correction
+    reason: Move the excerpt separator outside raw, mark the page as a gateway deployment note, use the official calciumion/new-api image, add the shared network, and remove the unsupported built-in-worker example.
   - post: _posts/2026-09-05-OpenSource-Agent-Swarm.md
     fixed_blob: 450c62ae3add5502fcd3c82791b553e4bf169194
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the article body.
   - post: _posts/2026-09-05-VitePress-Complete-Guide.md
-    fixed_blob: 66add81f4bf480ca8e1cb3795c4db977f2ac9cc4
+    fixed_blob: 46d944f24b1f7ae41342120f903bf6643fa0cb47
     date: 2026-09-25
-    kind: excerpt-and-raw-wrapper
-    reason: Move the excerpt separator outside the raw wrapper without changing the guide body.
+    kind: excerpt-and-raw-wrapper-and-technical-correction
+    reason: Move the excerpt separator outside raw, align the alpha.20 examples with the prerelease channel, site-level appearance option and lazyLoad image option, and add a version warning.
   - post: _posts/2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated).md
-    fixed_blob: 13bf32987020a2673698c84ccdebada22cef15be
+    fixed_blob: ae488614be3dc3ad9e2061b2f4184becfbe96b24
     date: 2026-09-25
-    kind: liquid-template-examples
-    reason: Wrap Prometheus template examples in raw Liquid so their literal braces render correctly.
+    kind: liquid-template-examples-and-technical-correction
+    reason: Wrap Prometheus template examples in raw Liquid, correct the token arithmetic, qualify unverified performance tables, and replace invalid GPU-allocation HPA metrics with a custom-metric example.
   - post: _posts/2023-02-28-正则表达式-30分钟入门教程.md
     fixed_blob: 0febe42db50ab0190499c62ff6d8880569cd0f4f
     date: 2026-09-25

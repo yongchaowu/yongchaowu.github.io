@@ -223,6 +223,8 @@ posts:
   verification: review-required
   risk: caution
   id: llm_architecture
+  review_date: '2026-09-25'
+  review_basis: arithmetic-and-Kubernetes-metric-cross-check
 - post: _posts/2026-09-05-OOP-vs-ECS-Architecture-Comparison.md
   content_type: deep-dive
   placement: deep-dive
@@ -374,6 +376,8 @@ posts:
   verification: review-required
   risk: caution
   id: behaviortree_ai_reference
+  review_date: '2026-09-25'
+  review_basis: official-docs-and-ThreadedAction-caveat
 - post: _posts/2020-07-10-Data-Cleaning（百度百科）.md
   content_type: reference
   placement: reference
@@ -383,6 +387,13 @@ posts:
   verification: unknown
   risk: caution
   id: data_cleaning_import
+  attribution:
+    author: w97531
+    source_url: https://blog.csdn.net/w97531/article/details/81947376
+    license: CC BY-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-sa/4.0/
+    license_status: declared-in-source
+    attribution_basis: source-post-footer
 - post: _posts/2023-03-03-Book-深入设计模式.md
   content_type: reference
   placement: reference
@@ -392,6 +403,14 @@ posts:
   verification: unknown
   risk: caution
   id: design_pattern_import
+  attribution:
+    author: RefactoringGuru
+    source_url: https://refactoringguru.cn/design-patterns
+    license: CC BY-NC-ND 4.0 (repository examples)
+    license_url: https://creativecommons.org/licenses/by-nc-nd/4.0/
+    license_status: partial-source-review
+    attribution_basis: linked-repository-readme
+    license_note: The linked C++ repository declares this license for its examples; coverage of the historical article's prose is not independently verified.
 - post: _posts/2020-07-08-Cryptology-3DES（Triple-DES）-1981-American.md
   content_type: reference
   placement: reference
@@ -401,3 +420,35 @@ posts:
   verification: unknown
   risk: caution
   id: triple_des_import
+  attribution:
+    author: unknown
+    source_url: https://baike.baidu.com/item/3DES/6368161
+    license: unknown
+    license_status: not-verified
+    attribution_basis: source-post-link
+    license_note: The historical post links to this page but does not identify an author or license; no additional permission is inferred.
+- post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
+  content_type: runbook
+  placement: reference
+  primary_topic: ai
+  secondary_topics:
+  - devops
+  - systems
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: new_api_docker_review
+  review_date: '2026-09-25'
+  review_basis: official-New-API-docs-and-deployment-correction
+- post: _posts/2026-09-05-VitePress-Complete-Guide.md
+  content_type: tutorial
+  placement: reference
+  primary_topic: tools
+  secondary_topics:
+  - programming
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: vitepress_guide_review
+  review_date: '2026-09-25'
+  review_basis: official-alpha.20-config-reference

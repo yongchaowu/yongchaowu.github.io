@@ -10,5 +10,6 @@ Tech notes on C++, OS, tools, and AI/LLM deployment, migrated from my cnblogs bl
 - Build locally: `bundle exec jekyll serve`
 - Validate curated source links: `ruby scripts/validate-curation.rb`
 - Validate tag routes and collisions: `ruby scripts/validate-tags.rb`
+- Check generated tag pages with `uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check`
 - Verify historical post blobs: `ruby scripts/verify-post-history.rb`
 - Run generated-site smoke tests: `ruby scripts/smoke-test.rb`

@@ -53,17 +53,17 @@ source_posts:
         └── Observability  日志、轨迹、指标、评测
 ```
 
-[从零到一的 LLM 应用路线](#source-posts-title) 适合补齐 RAG、LangChain 和 LangGraph 的概念关系；本文进一步强调工程边界和上线顺序。
+[从零到一的 LLM 应用路线](#source-note-1) 适合补齐 RAG、LangChain 和 LangGraph 的概念关系；本文进一步强调工程边界和上线顺序。
 
 ## 推荐学习顺序
 
 ### 1. 先会调用模型
 
-先掌握 OpenAI 兼容接口、流式输出、上下文管理、超时和错误处理。不要一开始就引入多 Agent；先能可靠地完成一个单请求任务。模型网关和 Provider 切换可参考 [New API](#source-posts-title) 与 [CC Switch](#source-posts-title)。
+先掌握 OpenAI 兼容接口、流式输出、上下文管理、超时和错误处理。不要一开始就引入多 Agent；先能可靠地完成一个单请求任务。模型网关和 Provider 切换可参考 [New API](#source-note-8) 与 [CC Switch](#source-note-7)。
 
 ### 2. 再做可评估的 RAG
 
-RAG 的最小闭环是：文档如何进入系统、如何切分、如何检索、如何引用、答案如何被评估。没有评测集时，增加向量库和 Agent 只会让错误更难定位。Sentence-BERT 的模型说明见 [Sentence Transformers / Sentence-BERT](#source-posts-title)。
+RAG 的最小闭环是：文档如何进入系统、如何切分、如何检索、如何引用、答案如何被评估。没有评测集时，增加向量库和 Agent 只会让错误更难定位。Sentence-BERT 的模型说明见 [Sentence Transformers / Sentence-BERT](#source-note-9)。
 
 ### 3. 再学习状态图和人工介入
 
@@ -71,7 +71,7 @@ RAG 的最小闭环是：文档如何进入系统、如何切分、如何检索�
 
 ### 4. 最后引入长任务和多 Agent
 
-[Agent Swarm](#source-posts-title) 和 [DeepAgents 沙箱](#source-posts-title) 适合研究容器化/本地编排、任务队列和多角色协作；这不等于模型 Provider 或模型文件已经离线。前提是单 Agent 流程已经可观测、可停止、可恢复，并且每个工具的权限边界已经明确。
+[Agent Swarm](#source-note-4) 和 [DeepAgents 沙箱](#source-note-2) 适合研究容器化/本地编排、任务队列和多角色协作；这不等于模型 Provider 或模型文件已经离线。前提是单 Agent 流程已经可观测、可停止、可恢复，并且每个工具的权限边界已经明确。
 
 ## 一个可上线的最小契约
 
@@ -102,9 +102,9 @@ Agent / 模型版本：
 
 ## 从历史文章中继续阅读
 
-- [OpenCode 使用与配置](#source-posts-title)：从 coding agent 的工作区与工具权限开始。
-- [OpenCode CLI 深入解析](#source-posts-title)：理解 Agent 运行时、配置和扩展点。
-- [DeepAgents 接入 DeepSeek](#source-posts-title)：理解模型兼容配置。
-- [Yuxi Know](#source-posts-title)：补充知识检索和工具组合的实践视角。
+- [OpenCode 使用与配置](#source-note-5)：从 coding agent 的工作区与工具权限开始。
+- [OpenCode CLI 深入解析](#source-note-6)：理解 Agent 运行时、配置和扩展点。
+- [DeepAgents 接入 DeepSeek](#source-note-3)：理解模型兼容配置。
+- [Yuxi Know](#source-note-10)：补充知识检索和工具组合的实践视角。
 
 最终的判断标准不是 Agent “能完成多少任务”，而是每一步是否可解释、可停止、可恢复，并且不会超出授权范围。

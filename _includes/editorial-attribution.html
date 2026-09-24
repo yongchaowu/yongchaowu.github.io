@@ -1,0 +1,34 @@
+{% comment %}
+  Displays source attribution for imported/linked material when the editorial
+  sidecar records it. Missing or unverified license information stays visible.
+{% endcomment %}
+{% assign attribution_editorial = nil %}
+{% assign attribution_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% for item in site.data.post_editorial.posts %}
+    {% if item.post == attribution_path %}{% assign attribution_editorial = item %}{% endif %}
+{% endfor %}
+{% if attribution_editorial.attribution %}
+{% assign attribution = attribution_editorial.attribution %}
+<aside class="editorial-attribution" aria-labelledby="source-attribution-title">
+    <h2 id="source-attribution-title">Source attribution / 来源署名</h2>
+    <dl>
+        {% if attribution.author and attribution.author != 'unknown' %}
+        <dt>Author / 作者</dt><dd>{{ attribution.author }}</dd>
+        {% else %}
+        <dt>Author / 作者</dt><dd>Not identified in the repository / 仓库未标明</dd>
+        {% endif %}
+        {% if attribution.source_url %}
+        <dt>Source / 来源</dt><dd><a href="{{ attribution.source_url }}" target="_blank" rel="noopener noreferrer">{{ attribution.source_url }}</a></dd>
+        {% endif %}
+        {% if attribution.license %}
+        <dt>License / 许可证</dt>
+        <dd>
+            {% if attribution.license != 'unknown' and attribution.license_url %}<a href="{{ attribution.license_url }}" target="_blank" rel="noopener noreferrer">{{ attribution.license }}</a>{% else %}{{ attribution.license }}{% endif %}
+            {% if attribution.license_status == 'not-verified' %} <strong>(not verified / 未核实)</strong>{% elsif attribution.license_status == 'partial-source-review' %} <strong>(partial source review / 仅完成部分来源核对)</strong>{% endif %}
+        </dd>
+        {% endif %}
+    </dl>
+    {% if attribution.license_note %}<p class="editorial-attribution-note">{{ attribution.license_note }}</p>{% endif %}
+    <p class="editorial-attribution-note">This is a provenance record, not an independent verification of the imported claims. / 这是来源记录，不代表对导入内容进行了独立事实验证。</p>
+</aside>
+{% endif %}
