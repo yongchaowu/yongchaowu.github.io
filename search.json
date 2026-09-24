@@ -15,6 +15,13 @@
 {% assign search_risk = search_editorial.risk | default: site.data.post_editorial.defaults.risk %}
 {% assign search_origin = search_editorial.origin | default: site.data.post_editorial.defaults.origin %}
 {% assign search_series = search_editorial.series %}
+{% assign search_text = post.content | strip_html | normalize_whitespace %}
+{% assign search_text = search_text | replace: '&lt;', '<' %}
+{% assign search_text = search_text | replace: '&gt;', '>' %}
+{% assign search_text = search_text | replace: '&quot;', '"' %}
+{% assign search_text = search_text | replace: '&#39;', "'" %}
+{% assign search_text = search_text | replace: '&#x27;', "'" %}
+{% assign search_text = search_text | replace: '&amp;', '&' %}
 {
 "title": {{ post.title | jsonify }},
 "display_title": {{ post.display_title | default: post.title | jsonify }},
@@ -33,7 +40,7 @@
 "origin": {{ search_origin | jsonify }},
 "attribution": {{ search_editorial.attribution | jsonify }},
 "series": {{ search_series | jsonify }},
-"text": {{ post.content | strip_html | normalize_whitespace | jsonify }}
+"text": {{ search_text | jsonify }}
 }{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ]

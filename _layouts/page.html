@@ -8,8 +8,8 @@ layout: default
         <hr>
         {{content}}
     </div>
-    <button class="anchor">{% include icon.html name="anchor" %}</button>
-    <div class="right">
+    <button class="anchor" type="button" aria-label="Open page navigation" aria-controls="page-sidebar" aria-expanded="false">{% include icon.html name="anchor" %}</button>
+    <div class="right" id="page-sidebar">
         <div class="wrap">
 
             <!-- Content -->

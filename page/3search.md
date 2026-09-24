@@ -10,7 +10,12 @@ noindex: true
 sitemap: false
 ---
 
+{% assign normalized_baseurl = site.baseurl %}
+{% if normalized_baseurl == '/' %}{% assign normalized_baseurl = '' %}{% elsif normalized_baseurl and normalized_baseurl != '' %}{% assign normalized_baseurl = normalized_baseurl | append: '/' %}{% endif %}
 <main class="page search-page" id="main-content" tabindex="-1">
+    <noscript>
+        <div class="noscript-note"><strong>Search needs JavaScript.</strong> You can still browse <a href="{{ '/tag/' | relative_url }}">tags</a>, <a href="{{ '/category/' | relative_url }}">topics</a>, or the <a href="{{ '/archive/' | relative_url }}">complete archive</a>.</div>
+    </noscript>
     <header class="search-header">
         <div>
             <span class="section-kicker">Find a thread</span>
@@ -20,17 +25,17 @@ sitemap: false
         <a class="button button--quiet" href="{{ '/start-here/' | relative_url }}">Not sure where to start?</a>
     </header>
 
-    <div class="search-wrap" id="search-app" data-index-url="{{ '/search.json' | relative_url }}" data-base-url="{{ site.baseurl }}">
+    <div class="search-wrap" id="search-app" data-index-url="{{ '/search.json' | relative_url }}" data-base-url="{{ normalized_baseurl }}">
         <div class="search-input-wrap">
             {% include icon.html name="search" %}
             <label class="sr-only" for="search-input">Search the notebook</label>
-            <input id="search-input" type="text" placeholder="Try “CMake”, “LLM”, or “dynamic linker”" autocomplete="off" autofocus>
+            <input id="search-input" type="search" inputmode="search" enterkeyhint="search" placeholder="Try “CMake”, “LLM”, or “dynamic linker”" autocomplete="off" spellcheck="false">
         </div>
         <div id="topic-filter" class="topic-filter" aria-label="Filter search results">
-            <button class="topic-filter-btn active" data-topic="" aria-pressed="true">All notes</button>
-            <button class="topic-filter-btn curated-filter-btn" data-curated="true" aria-pressed="false">Curated only</button>
+            <button type="button" class="topic-filter-btn active" data-topic="" aria-pressed="true">All notes</button>
+            <button type="button" class="topic-filter-btn curated-filter-btn" data-curated="true" aria-pressed="false">Curated only</button>
             {% for topic in site.data.topics.topics %}
-            <button class="topic-filter-btn" data-topic="{{ topic.name | escape }}" aria-pressed="false">{{ topic.name }}</button>
+            <button type="button" class="topic-filter-btn" data-topic="{{ topic.name | escape }}" aria-pressed="false">{{ topic.name }}</button>
             {% endfor %}
         </div>
         <div class="search-select-filters">
@@ -39,6 +44,7 @@ sitemap: false
                     <option value="">All types</option>
                     <option value="roadmap">Roadmap</option>
                     <option value="deep-dive">Deep dive</option>
+                    <option value="note">Note</option>
                     <option value="runbook">Runbook</option>
                     <option value="tutorial">Tutorial</option>
                     <option value="reference">Reference</option>
@@ -54,6 +60,7 @@ sitemap: false
                     <option value="editorial-review">Editorial review</option>
                     <option value="not-tested">Not tested</option>
                     <option value="review-required">Review required</option>
+                    <option value="unknown">Unknown / not classified</option>
                 </select>
             </label>
         </div>

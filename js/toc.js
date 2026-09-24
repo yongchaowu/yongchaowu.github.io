@@ -10,7 +10,11 @@
     if (!art || !side) return
 
     var hs = art.querySelectorAll('h2, h3')
-    if (hs.length < 2) return
+    if (hs.length < 2) {
+        var emptyCard = side.closest('.side.content') || side.parentElement
+        if (emptyCard) emptyCard.hidden = true
+        return
+    }
 
     var totalHeadings = hs.length
     var collapsed = totalHeadings > 10

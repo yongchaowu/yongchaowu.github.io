@@ -8,7 +8,9 @@ icon: tags
 type: page
 ---
 
-<main class="page tag-index-page" id="main-content" data-tag-index data-index-url="{{ '/posts-meta.json' | relative_url }}" data-base-url="{{ site.baseurl }}" tabindex="-1">
+{% assign normalized_baseurl = site.baseurl %}
+{% if normalized_baseurl == '/' %}{% assign normalized_baseurl = '' %}{% elsif normalized_baseurl and normalized_baseurl != '' %}{% assign normalized_baseurl = normalized_baseurl | append: '/' %}{% endif %}
+<main class="page tag-index-page" id="main-content" data-tag-index data-index-url="{{ '/posts-meta.json' | relative_url }}" data-base-url="{{ normalized_baseurl }}" tabindex="-1">
     <header class="tag-index-header">
         <div>
             <span class="section-kicker">Cross-topic discovery</span>
@@ -43,6 +45,17 @@ type: page
             <div><span class="section-kicker">The full index</span><h2 id="all-tags-title">All tags</h2></div>
             <span class="section-count">{{ site.tags | size }} labels</span>
         </div>
+        <div class="tag-controls" aria-label="Tag index controls">
+            <label for="tag-filter-input">Filter tags
+                <input id="tag-filter-input" type="search" placeholder="e.g. C++ or Docker" autocomplete="off">
+            </label>
+            <label for="tag-sort">Sort
+                <select id="tag-sort">
+                    <option value="count">Most used</option>
+                    <option value="name">Name A–Z</option>
+                </select>
+            </label>
+        </div>
         <div class="tags-cloud" id="all-tags">
             {% assign seen_slugs = '' | split: '' %}
             {% for pair in site.tags %}
@@ -69,7 +82,7 @@ type: page
                             {% assign canonical_tag_count = canonical_tag_count | plus: candidate_pair[1].size %}
                         {% endif %}
                     {% endfor %}
-                    <a class="tag-btn" data-tag="{{ display_tag | escape }}" href="{{ '/tag/' | relative_url }}{{ tag_slug }}/">
+                    <a class="tag-btn" data-tag="{{ display_tag | escape }}" data-tag-name="{{ display_tag | escape }}" href="{{ '/tag/' | relative_url }}{{ tag_slug }}/">
                         <span>{{ display_tag }}</span><span class="tag-count">{{ canonical_tag_count }}</span>
                     </a>
                 {% endunless %}

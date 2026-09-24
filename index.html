@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Yc.W | Engineering Notebook"
-description: "A living engineering notebook about C++ backend systems, AI agents, infrastructure, and the ideas behind reliable software."
+description: "A living engineering notebook about C++ systems, AI infrastructure, simulation, and reliable software."
 ---
 
 <main class="page home-page index" id="main-content" tabindex="-1">
@@ -10,7 +10,7 @@ description: "A living engineering notebook about C++ backend systems, AI agents
         <div class="home-hero-copy">
             <span class="section-kicker">Yc.W · Engineering notebook</span>
             <h1>Build systems.<br><em>Understand the why.</em></h1>
-            <p>一个持续生长的工程知识库：从 C++ 后端和 Linux 系统，到 AI Agent、LLM 推理与可靠交付。</p>
+            <p>一个持续生长的工程知识库：从 C++ 系统、仿真与 Linux，到 AI 基础设施、LLM 推理与可靠交付。</p>
             <div class="home-hero-actions">
                 <a class="button button--primary" href="{{ '/start-here/' | relative_url }}">{% include icon.html name="bookmark-o" %} Start here</a>
                 <a class="button button--quiet" href="{{ '/curated/' | relative_url }}">Read curated notes</a>
@@ -20,7 +20,7 @@ description: "A living engineering notebook about C++ backend systems, AI agents
             <div class="hero-orbit" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span></div>
             <div class="home-hero-note">
                 <span class="section-kicker">Current focus</span>
-                <strong>C++ backend<br>AI systems<br>infrastructure</strong>
+                <strong>C++ systems<br>AI infrastructure<br>reliable delivery</strong>
                 <span>Notes from the workbench, not a content feed.</span>
             </div>
         </div>
@@ -56,6 +56,13 @@ description: "A living engineering notebook about C++ backend systems, AI agents
             {% endfor %}
         </div>
     </section>
+    {% endif %}
+
+    {% if paginator.page > 1 %}
+    <div class="pagination-page-heading">
+        <span class="section-kicker">The notebook continues</span>
+        <h1>Latest notes <span>· Page {{ paginator.page }} of {{ paginator.total_pages }}</span></h1>
+    </div>
     {% endif %}
 
     <section class="home-latest" aria-labelledby="home-latest-title">

@@ -6,19 +6,28 @@ code{
     margin: 0 2px;
     font-size: 90%;
     border-radius: 3px;
-    color: #000;
-    background-color: rgba(0, 0, 0, 0.06);
-    border: 1px solid #d7d0d2;
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-color);
     font-family: Monaco,Menlo,"Microsoft YaHei Mono",Consolas,"Courier New",monospace,sans-serif;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+pre > code {
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: pre;
 }
 
 pre {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
     margin: 12px 0;
      padding: 8px 12px;
-    //  overflow-x: auto;
-     word-wrap: break-word;      /* IE 5.5-7 */
-     white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
-     white-space: pre-wrap;      /* current browsers */
+     word-wrap: normal;
+     white-space: pre;
      > code {
          margin: 0;
          padding: 0;
@@ -35,18 +44,19 @@ pre {
         position: absolute;
         top: 4px;
         right: 4px;
-        padding: 2px 8px;
-        font-size: 12px;
-        background: #555;
+        min-height: 28px;
+        padding: 3px 8px;
+        font-size: 11px;
+        background: #52627a;
         color: #fff;
-        border: none;
-        border-radius: 3px;
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 4px;
         cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.2s;
-        &:hover { background: #333; }
+        opacity: 1;
+        transition: opacity 0.2s, background 0.2s;
+        &:hover { background: #33445d; }
+        &:focus-visible { opacity: 1; outline: 2px solid #9cc8f5; outline-offset: 2px; }
     }
-    &:hover .copy-btn { opacity: 1; }
 }
 .highlight {
     border-radius: 3px;

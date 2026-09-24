@@ -8,7 +8,9 @@ topics:
     intro: "从模型调用到 Agent 系统：检索、工作流、推理服务、工具权限与生产化实践。"
     featured_posts:
       - "_posts/2026-09-24-curated-ai-agent-engineering-map.md"
+      - "_posts/2026-09-25-curated-ray-vllm-offline-runbook.md"
       - "_posts/2026-09-24-curated-llm-serving-production-checklist.md"
+      - "_posts/2026-09-25-curated-gpu-docker-deployment.md"
       - "_posts/2026-09-24-agent-sandbox-security-runbook.md"
 
   - id: cpp
@@ -19,9 +21,9 @@ topics:
     description: "Systems programming, libraries and backend engineering."
     intro: "构建、对象生命周期、并发、调试、性能和工程化工具链。"
     featured_posts:
+      - "_posts/2026-09-25-curated-behaviortree-cpp-engineering.md"
       - "_posts/2026-09-24-curated-cpp-backend-engineering.md"
       - "_posts/2026-09-24-modern-cpp-concurrency-lifecycle.md"
-      - "_posts/2026-09-24-modern-cmake-targets-packaging.md"
 
   - id: systems
     name: "Systems"
@@ -33,6 +35,7 @@ topics:
     featured_posts:
       - "_posts/2026-09-24-curated-linux-systems-troubleshooting.md"
       - "_posts/2026-09-24-linux-elf-linking-deployment.md"
+      - "_posts/2026-09-25-curated-gpu-docker-deployment.md"
       - "_posts/2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install.md"
 
   - id: devops

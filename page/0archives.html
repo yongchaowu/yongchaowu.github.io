@@ -48,11 +48,11 @@ type: page
                 {% endif %}
                 {% assign current_year = post_year %}
                 <section class="archive-year" id="y{{ current_year }}">
-                    <button class="archive-year-header" aria-expanded="true" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); this.nextElementSibling.classList.toggle('collapsed')">
+                    <button type="button" class="archive-year-header" aria-expanded="true" aria-controls="archive-list-{{ current_year }}" data-archive-toggle>
                         <span class="archive-year-title">{{ current_year }}</span>
                         <span class="archive-year-toggle" aria-hidden="true">▾</span>
                     </button>
-                    <ul class="archive-list">
+                    <ul class="archive-list" id="archive-list-{{ current_year }}">
             {% endif %}
             <li>
                 <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d" }}</time>
@@ -105,21 +105,33 @@ type: page
 <script>
 // Progressive enhancement: collapse older years while keeping the current year open.
 (function() {
-    var headers = document.querySelectorAll('.archive-year-header');
-    for (var i = 0; i < headers.length; i++) {
-        if (i > 0) {
-            headers[i].setAttribute('aria-expanded', 'false');
-            var list = headers[i].nextElementSibling;
-            if (list) list.classList.add('collapsed');
-        }
+    var headers = Array.prototype.slice.call(document.querySelectorAll('[data-archive-toggle]'));
+
+    function setExpanded(header, expanded) {
+        var list = document.getElementById(header.getAttribute('aria-controls'));
+        header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        if (list) list.classList.toggle('collapsed', !expanded);
     }
-    if (location.hash) {
-        var target = document.querySelector(location.hash + ' .archive-year-header');
+
+    headers.forEach(function(header, index) {
+        if (index > 0) setExpanded(header, false);
+        header.addEventListener('click', function() {
+            setExpanded(header, header.getAttribute('aria-expanded') !== 'true');
+        });
+    });
+
+    function expandHash() {
+        if (!location.hash) return;
+        var target;
+        try { target = document.querySelector(location.hash + ' [data-archive-toggle]'); } catch (e) { return; }
         if (target) {
-            target.setAttribute('aria-expanded', 'true');
-            var list = target.nextElementSibling;
-            if (list) list.classList.remove('collapsed');
+            setExpanded(target, true);
+            // Let the browser perform its normal anchor navigation after the list is visible.
+            window.setTimeout(function() { target.scrollIntoView({ block: 'start' }); }, 0);
         }
     }
+
+    window.addEventListener('hashchange', expandHash);
+    expandHash();
 })();
 </script>

@@ -1,5 +1,7 @@
 {% assign is_home = false %}
-{% if page.url == '/' or paginator %}{% assign is_home = true %}{% endif %}
+{% assign is_home_context = false %}
+{% if page.url == '/' or paginator %}{% assign is_home_context = true %}{% endif %}
+{% if page.url == '/' %}{% assign is_home = true %}{% endif %}
 {% assign is_topic = false %}
 {% if page.url == '/category/' or page.url contains '/topics/' or page.layout == 'topic' %}{% assign is_topic = true %}{% endif %}
 {% if page.layout == 'post' %}
@@ -18,32 +20,24 @@
             <span class="brand-name">{{ site.title }}</span>
         </a>
         <small class="brand-tagline">{{ site.brief-intro }}</small>
-        <button id="headerMenu" class="menu" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false">{% include icon.html name="bars" %}</button>
+        <button id="headerMenu" class="menu" type="button" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false">{% include icon.html name="bars" %}</button>
         <nav id="headerNav" aria-label="Primary navigation">
             <ul>
                 <li>
-                    {% if is_home %}
-                    <a class="active" href="{{ '/' | relative_url }}" aria-current="page">
-                    {% else %}
-                    <a href="{{ '/' | relative_url }}">
-                    {% endif %}
+                    <a class="{% if is_home_context %}active{% endif %}" href="{{ '/' | relative_url }}"{% if is_home %} aria-current="page"{% endif %}>
                         {% include icon.html name="home" %}Home
                     </a>
                 </li>
 
                 {% for item in site.data.navigation.primary %}
                 {% assign item_active = false %}
+                {% assign item_context = false %}
                 {% if page.url == item.url %}{% assign item_active = true %}{% endif %}
-                {% if item.url == '/category/' and is_topic %}{% assign item_active = true %}{% endif %}
-                {% if item.url == '/tag/' and is_tag %}{% assign item_active = true %}{% endif %}
-                {% if item.url == '/curated/' and is_curated %}{% assign item_active = true %}{% endif %}
-                {% if item.url == '/archive/' and page.layout == 'post' and is_curated == false %}{% assign item_active = true %}{% endif %}
+                {% if item.url == '/category/' and is_topic %}{% assign item_context = true %}{% endif %}
+                {% if item.url == '/tag/' and is_tag and item_active == false %}{% assign item_context = true %}{% endif %}
+                {% if item.url == '/curated/' and is_curated and is_topic == false %}{% assign item_context = true %}{% endif %}
                 <li>
-                    {% if item_active %}
-                    <a class="active" href="{{ item.url | relative_url }}" aria-current="page">
-                    {% else %}
-                    <a href="{{ item.url | relative_url }}">
-                    {% endif %}
+                    <a class="{% if item_active or item_context %}active{% endif %}" href="{{ item.url | relative_url }}"{% if item_active %} aria-current="page"{% endif %}>
                         {% include icon.html name=item.icon %}{{ item.title }}
                     </a>
                 </li>
@@ -55,7 +49,7 @@
                     </a>
                 </li>
                 <li>
-                    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
                         <span class="theme-icon theme-icon--moon">
                             {% include icon.html name="moon-o" %}
                         </span>

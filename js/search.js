@@ -1,6 +1,9 @@
 /* jshint asi:true */
 /**
  * search.js — client-side search over search.json
+ *
+ * The full index is intentionally lazy: the empty search page can render its
+ * discovery links without downloading the multi-megabyte article index.
  */
 (function() {
     var input = document.getElementById('search-input')
@@ -15,100 +18,109 @@
     var indexUrl = app.getAttribute('data-index-url')
     var DATA = null
     var LOADING = false
+    var LOAD_ERROR = false
+    var callbacks = []
     var selectedTopic = ''
     var selectedType = ''
     var selectedStatus = ''
     var curatedOnly = false
     var baseUrl = app.getAttribute('data-base-url') || ''
+    var PAGE_SIZE = 30
+    var allHits = []
+    var shownCount = 0
+    var timer = null
 
     function load(cb) {
         if (DATA) return cb()
-        if (LOADING) return setTimeout(function() { load(cb) }, 200)
+        if (LOADING) {
+            callbacks.push(cb)
+            return
+        }
+        callbacks.push(cb)
         LOADING = true
-        stats.textContent = 'Loading index…'
+        LOAD_ERROR = false
+        app.setAttribute('aria-busy', 'true')
+        if (stats) stats.textContent = 'Loading index…'
         var xhr = new XMLHttpRequest()
         xhr.open('GET', indexUrl, true)
         xhr.onload = function() {
             if (xhr.status < 200 || xhr.status >= 300) {
-                stats.textContent = 'Index failed to load (HTTP ' + xhr.status + ')'
-                LOADING = false
+                finishLoad(null, 'Index failed to load (HTTP ' + xhr.status + ')')
                 return
             }
             try {
                 DATA = JSON.parse(xhr.responseText)
-                stats.textContent = ''
-                buildTopicFilter()
+                prepareData()
+                finishLoad(null, '')
             } catch (e) {
-                stats.textContent = 'Index failed to parse'
-                LOADING = false
-                return
+                finishLoad(null, 'Index failed to parse')
             }
-            LOADING = false
-            cb()
         }
-        xhr.onerror = function() { stats.textContent = 'Index failed to load'; LOADING = false }
+        xhr.onerror = function() { finishLoad(null, 'Index failed to load') }
         xhr.send()
     }
 
-    function buildTopicFilter() {
-        if (!filterEl || !DATA) return
-
-        // Topic and curated buttons are server-rendered; attach click handlers.
-        var btns = filterEl.querySelectorAll('.topic-filter-btn')
-        for (var k = 0; k < btns.length; k++) {
-            btns[k].onclick = function() {
-                var isCurated = this.getAttribute('data-curated') === 'true'
-                curatedOnly = isCurated
-                selectedTopic = isCurated ? '' : (this.getAttribute('data-topic') || '')
-                for (var x = 0; x < btns.length; x++) {
-                    btns[x].classList.remove('active')
-                    btns[x].setAttribute('aria-pressed', 'false')
-                }
-                this.classList.add('active')
-                this.setAttribute('aria-pressed', 'true')
-                updateUrl()
-                doSearch()
-            }
+    function finishLoad(error, message) {
+        LOADING = false
+        app.removeAttribute('aria-busy')
+        if (error) {
+            LOAD_ERROR = true
+            if (stats) stats.textContent = message
+        } else if (stats && message) {
+            stats.textContent = message
         }
+        var pending = callbacks.slice()
+        callbacks = []
+        for (var i = 0; i < pending.length; i++) pending[i](error)
+    }
 
-        if (typeFilter) {
-            typeFilter.onchange = function() {
-                selectedType = this.value
-                updateUrl()
-                doSearch()
-            }
-        }
-        if (statusFilter) {
-            statusFilter.onchange = function() {
-                selectedStatus = this.value
-                updateUrl()
-                doSearch()
-            }
-        }
+    function decodeEntities(value) {
+        return String(value || '')
+            .replace(/&lt;/gi, '<')
+            .replace(/&gt;/gi, '>')
+            .replace(/&quot;/gi, '"')
+            .replace(/&#0*39;|&apos;|&#x0*27;/gi, "'")
+            .replace(/&amp;/gi, '&')
+    }
 
-        // Apply topic/curated/type/status state from the URL.
-        var tm = location.search.match(/[?&]topic=([^&]*)/)
-        if (tm) selectedTopic = decodeURIComponent(tm[1].replace(/\+/g, ' '))
-        var tym = location.search.match(/[?&]type=([^&]*)/)
-        if (tym) selectedType = decodeURIComponent(tym[1].replace(/\+/g, ' '))
-        var sm = location.search.match(/[?&]status=([^&]*)/)
-        if (sm) selectedStatus = decodeURIComponent(sm[1].replace(/\+/g, ' '))
-        curatedOnly = /[?&]curated=1(?:&|$)/.test(location.search)
-        if (typeFilter) typeFilter.value = selectedType
-        if (statusFilter) statusFilter.value = selectedStatus
-        for (var b = 0; b < btns.length; b++) {
-            var isCuratedBtn = btns[b].getAttribute('data-curated') === 'true'
-            var isAllBtn = !isCuratedBtn && !btns[b].getAttribute('data-topic')
-            var active = (curatedOnly && isCuratedBtn) ||
-                (!curatedOnly && ((isAllBtn && !selectedTopic) ||
-                    (!isAllBtn && !isCuratedBtn && btns[b].getAttribute('data-topic') === selectedTopic)))
-            if (active) {
-                btns[b].classList.add('active')
-                btns[b].setAttribute('aria-pressed', 'true')
-            } else {
-                btns[b].classList.remove('active')
-                btns[b].setAttribute('aria-pressed', 'false')
-            }
+    function prepareData() {
+        for (var i = 0; i < DATA.length; i++) {
+            var p = DATA[i]
+            p._plainText = decodeEntities(p.text)
+            p._titleLower = decodeEntities(p.display_title || p.title || '').toLowerCase()
+            p._haystack = [
+                p.display_title || '',
+                p.title || '',
+                p.topic || '',
+                (p.tags || []).join(' '),
+                (p.categories || []).join(' '),
+                p._plainText
+            ].join(' ').toLowerCase()
+            p._topicLower = decodeEntities(p.topic || '').toLowerCase()
+            p._tagLower = decodeEntities((p.tags || []).join(' ')).toLowerCase()
+            p._categoryLower = decodeEntities((p.categories || []).join(' ')).toLowerCase()
+        }
+    }
+
+    function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    }
+
+    function currentTerms() {
+        return decodeEntities(input.value.trim()).toLowerCase().split(/\s+/).filter(Boolean)
+    }
+
+    function hasIntent() {
+        return Boolean(input.value.trim() || selectedTopic || selectedType || selectedStatus || curatedOnly)
+    }
+
+    function requestRender() {
+        if (hasIntent()) {
+            load(function(error) {
+                if (!error) render(input.value.trim())
+            })
+        } else {
+            render('')
         }
     }
 
@@ -121,23 +133,95 @@
         if (selectedStatus) params.push('status=' + encodeURIComponent(selectedStatus))
         if (curatedOnly) params.push('curated=1')
         var url = location.pathname + (params.length ? '?' + params.join('&') : '')
-        history.replaceState(null, '', url)
+        try { history.replaceState(null, '', url) } catch (e) {}
     }
 
-    var PAGE_SIZE = 30
-    var allHits = []
-    var shownCount = 0
+    function readUrlState() {
+        var params
+        try {
+            params = new URLSearchParams(location.search)
+        } catch (e) {
+            params = null
+        }
+        function get(name) {
+            if (params) return params.get(name) || ''
+            var match = location.search.match(new RegExp('[?&]' + name + '=([^&]*)'))
+            return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : ''
+        }
+        selectedTopic = get('topic')
+        selectedType = get('type')
+        selectedStatus = get('status')
+        curatedOnly = get('curated') === '1'
+        input.value = get('q')
+    }
 
-    function esc(s) {
-        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    function syncControls() {
+        if (typeFilter) typeFilter.value = selectedType
+        if (statusFilter) statusFilter.value = selectedStatus
+        if (!filterEl) return
+        var btns = filterEl.querySelectorAll('.topic-filter-btn')
+        for (var i = 0; i < btns.length; i++) {
+            var btn = btns[i]
+            var isCurated = btn.getAttribute('data-curated') === 'true'
+            var topic = btn.getAttribute('data-topic') || ''
+            var isAll = !isCurated && !topic
+            var active = isCurated ? curatedOnly : (!curatedOnly && (isAll ? !selectedTopic : topic === selectedTopic))
+            btn.classList.toggle('active', active)
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false')
+        }
+    }
+
+    function bindControls() {
+        if (filterEl) {
+            var btns = filterEl.querySelectorAll('.topic-filter-btn')
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener('click', function() {
+                    var isCurated = this.getAttribute('data-curated') === 'true'
+                    curatedOnly = isCurated
+                    selectedTopic = isCurated ? '' : (this.getAttribute('data-topic') || '')
+                    syncControls()
+                    updateUrl()
+                    requestRender()
+                })
+            }
+        }
+        if (typeFilter) {
+            typeFilter.addEventListener('change', function() {
+                selectedType = this.value
+                updateUrl()
+                requestRender()
+            })
+        }
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function() {
+                selectedStatus = this.value
+                updateUrl()
+                requestRender()
+            })
+        }
+        input.addEventListener('input', function() {
+            clearTimeout(timer)
+            timer = setTimeout(function() {
+                updateUrl()
+                requestRender()
+            }, 250)
+        })
+        window.addEventListener('popstate', function() {
+            readUrlState()
+            syncControls()
+            requestRender()
+        })
     }
 
     function snippet(text, q) {
-        var i = text.toLowerCase().indexOf(q)
-        if (i < 0) return esc(text.slice(0, 80)) + '…'
+        var source = decodeEntities(text)
+        var lower = source.toLowerCase()
+        var i = lower.indexOf(q)
+        if (i < 0) return esc(source.slice(0, 80)) + '…'
         var start = Math.max(0, i - 40)
-        var frag = text.slice(start, start + 140)
-        return esc(frag).replace(new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), function(m) {
+        var frag = source.slice(start, start + 140)
+        var safeQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        return esc(frag).replace(new RegExp(safeQ, 'gi'), function(m) {
             return '<mark>' + m + '</mark>'
         })
     }
@@ -148,58 +232,62 @@
         var time = document.createElement('time')
         time.textContent = hit.p.date
         li.appendChild(time)
-        li.appendChild(document.createTextNode(' '))
+        var content = document.createElement('div')
+        content.className = 'search-hit-content'
         if (hit.p.topic) {
             var span = document.createElement('span')
             span.className = 'search-topic'
             span.textContent = hit.p.topic
-            li.appendChild(span)
-            li.appendChild(document.createTextNode(' '))
+            content.appendChild(span)
+            content.appendChild(document.createTextNode(' '))
         }
         if (hit.p.curated) {
             var curated = document.createElement('span')
             curated.className = 'search-topic search-topic--curated'
             curated.textContent = 'Curated'
-            li.appendChild(curated)
-            li.appendChild(document.createTextNode(' '))
+            content.appendChild(curated)
+            content.appendChild(document.createTextNode(' '))
         }
         if (hit.p.content_type) {
             var kind = document.createElement('span')
             kind.className = 'search-topic search-topic--type'
             kind.textContent = hit.p.content_type.replace(/-/g, ' ')
-            li.appendChild(kind)
-            li.appendChild(document.createTextNode(' '))
+            content.appendChild(kind)
+            content.appendChild(document.createTextNode(' '))
         }
         if (hit.p.verification && hit.p.verification !== 'unknown') {
             var status = document.createElement('span')
             status.className = 'search-topic search-topic--status'
             status.textContent = hit.p.verification.replace(/-/g, ' ')
-            li.appendChild(status)
-            li.appendChild(document.createTextNode(' '))
+            content.appendChild(status)
+            content.appendChild(document.createTextNode(' '))
         }
         if (hit.p.origin && hit.p.origin !== 'author') {
             var origin = document.createElement('span')
             origin.className = 'search-topic search-topic--origin'
             origin.textContent = hit.p.origin.replace(/-/g, ' ')
-            li.appendChild(origin)
-            li.appendChild(document.createTextNode(' '))
+            content.appendChild(origin)
+            content.appendChild(document.createTextNode(' '))
         }
         var a = document.createElement('a')
         a.href = baseUrl + hit.p.url
-        var titleText = hit.p.display_title || hit.p.title
+        var titleText = hit.p.display_title || hit.p.title || 'Untitled note'
         if (terms.length) {
-            a.innerHTML = esc(titleText).replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
+            a.innerHTML = esc(titleText).replace(new RegExp(terms.map(function(x) {
+                return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+            }).join('|'), 'gi'), function(m) {
                 return '<mark>' + m + '</mark>'
             })
         } else {
             a.textContent = titleText
         }
-        li.appendChild(a)
+        content.appendChild(a)
         if (terms.length) {
             var p = document.createElement('p')
             p.innerHTML = snippet(hit.p.text, terms[0])
-            li.appendChild(p)
+            content.appendChild(p)
         }
+        li.appendChild(content)
         return li
     }
 
@@ -210,29 +298,23 @@
             var btn = document.createElement('button')
             btn.id = 'search-show-more'
             btn.className = 'search-show-more'
+            btn.type = 'button'
             btn.textContent = 'Show more (' + shownCount + ' / ' + allHits.length + ')'
-            btn.onclick = function() {
-                var terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean)
+            btn.addEventListener('click', function() {
+                var terms = currentTerms()
                 var end = Math.min(shownCount + PAGE_SIZE, allHits.length)
-                for (var i = shownCount; i < end; i++) {
-                    results.appendChild(renderHit(allHits[i], terms))
-                }
+                for (var i = shownCount; i < end; i++) results.appendChild(renderHit(allHits[i], terms))
                 shownCount = end
-                if (shownCount < allHits.length) {
-                    stats.textContent = allHits.length + ' results \u00b7 showing ' + shownCount
-                } else {
-                    stats.textContent = allHits.length + ' results'
-                }
-
+                if (stats) stats.textContent = allHits.length + ' results · showing ' + shownCount
                 renderShowMore()
-            }
+            })
             results.parentElement.appendChild(btn)
         }
     }
 
     function renderDiscovery() {
         var existing = document.getElementById('search-discovery')
-        if (existing) return
+        if (existing) existing.remove()
         var div = document.createElement('div')
         div.id = 'search-discovery'
         div.className = 'search-discovery'
@@ -250,72 +332,55 @@
         results.parentElement.insertBefore(div, results)
     }
 
-    function doSearch() {
-        render(input.value.trim())
-    }
-
     function render(q) {
-        var terms = q.toLowerCase().split(/\s+/).filter(Boolean)
+        var terms = decodeEntities(q).toLowerCase().split(/\s+/).filter(Boolean)
         if (!terms.length && !selectedTopic && !selectedType && !selectedStatus && !curatedOnly) {
             results.innerHTML = ''
-            stats.textContent = ''
+            if (stats) stats.textContent = ''
             allHits = []
             shownCount = 0
             var oldMore = document.getElementById('search-show-more')
             if (oldMore) oldMore.remove()
-            // Show discovery content
             renderDiscovery()
             return
         }
-        // Hide discovery when searching
+        if (LOAD_ERROR || !DATA) {
+            if (stats) stats.textContent = 'Search is temporarily unavailable.'
+            return
+        }
         var discovery = document.getElementById('search-discovery')
         if (discovery) discovery.remove()
         var hits = []
         for (var i = 0; i < DATA.length; i++) {
             var p = DATA[i]
-
-            // Topic, type, evidence and curated filters
             if (selectedTopic && p.topic !== selectedTopic) continue
             if (selectedType && p.content_type !== selectedType) continue
             if (selectedStatus && p.verification !== selectedStatus) continue
             if (curatedOnly && !p.curated) continue
 
-            // If no search terms, show all matching posts
             if (!terms.length) {
                 hits.push({ p: p, score: 1, date: p.date || '' })
                 continue
             }
 
-            var displayTitle = p.display_title || p.title || ''
-            var hay = [
-                displayTitle,
-                p.title || '',
-                p.topic || '',
-                (p.tags || []).join(' '),
-                (p.categories || []).join(' '),
-                p.text || ''
-            ].join(' ').toLowerCase()
-
             var ok = true
             for (var j = 0; j < terms.length; j++) {
-                if (hay.indexOf(terms[j]) < 0) { ok = false; break }
+                if (p._haystack.indexOf(terms[j]) < 0) {
+                    ok = false
+                    break
+                }
             }
             if (!ok) continue
 
             var score = 0
-            var titleLower = displayTitle.toLowerCase()
-            var topicLower = (p.topic || '').toLowerCase()
-            var tagHay = (p.tags || []).join(' ').toLowerCase()
-            var catHay = (p.categories || []).join(' ').toLowerCase()
-
             for (var k = 0; k < terms.length; k++) {
                 var t = terms[k]
-                if (titleLower === t) score += 50
-                else if (titleLower.indexOf(t) >= 0) score += 20
-                if (topicLower.indexOf(t) >= 0) score += 12
-                if (tagHay.indexOf(t) >= 0) score += 8
-                if (catHay.indexOf(t) >= 0) score += 5
-                if (hay.indexOf(t) >= 0) score += 1
+                if (p._titleLower === t) score += 50
+                else if (p._titleLower.indexOf(t) >= 0) score += 20
+                if (p._topicLower.indexOf(t) >= 0) score += 12
+                if (p._tagLower.indexOf(t) >= 0) score += 8
+                if (p._categoryLower.indexOf(t) >= 0) score += 5
+                if (p._haystack.indexOf(t) >= 0) score += 1
             }
             hits.push({ p: p, score: score, date: p.date || '' })
         }
@@ -331,7 +396,7 @@
             var hint = document.createElement('div')
             hint.className = 'search-empty'
             hint.innerHTML = '<p>No matching posts found.</p>' +
-                '<p>Try: fewer keywords, a broader topic, or browse tags.</p>' +
+                '<p>Try fewer keywords, a broader topic, or browse tags.</p>' +
                 '<div class="search-suggestion-tags">' +
                 '<a href="' + baseUrl + '/tag/cpp/">C++</a>' +
                 '<a href="' + baseUrl + '/tag/linux/">Linux</a>' +
@@ -341,33 +406,21 @@
                 '</div>'
             results.innerHTML = ''
             results.appendChild(hint)
-            stats.textContent = ''
+            if (stats) stats.textContent = ''
             return
         }
         var visible = Math.min(PAGE_SIZE, hits.length)
         var suffix = hits.length > PAGE_SIZE ? ' · showing ' + visible : ''
-        stats.textContent = hits.length + ' results' + suffix
+        if (stats) stats.textContent = hits.length + ' results' + suffix
         results.innerHTML = ''
-        for (var n = 0; n < visible; n++) {
-            results.appendChild(renderHit(hits[n], terms))
-        }
+        for (var n = 0; n < visible; n++) results.appendChild(renderHit(hits[n], terms))
         shownCount = visible
         renderShowMore()
     }
 
-    var timer = null
-    input.addEventListener('input', function() {
-        clearTimeout(timer)
-        timer = setTimeout(function() {
-            updateUrl()
-            load(function() { render(input.value.trim()) })
-        }, 250)
-    })
-
-    // Auto-fill from ?q=; topic/curated state is applied after the index loads.
-    var m = location.search.match(/[?&]q=([^&]*)/)
-    if (m) {
-        input.value = decodeURIComponent(m[1].replace(/\+/g, ' '))
-    }
-    load(function() { render(input.value.trim()) })
+    readUrlState()
+    bindControls()
+    syncControls()
+    if (hasIntent()) requestRender()
+    else render('')
 }())

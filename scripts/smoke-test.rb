@@ -7,7 +7,8 @@ require 'json'
 require 'cgi'
 require 'rexml/document'
 
-SITE_DIR = File.join(__dir__, '..', '_site')
+REPO_DIR = File.expand_path('..', __dir__)
+SITE_DIR = ENV.fetch('SITE_DIR', File.join(REPO_DIR, '_site'))
 $failures = 0
 
 def check(label, condition, detail = '')
@@ -19,6 +20,11 @@ def check(label, condition, detail = '')
     return false
   end
   true
+end
+
+unless Dir.exist?(SITE_DIR)
+  warn "Generated site directory does not exist: #{SITE_DIR}"
+  exit 2
 end
 
 puts "=== Smoke tests ==="
@@ -43,11 +49,11 @@ end
 not_found_path = File.join(SITE_DIR, '404.html')
 check('_site/404.html is noindex', File.file?(not_found_path) && File.read(not_found_path).include?('noindex'))
 
-source_topic_count = Dir.glob(File.join(SITE_DIR, '..', 'topics', '*.md')).count
+source_topic_count = Dir.glob(File.join(REPO_DIR, 'topics', '*.md')).count
 topic_pages = Dir.glob(File.join(SITE_DIR, 'topics', '*', 'index.html')).count
 check("All source topic pages generated (#{topic_pages}/#{source_topic_count})", topic_pages == source_topic_count)
 
-source_tag_pages = Dir.glob(File.join(SITE_DIR, '..', 'tag', '*', 'index.md'))
+source_tag_pages = Dir.glob(File.join(REPO_DIR, 'tag', '*', 'index.md'))
 missing_tag_routes = source_tag_pages.filter_map do |source_path|
   permalink = File.read(source_path)[/^permalink:\s*(\S+)/, 1]
   target = permalink && File.join(SITE_DIR, permalink.sub(%r{\A/}, ''), 'index.html')
@@ -55,7 +61,7 @@ missing_tag_routes = source_tag_pages.filter_map do |source_path|
 end
 check("All source tag routes generated (#{source_tag_pages.length - missing_tag_routes.length}/#{source_tag_pages.length})", missing_tag_routes.empty?, missing_tag_routes.first(5).join(', '))
 
-leaked_paths = %w[scripts docs graphify-out vendor .github AGENTS.md README.md LICENSE Gemfile Gemfile.lock Todo].select { |name| File.exist?(File.join(SITE_DIR, name)) }
+leaked_paths = %w[scripts docs graphify-out vendor .github AGENTS.md README.md LICENSE Gemfile Gemfile.lock Todo wyclswq.top-master-modification-plan.md].select { |name| File.exist?(File.join(SITE_DIR, name)) }
 leaked_paths.concat(Dir.glob(File.join(SITE_DIR, '**', '*.map')))
 check('Repository-only files and source maps excluded', leaked_paths.empty?, leaked_paths.first(5).join(', '))
 html_files = Dir.glob(File.join(SITE_DIR, '**', '*.html'))
@@ -88,7 +94,7 @@ if File.exist?(search_path)
     data = JSON.parse(File.read(search_path))
     search_data = data
     check("Valid JSON", true)
-    source_post_count = Dir.glob(File.join(SITE_DIR, '..', '_posts', '*.md')).length
+    source_post_count = Dir.glob(File.join(REPO_DIR, '_posts', '*.md')).length
     check("Entry count matches posts (#{data.length})", data.length == source_post_count)
     
     missing_url = data.find { |e| !e['url'] || e['url'].empty? }
@@ -99,6 +105,10 @@ if File.exist?(search_path)
     
     missing_dt = data.find { |e| !e['display_title'] || e['display_title'].empty? }
     check("All entries have display_title", missing_dt.nil?)
+    entity_index = data.find { |e| e['text'].to_s.match?(/&(?:lt|gt|amp|quot|#39);/i) }
+    check('Search index decodes common HTML entities', entity_index.nil?, entity_index && entity_index['url'])
+    code_search = data.find { |e| e['url'].to_s.include?('C++-Performance-Analysis') }
+    check('Exact code punctuation is searchable', code_search && code_search['text'].to_s.include?('std::vector<int>'))
     
     missing_topic = data.find { |e| !e['topic'] || e['topic'].empty? }
     check("All entries have topic", missing_topic.nil?)
@@ -174,10 +184,12 @@ check('Search exposes a data-base-url attribute', !base_match.nil?)
 base_url = base_match && base_match[1]
 expected_base_url = ENV['PAGES_BASE_PATH'].to_s
 check('data-base-url is normalized', base_url.nil? || base_url.empty? || (base_url.start_with?('/') && base_url.end_with?('/')))
-if expected_base_url.empty?
+normalized_base_url = base_url.to_s.chomp('/')
+normalized_expected_base_url = expected_base_url.chomp('/')
+if normalized_expected_base_url.empty?
   check('data-base-url matches the Pages build path', base_url.to_s.empty?)
 else
-  check('data-base-url matches the Pages build path', base_url == expected_base_url)
+  check('data-base-url matches the Pages build path', normalized_base_url == normalized_expected_base_url)
 end
 check('Search result links use base URL', search_script.include?('baseUrl + hit.p.url'))
 check('Tag result links use base URL', tag_script.include?('baseUrl + p.url'))
@@ -185,7 +197,7 @@ puts
 
 # Post count
 puts "Content:"
-source_post_count = Dir.glob(File.join(SITE_DIR, '..', '_posts', '*.md')).length
+source_post_count = Dir.glob(File.join(REPO_DIR, '_posts', '*.md')).length
 post_dirs = Dir.glob(File.join(SITE_DIR, '20*', '*', '*', '*')).select { |d| File.exist?(File.join(d, 'index.html')) }
 check("Post pages generated (#{post_dirs.length})", post_dirs.length == source_post_count)
 pagination_pages = Dir.glob(File.join(SITE_DIR, 'page*', 'index.html')).count { |path| File.basename(File.dirname(path)).match?(/^page\d+$/) }

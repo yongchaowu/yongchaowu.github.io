@@ -18,7 +18,7 @@ layout: default
     {% if page.curated %}{% assign content_kind = "curated" %}{% else %}{% assign content_kind = "note" %}{% endif %}
 {% endunless %}
 
-<main class="page clearfix post-page" id="main-content" tabindex="-1">
+<main class="page clearfix post-page" id="main-content" post tabindex="-1">
     <div class="left">
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <a href="{{ '/' | relative_url }}">Home</a>
@@ -30,7 +30,7 @@ layout: default
             <a href="{{ '/category/' | relative_url }}">Topics</a>
             <span>/</span>
             {% endif %}
-            <span aria-current="page">{{ content_kind | capitalize }}</span>
+            <span aria-current="page">{{ content_kind | replace: '-', ' ' | capitalize }}</span>
         </nav>
 
         <header class="post-header">
@@ -44,6 +44,13 @@ layout: default
             {% include content-badge.html %}
             {% include editorial-badge.html %}
         </header>
+
+        {% if editorial.risk_note %}
+        <aside class="post-risk-note" role="note">
+            <strong>{% include icon.html name="shield" %} Use caution</strong>
+            <p>{{ editorial.risk_note }}</p>
+        </aside>
+        {% endif %}
 
         <div class="post-meta">
             <span class="label-card">
@@ -67,7 +74,7 @@ layout: default
                 · ~{{ reading_time }} min
             </span>
 
-            <span class="label-card type-badge type-badge--{{ content_kind }}">{{ content_kind | capitalize }}</span>
+            <span class="label-card type-badge type-badge--{{ content_kind }}">{{ content_kind | replace: '-', ' ' | capitalize }}</span>
             {% if page.lang %}<span class="label-card">{{ page.lang }}</span>{% endif %}
 
             <span class="label-card">{% include category.html %}</span>
@@ -105,8 +112,8 @@ layout: default
         {% include previousAndNext.html %}
     </div>
 
-    <button class="anchor" aria-label="Open article navigation">{% include icon.html name="anchor" %}</button>
-    <aside class="right">
+    <button class="anchor" type="button" aria-label="Open article navigation" aria-controls="post-sidebar" aria-expanded="false">{% include icon.html name="anchor" %}</button>
+    <aside class="right" id="post-sidebar">
         <div class="wrap">
             <div class="side content">
                 <div>{% include icon.html name="bookmark-o" %} On this page</div>
