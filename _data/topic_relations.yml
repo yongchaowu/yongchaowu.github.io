@@ -1,0 +1,41 @@
+relations:
+  - from: cpp
+    to: tools
+    kind: workflow
+    label: "CMake, debuggers and static analysis"
+  - from: cpp
+    to: systems
+    kind: deployment
+    label: "ELF, shared libraries and Linux"
+  - from: cpp
+    to: computer-science
+    kind: applies
+    label: "Data structures, algorithms and design patterns"
+  - from: ai
+    to: systems
+    kind: infrastructure
+    label: "GPU, Linux, storage and networking"
+  - from: ai
+    to: devops
+    kind: delivery
+    label: "Containers, CI/CD, observability and rollback"
+  - from: ai
+    to: security
+    kind: constrained-by
+    label: "Agent sandbox, tool permissions and audit"
+  - from: programming
+    to: ai
+    kind: implements
+    label: "Agent gateways and service code"
+  - from: systems
+    to: security
+    kind: evidence
+    label: "Network and device evidence"
+  - from: database
+    to: systems
+    kind: persistence
+    label: "Backup, deployment and storage"
+  - from: tools
+    to: programming
+    kind: supports
+    label: "Implementation workflow"

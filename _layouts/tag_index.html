@@ -14,7 +14,8 @@ layout: default
             slug = tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         }
         if (slug) {
-            location.replace('/tag/' + slug + '/');
+            var tagBase = {{ '/tag/' | relative_url | jsonify }};
+            location.replace(tagBase + slug + '/');
         }
     }
 })();
@@ -34,7 +35,7 @@ layout: default
                 {% unless tag_slug %}
                     {% assign tag_slug = tag_name | append: '' | slugify %}
                 {% endunless %}
-                <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" class="tag-item">
+                <a href="{{ '/tag/' | append: tag_slug | append: '/' | relative_url }}" class="tag-item">
                     {{ tag_name }}
                     <span class="tag-count">{{ tag_count }}</span>
                 </a>

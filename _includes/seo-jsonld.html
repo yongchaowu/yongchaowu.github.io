@@ -5,6 +5,7 @@
     | strip_newlines
     | truncate: 300 %}
 
+{% assign jsonld_url = page.canonical_url | default: page.url | absolute_url %}
 {% assign jsonld_modified = page.updated | default: page.date | date: "%Y-%m-%d" %}
 {% assign jsonld_published = page.date | date: "%Y-%m-%d" %}
 {% assign jsonld_lang = page.lang | default: site.lang | default: 'en' %}
@@ -33,7 +34,7 @@
   "@type": ["TechArticle", "BlogPosting"],
   "headline": {{ page.display_title | default: page.title | jsonify }},
   "description": {{ jsonld_description | jsonify }},
-  "url": {{ page.url | absolute_url | jsonify }},
+  "url": {{ jsonld_url | jsonify }},
   "datePublished": {{ jsonld_published | jsonify }},
   "dateModified": {{ jsonld_modified | jsonify }},
   "inLanguage": {{ jsonld_lang | jsonify }},
@@ -51,14 +52,14 @@
 }
 </script>
 
-{% elsif page.layout == 'page' %}
+{% elsif page.layout == 'page' or page.layout == 'topic' %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
   "headline": {{ page.display_title | default: page.title | jsonify }},
   "description": {{ jsonld_description | jsonify }},
-  "url": {{ page.url | absolute_url | jsonify }},
+  "url": {{ jsonld_url | jsonify }},
   "inLanguage": {{ jsonld_lang | jsonify }},
   "publisher": {
     "@type": "Person",

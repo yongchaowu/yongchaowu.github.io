@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -29,15 +31,28 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        run: |
+          bundle exec jekyll clean
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+          TZ: UTC
       - name: Validate curated source links
         run: ruby scripts/validate-curation.rb
+      - name: Validate tag catalog
+        run: ruby scripts/validate-tags.rb
       - name: Run site smoke tests
         run: ruby scripts/smoke-test.rb
-      - name: Verify historical posts are unchanged
-        run: git diff --exit-code -- _posts
+      - name: Check JavaScript syntax
+        run: |
+          node --check js/search.js
+          node --check js/pageContent.js
+          node --check js/tags.js
+          node --check js/toc.js
+          node --check js/main.js
+          node --check js/copy-code.js
+      - name: Verify historical post blobs
+        run: ruby scripts/verify-post-history.rb
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

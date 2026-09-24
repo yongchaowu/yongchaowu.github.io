@@ -1,0 +1,19 @@
+# Editorial aliases for discovery; original post tags remain untouched.
+aliases:
+  "408":
+    - Data Structure
+    - Algorithm
+  "数据结构(借鉴408)":
+    - Data Structure
+    - Algorithm
+  "数据结构和算法":
+    - Data Structure
+    - Algorithm
+  "javascript":
+    - JavaScript
+  "performance":
+    - Performance
+  "Debug":
+    - Debugging
+  "性能":
+    - Performance

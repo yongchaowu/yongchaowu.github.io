@@ -16,7 +16,7 @@ tags:
   - GDB
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: lab-guide
 version: curated-v1
 source_posts:
   - "_posts/2020-07-08-Tool-Capture-Packet.md"

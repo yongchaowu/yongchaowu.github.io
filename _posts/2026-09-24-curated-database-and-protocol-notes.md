@@ -16,7 +16,7 @@ tags:
   - MTConnect
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: reference
 version: curated-v1
 source_posts:
   - "_posts/2020-07-09-DB-PL-SQL.md"
@@ -58,11 +58,15 @@ source_posts:
 
 [PL/SQL 笔记](#source-posts-title) 可以用来学习过程化逻辑，但建议先掌握基础的关系模型、索引、事务和集合操作，再进入游标、存储过程和批处理。每个过程都应有输入校验、异常处理、幂等策略和可观察日志。
 
-```sql
--- 先用小范围、可回滚的查询验证，再扩大影响范围
-BEGIN;
--- 执行变更并检查影响行数
-COMMIT; -- 或 ROLLBACK;
+```text
+-- 伪代码：先做只读预检，再执行经过审核的写事务
+-- 事务边界、DDL、savepoint 和回滚行为因数据库引擎而异
+PRECHECK: explain / count / backup / permissions
+BEGIN
+  EXECUTE_REVIEWED_CHANGE
+  VERIFY affected_rows_and_invariants
+  ON_SUCCESS: COMMIT
+  ON_FAILURE: ROLLBACK
 ```
 
 ## MTConnect：协议之外还有语义

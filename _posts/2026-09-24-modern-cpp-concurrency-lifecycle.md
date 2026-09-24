@@ -16,7 +16,7 @@ tags:
   - Thread Pool
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: deep-dive
 version: curated-v1
 source_posts:
   - "_posts/2023-05-10-C++-shared_ptr.md"

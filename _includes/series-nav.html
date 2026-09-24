@@ -1,21 +1,77 @@
-{% if page.series %}
+{% assign current_series_path = nil %}
+{% assign current_post_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% for reading_path in site.data.reading_paths.paths %}
+    {% for source_path in reading_path.posts %}
+        {% if source_path == current_post_path %}
+            {% assign current_series_path = reading_path %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+{% if current_series_path %}
 <div class="series-nav">
     <div class="series-nav-header">
-        {% include icon.html name="list-ol" %} Series: {{ page.series }}
+        {% include icon.html name="list-ol" %} Series: {{ current_series_path.title }}
     </div>
-    {% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
-    {% if series_posts.size > 1 %}
+    {% assign series_count = 0 %}
+    {% for source_path in current_series_path.posts %}
+        {% assign series_post = site.posts | where: "path", source_path | first %}
+        {% if series_post %}{% assign series_count = series_count | plus: 1 %}{% endif %}
+    {% endfor %}
+    {% if series_count > 1 %}
     <ol class="series-nav-list">
-        {% for sp in series_posts %}
-        <li{% if sp.url == page.url %} class="series-nav-current"{% endif %}>
-            {% if sp.url == page.url %}
-            <strong>{{ sp.title }}</strong>
-            {% else %}
-            <a href="{{ sp.url | prepend: site.baseurl }}">{{ sp.title }}</a>
+        {% for source_path in current_series_path.posts %}
+            {% assign series_post = site.posts | where: "path", source_path | first %}
+            {% if series_post %}
+            <li{% if series_post.url == page.url %} class="series-nav-current"{% endif %}>
+                {% if series_post.url == page.url %}
+                <strong>{{ series_post.display_title | default: series_post.title }}</strong>
+                {% else %}
+                <a href="{{ series_post.url | relative_url }}">{{ series_post.display_title | default: series_post.title }}</a>
+                {% endif %}
+            </li>
             {% endif %}
-        </li>
         {% endfor %}
     </ol>
     {% endif %}
 </div>
+{% else %}
+    {% assign current_editorial = nil %}
+    {% for item in site.data.post_editorial.posts %}
+        {% if item.post == current_post_path %}{% assign current_editorial = item %}{% endif %}
+    {% endfor %}
+    {% if current_editorial.series %}
+        {% assign series_count = 0 %}
+        {% for candidate in site.posts %}
+            {% assign candidate_editorial = nil %}
+            {% assign candidate_path = candidate.path | split: '_posts/' | last | prepend: '_posts/' %}
+            {% for item in site.data.post_editorial.posts %}
+                {% if item.post == candidate_path %}{% assign candidate_editorial = item %}{% endif %}
+            {% endfor %}
+            {% if candidate_editorial.series == current_editorial.series %}
+                {% assign series_count = series_count | plus: 1 %}
+            {% endif %}
+        {% endfor %}
+        {% if series_count > 1 %}
+        <div class="series-nav">
+            <div class="series-nav-header">
+                {% include icon.html name="list-ol" %} Series: {{ current_editorial.series | replace: '-', ' ' | capitalize }}
+            </div>
+            <ol class="series-nav-list">
+                {% for candidate in site.posts %}
+                    {% assign candidate_editorial = nil %}
+                    {% assign candidate_path = candidate.path | split: '_posts/' | last | prepend: '_posts/' %}
+                    {% for item in site.data.post_editorial.posts %}
+                        {% if item.post == candidate_path %}{% assign candidate_editorial = item %}{% endif %}
+                    {% endfor %}
+                    {% if candidate_editorial.series == current_editorial.series %}
+                    <li{% if candidate.url == page.url %} class="series-nav-current"{% endif %}>
+                        {% if candidate.url == page.url %}<strong>{{ candidate.display_title | default: candidate.title }}</strong>{% else %}<a href="{{ candidate.url | relative_url }}">{{ candidate.display_title | default: candidate.title }}</a>{% endif %}
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
+    {% endif %}
 {% endif %}

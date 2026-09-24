@@ -1,6 +1,6 @@
 # Blog content optimization / 博客内容优化说明
 
-> 更新：2026-09-24
+> 更新：2026-09-25
 > 范围：当前 Jekyll 博客仓库的全部已发布文章
 
 ## 1. 当前基线
@@ -10,11 +10,11 @@
 | 已发布文章总数 | 347 |
 | 原有历史文章 | 331 |
 | 本次新增的重组文章 | 16 |
-| 重组文章引用的历史来源 | 167 |
+| 重组文章引用的历史来源 | 168 |
 | 主题数 | 11 |
 | 当前标签数 | 以构建后的 `/tag/` 页面为准 |
 
-原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。它们的历史 URL、发布日期和正文保持不变；本次新增内容作为新的入口层发布。
+原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。历史 URL 和发布日期保持不变；本轮仅对 9 篇文件做了已登记的格式/转义/链接解析修复，未改变技术结论；本次新增内容作为新的入口层发布。
 
 ### 主题覆盖
 
@@ -68,7 +68,8 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 ### 2.2 保留原文并增加可追溯性
 
 - 新文章通过仓库路径引用原文，避免依赖易变的手写 URL；
-- 文章底部显示来源标题、日期和链接；
+- 正文中的来源链接统一指向文章底部来源区，来源区提供稳定条目 ID、标题、日期、链接和可用的 editorial 状态；这保证可追溯，但不自动证明每条技术结论；
+- `_data/post_editorial.yml` 中的 `reported-tested` 只表示文章声明过测试环境，不等同于独立复现实验；
 - 原始文章继续出现在 Archive、Topics、Tags 和 Search 中；
 - 新文章不声称替代旧文章，也不抹去历史语境。
 
@@ -80,7 +81,7 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 - 修复标签生成器对数字标签和带符号标签的处理，并显式登记新标签 slug；
 - 统一 Liquid 与 Python 的标签 slug 解析规则，修复 `C++`、`CI/CD`、下划线标签等历史链接不一致；
 - 统一 `/tag/` 的页面归属，避免 `page/2tags.html` 与生成的 `tag/index.md` 产生目标冲突；
-- 搜索元数据增加 `curated` 和 `content_origin` 字段，并提供精选筛选；
+- 搜索元数据增加 `curated`、`content_origin`、内容类型、验证状态、风险和来源字段，并提供精选/类型/证据筛选；
 - GitHub Pages 构建后自动执行来源校验和 smoke test。
 
 ## 3. 对原文的处理建议
@@ -89,7 +90,7 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 
 这是当前采用的处理方式：
 
-1. **高价值技术簇**：新增主题综述或实践指南，原文作为证据和历史细节；
+1. **高价值技术簇**：新增主题综述或实践指南，原文作为参考材料和历史细节；
 2. **高风险或过时内容**：在新文章中加版本、授权和安全提示，不直接改写旧文；
 3. **短笔记**：先通过主题地图聚合，达到独立阅读价值后再写成新文章；
 4. **个人记录**：保留原貌，只改善主题、标签和发现入口；
@@ -108,12 +109,14 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 
 | 项目 | 现状 | 建议 |
 | --- | --- | --- |
-| 分类可疑项 | 27 篇标题与当前一级主题不完全一致 | 先通过新文章和多标签改善发现入口，逐篇确认后再改 frontmatter |
+| 分类可疑项 | 29 篇标题与当前一级主题不完全一致 | 先通过新文章和多标签改善发现入口，逐篇确认后再改 frontmatter |
 | `display_title` | 约 240 篇历史文章没有单独设置 | 现有模板会回退到 `title`，暂不批量添加 |
 | 标签变体 | `JavaScript/javascript`、`Performance/performance` 等 | 后续在 `_data/tag_slugs.yml` 和新内容中统一，旧标签保持兼容 |
 | 外部链接/版本 | 旧文章中有历史下载页、版本和外部站点 | 逐簇复核；新文章只引用稳定入口并加复核提示 |
-| 构建警告 | 少数旧文章含 `<!--more-->` 与 Liquid 样式文本警告 | 单独开“原文技术修复”变更，避免和内容重组混在一起 |
+| 构建格式 | 9 篇历史文章存在 raw/excerpt、Liquid 模板、空链接或缺失相对链接问题 | 已在 `_data/format_fixes.yml` 登记并修复；后续新增格式例外必须单独说明 |
 | `/tag/` 输出 | 已统一由 `page/2tags.html` 提供，生成器不再写重复的 `tag/index.md` | 保持单一 canonical 页面；新增标签后重新运行生成器 |
+
+本轮格式修复只处理 Markdown/Liquid 包装、excerpt 分隔符、模板示例转义和链接解析，不改变历史技术结论；每一项都记录在 `_data/format_fixes.yml`，由 `scripts/verify-post-history.rb` 单独放行。
 
 ### 需要优先人工复核的历史簇
 
@@ -131,17 +134,24 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 2. 为高价值旧文补充来源关系，而不是直接改正文；
 3. 对安全、网络、驱动和数据库文章做人工技术复核；
 4. 统一标签 slug 和历史分类，但保留旧 URL；
-5. 最后处理构建警告和原文格式问题。
+5. 持续检查构建输出、格式例外和原文链接；新增例外必须登记原因。
 
 ## 6. 本地验证
 
 ```bash
 python3 scripts/generate_tag_pages.py
 ruby scripts/validate-curation.rb
-bundle exec jekyll build
+ruby scripts/validate-tags.rb
+TZ=UTC bundle exec jekyll clean
+TZ=UTC bundle exec jekyll build
 ruby scripts/smoke-test.rb
 node --check js/search.js
 node --check js/pageContent.js
+node --check js/tags.js
+node --check js/toc.js
+node --check js/main.js
+node --check js/copy-code.js
+ruby scripts/verify-post-history.rb
 ```
 
 提交前建议同时检查：重组文章的来源链接、构建后的 `/curated/` 页面、搜索 JSON 条目数和原文文件差异。

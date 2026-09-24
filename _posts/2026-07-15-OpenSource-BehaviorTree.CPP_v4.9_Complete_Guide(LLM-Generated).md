@@ -19,9 +19,12 @@ content_origin: ai-assisted
 > Based on official documentation, Doxygen API reference, and source code verification (v4.9.0).
 > For official docs: https://www.behaviortree.dev/ | API: https://behaviortree.github.io/BehaviorTree.CPP/
 >
-> For hands-on notes and Groot2 debugging workflows, see [BehaviorTree.CPP Manual Notes]({% post_url 2026-07-15-OpenSource-BehaviorTree.CPP-ManualNotes %}).
+{% endraw %}
+
+> For hands-on notes and Groot2 debugging workflows, see [BehaviorTree.CPP Manual Notes]({{ '/2026/07/15/OpenSource-BehaviorTree.CPP-ManualNotes/' | relative_url }}).
 
 <!--more-->
+{% raw %}
 ---
 
 ## Table of Contents

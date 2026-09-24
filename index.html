@@ -1,118 +1,135 @@
 ---
 layout: default
-title: "Yc.W | C++ Backend & AI Agent"
-description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
+title: "Yc.W | Engineering Notebook"
+description: "A living engineering notebook about C++ backend systems, AI agents, infrastructure, and the ideas behind reliable software."
 ---
 
-<main class="page clearfix" index id="main-content" tabindex="-1">
-    <div class="left">
-        <div class="hero">
-            <h1>Yc.W</h1>
-            <p class="hero-subtitle">C++ Backend &amp; AI Agent</p>
-            <p class="hero-desc">Engineering notes on C++ backend development, AI Agents, LLM applications, and practical development.</p>
-            <div class="hero-links">
-                <a href="https://github.com/yongchaowu" target="_blank" rel="noopener">{% include icon.html name="github" %} GitHub</a>
-                <a href="{{ '/curated/' | relative_url }}">{% include icon.html name="archive" %} Curated</a>
-                <a href="{{ '/about/' | prepend: site.baseurl }}">{% include icon.html name="user" %} About</a>
-                <a href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">{% include icon.html name="rss" %} RSS</a>
+<main class="page home-page index" id="main-content" tabindex="-1">
+    {% if paginator.page == 1 %}
+    <section class="home-hero">
+        <div class="home-hero-copy">
+            <span class="section-kicker">Yc.W · Engineering notebook</span>
+            <h1>Build systems.<br><em>Understand the why.</em></h1>
+            <p>一个持续生长的工程知识库：从 C++ 后端和 Linux 系统，到 AI Agent、LLM 推理与可靠交付。</p>
+            <div class="home-hero-actions">
+                <a class="button button--primary" href="{{ '/start-here/' | relative_url }}">{% include icon.html name="bookmark-o" %} Start here</a>
+                <a class="button button--quiet" href="{{ '/curated/' | relative_url }}">Read curated notes</a>
             </div>
         </div>
-        <hr>
+        <div class="home-hero-aside">
+            <div class="hero-orbit" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span></div>
+            <div class="home-hero-note">
+                <span class="section-kicker">Current focus</span>
+                <strong>C++ backend<br>AI systems<br>infrastructure</strong>
+                <span>Notes from the workbench, not a content feed.</span>
+            </div>
+        </div>
+    </section>
 
-        <h2 class="section-title">Latest Notes</h2>
-        <ul class="post-list">
+    <section class="home-stats" aria-label="Archive statistics">
+        <div><strong>{{ site.posts | size }}</strong><span>published notes</span></div>
+        <div><strong>{{ site.posts | where: "curated", true | size }}</strong><span>curated guides</span></div>
+        <div><strong>{{ site.data.topics.topics | size }}</strong><span>topics</span></div>
+        <div><strong>{{ site.posts.last.date | date: "%Y" }}—{{ site.posts.first.date | date: "%Y" }}</strong><span>writing timeline</span></div>
+    </section>
+
+    <section class="home-paths" aria-labelledby="home-paths-title">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">Choose your entry point</span>
+                <h2 id="home-paths-title">Follow a thread, not a feed.</h2>
+            </div>
+            <a class="section-link" href="{{ '/start-here/' | relative_url }}">See all paths →</a>
+        </div>
+        <div class="path-grid path-grid--home">
+            {% for path in site.data.reading_paths.paths limit:3 %}
+            <article id="path-{{ path.id }}" class="path-card path-card--{{ path.accent }}">
+                <div class="path-card-top">
+                    <span class="path-icon">{% include icon.html name=path.icon %}</span>
+                    <span class="path-eyebrow">{{ path.eyebrow }}</span>
+                </div>
+                <h3>{{ path.title }}</h3>
+                <p class="path-title-zh">{{ path.title_zh }}</p>
+                <p>{{ path.description }}</p>
+                <a class="path-card-link" href="{{ '/start-here/' | relative_url }}#path-{{ path.id }}">Explore path <span>→</span></a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="home-latest" aria-labelledby="home-latest-title">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">Fresh from the notebook</span>
+                <h2 id="home-latest-title">Latest notes</h2>
+            </div>
+            <a class="section-link" href="{{ '/archive/' | relative_url }}">Browse by date →</a>
+        </div>
+        <div class="home-post-grid">
             {% for post in paginator.posts %}
-              <li class="post-card">
-                <div class="post-card-meta">
-                    <span class="post-card-cat">{% include category.html %}</span>
+            <article class="home-post-card">
+                <div class="home-post-meta">
+                    <span>{% include category.html post=post %}</span>
                     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
                 </div>
-                <h3 class="post-card-title">
-                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.display_title | default: post.title }}</a>
-                </h3>
+                <h3><a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a></h3>
                 {% include content-badge.html post=post %}
-                <div class="excerpt">
-                    {% if post.summary %}
-                        {{ post.summary }}
-                    {% else %}
-                        {% assign excerpt_text = post.excerpt | strip_html | normalize_whitespace | strip %}
-                        {% if excerpt_text == empty or excerpt_text.size < 50 %}
-                            {% assign excerpt_text = post.content | strip_html | normalize_whitespace | strip %}
-                        {% endif %}
-                        {{ excerpt_text | truncate: 140 }}
-                    {% endif %}
-                </div>
-                <div class="read-all">
-                    <a href="{{ post.url | prepend: site.baseurl }}">{% include icon.html name="newspaper-o" %} Read →</a>
-                </div>
-              </li>
+                {% include editorial-badge.html post=post %}
+                <p>
+                    {% if post.summary %}{{ post.summary }}{% else %}{{ post.excerpt | strip_html | normalize_whitespace | truncate: 150 }}{% endif %}
+                </p>
+                <a class="text-link" href="{{ post.url | relative_url }}">Read note →</a>
+            </article>
             {% endfor %}
-        </ul>
-
-        <!-- Pagination links -->
-        <div class="pagination">
-          {% if paginator.previous_page %}
-            <a href="{{ site.baseurl }}/" class="previous">{% include icon.html name="angle-double-left" %}</a>
-            <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="previous">{% include icon.html name="angle-left" %}</a>
-          {% else %}
-            <span class="previous disable">{% include icon.html name="angle-double-left" %}</span>
-            <span class="previous disable">{% include icon.html name="angle-left" %}</span>
-          {% endif %}
-          <span class="page_number ">{{ paginator.page }}/{{ paginator.total_pages }}</span>
-          {% if paginator.next_page %}
-            <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="next">{% include icon.html name="angle-right" %}</a>
-            <a href="{{ site.baseurl }}/page{{ paginator.total_pages }}/" class="next">{% include icon.html name="angle-double-right" %}</a>
-          {% else %}
-            <span class="next disable">{% include icon.html name="angle-right" %}</span>
-            <span class="next disable">{% include icon.html name="angle-double-right" %}</span>
-          {% endif %}
         </div>
-    </div>
-    <!-- <button class="anchor">{% include icon.html name="anchor" %}</button> -->
-    <div class="right">
-        <div class="wrap">
-            <div class="side">
-                <div>
-                    {% include icon.html name="th-list" %}
-                    Topics
-                </div>
-                <ul class="content-ul" cate>
-                    {% for topic in site.data.topics.topics %}
-                        {% for category in site.categories %}
-                            {% if category[0] == topic.name %}
-                    <li>
-                        <a href="{{ root_url }}/{{ site.category_dir }}#{{ topic.name | slugify }}" class="categories-list-item" cate="{{ topic.name }}">
-                            <span class="name">
-                                {{ topic.name }}
-                            </span>
-                            <span class="badge">{{ category[1] | size }}</span>
-                        </a>
-                    </li>
-                            {% endif %}
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-                <a class="view-all" href="{{ root_url }}/{{ site.category_dir }}">View all topics →</a>
-            </div>
 
-            <div class="side ">
-                <div>
-                    {% include icon.html name="tags" %}
-                    Featured Tags
-                </div>
-                <div class="tags-cloud" id="popular-tags">
-                    {% for tag_name in site.data.featured_tags.tags %}
-                      {% if site.tags[tag_name] %}
-                        {% assign tag_slug = site.data.tag_slugs[tag_name] %}
-                        {% unless tag_slug %}
-                            {% assign tag_slug = tag_name | append: '' | slugify %}
-                        {% endunless %}
-                      <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
-                      {% endif %}
-                    {% endfor %}
-                </div>
-                <a class="view-all" href="{{ '/tag/' | prepend: site.baseurl }}">View all tags →</a>
-            </div>
+        <div class="pagination home-pagination">
+            {% if paginator.previous_page %}
+                <a class="previous" href="{{ paginator.previous_page_path | relative_url }}">← Newer</a>
+            {% else %}<span class="previous disable">← Newer</span>{% endif %}
+            <span class="page_number">{{ paginator.page }} / {{ paginator.total_pages }}</span>
+            {% if paginator.next_page %}
+                <a class="next" href="{{ paginator.next_page_path | relative_url }}">Older →</a>
+            {% else %}<span class="next disable">Older →</span>{% endif %}
         </div>
-    </div>
+    </section>
+
+    {% if paginator.page == 1 %}
+    <section class="home-topics" aria-labelledby="home-topics-title">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">The whole shelf</span>
+                <h2 id="home-topics-title">Explore by topic</h2>
+            </div>
+            <a class="section-link" href="{{ '/category/' | relative_url }}">Topic directory →</a>
+        </div>
+        <div class="topic-mini-grid">
+            {% for topic in site.data.topics.topics %}
+                {% assign topic_count = 0 %}
+                {% for category in site.categories %}
+                    {% if category[0] == topic.name %}{% assign topic_count = category[1] | size %}{% endif %}
+                {% endfor %}
+            <a class="topic-mini-card topic-mini-card--{{ topic.accent }}" href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}">
+                <span class="topic-mini-icon">{% include icon.html name=topic.icon %}</span>
+                <span class="topic-mini-copy"><strong>{{ topic.name }}</strong><small>{{ topic_count }} notes</small></span>
+                <span class="topic-mini-arrow">↗</span>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="home-bottom-cta">
+        <div>
+            <span class="section-kicker">A library, not a landfill</span>
+            <h2>Find the useful thread. Keep the history.</h2>
+            <p>精选文章负责今天的历史文章负责上下文；两者共同构成一个可阅读、可追溯的知识库。</p>
+        </div>
+        <div class="home-bottom-actions">
+            <a class="button button--primary" href="{{ '/curated/' | relative_url }}">Explore curated</a>
+            <a class="button button--quiet" href="{{ '/about/' | relative_url }}">About this notebook</a>
+        </div>
+    </section>
+    {% endif %}
 </main>
+<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

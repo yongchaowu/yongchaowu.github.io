@@ -2,12 +2,50 @@
 layout: default
 ---
 
-<main class="page clearfix" post id="main-content" tabindex="-1">
-    <div class="left">
-        <h1>{{ page.display_title | default: page.title }}</h1>
-        {% include content-badge.html %}
-        <div class="post-meta">
+{% assign current_topic = nil %}
+{% for topic in site.data.topics.topics %}
+    {% if page.categories contains topic.name %}
+        {% assign current_topic = topic %}
+    {% endif %}
+{% endfor %}
+{% assign editorial = nil %}
+{% assign editorial_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% for item in site.data.post_editorial.posts %}
+    {% if item.post == editorial_path %}{% assign editorial = item %}{% endif %}
+{% endfor %}
+{% assign content_kind = editorial.content_type | default: page.content_type %}
+{% unless content_kind %}
+    {% if page.curated %}{% assign content_kind = "curated" %}{% else %}{% assign content_kind = "note" %}{% endif %}
+{% endunless %}
 
+<main class="page clearfix post-page" id="main-content" tabindex="-1">
+    <div class="left">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ '/' | relative_url }}">Home</a>
+            <span>/</span>
+            {% if current_topic %}
+            <a href="{{ '/topics/' | append: current_topic.id | append: '/' | relative_url }}">{{ current_topic.name }}</a>
+            <span>/</span>
+            {% else %}
+            <a href="{{ '/category/' | relative_url }}">Topics</a>
+            <span>/</span>
+            {% endif %}
+            <span aria-current="page">{{ content_kind | capitalize }}</span>
+        </nav>
+
+        <header class="post-header">
+            <div class="post-eyebrow">
+                {% if current_topic %}<span>{{ current_topic.name }}</span>{% else %}<span>Engineering note</span>{% endif %}
+                <span class="post-eyebrow-dot">·</span>
+                <span>{{ content_kind | capitalize }}</span>
+            </div>
+            <h1>{{ page.display_title | default: page.title }}</h1>
+            {% if page.summary %}<p class="post-lead">{{ page.summary }}</p>{% endif %}
+            {% include content-badge.html %}
+            {% include editorial-badge.html %}
+        </header>
+
+        <div class="post-meta">
             <span class="label-card">
                 {% include icon.html name="calendar" %}
                 <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%b %d, %Y" }}</time>
@@ -18,9 +56,7 @@ layout: default
                         <span> · Updated <time datetime="{{ page.updated | date_to_xmlschema }}">{{ page.updated | date: "%b %d, %Y" }}</time></span>
                     {% endif %}
                 {% endif %}
-                {% if page.version %}
-                    <span> · {{ page.version }}</span>
-                {% endif %}
+                {% if page.version %}<span> · {{ page.version }}</span>{% endif %}
             </span>
 
             <span class="label-card">
@@ -31,48 +67,60 @@ layout: default
                 · ~{{ reading_time }} min
             </span>
 
-            {% if page.content_type %}
-            <span class="label-card type-badge type-badge--{{ page.content_type }}">{{ page.content_type | capitalize }}</span>
-            {% endif %}
+            <span class="label-card type-badge type-badge--{{ content_kind }}">{{ content_kind | capitalize }}</span>
+            {% if page.lang %}<span class="label-card">{{ page.lang }}</span>{% endif %}
 
-            <span class="label-card">
-            {% include category.html %}
-            </span>
-
-            <span class="label-card">
-            {% include tag.html %}
-            </span>
-
+            <span class="label-card">{% include category.html %}</span>
+            <span class="label-card">{% include tag.html %}</span>
         </div>
-        <hr>
+
+        {% if current_topic %}
+        <a class="post-topic-link" href="{{ '/topics/' | append: current_topic.id | append: '/' | relative_url }}">
+            {% include icon.html name="th-list" %} Explore all {{ current_topic.name }} notes <span>→</span>
+        </a>
+        {% endif %}
+        {% if editorial.secondary_topics and editorial.secondary_topics.size > 0 %}
+        <div class="post-related-topics">
+            <strong>Related topics</strong>
+            {% for related_topic_id in editorial.secondary_topics %}
+                {% for related_topic in site.data.topics.topics %}
+                    {% if related_topic.id == related_topic_id %}
+                    <a href="{{ '/topics/' | append: related_topic.id | append: '/' | relative_url }}">{{ related_topic.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% include tested-env.html %}
         {% include series-nav.html %}
-        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post-article" itemscope itemtype="http://schema.org/BlogPosting">
         {{content}}
         </article>
         {% include source-posts.html %}
         <hr>
 
         {% include related-posts.html %}
-
         {% include previousAndNext.html %}
-
-
     </div>
-    <button class="anchor">{% include icon.html name="anchor" %}</button>
-    <div class="right">
-        <div class="wrap">
 
-            <!-- Content -->
+    <button class="anchor" aria-label="Open article navigation">{% include icon.html name="anchor" %}</button>
+    <aside class="right">
+        <div class="wrap">
             <div class="side content">
-                <div>
-                    {% include icon.html name="bookmark-o" %} On This Page
-                </div>
-                <ul id="content-side" class="content-ul">
+                <div>{% include icon.html name="bookmark-o" %} On this page</div>
+                <ul id="content-side" class="content-ul"></ul>
+            </div>
+            <div class="side post-side-links">
+                <div>{% include icon.html name="list-ol" %} Keep reading</div>
+                <ul class="content-ul">
+                    {% if current_topic %}<li><a href="{{ '/topics/' | append: current_topic.id | append: '/' | relative_url }}">{{ current_topic.name }} topic</a></li>{% endif %}
+                    <li><a href="{{ '/curated/' | relative_url }}">Curated library</a></li>
+                    <li><a href="{{ '/start-here/' | relative_url }}">Start here</a></li>
                 </ul>
             </div>
         </div>
-    </div>
+    </aside>
 </main>
 <script src="{{ '/js/toc.js' | relative_url }}" charset="utf-8"></script>
 <script>

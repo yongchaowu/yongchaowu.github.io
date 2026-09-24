@@ -1,104 +1,88 @@
 ---
 layout: default
 title: Tags
+display_title: 'Tags / 标签索引'
+description: "Browse the Yc.W engineering notebook by tags and cross-topic keywords."
 permalink: /tag/
 icon: tags
 type: page
 ---
 
-<div class="page clearfix">
-    <div class="left">
-        <h1>{{page.title}}</h1>
-        <hr>
+<main class="page tag-index-page" id="main-content" data-tag-index data-index-url="{{ '/posts-meta.json' | relative_url }}" data-base-url="{{ site.baseurl }}" tabindex="-1">
+    <header class="tag-index-header">
+        <div>
+            <span class="section-kicker">Cross-topic discovery</span>
+            <h1>Tags</h1>
+            <p>从具体工具到通用方法，用标签跨越主题边界寻找相关内容。</p>
+        </div>
+        <div class="tag-index-actions">
+            <a class="button button--quiet" href="{{ '/category/' | relative_url }}">Browse topics</a>
+            <a class="button button--primary" href="{{ '/search/' | relative_url }}">Search full text</a>
+        </div>
+    </header>
 
-        <h2 class="section-title">Featured Tags</h2>
-        <div class="tags-cloud" id="featured-tags">
+    <section class="tag-featured-section" aria-labelledby="featured-tags-title">
+        <div class="section-heading">
+            <div><span class="section-kicker">Popular threads</span><h2 id="featured-tags-title">Featured tags</h2></div>
+        </div>
+        <div class="tags-cloud featured-tag-cloud" id="featured-tags">
             {% for tag_name in site.data.featured_tags.tags %}
-              {% if site.tags[tag_name] %}
+                {% if site.tags[tag_name] %}
                 {% assign tag_slug = site.data.tag_slugs[tag_name] %}
-                {% unless tag_slug %}
-                    {% assign tag_slug = tag_name | append: '' | slugify %}
-                {% endunless %}
-              <a class="tag-btn"
-                 data-tag="{{ tag_name | escape }}"
-                 href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/">
-                {{ tag_name }}
-                <span class="tag-count">({{ site.tags[tag_name].size }})</span>
-              </a>
-              {% endif %}
+                {% unless tag_slug %}{% assign tag_slug = tag_name | append: '' | slugify %}{% endunless %}
+                <a class="tag-btn tag-btn--featured" data-tag="{{ tag_name | escape }}" href="{{ '/tag/' | relative_url }}{{ tag_slug }}/">
+                    <span>{{ tag_name }}</span><span class="tag-count">{{ site.tags[tag_name].size }}</span>
+                </a>
+                {% endif %}
             {% endfor %}
         </div>
+    </section>
 
-        <hr>
-        <h2 class="section-title">All Tags</h2>
+    <section class="tag-all-section" aria-labelledby="all-tags-title">
+        <div class="section-heading">
+            <div><span class="section-kicker">The full index</span><h2 id="all-tags-title">All tags</h2></div>
+            <span class="section-count">{{ site.tags | size }} labels</span>
+        </div>
         <div class="tags-cloud" id="all-tags">
+            {% assign seen_slugs = '' | split: '' %}
             {% for pair in site.tags %}
                 {% assign tag_name = pair[0] %}
                 {% assign tag_slug = site.data.tag_slugs[tag_name] %}
-                {% unless tag_slug %}
-                    {% assign tag_slug = tag_name | append: '' | slugify %}
+                {% unless tag_slug %}{% assign tag_slug = tag_name | append: '' | slugify %}{% endunless %}
+                {% unless seen_slugs contains tag_slug %}
+                    {% assign seen_slugs = seen_slugs | push: tag_slug %}
+                    {% assign display_tag = tag_name %}
+                    {% assign alias_targets = site.data.tag_aliases.aliases[tag_name] %}
+                    {% if alias_targets %}
+                        {% for alias_target in alias_targets %}
+                            {% assign alias_target_slug = site.data.tag_slugs[alias_target] %}
+                            {% unless alias_target_slug %}{% assign alias_target_slug = alias_target | slugify %}{% endunless %}
+                            {% if alias_target_slug == tag_slug %}{% assign display_tag = alias_target %}{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% assign canonical_tag_count = 0 %}
+                    {% for candidate_pair in site.tags %}
+                        {% assign candidate_name = candidate_pair[0] %}
+                        {% assign candidate_slug = site.data.tag_slugs[candidate_name] %}
+                        {% unless candidate_slug %}{% assign candidate_slug = candidate_name | append: '' | slugify %}{% endunless %}
+                        {% if candidate_slug == tag_slug %}
+                            {% assign canonical_tag_count = canonical_tag_count | plus: candidate_pair[1].size %}
+                        {% endif %}
+                    {% endfor %}
+                    <a class="tag-btn" data-tag="{{ display_tag | escape }}" href="{{ '/tag/' | relative_url }}{{ tag_slug }}/">
+                        <span>{{ display_tag }}</span><span class="tag-count">{{ canonical_tag_count }}</span>
+                    </a>
                 {% endunless %}
-            <a class="tag-btn"
-               data-tag="{{ tag_name | escape }}"
-               href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/">
-                {{ tag_name }}
-                <span class="tag-count">({{ pair[1].size }})</span>
-            </a>
             {% endfor %}
         </div>
+    </section>
 
-        <hr>
-        <div id="tag-posts" style="display:none">
-            <h2 class="section-title" id="tag-heading"></h2>
-            <ul id="tag-post-list" class="post-list"></ul>
+    <section id="tag-posts" class="tag-results" style="display:none" aria-live="polite">
+        <div class="section-heading">
+            <div><span class="section-kicker">Selected tag</span><h2 id="tag-heading">Tag notes</h2></div>
+            <a class="section-link" href="{{ '/archive/' | relative_url }}">Browse archive →</a>
         </div>
-    </div>
-</div>
+        <ul id="tag-post-list" class="tag-result-list"></ul>
+    </section>
+</main>
 <script src="{{ '/js/tags.js' | relative_url }}" charset="utf-8"></script>
-<style>
-#all-tags, #featured-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px 0;
-}
-.tag-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    background: var(--badge-bg);
-    color: var(--badge-text);
-    border-radius: 4px;
-    font-size: 13px;
-    transition: 0.2s;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-}
-.tag-btn:hover, .tag-btn.active {
-    background: var(--badge-text);
-    color: var(--bg-content);
-}
-.tag-btn .tag-count {
-    font-size: 11px;
-    opacity: 0.7;
-}
-#tag-post-list {
-    list-style: none;
-    padding: 0;
-}
-#tag-post-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border-color, #f0f0f0);
-    display: flex;
-    gap: 12px;
-    align-items: baseline;
-}
-#tag-post-list time {
-    color: var(--text-muted);
-    font-size: 13px;
-    white-space: nowrap;
-    min-width: 100px;
-}
-</style>

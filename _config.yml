@@ -7,8 +7,8 @@
 
 # Site settings
 title: Yc.W
-brief-intro: C++ Backend & AI Agent
-description: "Engineering notes on C++ backend development, AI Agents, LLM applications, and practical software development."
+brief-intro: C++ Backend · AI Systems · Infrastructure
+description: "A living engineering notebook about C++ backend systems, AI agents, infrastructure, algorithms, and reliable software."
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.wyclswq.top" # the base hostname & protocol for your site
 lang: en
@@ -46,6 +46,9 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
+sass:
+  sourcemap: never
+
 # port
 # port: 1234
 
@@ -59,3 +62,19 @@ excerpt_separator: <!--more-->
 # paginate
 plugins: [jekyll-paginate, jekyll-seo-tag, jekyll-sitemap]
 paginate: 10
+paginate_path: /page:num/
+
+# Keep repository-only material out of the public GitHub Pages artifact.
+exclude:
+  - .bundle/
+  - .github/
+  - AGENTS.md
+  - docs/
+  - graphify-out/
+  - scripts/
+  - vendor/
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - Todo

@@ -1,0 +1,189 @@
+---
+layout: default
+---
+
+{% assign current_topic = nil %}
+{% for topic in site.data.topics.topics %}
+    {% if topic.id == page.topic_id %}
+        {% assign current_topic = topic %}
+    {% endif %}
+{% endfor %}
+
+{% assign category_posts = nil %}
+{% for category in site.categories %}
+    {% if current_topic and category[0] == current_topic.name %}
+        {% assign category_posts = category[1] %}
+    {% endif %}
+{% endfor %}
+
+<main class="page clearfix topic-page accent-{{ current_topic.accent | default: 'indigo' }}" id="main-content" tabindex="-1">
+    <div class="left">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ '/' | relative_url }}">Home</a>
+            <span>/</span>
+            <a href="{{ '/category/' | relative_url }}">Topics</a>
+            <span>/</span>
+            <span aria-current="page">{{ current_topic.name | default: page.title }}</span>
+        </nav>
+
+        <header class="topic-hero">
+            <div class="topic-hero-eyebrow">
+                {% include icon.html name=current_topic.icon %}
+                <span>Topic / {{ category_posts | size }} notes</span>
+            </div>
+            <h1>{{ current_topic.name | default: page.title }}</h1>
+            <p class="topic-hero-intro">{{ current_topic.intro | default: current_topic.description }}</p>
+            <div class="topic-hero-actions">
+                <a class="button button--primary" href="{{ '/start-here/' | relative_url }}">{% include icon.html name="bookmark-o" %} Start with a path</a>
+                <a class="button button--quiet" href="{{ '/curated/' | relative_url }}">{% include icon.html name="archive" %} Browse curated notes</a>
+            </div>
+        </header>
+
+        {% if current_topic.featured_posts %}
+        <section class="topic-featured" aria-labelledby="topic-featured-title">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">Recommended starting point</span>
+                    <h2 id="topic-featured-title">Recommended around {{ current_topic.name }}</h2>
+                </div>
+            </div>
+            <div class="topic-featured-grid">
+                {% for source_path in current_topic.featured_posts %}
+                    {% assign featured_post = site.posts | where: "path", source_path | first %}
+                    {% if featured_post %}
+                    {% assign featured_is_primary = false %}
+                    {% if featured_post.categories.first == current_topic.name %}{% assign featured_is_primary = true %}{% endif %}
+                    <a class="topic-feature-card{% unless featured_is_primary %} topic-feature-card--related{% endunless %}" href="{{ featured_post.url | relative_url }}">
+                        <span class="topic-feature-meta">{{ featured_post.categories.first }} · {{ featured_post.date | date: "%Y" }}{% unless featured_is_primary %} · Related note{% endunless %}</span>
+                        <h3>{{ featured_post.display_title | default: featured_post.title }}</h3>
+                        <p>{{ featured_post.summary | default: featured_post.excerpt | strip_html | normalize_whitespace | truncate: 150 }}</p>
+                        <span class="text-link">Read note →</span>
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="topic-notes" aria-labelledby="topic-notes-title">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">The primary shelf</span>
+                    <h2 id="topic-notes-title">Primary-topic {{ current_topic.name }} notes</h2>
+                </div>
+                <span class="section-count">{{ category_posts | size }} articles</span>
+            </div>
+
+            <div class="topic-note-list">
+                {% for post in category_posts %}
+                <article class="topic-note-row">
+                    <div class="topic-note-meta">
+                        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+                        {% if post.curated %}<span class="content-badge content-badge--curated">Curated guide</span>{% endif %}
+                    </div>
+                    {% include editorial-badge.html post=post %}
+                    <h3><a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a></h3>
+                    {% if post.summary %}
+                        <p>{{ post.summary }}</p>
+                    {% else %}
+                        {% assign note_excerpt = post.excerpt | strip_html | normalize_whitespace | strip %}
+                        {% if note_excerpt.size > 20 %}<p>{{ note_excerpt | truncate: 180 }}</p>{% endif %}
+                    {% endif %}
+                    {% if post.tags.size > 0 %}
+                    <div class="topic-note-tags">
+                        {% for tag_name in post.tags limit:4 %}
+                            {% assign tag_slug = site.data.tag_slugs[tag_name] %}
+                            {% unless tag_slug %}{% assign tag_slug = tag_name | append: '' | slugify %}{% endunless %}
+                            <a href="{{ '/tag/' | relative_url }}{{ tag_slug }}/">{{ tag_name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        {% assign related_posts = '' | split: '' %}
+        {% for post in site.posts %}
+            {% assign post_editorial = nil %}
+            {% assign post_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+            {% for item in site.data.post_editorial.posts %}
+                {% if item.post == post_editorial_path %}{% assign post_editorial = item %}{% endif %}
+            {% endfor %}
+            {% if post_editorial.secondary_topics contains page.topic_id %}
+                {% assign related_posts = related_posts | push: post %}
+            {% endif %}
+        {% endfor %}
+        {% if related_posts.size > 0 %}
+        <section class="topic-related" aria-labelledby="topic-related-title">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">Cross-topic context</span>
+                    <h2 id="topic-related-title">Related {{ current_topic.name }} notes</h2>
+                </div>
+                <span class="section-count">{{ related_posts | size }} related articles</span>
+            </div>
+            <div class="topic-note-list">
+                {% for post in related_posts %}
+                <article class="topic-note-row">
+                    <div class="topic-note-meta">
+                        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+                        {% if post.curated %}<span class="content-badge content-badge--curated">Curated guide</span>{% endif %}
+                    </div>
+                    {% include editorial-badge.html post=post %}
+                    <h3><a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a></h3>
+                    {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <aside class="right">
+        <div class="wrap">
+            <div class="side topic-side-nav">
+                <div>{% include icon.html name="th-list" %} Explore topics</div>
+                <ul class="content-ul">
+                    {% for topic in site.data.topics.topics %}
+                    <li>
+                        <a href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}" {% if topic.id == page.topic_id %}class="active"{% endif %}>
+                            {{ topic.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="side topic-relations">
+                <div>{% include icon.html name="list-ol" %} Connects to</div>
+                <ul class="content-ul">
+                    {% for relation in site.data.topic_relations.relations %}
+                        {% if relation.from == page.topic_id %}
+                            {% assign related_topic_id = relation.to %}
+                        {% elsif relation.to == page.topic_id %}
+                            {% assign related_topic_id = relation.from %}
+                        {% else %}
+                            {% assign related_topic_id = nil %}
+                        {% endif %}
+                        {% if related_topic_id %}
+                            {% for related_topic in site.data.topics.topics %}
+                                {% if related_topic.id == related_topic_id %}
+                                    <li><a href="{{ '/topics/' | append: related_topic.id | append: '/' | relative_url }}">{{ related_topic.name }}</a><small>{{ relation.label }}</small></li>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="side">
+                <div>{% include icon.html name="bookmark-o" %} Keep exploring</div>
+                <ul class="content-ul">
+                    <li><a href="{{ '/start-here/' | relative_url }}">Start here</a></li>
+                    <li><a href="{{ '/archive/' | relative_url }}">Browse by date</a></li>
+                    <li><a href="{{ '/search/' | relative_url }}">Search all notes</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+</main>
+<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

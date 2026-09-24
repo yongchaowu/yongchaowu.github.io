@@ -8,13 +8,18 @@
     var stats = document.getElementById('search-stats')
     var app = document.getElementById('search-app')
     var filterEl = document.getElementById('topic-filter')
+    var typeFilter = document.getElementById('type-filter')
+    var statusFilter = document.getElementById('status-filter')
     if (!input || !results || !app) return
 
     var indexUrl = app.getAttribute('data-index-url')
     var DATA = null
     var LOADING = false
     var selectedTopic = ''
+    var selectedType = ''
+    var selectedStatus = ''
     var curatedOnly = false
+    var baseUrl = app.getAttribute('data-base-url') || ''
 
     function load(cb) {
         if (DATA) return cb()
@@ -55,25 +60,55 @@
                 var isCurated = this.getAttribute('data-curated') === 'true'
                 curatedOnly = isCurated
                 selectedTopic = isCurated ? '' : (this.getAttribute('data-topic') || '')
-                for (var x = 0; x < btns.length; x++) btns[x].classList.remove('active')
+                for (var x = 0; x < btns.length; x++) {
+                    btns[x].classList.remove('active')
+                    btns[x].setAttribute('aria-pressed', 'false')
+                }
                 this.classList.add('active')
+                this.setAttribute('aria-pressed', 'true')
                 updateUrl()
                 doSearch()
             }
         }
 
-        // Apply topic/curated state from the URL.
+        if (typeFilter) {
+            typeFilter.onchange = function() {
+                selectedType = this.value
+                updateUrl()
+                doSearch()
+            }
+        }
+        if (statusFilter) {
+            statusFilter.onchange = function() {
+                selectedStatus = this.value
+                updateUrl()
+                doSearch()
+            }
+        }
+
+        // Apply topic/curated/type/status state from the URL.
         var tm = location.search.match(/[?&]topic=([^&]*)/)
         if (tm) selectedTopic = decodeURIComponent(tm[1].replace(/\+/g, ' '))
+        var tym = location.search.match(/[?&]type=([^&]*)/)
+        if (tym) selectedType = decodeURIComponent(tym[1].replace(/\+/g, ' '))
+        var sm = location.search.match(/[?&]status=([^&]*)/)
+        if (sm) selectedStatus = decodeURIComponent(sm[1].replace(/\+/g, ' '))
         curatedOnly = /[?&]curated=1(?:&|$)/.test(location.search)
+        if (typeFilter) typeFilter.value = selectedType
+        if (statusFilter) statusFilter.value = selectedStatus
         for (var b = 0; b < btns.length; b++) {
             var isCuratedBtn = btns[b].getAttribute('data-curated') === 'true'
             var isAllBtn = !isCuratedBtn && !btns[b].getAttribute('data-topic')
             var active = (curatedOnly && isCuratedBtn) ||
                 (!curatedOnly && ((isAllBtn && !selectedTopic) ||
                     (!isAllBtn && !isCuratedBtn && btns[b].getAttribute('data-topic') === selectedTopic)))
-            if (active) btns[b].classList.add('active')
-            else btns[b].classList.remove('active')
+            if (active) {
+                btns[b].classList.add('active')
+                btns[b].setAttribute('aria-pressed', 'true')
+            } else {
+                btns[b].classList.remove('active')
+                btns[b].setAttribute('aria-pressed', 'false')
+            }
         }
     }
 
@@ -82,6 +117,8 @@
         var q = input.value.trim()
         if (q) params.push('q=' + encodeURIComponent(q))
         if (selectedTopic) params.push('topic=' + encodeURIComponent(selectedTopic))
+        if (selectedType) params.push('type=' + encodeURIComponent(selectedType))
+        if (selectedStatus) params.push('status=' + encodeURIComponent(selectedStatus))
         if (curatedOnly) params.push('curated=1')
         var url = location.pathname + (params.length ? '?' + params.join('&') : '')
         history.replaceState(null, '', url)
@@ -126,8 +163,29 @@
             li.appendChild(curated)
             li.appendChild(document.createTextNode(' '))
         }
+        if (hit.p.content_type) {
+            var kind = document.createElement('span')
+            kind.className = 'search-topic search-topic--type'
+            kind.textContent = hit.p.content_type.replace(/-/g, ' ')
+            li.appendChild(kind)
+            li.appendChild(document.createTextNode(' '))
+        }
+        if (hit.p.verification && hit.p.verification !== 'unknown') {
+            var status = document.createElement('span')
+            status.className = 'search-topic search-topic--status'
+            status.textContent = hit.p.verification.replace(/-/g, ' ')
+            li.appendChild(status)
+            li.appendChild(document.createTextNode(' '))
+        }
+        if (hit.p.origin && hit.p.origin !== 'author') {
+            var origin = document.createElement('span')
+            origin.className = 'search-topic search-topic--origin'
+            origin.textContent = hit.p.origin.replace(/-/g, ' ')
+            li.appendChild(origin)
+            li.appendChild(document.createTextNode(' '))
+        }
         var a = document.createElement('a')
-        a.href = hit.p.url
+        a.href = baseUrl + hit.p.url
         var titleText = hit.p.display_title || hit.p.title
         if (terms.length) {
             a.innerHTML = esc(titleText).replace(new RegExp(terms.map(function(x){return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}).join('|'), 'gi'), function(m) {
@@ -180,14 +238,14 @@
         div.className = 'search-discovery'
         div.innerHTML = '<h3>Popular Tags</h3>' +
             '<div class="search-discovery-tags">' +
-            '<a href="/tag/cpp/">C++</a>' +
-            '<a href="/tag/llm/">LLM</a>' +
-            '<a href="/tag/docker/">Docker</a>' +
-            '<a href="/tag/nvidia/">NVIDIA</a>' +
-            '<a href="/tag/ray/">Ray</a>' +
-            '<a href="/tag/python/">Python</a>' +
-            '<a href="/tag/linux/">Linux</a>' +
-            '<a href="/tag/cmake/">CMake</a>' +
+            '<a href="' + baseUrl + '/tag/cpp/">C++</a>' +
+            '<a href="' + baseUrl + '/tag/llm/">LLM</a>' +
+            '<a href="' + baseUrl + '/tag/docker/">Docker</a>' +
+            '<a href="' + baseUrl + '/tag/nvidia/">NVIDIA</a>' +
+            '<a href="' + baseUrl + '/tag/ray/">Ray</a>' +
+            '<a href="' + baseUrl + '/tag/python/">Python</a>' +
+            '<a href="' + baseUrl + '/tag/linux/">Linux</a>' +
+            '<a href="' + baseUrl + '/tag/cmake/">CMake</a>' +
             '</div>'
         results.parentElement.insertBefore(div, results)
     }
@@ -198,7 +256,7 @@
 
     function render(q) {
         var terms = q.toLowerCase().split(/\s+/).filter(Boolean)
-        if (!terms.length && !selectedTopic && !curatedOnly) {
+        if (!terms.length && !selectedTopic && !selectedType && !selectedStatus && !curatedOnly) {
             results.innerHTML = ''
             stats.textContent = ''
             allHits = []
@@ -216,8 +274,10 @@
         for (var i = 0; i < DATA.length; i++) {
             var p = DATA[i]
 
-            // Topic and curated filters
+            // Topic, type, evidence and curated filters
             if (selectedTopic && p.topic !== selectedTopic) continue
+            if (selectedType && p.content_type !== selectedType) continue
+            if (selectedStatus && p.verification !== selectedStatus) continue
             if (curatedOnly && !p.curated) continue
 
             // If no search terms, show all matching posts
@@ -273,11 +333,11 @@
             hint.innerHTML = '<p>No matching posts found.</p>' +
                 '<p>Try: fewer keywords, a broader topic, or browse tags.</p>' +
                 '<div class="search-suggestion-tags">' +
-                '<a href="/tag/cpp/">C++</a>' +
-                '<a href="/tag/linux/">Linux</a>' +
-                '<a href="/tag/docker/">Docker</a>' +
-                '<a href="/tag/llm/">LLM</a>' +
-                '<a href="/tag/nvidia/">NVIDIA</a>' +
+                '<a href="' + baseUrl + '/tag/cpp/">C++</a>' +
+                '<a href="' + baseUrl + '/tag/linux/">Linux</a>' +
+                '<a href="' + baseUrl + '/tag/docker/">Docker</a>' +
+                '<a href="' + baseUrl + '/tag/llm/">LLM</a>' +
+                '<a href="' + baseUrl + '/tag/nvidia/">NVIDIA</a>' +
                 '</div>'
             results.innerHTML = ''
             results.appendChild(hint)

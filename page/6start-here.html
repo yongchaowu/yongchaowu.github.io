@@ -1,0 +1,119 @@
+---
+layout: default
+title: Start here
+display_title: 'Start here / 从这里开始'
+description: "A guided entry point for the Yc.W engineering archive: choose a learning path, browse topics, or search the complete notebook."
+permalink: /start-here/
+icon: bookmark-o
+type: page
+---
+
+<main class="page start-page" id="main-content" tabindex="-1">
+    <div class="start-hero">
+        <div class="start-hero-copy">
+            <span class="section-kicker">A living engineering notebook</span>
+            <h1>Find the right thread.<br><em>Follow it deeper.</em></h1>
+            <p>这里既有按主题重组的新文章，也有从历史记录延续至今的原始笔记。先选择一条阅读路径，再回到完整档案查证细节。</p>
+            <div class="start-hero-actions">
+                <a class="button button--primary" href="#paths">Choose a path</a>
+                <a class="button button--quiet" href="{{ '/archive/' | relative_url }}">Browse the archive</a>
+            </div>
+        </div>
+        <div class="start-hero-stats" aria-label="Archive statistics">
+            <div><strong>{{ site.posts | size }}</strong><span>notes</span></div>
+            <div><strong>{{ site.posts | where: "curated", true | size }}</strong><span>curated guides</span></div>
+            <div><strong>{{ site.data.topics.topics | size }}</strong><span>topics</span></div>
+            <div><strong>{{ site.posts.last.date | date: "%Y" }}—{{ site.posts.first.date | date: "%Y" }}</strong><span>in the archive</span></div>
+        </div>
+    </div>
+
+    <section class="start-intro-grid" aria-label="How to use this site">
+        <article>
+            <span class="intro-number">01</span>
+            <h2>Curated first</h2>
+            <p>精选文章把多个历史来源重新组织成问题驱动的阅读入口，并保留来源关系。</p>
+            <a href="{{ '/curated/' | relative_url }}">Explore curated notes →</a>
+        </article>
+        <article>
+            <span class="intro-number">02</span>
+            <h2>Topics when you need context</h2>
+            <p>按 C++、Systems、AI、DevOps 等主题浏览完整文章列表和相关标签。</p>
+            <a href="{{ '/category/' | relative_url }}">Browse all topics →</a>
+        </article>
+        <article>
+            <span class="intro-number">03</span>
+            <h2>Archive when you need history</h2>
+            <p>原始文章、旧链接和个人记录仍然保留，按年份回看完整的写作轨迹。</p>
+            <a href="{{ '/archive/' | relative_url }}">Open the archive →</a>
+        </article>
+    </section>
+
+    <section class="start-paths" id="paths" aria-labelledby="paths-title">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">Choose a direction</span>
+                <h2 id="paths-title">Four ways into the notebook</h2>
+            </div>
+            <span class="section-count">Curated sequences</span>
+        </div>
+        <div class="path-grid">
+            {% for path in site.data.reading_paths.paths %}
+            <article id="path-{{ path.id }}" class="path-card path-card--{{ path.accent }}">
+                <div class="path-card-top">
+                    <span class="path-icon">{% include icon.html name=path.icon %}</span>
+                    <span class="path-eyebrow">{{ path.eyebrow }}</span>
+                </div>
+                <h3>{{ path.title }}</h3>
+                <p class="path-title-zh">{{ path.title_zh }}</p>
+                <p>{{ path.description }}</p>
+                {% if path.outcome %}<p class="path-outcome"><strong>Outcome:</strong> {{ path.outcome }}</p>{% endif %}
+                <div class="path-meta">
+                    {% if path.estimated_minutes %}<span>Approx. {{ path.estimated_minutes }} min</span>{% endif %}
+                    {% if path.prerequisites %}<span>Prerequisites: {{ path.prerequisites | join: ' · ' }}</span>{% endif %}
+                </div>
+                <ol class="path-post-list">
+                    {% for source_path in path.posts %}
+                        {% assign path_post = site.posts | where: "path", source_path | first %}
+                        {% if path_post %}
+                        <li><a href="{{ path_post.url | relative_url }}">{{ path_post.display_title | default: path_post.title }}</a>{% include editorial-badge.html post=path_post %}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+                <a class="path-card-link" href="{{ '/curated/' | relative_url }}#path-{{ path.id }}">Open full path <span>→</span></a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="start-topics" aria-labelledby="start-topics-title">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">The whole shelf</span>
+                <h2 id="start-topics-title">Browse by topic</h2>
+            </div>
+            <a class="section-link" href="{{ '/category/' | relative_url }}">View topic directory →</a>
+        </div>
+        <div class="topic-mini-grid">
+            {% for topic in site.data.topics.topics %}
+                {% assign topic_count = 0 %}
+                {% for category in site.categories %}
+                    {% if category[0] == topic.name %}{% assign topic_count = category[1] | size %}{% endif %}
+                {% endfor %}
+            <a class="topic-mini-card topic-mini-card--{{ topic.accent }}" href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}">
+                <span class="topic-mini-icon">{% include icon.html name=topic.icon %}</span>
+                <span class="topic-mini-copy"><strong>{{ topic.name }}</strong><small>{{ topic_count }} notes</small></span>
+                <span class="topic-mini-arrow">↗</span>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="start-footer-cta">
+        <div>
+            <span class="section-kicker">Still looking for something?</span>
+            <h2>Search titles, tags, and full article text.</h2>
+        </div>
+        <a class="button button--primary" href="{{ '/search/' | relative_url }}">{% include icon.html name="search" %} Search the notebook</a>
+    </section>
+</main>
+<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

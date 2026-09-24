@@ -2,54 +2,131 @@ topics:
   - id: ai
     name: "AI & LLM"
     order: 1
+    icon: "magic"
+    accent: "teal"
     description: "LLM deployment, inference, agents and local AI."
+    intro: "从模型调用到 Agent 系统：检索、工作流、推理服务、工具权限与生产化实践。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-ai-agent-engineering-map.md"
+      - "_posts/2026-09-24-curated-llm-serving-production-checklist.md"
+      - "_posts/2026-09-24-agent-sandbox-security-runbook.md"
 
   - id: cpp
     name: "C & C++"
     order: 2
+    icon: "anchor"
+    accent: "indigo"
     description: "Systems programming, libraries and backend engineering."
+    intro: "构建、对象生命周期、并发、调试、性能和工程化工具链。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-cpp-backend-engineering.md"
+      - "_posts/2026-09-24-modern-cpp-concurrency-lifecycle.md"
+      - "_posts/2026-09-24-modern-cmake-targets-packaging.md"
 
   - id: systems
     name: "Systems"
     order: 3
+    icon: "th-list"
+    accent: "slate"
     description: "Linux, GPU, networking and system administration."
+    intro: "从系统现象出发，定位进程、服务、动态库、驱动、启动和存储问题。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-linux-systems-troubleshooting.md"
+      - "_posts/2026-09-24-linux-elf-linking-deployment.md"
+      - "_posts/2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install.md"
 
   - id: devops
     name: "DevOps & Infrastructure"
     order: 4
+    icon: "archive"
+    accent: "coral"
     description: "Docker, CI/CD, deployment and infrastructure tooling."
+    intro: "版本控制、流水线、容器、备份恢复和可回滚的交付实践。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-devops-delivery-playbook.md"
+      - "_posts/2023-07-24-Tool-Gitlab-备份恢复-迁移.md"
+      - "_posts/2024-07-24-Software-DM8-docker镜像.md"
 
   - id: tools
     name: "Developer Tools"
     order: 5
+    icon: "list-ol"
+    accent: "amber"
     description: "IDEs, editors, extensions and development workflow."
+    intro: "编辑器、构建、调试、静态分析和文档工具如何组成顺滑的工作流。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-developer-tools-workflow.md"
+      - "_posts/2026-09-24-modern-cmake-targets-packaging.md"
+      - "_posts/2026-09-05-IDE-VS-Code-Workbench-Layout.md"
 
   - id: programming
     name: "Programming"
     order: 6
+    icon: "newspaper-o"
+    accent: "violet"
     description: "Languages, frameworks and software design."
+    intro: "语言细节、库使用、接口设计和可复用程序设计方法。"
+    featured_posts:
+      - "_posts/2026-09-24-modern-cpp-concurrency-lifecycle.md"
+      - "_posts/2023-04-09-Code-C++-Invoke-Python.md"
+      - "_posts/2024-02-20-通用方式实现Map.md"
 
   - id: computer-science
     name: "Computer Science"
     order: 7
+    icon: "bookmark-o"
+    accent: "amber"
     description: "Algorithms, data structures and theory."
+    intro: "用复杂度、抽象和可验证实现构建算法与设计模式的长期基础。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-data-structures-algorithms-roadmap.md"
+      - "_posts/2026-09-24-curated-design-patterns-in-practice.md"
+      - "_posts/2024-06-11-Code-CSDN-C++-图.md"
 
   - id: security
     name: "Security & Networking"
     order: 8
+    icon: "shield"
+    accent: "red"
     description: "Cryptography, protocols and network tooling."
+    intro: "在明确授权边界内学习协议、抓包、密码学、调试和程序分析。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-security-networking-lab-guide.md"
+      - "_posts/2020-07-08-Tool-Wireshark.md"
+      - "_posts/2021-11-21-GDB基础.md"
 
   - id: database
     name: "Database"
     order: 9
+    icon: "archive"
+    accent: "blue"
     description: "Database setup, queries and administration."
+    intro: "从 SQL 和嵌入式存储，到服务型数据库、备份和工业数据协议。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-database-and-protocol-notes.md"
+      - "_posts/2020-07-09-SQLite.md"
+      - "_posts/2024-08-09-Tool-Postgresql.md"
 
   - id: photography
     name: "Photography"
     order: 10
+    icon: "user"
+    accent: "rose"
     description: "Camera techniques, composition and post-processing."
+    intro: "认识相机、理解光线和构图，并通过持续观察建立自己的视觉语言。"
+    featured_posts:
+      - "_posts/2026-09-24-curated-photography-learning-path.md"
+      - "_posts/2020-09-05-摄影-单反相机.md"
+      - "_posts/2020-09-13-摄影-Book-Reading-notes-美国纽约摄影学院摄影教材.md"
 
   - id: personal
     name: "Personal"
     order: 11
+    icon: "heart"
+    accent: "green"
     description: "Notes, reflections and personal projects."
+    intro: "保留时间线中的个人记录、方法论和博客维护原则。"
+    featured_posts:
+      - "_posts/2026-09-24-blog-legacy-content-maintenance-policy.md"
+      - "_posts/2020-06-30-开篇·序.md"
+      - "_posts/2020-07-25-微信公众号-Kindle-时间管理-高效生活管理法-笔记.md"

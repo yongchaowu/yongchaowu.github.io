@@ -1,72 +1,62 @@
 ---
 layout: default
 title: Topics
+display_title: 'Topics / 主题目录'
+description: "Browse the complete Yc.W notebook by engineering topic."
 permalink: /category/
 icon: th-list
 type: page
 ---
 
-<div class="page clearfix" id="main-content" tabindex="-1">
-    <div class="left">
-        <h1>{{ page.title }}</h1>
-        {% assign topic_count = site.data.topics.topics | size %}
-        <p class="topics-meta">{{ topic_count }} topics</p>
-        <hr>
-
-        {% for topic in site.data.topics.topics %}
-            {% for category in site.categories %}
-                {% if category[0] == topic.name %}
-                    {% assign category_name = category[0] %}
-                    {% assign category_posts = category[1] %}
-                    {% assign post_count = category_posts | size %}
-        <div class="topic-hub" id="{{ topic.id }}">
-            <div class="topic-hub-header">
-                <h2>{{ category_name }}</h2>
-                <span class="topic-hub-count">{{ post_count }} posts</span>
+<main class="page topics-page" id="main-content" tabindex="-1">
+    <div class="topics-directory">
+        <header class="directory-header">
+            <div>
+                <span class="section-kicker">The whole shelf</span>
+                <h1>Topics</h1>
+                <p>{{ site.data.topics.topics | size }} 个主题入口，连接精选文章、完整历史和可检索的标签网络。</p>
             </div>
-            {% if topic.description %}
-            <p class="topic-hub-desc">{{ topic.description }}</p>
-            {% endif %}
-            <ul class="topic-hub-posts">
-                {% for post in category_posts %}
-                <li>
-                    <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
-                    <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
-                </li>
+            <div class="directory-header-actions">
+                <a class="button button--quiet" href="{{ '/start-here/' | relative_url }}">Start here</a>
+                <a class="button button--primary" href="{{ '/search/' | relative_url }}">Search all</a>
+            </div>
+        </header>
+
+        <div class="topic-directory-grid">
+            {% for topic in site.data.topics.topics %}
+                {% assign topic_posts = nil %}
+                {% for category in site.categories %}
+                    {% if category[0] == topic.name %}{% assign topic_posts = category[1] %}{% endif %}
                 {% endfor %}
-            </ul>
-            <div class="topic-hub-footer">
-                <a href="{{ '/category/' | relative_url }}#{{ topic.id }}" class="topic-hub-viewall">
-                    View all {{ category_name }} posts →
-                </a>
-            </div>
-        </div>
+                {% assign featured_post = nil %}
+                {% if topic.featured_posts %}
+                    {% assign first_source = topic.featured_posts | first %}
+                    {% assign featured_post = site.posts | where: "path", first_source | first %}
                 {% endif %}
-            {% endfor %}
-        {% endfor %}
-    </div>
-
-    <div class="right">
-        <div class="wrap">
-            <div class="side content">
-                <div>
-                    {% include icon.html name="th-list" %} Topics
+            <article id="{{ topic.id }}" class="topic-directory-card topic-directory-card--{{ topic.accent }}">
+                <span id="{{ topic.name | slugify }}" class="topic-anchor-target" aria-hidden="true"></span>
+                <div class="topic-directory-card-top">
+                    <span class="topic-directory-icon">{% include icon.html name=topic.icon %}</span>
+                    <span class="topic-directory-count">{{ topic_posts | size }} notes</span>
                 </div>
-                <ul id="content-side" class="content-ul">
-                    {% for topic in site.data.topics.topics %}
-                        {% for category in site.categories %}
-                            {% if category[0] == topic.name %}
-                    <li>
-                        <a href="#{{ topic.id }}">
-                            {{ topic.name }} ({{ category[1] | size }})
-                        </a>
-                    </li>
-                            {% endif %}
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
+                <h2><a href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}">{{ topic.name }}</a></h2>
+                <p>{{ topic.intro | default: topic.description }}</p>
+                {% if featured_post %}
+                <a class="topic-featured-link" href="{{ featured_post.url | relative_url }}">
+                    <span>Editor pick</span>
+                    <strong>{{ featured_post.display_title | default: featured_post.title }}</strong>
+                    <span>→</span>
+                </a>
+                {% endif %}
+                <a class="topic-directory-link" href="{{ '/topics/' | append: topic.id | append: '/' | relative_url }}">Open topic <span>→</span></a>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div class="directory-note">
+            <strong>Looking for a smaller slice?</strong>
+            <span>Use <a href="{{ '/curated/' | relative_url }}">Curated</a> for source-linked guides, <a href="{{ '/tag/' | relative_url }}">Tags</a> for cross-topic discovery, or <a href="{{ '/search/' | relative_url }}">Search</a> for full-text lookup.</span>
         </div>
     </div>
-</div>
+</main>
 <script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

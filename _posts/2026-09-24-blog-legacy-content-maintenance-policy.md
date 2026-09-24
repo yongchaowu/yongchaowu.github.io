@@ -14,7 +14,7 @@ tags:
   - Editorial
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: editorial
 version: curated-v1
 source_posts:
   - "_posts/2020-06-30-开篇·序.md"

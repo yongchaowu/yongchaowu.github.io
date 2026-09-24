@@ -15,7 +15,7 @@ tags:
   - System Administration
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: runbook
 version: curated-v1
 source_posts:
   - "_posts/2020-07-10-OS-Linux-command.md"
@@ -82,11 +82,11 @@ Windows 侧则记录系统版本、服务状态、事件查看器中的时间和
 
 ```bash
 file ./your-program
-ldd ./your-program
 readelf -d ./your-program | grep NEEDED
+objdump -p ./your-program | grep NEEDED
 ```
 
-然后区分三种情况：库根本不存在、库架构不匹配、库存在但不在 loader 搜索路径中。`LD_LIBRARY_PATH` 是局部实验工具，持久化到系统配置前应记录原因、影响范围和回滚方式。相关原理见 [动态链接与 ldconfig/ldd](#source-posts-title)。
+对于确认来源可信的二进制，`ldd` 可以作为补充证据；不要对未知或不可信文件直接运行 `ldd`。然后区分三种情况：库根本不存在、库架构不匹配、库存在但不在 loader 搜索路径中。`LD_LIBRARY_PATH` 是局部实验工具，持久化到系统配置前应记录原因、影响范围和回滚方式。相关原理见 [动态链接与 ldconfig/ldd](#source-posts-title)。
 
 ### 端口被占用
 

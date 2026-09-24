@@ -4,11 +4,73 @@ layout: default
 
 <main class="page clearfix" id="main-content" tabindex="-1">
     <div class="left">
-        <h1>{{ page.tag }} Articles</h1>
-        <p class="tag-count">{{ site.tags[page.tag] | size }} articles</p>
+        {% assign alias_targets = site.data.tag_aliases.aliases[page.tag] %}
+        {% assign same_slug_aliases = '' | split: '' %}
+        {% if alias_targets %}
+            {% for related_tag in alias_targets %}
+                {% assign related_slug = site.data.tag_slugs[related_tag] %}
+                {% unless related_slug %}{% assign related_slug = related_tag | slugify %}{% endunless %}
+                {% if related_slug == page.slug and related_tag != page.tag %}
+                    {% assign same_slug_aliases = same_slug_aliases | push: related_tag %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% assign display_tag = page.tag %}
+        {% if same_slug_aliases.size > 0 %}{% assign display_tag = same_slug_aliases | first %}{% endif %}
+        <h1>{{ display_tag }} Articles</h1>
+        {% assign tag_posts = nil %}
+        {% assign page_tag_key = page.tag | append: '' %}
+        {% for tag_pair in site.tags %}
+            {% assign tag_key = tag_pair[0] | append: '' %}
+            {% if tag_key == page_tag_key %}
+                {% assign tag_posts = tag_pair[1] %}
+            {% endif %}
+        {% endfor %}
+        {% unless tag_posts %}{% assign tag_posts = '' | split: '' %}{% endunless %}
+        {% if same_slug_aliases.size > 0 %}
+            {% assign combined_tag_posts = '' | split: '' %}
+            {% assign combined_seen = '' %}
+            {% for post in site.posts %}
+                {% assign matches_tag = false %}
+                {% if post.tags contains page.tag %}{% assign matches_tag = true %}{% endif %}
+                {% for related_tag in same_slug_aliases %}
+                    {% if post.tags contains related_tag %}{% assign matches_tag = true %}{% endif %}
+                {% endfor %}
+                {% if matches_tag %}
+                    {% assign post_source_path = post.path | split: '_posts/' | last %}
+                    {% unless combined_seen contains post_source_path %}
+                        {% assign combined_seen = combined_seen | append: post_source_path | append: '|' %}
+                        {% assign combined_tag_posts = combined_tag_posts | push: post %}
+                    {% endunless %}
+                {% endif %}
+            {% endfor %}
+            {% assign tag_posts = combined_tag_posts %}
+        {% endif %}
+        <p class="tag-count">{{ tag_posts | size }} articles</p>
+        {% assign visible_alias_count = 0 %}
+        {% if alias_targets %}
+            {% for related_tag in alias_targets %}
+                {% assign related_slug = site.data.tag_slugs[related_tag] %}
+                {% unless related_slug %}{% assign related_slug = related_tag | slugify %}{% endunless %}
+                {% unless related_tag == page.tag or related_slug == page.slug %}
+                    {% assign visible_alias_count = visible_alias_count | plus: 1 %}
+                {% endunless %}
+            {% endfor %}
+        {% endif %}
+        {% if visible_alias_count > 0 %}
+        <div class="tag-alias-note">
+            <strong>Related canonical tag{% if visible_alias_count > 1 %}s{% endif %}:</strong>
+            {% for related_tag in alias_targets %}
+                {% assign related_slug = site.data.tag_slugs[related_tag] %}
+                {% unless related_slug %}{% assign related_slug = related_tag | slugify %}{% endunless %}
+                {% unless related_tag == page.tag or related_slug == page.slug %}
+                <a href="{{ '/tag/' | append: related_slug | append: '/' | relative_url }}">{{ related_tag }}</a>{% unless forloop.last %}, {% endunless %}
+                {% endunless %}
+            {% endfor %}
+        </div>
+        {% endif %}
         <hr>
 
-        {% assign tag_posts = site.tags[page.tag] %}
         {% for post in tag_posts %}
         <div class="post-card">
             <div class="post-card-meta">
@@ -31,25 +93,23 @@ layout: default
 
     <div class="right">
         <div class="wrap">
-            <div class="side">
+            <div class="side tag-compact-nav">
                 <div>
                     {% include icon.html name="tags" %}
-                    All Tags
+                    Tag navigation
                 </div>
                 <ul class="content-ul">
-                    {% for tag in site.tags %}
-                    {% assign tag_name = tag[0] %}
-                    {% assign tag_count = tag[1] | size %}
-                    {% assign tag_slug = site.data.tag_slugs[tag_name] %}
-                    {% unless tag_slug %}
-                        {% assign tag_slug = tag_name | append: '' | slugify %}
-                    {% endunless %}
-                    <li>
-                        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" {% if tag_name == page.tag %}class="active"{% endif %}>
-                            {{ tag_name }}
-                            <span class="badge">{{ tag_count }}</span>
-                        </a>
-                    </li>
+                    <li><a href="{{ '/tag/' | relative_url }}">All tags</a></li>
+                    <li><a href="{{ '/search/' | relative_url }}">Search full archive</a></li>
+                </ul>
+            </div>
+            <div class="side">
+                <div>Featured tags</div>
+                <ul class="content-ul">
+                    {% for tag_name in site.data.featured_tags.tags limit:10 %}
+                        {% assign tag_slug = site.data.tag_slugs[tag_name] %}
+                        {% unless tag_slug %}{% assign tag_slug = tag_name | slugify %}{% endunless %}
+                        <li><a href="{{ '/tag/' | append: tag_slug | append: '/' | relative_url }}">{{ tag_name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

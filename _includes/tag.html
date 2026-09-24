@@ -5,7 +5,7 @@
         {% unless tag_slug %}
             {% assign tag_slug = tag | append: '' | slugify %}
         {% endunless %}
-        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        <a href="{{ '/tag/' | append: tag_slug | append: '/' | relative_url }}" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% else %}
     {% for tag in page.tags %}
@@ -13,7 +13,7 @@
         {% unless tag_slug %}
             {% assign tag_slug = tag | append: '' | slugify %}
         {% endunless %}
-        <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        <a href="{{ '/tag/' | append: tag_slug | append: '/' | relative_url }}" title="Tag: {{ tag }}" rel="tag">{{ tag | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% endif %}
 {% endcapture %}

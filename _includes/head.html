@@ -14,12 +14,15 @@
         | truncate: 180 %}
 
     {% assign seo_title = page.display_title | default: page.title %}
-    {% assign seo_url = page.url | absolute_url %}
+    {% assign seo_url = page.canonical_url | default: page.url %}
+    {% assign seo_url = seo_url | absolute_url %}
 
     {% if page.layout == 'post' %}
         <title>{{ seo_title }} | {{ site.title }}</title>
     {% elsif page.url == '/' %}
         <title>{{ site.title }} — {{ site.brief-intro }}</title>
+    {% elsif paginator %}
+        <title>{{ site.title }} — {{ site.brief-intro }} · Page {{ paginator.page }}</title>
     {% else %}
         <title>{{ seo_title }} | {{ site.title }}</title>
     {% endif %}
