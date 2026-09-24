@@ -6,13 +6,14 @@
 require 'json'
 
 SITE_DIR = File.join(__dir__, '..', '_site')
-errors = []
+$failures = 0
 
 def check(label, condition, detail = '')
   if condition
     puts "  ✓ #{label}"
   else
     puts "  ✗ #{label}#{detail ? ' — ' + detail : ''}"
+    $failures += 1
     return false
   end
   true
@@ -28,6 +29,7 @@ check('_site/search/index.html exists', File.exist?(File.join(SITE_DIR, 'search'
 check('_site/tag/index.html exists', File.exist?(File.join(SITE_DIR, 'tag', 'index.html')))
 check('_site/category/index.html exists', File.exist?(File.join(SITE_DIR, 'category', 'index.html')))
 check('_site/archive/index.html exists', File.exist?(File.join(SITE_DIR, 'archive', 'index.html')))
+check('_site/curated/index.html exists', File.exist?(File.join(SITE_DIR, 'curated', 'index.html')))
 puts
 
 # Search JSON
@@ -37,7 +39,8 @@ if File.exist?(search_path)
   begin
     data = JSON.parse(File.read(search_path))
     check("Valid JSON", true)
-    check("Entry count matches posts (#{data.length})", data.length == 331)
+    source_post_count = Dir.glob(File.join(SITE_DIR, '..', '_posts', '*.md')).length
+    check("Entry count matches posts (#{data.length})", data.length == source_post_count)
     
     missing_url = data.find { |e| !e['url'] || e['url'].empty? }
     check("All entries have URL", missing_url.nil?)
@@ -53,6 +56,8 @@ if File.exist?(search_path)
     
     not_array = data.find { |e| !e['tags'].is_a?(Array) }
     check("tags is array for all entries", not_array.nil?)
+    curated_count = data.count { |e| e['curated'] == true }
+    check("Curated entries present (#{curated_count})", curated_count > 0)
   rescue JSON::ParserError => e
     check("Valid JSON", false, e.message)
   end
@@ -80,6 +85,12 @@ puts
 puts "Content:"
 post_dirs = Dir.glob(File.join(SITE_DIR, '20*', '*', '*', '*')).select { |d| File.exist?(File.join(d, 'index.html')) }
 check("Post pages generated (#{post_dirs.length})", post_dirs.length > 300)
+curated_dirs = Dir.glob(File.join(SITE_DIR, '2026', '09', '24', '*')).select { |d| File.exist?(File.join(d, 'index.html')) }
+check("Curated post pages generated (#{curated_dirs.length})", curated_dirs.length >= 12)
+curated_html = curated_dirs.map { |dir| File.read(File.join(dir, 'index.html')) }.join("\n")
+check('Curated posts have no raw _posts links', !curated_html.include?('href="_posts/'))
+check('Curated source notes resolve', !curated_html.include?('source-posts-missing'))
 puts
 
 puts "=== Done ==="
+exit($failures.zero? ? 0 : 1)

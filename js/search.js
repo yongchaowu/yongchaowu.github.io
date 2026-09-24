@@ -14,6 +14,7 @@
     var DATA = null
     var LOADING = false
     var selectedTopic = ''
+    var curatedOnly = false
 
     function load(cb) {
         if (DATA) return cb()
@@ -47,31 +48,32 @@
     function buildTopicFilter() {
         if (!filterEl || !DATA) return
 
-        // Topic buttons are server-rendered; just attach click handlers
+        // Topic and curated buttons are server-rendered; attach click handlers.
         var btns = filterEl.querySelectorAll('.topic-filter-btn')
         for (var k = 0; k < btns.length; k++) {
             btns[k].onclick = function() {
-                selectedTopic = this.getAttribute('data-topic')
-                var all = filterEl.querySelectorAll('.topic-filter-btn')
-                for (var x = 0; x < all.length; x++) all[x].classList.remove('active')
+                var isCurated = this.getAttribute('data-curated') === 'true'
+                curatedOnly = isCurated
+                selectedTopic = isCurated ? '' : (this.getAttribute('data-topic') || '')
+                for (var x = 0; x < btns.length; x++) btns[x].classList.remove('active')
                 this.classList.add('active')
                 updateUrl()
                 doSearch()
             }
         }
 
-        // Apply topic from URL
+        // Apply topic/curated state from the URL.
         var tm = location.search.match(/[?&]topic=([^&]*)/)
-        if (tm) {
-            selectedTopic = decodeURIComponent(tm[1].replace(/\+/g, ' '))
-            var allBtns = filterEl.querySelectorAll('.topic-filter-btn')
-            for (var b = 0; b < allBtns.length; b++) {
-                if (allBtns[b].getAttribute('data-topic') === selectedTopic) {
-                    allBtns[b].classList.add('active')
-                } else {
-                    allBtns[b].classList.remove('active')
-                }
-            }
+        if (tm) selectedTopic = decodeURIComponent(tm[1].replace(/\+/g, ' '))
+        curatedOnly = /[?&]curated=1(?:&|$)/.test(location.search)
+        for (var b = 0; b < btns.length; b++) {
+            var isCuratedBtn = btns[b].getAttribute('data-curated') === 'true'
+            var isAllBtn = !isCuratedBtn && !btns[b].getAttribute('data-topic')
+            var active = (curatedOnly && isCuratedBtn) ||
+                (!curatedOnly && ((isAllBtn && !selectedTopic) ||
+                    (!isAllBtn && !isCuratedBtn && btns[b].getAttribute('data-topic') === selectedTopic)))
+            if (active) btns[b].classList.add('active')
+            else btns[b].classList.remove('active')
         }
     }
 
@@ -80,6 +82,7 @@
         var q = input.value.trim()
         if (q) params.push('q=' + encodeURIComponent(q))
         if (selectedTopic) params.push('topic=' + encodeURIComponent(selectedTopic))
+        if (curatedOnly) params.push('curated=1')
         var url = location.pathname + (params.length ? '?' + params.join('&') : '')
         history.replaceState(null, '', url)
     }
@@ -114,6 +117,13 @@
             span.className = 'search-topic'
             span.textContent = hit.p.topic
             li.appendChild(span)
+            li.appendChild(document.createTextNode(' '))
+        }
+        if (hit.p.curated) {
+            var curated = document.createElement('span')
+            curated.className = 'search-topic search-topic--curated'
+            curated.textContent = 'Curated'
+            li.appendChild(curated)
             li.appendChild(document.createTextNode(' '))
         }
         var a = document.createElement('a')
@@ -188,7 +198,7 @@
 
     function render(q) {
         var terms = q.toLowerCase().split(/\s+/).filter(Boolean)
-        if (!terms.length && !selectedTopic) {
+        if (!terms.length && !selectedTopic && !curatedOnly) {
             results.innerHTML = ''
             stats.textContent = ''
             allHits = []
@@ -206,10 +216,11 @@
         for (var i = 0; i < DATA.length; i++) {
             var p = DATA[i]
 
-            // Topic filter
+            // Topic and curated filters
             if (selectedTopic && p.topic !== selectedTopic) continue
+            if (curatedOnly && !p.curated) continue
 
-            // If no search terms, show all in topic
+            // If no search terms, show all matching posts
             if (!terms.length) {
                 hits.push({ p: p, score: 1, date: p.date || '' })
                 continue
@@ -293,7 +304,7 @@
         }, 250)
     })
 
-    // auto-fill from ?q= and ?topic=
+    // Auto-fill from ?q=; topic/curated state is applied after the index loads.
     var m = location.search.match(/[?&]q=([^&]*)/)
     if (m) {
         input.value = decodeURIComponent(m[1].replace(/\+/g, ' '))

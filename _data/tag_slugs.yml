@@ -17,7 +17,7 @@
 "Data Structure": data-structure
 "Design Patterns": design-patterns
 "Front-End": front-end
-"Linux UNIX 系统编程手册": linux-unix-system-programming
+"Linux_UNIX 系统编程手册": linux_unix-系统编程手册
 "Memory Bank": memory-bank
 "NewAPI": newapi
 "NotePad++": notepad-plus-plus
@@ -44,3 +44,42 @@
 "v8": v8
 "javascript": javascript
 "JavaScript": javascript
+"Architecture": architecture
+"Backup": backup
+"Build System": build-system
+"CI/CD": ci-cd
+"Composition": composition
+"Complexity": complexity
+"Concurrency": concurrency
+"Database": database
+"Debugging": debugging
+"Deployment": deployment
+"Developer Tools": developer-tools
+"Documentation": documentation
+"DSLR": dslr
+"ELF": elf
+"Editorial": editorial
+"GPU": gpu
+"Knowledge Management": knowledge-management
+"LangGraph": langgraph
+"Least Privilege": least-privilege
+"Memory": memory
+"Networking": networking
+"Observability": observability
+"Observation": observation
+"Operations": operations
+"Packaging": packaging
+"Photography": photography
+"PostgreSQL": postgresql
+"RAII": raii
+"Sandbox": sandbox
+"Security": security
+"Shared Libraries": shared-libraries
+"Software Design": software-design
+"SQL": sql
+"System Administration": system-administration
+"Testing": testing
+"Thread Pool": thread-pool
+"Troubleshooting": troubleshooting
+"Writing": writing
+"408": 408

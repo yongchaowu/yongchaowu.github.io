@@ -1,9 +1,12 @@
-{% if page.content_origin %}
-<span class="content-badge content-badge--{{ page.content_origin }}">
-  {% if page.content_origin == 'ai-assisted' %}
+{% assign badge_post = include.post | default: page %}
+{% if badge_post.content_origin %}
+<span class="content-badge content-badge--{{ badge_post.content_origin }}">
+  {% if badge_post.content_origin == 'ai-assisted' %}
     {% include icon.html name="magic" %} AI-assisted
-  {% elsif page.content_origin == 'imported' %}
+  {% elsif badge_post.content_origin == 'imported' %}
     {% include icon.html name="archive" %} Imported
+  {% elsif badge_post.content_origin == 'curated' %}
+    {% include icon.html name="list-ol" %} Curated synthesis
   {% endif %}
 </span>
 {% endif %}

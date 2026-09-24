@@ -20,6 +20,7 @@ def load_slug_overrides():
 
 def slugify(tag_name):
     """Convert tag name to URL-safe slug."""
+    tag_name = str(tag_name)
     slug = tag_name.lower()
     # Keep Chinese characters, alphanumeric, and hyphens
     slug = re.sub(r'[^\w\u4e00-\u9fff]+', '-', slug)
@@ -59,11 +60,13 @@ def collect_tags():
         tags = parse_front_matter(filepath)
 
         for tag in tags:
+            tag = str(tag)
             # Get slug
             if tag in slug_overrides:
                 slug = slug_overrides[tag]
             else:
                 slug = slugify(tag)
+            slug = str(slug)
 
             # Check for slug collision (case-insensitive)
             slug_lower = slug.lower()
@@ -100,30 +103,14 @@ generated: true
     return output_path
 
 def generate_tag_index(tag_posts):
-    """Generate the /tag/ index page."""
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    """Return the existing server-rendered tag index path.
 
-    # Sort tags by post count (descending)
-    sorted_tags = sorted(tag_posts.items(), key=lambda x: -len(x[1]))
-
-    tag_lines = []
-    for (tag, slug), posts in sorted_tags:
-        tag_lines.append(f'  - name: "{tag}"')
-        tag_lines.append(f'    slug: "{slug}"')
-        tag_lines.append(f'    count: {len(posts)}')
-
-    content = f"""---
-layout: tag_index
-title: Tags
-permalink: /tag/
-generated: true
----
-"""
-    output_path = os.path.join(OUTPUT_DIR, 'index.md')
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(content)
-
-    return output_path
+    The site uses page/2tags.html as the canonical /tag/ page. Generating a
+    second Markdown page with the same permalink causes a Jekyll destination
+    conflict, so this function intentionally does not write tag/index.md.
+    """
+    del tag_posts
+    return os.path.join(OUTPUT_DIR, 'index.html')
 
 def main():
     print("Collecting tags from posts...")
@@ -136,8 +123,8 @@ def main():
         print(f"  {tag} -> /tag/{slug}/ ({len(posts)} posts)")
 
     # Generate tag index
-    index_path = generate_tag_index(tag_posts)
-    print(f"\nGenerated tag index: {index_path}")
+    generate_tag_index(tag_posts)
+    print("\nTag index is provided by page/2tags.html; no duplicate index was written.")
     print("Done!")
 
 if __name__ == '__main__':

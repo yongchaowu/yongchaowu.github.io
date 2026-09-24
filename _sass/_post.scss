@@ -16,6 +16,10 @@
             background: var(--bg-hover);
             color: var(--text-secondary);
         }
+        &--curated {
+            background: var(--badge-bg);
+            color: var(--badge-text);
+        }
     }
     .tested-env {
         background: var(--bg-card);
@@ -175,6 +179,49 @@
             margin-left: 6px;
         }
     }
+    .source-posts {
+        margin: 24px 0;
+        padding: 16px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-left: 4px solid var(--text-link);
+        border-radius: 6px;
+        h2 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 0 8px;
+            font-size: 17px;
+            color: var(--text-primary);
+            i { color: var(--text-link); }
+        }
+        .source-posts-intro {
+            margin: 0 0 10px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+        li {
+            margin: 5px 0;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            a { color: var(--text-link); }
+            time {
+                display: inline-block;
+                margin-left: 8px;
+                color: var(--text-muted);
+                font-size: 12px;
+            }
+        }
+        .source-posts-missing {
+            color: var(--text-muted);
+            code { word-break: break-all; }
+        }
+    }
     a {
         color: #4d6dad;
         transition: 0.5s ease;
@@ -214,6 +261,21 @@
         //         box-shadow: 0 0 4px 0px rgba(0,0,0,0.15);
         //     }
         // }
+    }
+}
+/* Content origin badges also appear in list pages. */
+.page .content-badge {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    font-size: 12px;
+    &--ai-assisted,
+    &--curated {
+        background: var(--badge-bg);
+        color: var(--badge-text);
     }
 }
 @media screen and (max-width: 770px) {
