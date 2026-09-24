@@ -172,8 +172,13 @@ tag_script = File.read(File.join(SITE_DIR, 'js', 'tags.js'))
 base_match = search_page.match(/data-base-url="([^"]*)"/)
 check('Search exposes a data-base-url attribute', !base_match.nil?)
 base_url = base_match && base_match[1]
+expected_base_url = ENV['PAGES_BASE_PATH'].to_s
 check('data-base-url is normalized', base_url.nil? || base_url.empty? || (base_url.start_with?('/') && base_url.end_with?('/')))
-check('Pages build has a non-empty base path', ENV['GITHUB_PAGES'] != 'true' || (!base_url.nil? && !base_url.empty?))
+if expected_base_url.empty?
+  check('data-base-url matches the Pages build path', base_url.to_s.empty?)
+else
+  check('data-base-url matches the Pages build path', base_url == expected_base_url)
+end
 check('Search result links use base URL', search_script.include?('baseUrl + hit.p.url'))
 check('Tag result links use base URL', tag_script.include?('baseUrl + p.url'))
 puts
