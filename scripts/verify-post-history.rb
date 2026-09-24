@@ -12,6 +12,7 @@
 require 'open3'
 require 'set'
 require 'yaml'
+require 'date'
 
 BASELINE = ENV.fetch('POST_HISTORY_BASELINE', 'b1dc48b52cc291e1ca771bd514ed2cf251b14054')
 FORMAT_FIXES_FILE = File.expand_path('../_data/format_fixes.yml', __dir__)
@@ -33,22 +34,39 @@ end
 baseline_posts = Set.new(git_lines(repo, 'ls-tree', '-r', '--name-only', BASELINE, '--', '_posts').select { |path| path.end_with?('.md') })
 current_posts = Set.new(git_lines(repo, 'ls-tree', '-r', '--name-only', 'HEAD', '--', '_posts').select { |path| path.end_with?('.md') })
 failures << "expected 331 baseline posts, found #{baseline_posts.length}" unless baseline_posts.length == 331
-format_fixes = (YAML.load_file(FORMAT_FIXES_FILE) || {}).fetch('fixes', [])
+format_fixes = (YAML.safe_load_file(FORMAT_FIXES_FILE, permitted_classes: [Date], aliases: false) || {}).fetch('fixes', [])
 format_fix_paths = Hash.new(0)
+format_fix_blobs = {}
 format_fixes.each do |fix|
   path = fix['post'].to_s
   format_fix_paths[path] += 1
   failures << "format fix does not target a baseline post: #{path}" unless baseline_posts.include?(path)
   failures << "format fix is missing a reason: #{path}" if fix['reason'].to_s.strip.empty?
+
+  fixed_blob = fix['fixed_blob'].to_s
+  if fixed_blob.empty?
+    failures << "format fix is missing fixed_blob: #{path}"
+  elsif fixed_blob !~ /\A[0-9a-f]{40}\z/
+    failures << "format fix fixed_blob is not a Git blob ID: #{path}"
+  end
+  format_fix_blobs[path] = fixed_blob
 end
 format_fix_paths.each do |path, count|
   failures << "format fix path is duplicated: #{path}" if count > 1
 end
 
 baseline_posts.each do |path|
-  next if format_fix_paths.key?(path)
-
   baseline_blob, = Open3.capture3('git', '-C', repo, 'rev-parse', "#{BASELINE}:#{path}")
+
+  if format_fix_paths.key?(path)
+    actual_blob, = Open3.capture3('git', '-C', repo, 'hash-object', '--', path)
+    expected_blob = format_fix_blobs[path]
+    unless actual_blob.strip == expected_blob
+      failures << "format fix blob mismatch: #{path} (expected #{expected_blob}, got #{actual_blob.strip})"
+    end
+    next
+  end
+
   current_blob, = Open3.capture3('git', '-C', repo, 'rev-parse', "HEAD:#{path}")
   if current_blob.strip.empty?
     failures << "deleted historical post: #{path}"

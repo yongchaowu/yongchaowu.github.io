@@ -33,6 +33,8 @@ C++ 并发问题通常不是“线程 API 不会用”，而是对象生命周�
 
 > 本文是对历史 C++ 笔记的现代化重组。示例用于说明设计原则，编译器版本、库实现和业务约束仍需在项目中验证。
 
+> **技术交叉核对（2026-09-25）**：`std::condition_variable` 的等待、谓词和生命周期边界已对照 [cppreference](https://en.cppreference.com/w/cpp/thread/condition_variable)；示例仍不是某个标准库实现的压力测试。
+
 <!--more-->
 
 ## 1. 所有权先于并发

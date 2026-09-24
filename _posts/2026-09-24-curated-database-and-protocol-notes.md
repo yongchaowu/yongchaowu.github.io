@@ -31,6 +31,8 @@ source_posts:
 
 > 本文是数据库与工业协议历史笔记的重组。安装命令、默认端口、认证方式和协议版本可能变化，请优先参考当前官方文档。
 
+> **技术交叉核对（2026-09-25）**：SQLite 的显式事务、savepoint 和错误回滚语义已对照 [SQLite Transaction Control Syntax](https://www.sqlite.org/lang_transaction.html)；其他数据库仍需查阅各自版本和引擎文档。
+
 <!--more-->
 
 ## 先按工作负载选择

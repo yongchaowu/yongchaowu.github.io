@@ -37,6 +37,8 @@ source_posts:
 
 > 本文是历史 Linux、Windows 和国产 Linux 记录的学习入口。涉及 root、驱动、GRUB、端口和文件系统的操作，请先在可恢复的环境中验证。
 
+> **技术交叉核对（2026-09-25）**：关于 `ldd` 对不可信二进制可能触发执行的风险，已对照 Linux `ldd(1)` 手册；未知文件优先使用 `file`、`readelf` 或 `objdump`。
+
 <!--more-->
 
 ## 一个通用的五步法
