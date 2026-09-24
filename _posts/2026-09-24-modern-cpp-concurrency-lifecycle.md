@@ -52,7 +52,7 @@ struct Node {
 };
 ```
 
-是否使用智能指针应从“谁最后释放、谁访问对象、对象是否跨线程”开始。历史 [shared_ptr 记录](#source-posts-title) 中如果出现 `new` 后长期保存裸指针的情况，不应直接复制到新代码中。
+是否使用智能指针应从“谁最后释放、谁访问对象、对象是否跨线程”开始。历史 [shared_ptr 记录](#source-note-1) 中如果出现 `new` 后长期保存裸指针的情况，不应直接复制到新代码中。
 
 ## 2. 锁的保护范围要写清楚
 
@@ -98,7 +98,7 @@ private:
 };
 ```
 
-通知可以在锁外发生，但修改共享状态必须在锁内完成。把 `condition_variable` 封装成 event 时，还要明确 `reset()`、重复等待、异常和销毁顺序。历史 [condition_variable 封装 event](#source-posts-title) 可作为练习起点。
+通知可以在锁外发生，但修改共享状态必须在锁内完成。把 `condition_variable` 封装成 event 时，还要明确 `reset()`、重复等待、异常和销毁顺序。历史 [condition_variable 封装 event](#source-note-3) 可作为练习起点。
 
 ## 4. 线程池必须有停止协议
 
@@ -123,7 +123,7 @@ public:
 - 任务异常是否在线程内捕获并上报；
 - 队列和条件变量的析构顺序。
 
-[BS::thread_pool 单例记录](#source-posts-title) 可以帮助了解第三方库，但单例不是线程池的必需设计；如果组件有独立配置、测试或多个隔离实例，普通对象通常更容易管理。
+[BS::thread_pool 单例记录](#source-note-5) 可以帮助了解第三方库，但单例不是线程池的必需设计；如果组件有独立配置、测试或多个隔离实例，普通对象通常更容易管理。
 
 ## 5. 内存错误先用工具定位
 
@@ -150,4 +150,4 @@ Sanitizer 的报告应保存最小复现、完整命令、编译器版本和线�
 - [ ] 是否测试了空队列、重复通知、异常任务和关闭竞态？
 - [ ] 是否用 ThreadSanitizer/ASan 或压力测试验证过？
 
-[mutex 待验证笔记](#source-posts-title)、[线程 ID](#source-posts-title) 和 [double-free 记录](#source-posts-title) 可以帮助你定位问题，但真正的修复应回到不变量、生命周期和关闭协议。
+[mutex 待验证笔记](#source-note-4)、[线程 ID](#source-note-8) 和 [double-free 记录](#source-note-6) 可以帮助你定位问题，但真正的修复应回到不变量、生命周期和关闭协议。

@@ -467,6 +467,14 @@ header .menu { display: none; }
 .post-article table thead { background: var(--bg-hover); color: var(--text-primary); }
 .post-article pre { border-radius: 8px; }
 .source-posts li .editorial-badges { margin-left: 8px; vertical-align: middle; }
+.source-note-provenance { display: block; margin-top: 5px; color: var(--text-muted); font-size: 10px; line-height: 1.5; }
+.editorial-attribution { margin: 24px 0; padding: 16px 18px; border: 1px solid var(--border-color); border-left: 3px solid var(--text-link); border-radius: 7px; background: var(--bg-card); }
+.editorial-attribution h2 { margin: 0 0 10px; font-size: 17px; }
+.editorial-attribution dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 12px; }
+.editorial-attribution dt { color: var(--text-muted); }
+.editorial-attribution dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.editorial-attribution a { color: var(--text-link); }
+.editorial-attribution-note { margin: 10px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.6; }
 .tag-alias-note { margin: 8px 0 14px; padding: 9px 12px; border-left: 3px solid var(--text-link); color: var(--text-secondary); background: var(--bg-hover); font-size: 12px; }
 .tag-alias-note strong { color: var(--text-primary); }
 .tag-alias-note a { color: var(--text-link); font-weight: 650; }

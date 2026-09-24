@@ -15,6 +15,8 @@ tags:
 ---
 {% raw %}
 > Vite & Vue Powered Static Site Generator / Vite 与 Vue 驱动的静态站点生成器
+>
+> **版本提示（2026-09-25）**：本文示例针对 VitePress `2.0.0-alpha.20`。该版本属于开发预览，配置和 CLI 可能变化；请以[官方站点配置参考](https://vitepress.dev/reference/site-config)和锁定版本的 changelog 为准，不要把 `latest`/`next` 当作生产可复现版本。
 
 {% endraw %}
 
@@ -164,7 +166,7 @@ npm add -D vitepress@next
 pnpm add -D vitepress@next
 
 # 使用 yarn
-yarn add -D vitepress vue
+yarn add -D vitepress@next vue
 
 # 使用 bun
 bun add -D vitepress@next
@@ -379,6 +381,9 @@ export default defineConfig({
   // 最后更新时间 / Last updated
   lastUpdated: true,
 
+  // 暗黑模式 / Dark mode (site-level option, not themeConfig)
+  appearance: true,
+
   // 主题配置 / Theme configuration
   themeConfig: {
     // 导航栏 / Navigation bar
@@ -415,8 +420,6 @@ export default defineConfig({
       provider: 'local'
     },
 
-    // 暗黑模式 / Dark mode
-    appearance: true
   }
 })
 ```
@@ -432,7 +435,7 @@ export default defineConfig({
     lineNumbers: true,        // 显示行号 / Show line numbers
     math: true,               // 数学公式 / Math equations
     image: {
-      lazyLoading: true       // 图片懒加载 / Image lazy loading
+      lazyLoad: true          // 图片懒加载 / Image lazy loading
     }
   },
 

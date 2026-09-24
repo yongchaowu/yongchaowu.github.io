@@ -14,7 +14,7 @@
 | 主题数 | 11 |
 | 当前标签数 | 以构建后的 `/tag/` 页面为准 |
 
-原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。历史 URL 和发布日期保持不变；本轮仅对 9 篇文件做了已登记的格式/转义/链接解析修复，未改变技术结论；本次新增内容作为新的入口层发布。
+原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。历史 URL 和发布日期保持不变；本轮仅对 9 篇文件做了已登记的格式/转义/链接解析或有证据的技术勘误，未做无依据的大规模重写；本次新增内容作为新的入口层发布。
 
 ### 主题覆盖
 
@@ -68,8 +68,9 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 ### 2.2 保留原文并增加可追溯性
 
 - 新文章通过仓库路径引用原文，避免依赖易变的手写 URL；
-- 正文中的来源链接统一指向文章底部来源区，来源区提供稳定条目 ID、标题、日期、链接和可用的 editorial 状态；这保证可追溯，但不自动证明每条技术结论；
+- 正文中的来源链接现在指向文章底部对应的编号来源条目，而不是只指向来源区标题；来源区提供标题、日期、链接和可用的 editorial 状态。这改善 claim-level 可追溯性，但不自动证明每条技术结论；
 - `_data/post_editorial.yml` 中的 `reported-tested` 只表示文章声明过测试环境，不等同于独立复现实验；
+- 导入资料若能从原文确认作者、来源和许可证，则记录在 `attribution` sidecar，并在文章页和搜索 JSON 中显示；未确认的信息明确标为 `unknown` / `not-verified`；
 - 原始文章继续出现在 Archive、Topics、Tags 和 Search 中；
 - 新文章不声称替代旧文章，也不抹去历史语境。
 
@@ -82,7 +83,7 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 - 统一 Liquid 与 Python 的标签 slug 解析规则，修复 `C++`、`CI/CD`、下划线标签等历史链接不一致；
 - 统一 `/tag/` 的页面归属，避免 `page/2tags.html` 与生成的 `tag/index.md` 产生目标冲突；
 - 搜索元数据增加 `curated`、`content_origin`、内容类型、验证状态、风险和来源字段，并提供精选/类型/证据筛选；
-- GitHub Pages 构建后自动执行来源校验和 smoke test。
+- GitHub Pages 构建后自动执行 Python 标签页一致性检查、来源校验、claim-level 引用校验和 smoke test；smoke test 还会验证 sitemap、404、全部源标签路由、归属记录和生成站点内部链接。
 
 ## 3. 对原文的处理建议
 
@@ -112,11 +113,11 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 | 分类可疑项 | 29 篇标题与当前一级主题不完全一致 | 先通过新文章和多标签改善发现入口，逐篇确认后再改 frontmatter |
 | `display_title` | 约 240 篇历史文章没有单独设置 | 现有模板会回退到 `title`，暂不批量添加 |
 | 标签变体 | `JavaScript/javascript`、`Performance/performance` 等 | 后续在 `_data/tag_slugs.yml` 和新内容中统一，旧标签保持兼容 |
-| 外部链接/版本 | 旧文章中有历史下载页、版本和外部站点 | 逐簇复核；新文章只引用稳定入口并加复核提示 |
-| 构建格式 | 9 篇历史文章存在 raw/excerpt、Liquid 模板、空链接或缺失相对链接问题 | 已在 `_data/format_fixes.yml` 登记并修复；后续新增格式例外必须单独说明 |
+| 外部链接/版本 | 旧文章中有历史下载页、版本和外部站点；部分导入资料的作者/许可证仍不完整 | 逐簇复核；新文章只引用稳定入口并加复核提示；已确认的 attribution 不得扩展为未验证的许可声明 |
+| 构建格式与技术勘误 | 9 篇历史文章存在 raw/excerpt、Liquid 模板、空链接、缺失相对链接或有来源依据的技术问题 | 已在 `_data/format_fixes.yml` 登记并绑定修复后的 blob；后续新增例外必须单独说明 |
 | `/tag/` 输出 | 已统一由 `page/2tags.html` 提供，生成器不再写重复的 `tag/index.md` | 保持单一 canonical 页面；新增标签后重新运行生成器 |
 
-本轮格式修复只处理 Markdown/Liquid 包装、excerpt 分隔符、模板示例转义和链接解析，不改变历史技术结论；每一项都记录在 `_data/format_fixes.yml`，由 `scripts/verify-post-history.rb` 单独放行。
+本轮历史文件修复包括 Markdown/Liquid 包装、excerpt 分隔符、模板示例转义、链接解析，以及少量有来源依据的技术勘误。每一项都记录在 `_data/format_fixes.yml`，并绑定修复后的 Git blob；`scripts/verify-post-history.rb` 不再按路径无条件放行。
 
 ### 需要优先人工复核的历史簇
 
@@ -139,7 +140,8 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 ## 6. 本地验证
 
 ```bash
-python3 scripts/generate_tag_pages.py
+uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py
+uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check
 ruby scripts/validate-curation.rb
 ruby scripts/validate-tags.rb
 TZ=UTC bundle exec jekyll clean

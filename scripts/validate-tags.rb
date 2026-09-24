@@ -5,21 +5,26 @@
 # Usage: ruby scripts/validate-tags.rb
 
 require 'yaml'
+require 'date'
 
 ROOT = File.expand_path('..', __dir__)
 POSTS_DIR = File.join(ROOT, '_posts')
 SLUGS_FILE = File.join(ROOT, '_data', 'tag_slugs.yml')
 ALIASES_FILE = File.join(ROOT, '_data', 'tag_aliases.yml')
 
-slug_overrides = YAML.load_file(SLUGS_FILE) || {}
-aliases = (YAML.load_file(ALIASES_FILE) || {}).fetch('aliases', {})
+def load_data(path)
+  YAML.safe_load_file(path, permitted_classes: [Date, Time], aliases: false) || {}
+end
+
+slug_overrides = load_data(SLUGS_FILE)
+aliases = load_data(ALIASES_FILE).fetch('aliases', {})
 
 def front_matter(path)
   content = File.read(path, encoding: 'UTF-8')
   match = content.match(/\A---\s*\n(.*?)\n---\s*\n/m)
   return {} unless match
 
-  YAML.safe_load(match[1], permitted_classes: [Time], aliases: false) || {}
+  YAML.safe_load(match[1], permitted_classes: [Date, Time], aliases: false) || {}
 rescue Psych::Exception
   {}
 end
@@ -67,10 +72,11 @@ Dir.glob(File.join(ROOT, 'tag', '*', 'index.md')).sort.each do |page_path|
   tag_name = data['tag'].to_s
   errors << "stale generated tag page: #{slug} (#{tag_name})" unless active_tag_names.include?(tag_name)
   errors << "generated tag slug mismatch: #{slug}" unless data['slug'].to_s == slug
+  errors << "generated tag permalink mismatch: #{slug}" unless data['permalink'].to_s == "/tag/#{slug}/"
 end
 
 featured_file = File.join(ROOT, '_data', 'featured_tags.yml')
-featured = (YAML.load_file(featured_file) || {}).fetch('tags', [])
+featured = load_data(featured_file).fetch('tags', [])
 featured.each do |tag|
   errors << "featured tag has no posts: #{tag}" unless tags_by_slug.values.flatten.include?(tag.to_s)
 end

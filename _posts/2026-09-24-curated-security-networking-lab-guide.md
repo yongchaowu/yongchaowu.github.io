@@ -55,7 +55,7 @@ source_posts:
 
 ## 网络分析：从现象到协议
 
-[抓包工具整理](#source-posts-title) 和 [Wireshark](#source-posts-title) 适合学习“接口—过滤器—显示过滤器—专家信息”的基本关系。建议按以下顺序练习：
+[抓包工具整理](#source-note-1) 和 [Wireshark](#source-note-2) 适合学习“接口—过滤器—显示过滤器—专家信息”的基本关系。建议按以下顺序练习：
 
 1. 先在本机回环接口观察自己的测试服务；
 2. 识别 TCP 连接、HTTP 请求和 DNS 查询；
@@ -63,17 +63,17 @@ source_posts:
 4. 只在授权环境中测试 TLS、RDP、SMB 等协议；
 5. 保存过滤条件和结论，而不是只保存一张截图。
 
-[WebService](#source-posts-title)、[SMB/SAMBA](#source-posts-title) 和 [局域网文件共享脚本](#source-posts-title) 可用来练习服务边界、认证、访问控制和网络暴露面；不要把示例配置直接暴露到公网。
+[WebService](#source-note-3)、[SMB/SAMBA](#source-note-12) 和 [局域网文件共享脚本](#source-note-13) 可用来练习服务边界、认证、访问控制和网络暴露面；不要把示例配置直接暴露到公网。
 
 ## 密码学的学习重点
 
-[3DES 笔记](#source-posts-title) 适合作为历史算法资料，但不应作为新系统默认方案。学习密码学时区分：算法、密钥、随机数、编码、认证和密钥生命周期。即使算法本身没有明显漏洞，错误实现也可能导致数据泄露。
+[3DES 笔记](#source-note-5) 适合作为历史算法资料，但不应作为新系统默认方案。学习密码学时区分：算法、密钥、随机数、编码、认证和密钥生命周期。即使算法本身没有明显漏洞，错误实现也可能导致数据泄露。
 
 实践顺序建议是：先理解威胁模型，再比较方案，最后用测试向量和边界条件验证。不要把“能解密”误认为“安全性已被证明”。
 
 ## 调试器与程序分析
 
-[GDB 基础](#source-posts-title)、[WinDbg 资料](#source-posts-title)、[汇编入门](#source-posts-title) 和 [Windows 内核安全编程笔记](#source-posts-title) 可以组成一条由高到低的分析路线：
+[GDB 基础](#source-note-6)、[WinDbg 资料](#source-note-7)、[汇编入门](#source-note-9) 和 [Windows 内核安全编程笔记](#source-note-10) 可以组成一条由高到低的分析路线：
 
 ```text
 源码/日志 → 用户态调用栈 → 汇编与寄存器 → 系统调用/驱动边界

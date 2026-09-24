@@ -6,15 +6,22 @@
 {% if page.source_posts and page.source_posts.size > 0 %}
 <section class="source-posts" aria-labelledby="source-posts-title">
     <h2 id="source-posts-title">{% include icon.html name="bookmark-o" %} Source notes / 资料来源</h2>
-    <p class="source-posts-intro">本文是对站内历史资料的重新编排。原始文章保持独立发布，下面列出本文重组所依据的来源，便于查证细节和历史上下文。标签描述仓库中的状态元数据，不等同于外部事实验证。</p>
+    <p class="source-posts-intro">本文是对站内历史资料的重新编排。原始文章保持独立发布，下面列出本文重组所依据的来源；正文中的引用会直接指向对应的编号来源。标签和署名信息描述仓库中的来源状态，不等同于外部事实验证。</p>
     <ul>
         {% for source_path in page.source_posts %}
             {% assign source_post = site.posts | where: "path", source_path | first %}
+            {% assign source_editorial = nil %}
+            {% for source_item in site.data.post_editorial.posts %}
+                {% if source_item.post == source_path %}{% assign source_editorial = source_item %}{% endif %}
+            {% endfor %}
             {% if source_post %}
                 <li id="source-note-{{ forloop.index }}">
                     <a href="{{ source_post.url | relative_url }}">{{ source_post.display_title | default: source_post.title }}</a>
                     <time datetime="{{ source_post.date | date_to_xmlschema }}">{{ source_post.date | date: "%Y-%m-%d" }}</time>
                     {% include editorial-badge.html post=source_post %}
+                    {% if source_editorial.attribution %}
+                    <small class="source-note-provenance">Source: {{ source_editorial.attribution.author | default: "unknown" }} · License: {{ source_editorial.attribution.license | default: "unknown" }}{% if source_editorial.attribution.license_status == "not-verified" %} (not verified){% elsif source_editorial.attribution.license_status == "partial-source-review" %} (partial review){% endif %}</small>
+                    {% endif %}
                 </li>
             {% else %}
                 <li class="source-posts-missing"><code>{{ source_path }}</code></li>

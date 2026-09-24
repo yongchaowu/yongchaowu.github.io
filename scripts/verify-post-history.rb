@@ -86,7 +86,7 @@ end
 puts "Baseline: #{BASELINE}"
 puts "Historical posts checked: #{baseline_posts.size}"
 puts "New posts allowed: #{(current_posts - baseline_posts).size}"
-puts "Explicit formatting fixes: #{format_fix_paths.size}"
+puts "Explicit approved exceptions: #{format_fix_paths.size}"
 if failures.empty?
   puts 'Post history verification: PASS'
   exit 0

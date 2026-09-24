@@ -61,7 +61,7 @@ readelf -d ./libyour.so | grep SONAME
 readelf --dyn-syms ./libyour.so | grep 'symbol_name'
 ```
 
-不要把 `ldd` 当成未知文件的绝对安全检查器；对不可信二进制，优先使用 `file`、`readelf -d` 和 `objdump -p`。历史 [ldd/ldconfig/LD_LIBRARY_PATH](#source-posts-title) 记录可作为概念参考。
+不要把 `ldd` 当成未知文件的绝对安全检查器；对不可信二进制，优先使用 `file`、`readelf -d` 和 `objdump -p`。历史 [ldd/ldconfig/LD_LIBRARY_PATH](#source-note-1) 记录可作为概念参考。
 
 ## 2. 理解搜索规则的层次
 
@@ -94,7 +94,7 @@ SONAME：libfoo.so.1
 
 升级 ABI 时，文件名和 SONAME 是否变化应与兼容性策略绑定。不要只把文件复制成新名字就认为升级完成；下游程序仍然按照 ELF 中的 NEEDED 名称寻找它。
 
-[CMake SONAME 记录](#source-posts-title) 和 [共享库基础](#source-posts-title) 适合补充构建侧知识；部署侧还要检查最终安装目录、运行时权限和容器挂载。
+[CMake SONAME 记录](#source-note-7) 和 [共享库基础](#source-note-4) 适合补充构建侧知识；部署侧还要检查最终安装目录、运行时权限和容器挂载。
 
 ## 4. 前后台差异的排查
 
@@ -118,7 +118,7 @@ SONAME：libfoo.so.1
 4. 检查是否混用了不同 C++ ABI、编译器和运行库；
 5. 逐步去掉非必要依赖，验证最小组合。
 
-[全局函数重名与命名空间记录](#source-posts-title) 说明了这类问题的表现，但生产修复应优先采用清晰的库边界、版本化 SONAME 和正确的作用域，而不是依赖全局隐藏。
+[全局函数重名与命名空间记录](#source-note-5) 说明了这类问题的表现，但生产修复应优先采用清晰的库边界、版本化 SONAME 和正确的作用域，而不是依赖全局隐藏。
 
 ## 部署检查清单
 

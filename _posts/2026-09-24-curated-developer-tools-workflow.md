@@ -54,11 +54,11 @@ format
 lint
 ```
 
-[CMake](#source-posts-title) 和 [CMake Tools](#source-posts-title) 的历史记录可以用于建立这些入口。IDE 面板是便利层，项目本身仍应能通过命令行完成构建和测试；否则换一台机器就无法复现。
+[CMake](#source-note-8) 和 [CMake Tools](#source-note-9) 的历史记录可以用于建立这些入口。IDE 面板是便利层，项目本身仍应能通过命令行完成构建和测试；否则换一台机器就无法复现。
 
 ## 2. 编辑器只保留“有用”的自动化
 
-[VS Code 基础记录](#source-posts-title)、[快捷键](#source-posts-title) 和 [工作台布局](#source-posts-title) 适合整理个人操作习惯。建议按用途分组：
+[VS Code 基础记录](#source-note-1)、[快捷键](#source-note-3) 和 [工作台布局](#source-note-7) 适合整理个人操作习惯。建议按用途分组：
 
 - 编辑与导航：跳转、重命名、符号搜索；
 - 质量：格式化、静态检查、测试；
@@ -66,7 +66,7 @@ lint
 - 文档：Graphviz、Markdown、知识图谱；
 - 协作：Git 和 Issue 工具。
 
-[扩展管理](#source-posts-title) 和 [自定义语言/提示](#source-posts-title) 提醒我们：扩展也会带来供应链、权限和版本兼容成本。不要让关键构建逻辑只能通过某个未锁定版本的扩展运行。
+[扩展管理](#source-note-6) 和 [自定义语言/提示](#source-note-4) 提醒我们：扩展也会带来供应链、权限和版本兼容成本。不要让关键构建逻辑只能通过某个未锁定版本的扩展运行。
 
 ## 3. 把质量工具接进同一循环
 
@@ -76,13 +76,13 @@ lint
 编辑 → 格式化 → 编译 → 单元测试 → 静态检查 → 调试/运行
 ```
 
-[静态分析](#source-posts-title) 和 [Valgrind](#source-posts-title) 不需要每次都全量运行，但应该有明确的触发时机：提交前运行快速检查，合并前运行完整测试，发布前运行更重的动态检查。
+[静态分析](#source-note-11) 和 [Valgrind](#source-note-12) 不需要每次都全量运行，但应该有明确的触发时机：提交前运行快速检查，合并前运行完整测试，发布前运行更重的动态检查。
 
 ## 4. 图表和文档是理解的输出
 
-[Graphviz](#source-posts-title) 适合把调用关系、模块边界或数据流变成可审查的图。图不是装饰：如果节点、箭头和图例无法解释，读者只会得到另一张难维护的图。
+[Graphviz](#source-note-10) 适合把调用关系、模块边界或数据流变成可审查的图。图不是装饰：如果节点、箭头和图例无法解释，读者只会得到另一张难维护的图。
 
-[Graphify](#source-posts-title) 和 [VitePress 指南](#source-posts-title) 提醒我们，知识库和文档站也需要版本、导航和可检索性。工具生成的文档应保留来源和更新时间，不要把自动摘要误当作最终结论。
+[Graphify](#source-note-13) 和 [VitePress 指南](#source-note-14) 提醒我们，知识库和文档站也需要版本、导航和可检索性。工具生成的文档应保留来源和更新时间，不要把自动摘要误当作最终结论。
 
 ## 5. 一次故障排查的最短路径
 

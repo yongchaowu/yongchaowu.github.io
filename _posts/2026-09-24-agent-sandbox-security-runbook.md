@@ -85,7 +85,7 @@ Agent runtime
 - 写操作输出 diff、校验值和回滚信息；
 - 对上传/下载设置大小、类型、超时和配额限制。
 
-[DeepAgents 沙箱方案](#source-posts-title) 和 [Agent Swarm 部署记录](#source-posts-title) 适合研究容器化与任务编排，但“能启动容器”不能写成“绝对安全”。还应考虑内核漏洞、挂载权限、凭证转发和供应链镜像。
+[DeepAgents 沙箱方案](#source-note-1) 和 [Agent Swarm 部署记录](#source-note-3) 适合研究容器化与任务编排，但“能启动容器”不能写成“绝对安全”。还应考虑内核漏洞、挂载权限、凭证转发和供应链镜像。
 
 ## 4. 密钥和隐私处理
 
@@ -98,7 +98,7 @@ API Key / token：脱敏或完全排除
 模型输入输出：按保留策略和访问控制存储
 ```
 
-[DeepSeek 配置记录](#source-posts-title) 和 [CC Switch](#source-posts-title) 可以帮助理解 Provider 切换，但远程 Provider 依赖意味着“离线部署”必须逐项验证；只要仍访问远程 API，就不能称为 air-gapped。
+[DeepSeek 配置记录](#source-note-2) 和 [CC Switch](#source-note-6) 可以帮助理解 Provider 切换，但远程 Provider 依赖意味着“离线部署”必须逐项验证；只要仍访问远程 API，就不能称为 air-gapped。
 
 ## 5. 审批、预算和停止
 
@@ -121,7 +121,7 @@ received → planning → running tool → awaiting approval → completed
 - 试图读取密钥、挂载点或宿主机信息；
 - 工具参数与审批内容不一致。
 
-[OpenCode 使用记录](#source-posts-title) 和 [CLI 深入解析](#source-posts-title) 适合研究 Agent 运行时，但日志格式、权限检查和 hook 行为应按当前版本重新确认。
+[OpenCode 使用记录](#source-note-4) 和 [CLI 深入解析](#source-note-5) 适合研究 Agent 运行时，但日志格式、权限检查和 hook 行为应按当前版本重新确认。
 
 ## 上线前检查
 

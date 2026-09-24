@@ -30,6 +30,12 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.17"
+      - name: Verify generated tag pages
+        run: uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check
       - name: Build with Jekyll
         run: |
           bundle exec jekyll clean

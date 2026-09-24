@@ -1,0 +1,3 @@
+# Runtime dependency for scripts/generate_tag_pages.py; use with:
+# uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py
+PyYAML>=6.0,<7

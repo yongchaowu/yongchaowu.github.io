@@ -7,3 +7,6 @@ _site
 graphify-out/
 PLAN.md
 IMPLEMENTATION-BASELINE.md
+__pycache__/
+*.pyc
+.venv/
