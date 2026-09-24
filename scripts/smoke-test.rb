@@ -37,7 +37,7 @@ if File.exist?(search_path)
   begin
     data = JSON.parse(File.read(search_path))
     check("Valid JSON", true)
-    check("Entry count matches posts (#{data.length})", data.length == 314)
+    check("Entry count matches posts (#{data.length})", data.length == 331)
     
     missing_url = data.find { |e| !e['url'] || e['url'].empty? }
     check("All entries have URL", missing_url.nil?)
