@@ -32,6 +32,12 @@ jobs:
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+      - name: Validate curated source links
+        run: ruby scripts/validate-curation.rb
+      - name: Run site smoke tests
+        run: ruby scripts/smoke-test.rb
+      - name: Verify historical posts are unchanged
+        run: git diff --exit-code -- _posts
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

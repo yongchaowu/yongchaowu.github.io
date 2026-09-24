@@ -19,7 +19,7 @@ type: page
                     {% assign category_name = category[0] %}
                     {% assign category_posts = category[1] %}
                     {% assign post_count = category_posts | size %}
-        <div class="topic-hub">
+        <div class="topic-hub" id="{{ topic.id }}">
             <div class="topic-hub-header">
                 <h2>{{ category_name }}</h2>
                 <span class="topic-hub-count">{{ post_count }} posts</span>
@@ -28,7 +28,7 @@ type: page
             <p class="topic-hub-desc">{{ topic.description }}</p>
             {% endif %}
             <ul class="topic-hub-posts">
-                {% for post in category_posts limit:3 %}
+                {% for post in category_posts %}
                 <li>
                     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
                     <a href="{{ post.url | relative_url }}">{{ post.display_title | default: post.title }}</a>
@@ -36,7 +36,7 @@ type: page
                 {% endfor %}
             </ul>
             <div class="topic-hub-footer">
-                <a href="{{ '/tag/' | prepend: site.baseurl }}{{ category_name | slugify }}/" class="topic-hub-viewall">
+                <a href="{{ '/category/' | relative_url }}#{{ topic.id }}" class="topic-hub-viewall">
                     View all {{ category_name }} posts →
                 </a>
             </div>

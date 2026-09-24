@@ -1,0 +1,24 @@
+{% comment %}
+  Renders the preserved source notes for a curated article.
+  Source paths are repository paths (for example, _posts/2024-01-01-example.md),
+  so links remain correct even when a post's display title changes.
+{% endcomment %}
+{% if page.source_posts and page.source_posts.size > 0 %}
+<section class="source-posts" aria-labelledby="source-posts-title">
+    <h2 id="source-posts-title">{% include icon.html name="bookmark-o" %} Source notes / 资料来源</h2>
+    <p class="source-posts-intro">本文是对站内历史资料的重新编排。原始文章保持独立发布，下面列出本文重组所依据的来源，便于查证细节和历史上下文。</p>
+    <ul>
+        {% for source_path in page.source_posts %}
+            {% assign source_post = site.posts | where: "path", source_path | first %}
+            {% if source_post %}
+                <li>
+                    <a href="{{ source_post.url | relative_url }}">{{ source_post.display_title | default: source_post.title }}</a>
+                    <time datetime="{{ source_post.date | date_to_xmlschema }}">{{ source_post.date | date: "%Y-%m-%d" }}</time>
+                </li>
+            {% else %}
+                <li class="source-posts-missing"><code>{{ source_path }}</code></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}

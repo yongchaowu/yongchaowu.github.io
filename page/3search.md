@@ -11,6 +11,7 @@ noindex: true
     <input id="search-input" type="text" placeholder="Search titles, tags, content…" autocomplete="off" autofocus>
     <div id="topic-filter" class="topic-filter">
         <button class="topic-filter-btn active" data-topic="">All</button>
+        <button class="topic-filter-btn curated-filter-btn" data-curated="true">Curated</button>
         {% for topic in site.data.topics.topics %}
         <button class="topic-filter-btn" data-topic="{{ topic.name | escape }}">{{ topic.name }}</button>
         {% endfor %}
@@ -52,6 +53,11 @@ noindex: true
     color: var(--badge-text);
     border-radius: 3px;
     margin-right: 4px;
+}
+.search-topic--curated {
+    background: var(--tag-bg);
+    color: var(--badge-text);
+    font-weight: 600;
 }
 </style>
 

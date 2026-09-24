@@ -90,7 +90,7 @@ posts.each do |file|
   
   # Tag normalization
   tags.each do |tag|
-    tag_variants[tag.downcase] << tag
+    tag_variants[tag.to_s.downcase] << tag
   end
 end
 

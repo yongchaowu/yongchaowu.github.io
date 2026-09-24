@@ -1,0 +1,79 @@
+---
+layout: default
+title: Curated Notes
+display_title: 'Curated Notes / 精选重组'
+description: "A non-destructive reading layer for the blog archive: synthesized guides that preserve the original posts."
+permalink: /curated/
+icon: archive
+type: page
+---
+
+<main class="page clearfix curated-page" id="main-content" tabindex="-1">
+    <div class="left">
+        {% assign curated_posts = site.posts | where: "curated", true %}
+        {% assign historical_post_count = site.posts.size | minus: curated_posts.size %}
+        <h1>{{ page.display_title | default: page.title }}</h1>
+        <p class="curated-meta">{{ curated_posts | size }} curated articles · {{ historical_post_count }} historical posts preserved</p>
+        <div class="curated-notice">
+            <strong>阅读说明</strong>
+            <p>这里的内容是从历史文章中重新组织、校订和补充上下文的入口。原始 Markdown 文件、历史 URL 和发布日期均保留；需要逐字查阅时，请从每篇文章底部的“资料来源”进入原文。</p>
+        </div>
+        <hr>
+
+        <h2>How to use this layer</h2>
+        <ol class="curated-steps">
+            <li>先从下面的主题入口建立知识框架，再按文章中的顺序阅读历史资料。</li>
+            <li>看到版本号、命令或外部链接时，以当前官方文档和实际环境复核；重组稿不替代原始记录。</li>
+            <li>如果发现技术错误，优先在来源文章中补充讨论或新建修订稿，不覆盖历史正文。</li>
+        </ol>
+
+        <h2>Coverage by topic</h2>
+        <div class="curated-coverage">
+            {% for topic in site.data.topics.topics %}
+                {% assign topic_curated_count = 0 %}
+                {% for curated_post in curated_posts %}
+                    {% if curated_post.categories contains topic.name %}
+                        {% assign topic_curated_count = topic_curated_count | plus: 1 %}
+                    {% endif %}
+                {% endfor %}
+                <div class="curated-coverage-row">
+                    <span>{{ topic.name }}</span>
+                    <span class="badge">{{ topic_curated_count }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2>Curated reading paths</h2>
+        <ul class="curated-list">
+            {% assign curated_posts = site.posts | where: "curated", true %}
+            {% for curated_post in curated_posts %}
+                <li class="curated-card">
+                    <div class="curated-card-meta">
+                        <span>{{ curated_post.categories.first }}</span>
+                        <time datetime="{{ curated_post.date | date_to_xmlschema }}">{{ curated_post.date | date: "%Y-%m-%d" }}</time>
+                    </div>
+                    <h3><a href="{{ curated_post.url | relative_url }}">{{ curated_post.display_title | default: curated_post.title }}</a></h3>
+                    {% if curated_post.summary %}<p>{{ curated_post.summary }}</p>{% endif %}
+                    {% if curated_post.source_posts %}<span class="curated-source-count">{{ curated_post.source_posts | size }} source notes</span>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>What happens to the original archive?</h2>
+        <p>历史文章不做批量重写、删除或重命名。它们继续出现在 <a href="{{ '/archive/' | relative_url }}">Archive</a>、主题页和标签页中；本页面只提供一个面向今天读者的入口层。这样既保留旧链接和历史语境，也可以逐步增加经过验证的新版本。</p>
+    </div>
+
+    <div class="right">
+        <div class="wrap">
+            <div class="side">
+                <div>{% include icon.html name="bookmark-o" %} Curated layer</div>
+                <ul class="content-ul">
+                    <li><a href="{{ '/archive/' | relative_url }}">Browse all historical posts</a></li>
+                    <li><a href="{{ '/category/' | relative_url }}">Browse by topic</a></li>
+                    <li><a href="{{ '/search/' | relative_url }}">Search the full archive</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

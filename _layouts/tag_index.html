@@ -27,18 +27,12 @@ layout: default
         <hr>
 
         <div class="tag-cloud">
-            {% assign sorted_tags = site.tags | sort %}
-            {% for tag in sorted_tags %}
+            {% for tag in site.tags %}
                 {% assign tag_name = tag[0] %}
                 {% assign tag_count = tag[1] | size %}
-                {% assign tag_slug = nil %}
-                {% for slug_map in site.data.tag_slugs %}
-                    {% if slug_map[1] == tag_name %}
-                        {% assign tag_slug = slug_map[0] %}
-                    {% endif %}
-                {% endfor %}
+                {% assign tag_slug = site.data.tag_slugs[tag_name] %}
                 {% unless tag_slug %}
-                    {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                    {% assign tag_slug = tag_name | append: '' | slugify %}
                 {% endunless %}
                 <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" class="tag-item">
                     {{ tag_name }}

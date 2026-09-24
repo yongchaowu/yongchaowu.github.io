@@ -11,6 +11,8 @@
 "topic": {{ canonical_topic | default: post.categories.first | jsonify }},
 "categories": {{ post.categories | jsonify }},
 "tags": {{ post.tags | jsonify }},
+"curated": {{ post.curated | default: false | jsonify }},
+"content_origin": {{ post.content_origin | jsonify }},
 "text": {{ post.content | strip_html | normalize_whitespace | slice: 0, 6000 | jsonify }}
 }{% unless forloop.last %},{% endunless %}
 {% endfor %}

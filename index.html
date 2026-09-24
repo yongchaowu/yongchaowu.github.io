@@ -12,6 +12,7 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
             <p class="hero-desc">Engineering notes on C++ backend development, AI Agents, LLM applications, and practical development.</p>
             <div class="hero-links">
                 <a href="https://github.com/yongchaowu" target="_blank" rel="noopener">{% include icon.html name="github" %} GitHub</a>
+                <a href="{{ '/curated/' | relative_url }}">{% include icon.html name="archive" %} Curated</a>
                 <a href="{{ '/about/' | prepend: site.baseurl }}">{% include icon.html name="user" %} About</a>
                 <a href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">{% include icon.html name="rss" %} RSS</a>
             </div>
@@ -29,7 +30,7 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
                 <h3 class="post-card-title">
                   <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.display_title | default: post.title }}</a>
                 </h3>
-                {% include content-badge.html %}
+                {% include content-badge.html post=post %}
                 <div class="excerpt">
                     {% if post.summary %}
                         {{ post.summary }}
@@ -102,14 +103,9 @@ description: "Engineering notes on C++ backend development, AI Agents, LLM appli
                 <div class="tags-cloud" id="popular-tags">
                     {% for tag_name in site.data.featured_tags.tags %}
                       {% if site.tags[tag_name] %}
-                        {% assign tag_slug = nil %}
-                        {% for slug_map in site.data.tag_slugs %}
-                            {% if slug_map[1] == tag_name %}
-                                {% assign tag_slug = slug_map[0] %}
-                            {% endif %}
-                        {% endfor %}
+                        {% assign tag_slug = site.data.tag_slugs[tag_name] %}
                         {% unless tag_slug %}
-                            {% assign tag_slug = tag_name | downcase | replace: ' ', '-' %}
+                            {% assign tag_slug = tag_name | append: '' | slugify %}
                         {% endunless %}
                       <a href="{{ '/tag/' | prepend: site.baseurl }}{{ tag_slug }}/" data-count="{{ site.tags[tag_name] | size }}">{{ tag_name }}</a>
                       {% endif %}

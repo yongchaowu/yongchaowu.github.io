@@ -141,6 +141,87 @@
         }
     }
 }
+.page.curated-page {
+    .curated-meta {
+        margin-top: -4px;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+    .curated-notice {
+        margin: 18px 0;
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-left: 4px solid var(--text-link);
+        border-radius: 6px;
+        background: var(--bg-card);
+        line-height: 1.6;
+        strong { color: var(--text-primary); }
+        p { margin: 4px 0 0; color: var(--text-secondary); }
+    }
+    .curated-steps {
+        padding-left: 24px;
+        li { margin: 5px 0; }
+    }
+    .curated-coverage {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 8px;
+        margin: 12px 0 24px;
+    }
+    .curated-coverage-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        .badge {
+            min-width: 24px;
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            text-align: center;
+            font-size: 12px;
+        }
+    }
+    .curated-list {
+        list-style: none;
+        padding: 0;
+    }
+    .curated-card {
+        margin: 12px 0;
+        padding: 14px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--bg-card);
+        h3 {
+            margin: 4px 0 6px;
+            font-size: 18px;
+            a { color: var(--text-primary); }
+            a:hover { color: var(--text-link); }
+        }
+        p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    }
+    .curated-card-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+    .curated-source-count {
+        display: inline-block;
+        margin-top: 8px;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+}
 @media screen and (max-width:1200px) and (min-width: 770px) {
     .page {
         width: 90%;
