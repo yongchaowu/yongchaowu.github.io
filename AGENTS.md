@@ -55,4 +55,4 @@ ruby scripts/verify-post-history.rb
 - Prefer sidecar YAML and new pages over rewriting or moving historical articles. If deleting or merging content, first identify inbound links and preserve a redirect/archive strategy where practical.
 - After a successful build, inspect the generated homepage, `/start-here/`, `/curated/`, one topic page, `/archive/`, `/search/`, and the generated JSON indexes.
 - Do not commit or push unless the user explicitly requests it. Pushing `master` triggers the Pages workflow.
-- Read `docs/content-optimization.md` for the content baseline, provenance rules, and known taxonomy/version warnings.
+- Read `docs/content-optimization.md` for the content baseline and `docs/technical-review-2026-09-25.md` for the latest external technical cross-checks.

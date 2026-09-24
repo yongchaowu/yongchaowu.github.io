@@ -2,38 +2,47 @@ version: 1
 policy: Explicit, reviewable formatting-only exceptions to the pre-curation blob baseline.
 fixes:
   - post: _posts/2020-07-11-Code-OPC-DA-OPC-Client-Code-Demo.md
+    fixed_blob: 1444cc52494f2338cb3bea38bc0697b2f8148991
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the imported code.
   - post: _posts/2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated).md
+    fixed_blob: 7ebcd30075de75de851fcf35a9e9f38b2da7f5d0
     date: 2026-09-25
     kind: excerpt-link-and-raw-wrapper
     reason: Move the excerpt separator outside raw and replace a literal post_url tag with a baseurl-safe link.
   - post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
+    fixed_blob: 8fa6aab8e07d014f5d84e58acaceb1d6edc5a795
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing deployment claims.
   - post: _posts/2026-09-05-OpenSource-Agent-Swarm.md
+    fixed_blob: 450c62ae3add5502fcd3c82791b553e4bf169194
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the article body.
   - post: _posts/2026-09-05-VitePress-Complete-Guide.md
+    fixed_blob: 66add81f4bf480ca8e1cb3795c4db977f2ac9cc4
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the guide body.
   - post: _posts/2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated).md
+    fixed_blob: 13bf32987020a2673698c84ccdebada22cef15be
     date: 2026-09-25
     kind: liquid-template-examples
     reason: Wrap Prometheus template examples in raw Liquid so their literal braces render correctly.
   - post: _posts/2023-02-28-正则表达式-30分钟入门教程.md
+    fixed_blob: 0febe42db50ab0190499c62ff6d8880569cd0f4f
     date: 2026-09-25
     kind: markdown-inline-code
     reason: Wrap a regex containing comment syntax in inline code so it is not parsed as a URL fragment.
   - post: _posts/2020-07-02-书签中的一些工具整理.md
+    fixed_blob: c3085f5a4c98df47f48ad9b0e348e25294d7f927
     date: 2026-09-25
     kind: empty-link
     reason: Remove an empty Markdown link target while preserving the tool name.
   - post: _posts/2023-05-27-Tool-CMake-vscode-cmake-tools.md
+    fixed_blob: 601b755d2e1f393336eeaef2dcbeaadacbba3c30
     date: 2026-09-25
     kind: missing-relative-links
     reason: Render absent companion Markdown filenames as inline code instead of broken relative links.

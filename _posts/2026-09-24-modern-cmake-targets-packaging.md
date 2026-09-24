@@ -37,6 +37,8 @@ CMake 记录通常从“怎样编译一个可执行文件”开始，但真正�
 
 > 本文是基于历史 CMake 笔记的重组稿。示例使用 CMake 3.21 语法来说明 target 关系；实际项目应以所用工具链、生成器和支持矩阵为准。
 
+> **技术交叉核对（2026-09-25）**：target 依赖、Config package、`IMPORTED` target 和安装导出关系已对照 CMake 官方 [Tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html) 与 [cmake-packages](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html)。示例仍是教学片段，不是某个项目的完整构建配方。
+
 <!--more-->
 
 ## 1. 先写 target，再写全局变量
