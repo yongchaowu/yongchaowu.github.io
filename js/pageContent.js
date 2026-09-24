@@ -1,131 +1,87 @@
 /* jshint asi:true */
-
 /**
- * [fixSidebar description]
- * 滚轮滚到一定位置时，将 sidebar-wrap 添加 fixed 样式
- * 反之，取消样式
+ * pageContent.js — desktop sticky sidebars and the mobile navigation drawer.
  */
 (function() {
-    if (window.innerWidth > 770) {
+    if (window.innerWidth <= 770) return
+    var sidebarWrap = document.querySelector('.right > .wrap')
+    var contentUl = document.querySelector('.right .content-ul')
+    if (!sidebarWrap || !contentUl) return
 
-        var sidebarWrap = document.querySelector('.right>.wrap')
-        if (!sidebarWrap) return
-
-        //fix 之后百分比宽度会失效，这里用js赋予宽度
-        sidebarWrap.style.width = sidebarWrap.offsetWidth + "px"
-        window.onscroll = function() {
-
-            // 页面顶部滚进去的距离
-            var scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
-
-
-            // 页面底部滚进去的距离
-            var htmlHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight)
-                // console.log(htmlHeight);
-            var scrollBottom = htmlHeight - window.innerHeight - scrollTop
-
-            if (scrollTop < 53) {
-                sidebarWrap.classList.remove('fixed')
-                sidebarWrap.classList.remove('scroll-bottom')
-            } else if (scrollBottom >= (190 - 38)) {
-                sidebarWrap.classList.remove('scroll-bottom')
-                sidebarWrap.classList.add('fixed')
-            } else if (isMaxHeight()) { //content 达到maxHeight
-                sidebarWrap.classList.remove('fixed')
-                sidebarWrap.classList.add('scroll-bottom')
-            }
-        }
-        setContentMaxHeightInPC() //设置目录最大高度(PC端)
+    function viewportHeight() {
+        return window.innerHeight
     }
-    moveTOC() // kept as no-op: toc.js now builds into #content-side directly
-}());
 
-/**
- * 设置目录最大高度
- */
-function setContentMaxHeightInPC() {
-    var windowHeight = window.innerHeight
-    var contentUl = document.querySelector('.content-ul')
-    var contentMaxHeight = windowHeight - 77 - 60
-    contentUl.style.maxHeight = contentMaxHeight + 'px'
-}
-
-/**
- * 达到最大高度
- * @return {Boolean} [description]
- */
-function isMaxHeight() {
-    var windowHeight = window.innerHeight
-    var contentUl = document.querySelector('.content-ul')
-    var contentMaxHeight = windowHeight - 77 - 60
-    var contentHeight = contentUl.offsetHeight
-    return contentMaxHeight === contentHeight
-        // console.log(contentMaxHeight);
-        // console.log(contentHeight);
-}
-
-
-//-------------mobile--------------
-/**
- * 屏幕宽度小于770px时，点击锚点按钮，弹出目录框
- * @param  {[type]} function( [description]
- * @return {[type]}           [description]
- */
-(function() {
-    if (window.innerWidth <= 770) {
-        var anchorBtn = document.querySelector('.anchor')
-        var rightDiv = document.querySelector('.right')
-        if (!anchorBtn || !rightDiv) return
-
-        /**
-         * 监听锚点按钮
-         */
-        anchorBtn.onclick = function(e) {
-            e.stopPropagation()
-            rightDiv.classList.add('right-show')
-            anchorBtn.classList.add('anchor-hide')
-        }
-
-        //监听body，点击body，隐藏Content
-        document.querySelector('body').addEventListener('click', function() {
-            rightDiv.classList.remove('right-show')
-            anchorBtn.classList.remove('anchor-hide')
-        })
-
-        ancherPostion(anchorBtn, rightDiv) //目录锚的位置固定
-        setContentMaxHeight() //设置目录最大高度
+    function setDesktopHeight() {
+        var maxHeight = Math.max(160, viewportHeight() - 137)
+        contentUl.style.maxHeight = maxHeight + 'px'
     }
-}());
 
-/**
- * 目录锚的位置固定
- */
-function ancherPostion(anchorBtn, rightDiv) {
-    window.addEventListener('scroll', function() {
-        // console.log('scroll');
-        var top = anchorBtn.getBoundingClientRect().top
-            // console.log(top);
+    function isAtBottom() {
+        var docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)
+        return window.innerHeight + window.scrollY >= docHeight - 190
+    }
+
+    function updateDesktop() {
         var scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
-        if (scrollTop > 50) {
-            anchorBtn.style.top = '20px'
-            rightDiv.style.top = '20px'
-        } else {
-            anchorBtn.style.top = '76px'
-            rightDiv.style.top = '76px'
+        sidebarWrap.classList.toggle('fixed', scrollTop >= 53 && !isAtBottom())
+        sidebarWrap.classList.toggle('scroll-bottom', scrollTop >= 53 && isAtBottom())
+    }
+
+    setDesktopHeight()
+    updateDesktop()
+    window.addEventListener('scroll', updateDesktop, { passive: true })
+    window.addEventListener('resize', function() {
+        setDesktopHeight()
+        updateDesktop()
+    })
+}());
+
+(function() {
+    var anchorBtn = document.querySelector('.anchor')
+    var rightDiv = document.querySelector('.right')
+    if (!anchorBtn || !rightDiv) return
+
+    var closedLabel = anchorBtn.getAttribute('aria-label') || 'Open navigation'
+    var returnFocus = null
+    function setOpen(open) {
+        var wasOpen = rightDiv.classList.contains('right-show')
+        if (open && !wasOpen) {
+            returnFocus = document.activeElement
+            rightDiv.classList.add('right-show')
+            var firstLink = rightDiv.querySelector('a, button, input, select, textarea')
+            if (firstLink) firstLink.focus()
+        } else if (!open && wasOpen) {
+            rightDiv.classList.remove('right-show')
+            if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus()
+            returnFocus = null
+        }
+        anchorBtn.classList.toggle('anchor-hide', open)
+        anchorBtn.setAttribute('aria-expanded', open ? 'true' : 'false')
+        anchorBtn.setAttribute('aria-label', open ? closedLabel.replace(/^Open/, 'Close') : closedLabel)
+    }
+
+    anchorBtn.addEventListener('click', function(event) {
+        event.stopPropagation()
+        setOpen(!rightDiv.classList.contains('right-show'))
+    })
+    rightDiv.addEventListener('click', function(event) {
+        event.stopPropagation()
+    })
+    document.addEventListener('click', function() { setOpen(false) })
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && rightDiv.classList.contains('right-show')) {
+            setOpen(false)
+            anchorBtn.focus()
         }
     })
-}
 
-/**
- * 设置目录最大高度
- */
-function setContentMaxHeight() {
-    var windowHeight = window.innerHeight
-    var contentUl = document.querySelector('.content-ul')
-    var contentMaxHeight = windowHeight - 180
-    contentUl.style.maxHeight = contentMaxHeight + 'px'
-}
-
-//-------------post Content----------------------
-// No-op: toc.js now builds into #content-side directly.
-function moveTOC() {}
+    var contentUl = rightDiv.querySelector('.content-ul')
+    if (contentUl) {
+        var maxHeight = Math.max(160, window.innerHeight - 180)
+        contentUl.style.maxHeight = maxHeight + 'px'
+    }
+    window.addEventListener('resize', function() {
+        if (contentUl) contentUl.style.maxHeight = Math.max(160, window.innerHeight - 180) + 'px'
+    })
+}());

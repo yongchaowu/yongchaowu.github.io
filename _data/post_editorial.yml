@@ -22,6 +22,39 @@ posts:
   verification: review-required
   risk: caution
   id: cpp_map
+- post: _posts/2026-09-25-curated-behaviortree-cpp-engineering.md
+  content_type: deep-dive
+  placement: featured
+  primary_topic: cpp
+  secondary_topics:
+  - systems
+  - computer-science
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: behaviortree_engineering_guide
+- post: _posts/2026-09-25-curated-ray-vllm-offline-runbook.md
+  content_type: runbook
+  placement: featured
+  primary_topic: ai
+  secondary_topics:
+  - systems
+  - devops
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: ray_vllm_offline_runbook
+- post: _posts/2026-09-25-curated-gpu-docker-deployment.md
+  content_type: case-study
+  placement: featured
+  primary_topic: ai
+  secondary_topics:
+  - systems
+  - devops
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: gpu_docker_compat
 - post: _posts/2026-09-24-modern-cmake-targets-packaging.md
   content_type: deep-dive
   placement: featured
@@ -452,3 +485,14 @@ posts:
   id: vitepress_guide_review
   review_date: '2026-09-25'
   review_basis: official-alpha.20-config-reference
+- post: _posts/2024-04-23-Tool-Gitlab-重置root账户密码.md
+  content_type: runbook
+  placement: reference
+  primary_topic: devops
+  freshness: historical
+  verification: not-tested
+  risk: caution
+  id: gitlab_root_reset_security
+  review_date: '2026-09-25'
+  review_basis: authorization-backup-and-lockout-boundary
+  risk_note: "仅在你拥有 GitLab 实例授权、已完成可恢复备份并确认不会锁出管理员账户时执行；不同版本的自托管实例可能需要不同命令。"

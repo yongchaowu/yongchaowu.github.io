@@ -33,6 +33,8 @@ ruby scripts/validate-tags.rb
 bundle exec jekyll clean
 TZ=UTC bundle exec jekyll build
 ruby scripts/smoke-test.rb
+python3 scripts/site-review.py
+node scripts/search-interaction-test.js
 node --check js/search.js
 node --check js/pageContent.js
 node --check js/tags.js
@@ -45,7 +47,9 @@ ruby scripts/verify-post-history.rb
 - `ruby scripts/validate-curation.rb` checks front matter, curated source paths, reading-path references, editorial sidecar paths, topic IDs, and topic relations.
 - `uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check` verifies that committed generated tag pages match the current front matter and slug data without rewriting them.
 - `ruby scripts/validate-tags.rb` is read-only: it checks every active tag has a route and rejects unapproved slug collisions.
-- `ruby scripts/smoke-test.rb` expects a successful build and checks generated routes, all source tag routes, sitemap/404, both JSON indexes, exact post/pagination counts, source notes, attribution, artifact exclusions, unresolved Liquid/empty links, a generated-site internal-link crawl, base-path URL wiring, and shipped JavaScript copies in `_site/`.
+- `ruby scripts/smoke-test.rb` expects a successful build and checks generated routes, all source tag routes, sitemap/404, both JSON indexes, exact post/pagination counts, source notes, attribution, artifact exclusions, unresolved Liquid/empty links, a generated-site internal-link crawl, base-path URL wiring, and shipped JavaScript copies in `_site/`; set `SITE_DIR` when reviewing a non-default build destination.
+- `python3 scripts/site-review.py` checks rendered landmarks, headings, form-control names, current navigation state, external-link safety, and core shell markers; warnings identify historical-source exceptions without rewriting them.
+- `node scripts/search-interaction-test.js` is a dependency-free regression for initial query loading and result rendering.
 - `ruby scripts/verify-post-history.rb` compares the 331 pre-curation post blobs; it allows new posts and only the explicit, blob-bound exceptions in `_data/format_fixes.yml`, rejecting other baseline edits/deletions.
 - CI uses Ruby 3.2, provisions uv, runs the explicit Python tag-generator dependency through `uv run`, checks generated tag-page consistency, and runs a clean build, curation validation, smoke tests, JavaScript syntax checks, and a baseline-aware historical-post blob check before Pages deployment; see `.github/workflows/pages.yml`.
 - Historical articles may contain excerpt/Liquid syntax or evidence-backed safety corrections that must be recorded in `_data/format_fixes.yml`; never hide a new warning by weakening the build.

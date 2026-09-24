@@ -7,8 +7,8 @@
 
 # Site settings
 title: Yc.W
-brief-intro: C++ Backend · AI Systems · Infrastructure
-description: "A living engineering notebook about C++ backend systems, AI agents, infrastructure, algorithms, and reliable software."
+brief-intro: Systems · C++ · AI Infrastructure
+description: "A living engineering notebook about C++ systems, AI infrastructure, simulation, and reliable software."
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.wyclswq.top" # the base hostname & protocol for your site
 lang: en
@@ -78,3 +78,4 @@ exclude:
   - LICENSE
   - README.md
   - Todo
+  - wyclswq.top-master-modification-plan.md

@@ -34,7 +34,7 @@ type: page
                     {% assign featured_post = site.posts | where: "path", first_source | first %}
                 {% endif %}
             <article id="{{ topic.id }}" class="topic-directory-card topic-directory-card--{{ topic.accent }}">
-                <span id="{{ topic.name | slugify }}" class="topic-anchor-target" aria-hidden="true"></span>
+                <span id="topic-anchor-{{ topic.id }}" class="topic-anchor-target" aria-hidden="true"></span>
                 <div class="topic-directory-card-top">
                     <span class="topic-directory-icon">{% include icon.html name=topic.icon %}</span>
                     <span class="topic-directory-count">{{ topic_posts | size }} notes</span>

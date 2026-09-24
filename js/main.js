@@ -1,92 +1,121 @@
 /**
- * some JavaScript code for this blog theme
+ * Site shell interactions: responsive navigation, theme preference, tag sorting,
+ * and back-to-top visibility.
  */
 /* jshint asi:true */
+var shellRoot = document.documentElement
+var shellClass = shellRoot.getAttribute('class') || ''
+if ((' ' + shellClass + ' ').indexOf(' shell-ready ') === -1) {
+  shellRoot.setAttribute('class', (shellClass + ' shell-ready').trim())
+}
 
-/////////////////////////header////////////////////////////
-/**
- * clickMenu
- */
+//////////////////////////// header ////////////////////////////
 (function() {
-  if (window.innerWidth <= 770) {
-    var menuBtn = document.querySelector('#headerMenu')
-    var nav = document.querySelector('#headerNav')
-    menuBtn.onclick = function(e) {
-      e.stopPropagation()
-      var isOpen = menuBtn.classList.contains('active')
-      if (isOpen) {
-        menuBtn.classList.remove('active')
-        nav.classList.remove('nav-show')
-      } else {
-        nav.classList.add('nav-show')
-        menuBtn.classList.add('active')
-      }
-      menuBtn.setAttribute('aria-expanded', !isOpen)
-    }
-    document.querySelector('body').addEventListener('click', function() {
-      nav.classList.remove('nav-show')
-      menuBtn.classList.remove('active')
-      menuBtn.setAttribute('aria-expanded', 'false')
-    })
+  var menuBtn = document.querySelector('#headerMenu')
+  var nav = document.querySelector('#headerNav')
+  if (!menuBtn || !nav) return
+
+  var mobileQuery = window.matchMedia('(max-width: 1024px)')
+
+  function setMenu(open) {
+    menuBtn.classList.toggle('active', open)
+    nav.classList.toggle('nav-show', open)
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false')
+    menuBtn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation')
   }
+
+  menuBtn.addEventListener('click', function(event) {
+    event.stopPropagation()
+    setMenu(!nav.classList.contains('nav-show'))
+  })
+
+  document.body.addEventListener('click', function() {
+    if (mobileQuery.matches) setMenu(false)
+  })
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && nav.classList.contains('nav-show')) {
+      setMenu(false)
+      menuBtn.focus()
+    }
+  })
+
+  function syncViewport() {
+    if (!mobileQuery.matches) setMenu(false)
+  }
+  if (typeof mobileQuery.addEventListener === 'function') {
+    mobileQuery.addEventListener('change', syncViewport)
+  } else if (typeof mobileQuery.addListener === 'function') {
+    mobileQuery.addListener(syncViewport)
+  }
+  syncViewport()
 }());
 
-//////////////////////////dark mode////////////////////////////
+//////////////////////////// dark mode ////////////////////////////
 (function() {
   var toggle = document.querySelector('#themeToggle')
   if (!toggle) return
 
   var STORAGE_KEY = 'ycw-theme'
 
+  function readStoredTheme() {
+    try { return localStorage.getItem(STORAGE_KEY) } catch (e) { return null }
+  }
+
+  function storeTheme(theme) {
+    try { localStorage.setItem(STORAGE_KEY, theme) } catch (e) {}
+  }
+
   function getPreferred() {
-    var stored = localStorage.getItem(STORAGE_KEY)
+    var stored = readStoredTheme()
     if (stored) return stored
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
 
   function apply(theme) {
     document.documentElement.setAttribute('data-theme', theme)
-    toggle.setAttribute('aria-label',
-      theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
-    )
+    var dark = theme === 'dark'
+    toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode')
+    toggle.setAttribute('aria-pressed', dark ? 'true' : 'false')
   }
 
-  // Apply on load
   apply(getPreferred())
-
-  toggle.onclick = function() {
+  toggle.addEventListener('click', function() {
     var current = document.documentElement.getAttribute('data-theme') || getPreferred()
     var next = current === 'dark' ? 'light' : 'dark'
     apply(next)
-    localStorage.setItem(STORAGE_KEY, next)
-  }
+    storeTheme(next)
+  })
 }());
 
-//////////////////////////popular tags sorting////////////////////////////
+//////////////////////// popular tags sorting ////////////////////////
 (function() {
   var tagsCloud = document.getElementById('popular-tags')
   if (!tagsCloud) return
   var links = Array.prototype.slice.call(tagsCloud.querySelectorAll('a'))
   links.sort(function(a, b) {
-    return parseInt(b.getAttribute('data-count') || 0) - parseInt(a.getAttribute('data-count') || 0)
+    return parseInt(b.getAttribute('data-count') || 0, 10) - parseInt(a.getAttribute('data-count') || 0, 10)
   })
   var top15 = links.slice(0, 15)
   tagsCloud.innerHTML = ''
-  top15.forEach(function(link) {
-    tagsCloud.appendChild(link)
-  })
+  top15.forEach(function(link) { tagsCloud.appendChild(link) })
 }());
 
-//////////////////////////back to top////////////////////////////
+//////////////////////////// back to top ////////////////////////////
 (function() {
   var backToTop = document.querySelector('.back-to-top')
-  var backToTopA = document.querySelector('.back-to-top a')
-  window.addEventListener('scroll', function() {
+  if (!backToTop) return
+  var ticking = false
+  function update() {
     var scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
-    if (scrollTop > 200) {
-      backToTop.classList.add('back-to-top-show')
-    } else {
-      backToTop.classList.remove('back-to-top-show')
+    backToTop.classList.toggle('back-to-top-show', scrollTop > 200)
+    ticking = false
+  }
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(update)
+      ticking = true
     }
-  })
+  }, { passive: true })
+  update()
 }());

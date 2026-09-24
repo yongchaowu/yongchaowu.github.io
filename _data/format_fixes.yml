@@ -11,6 +11,11 @@ fixes:
     date: 2026-09-25
     kind: excerpt-link-and-raw-wrapper-and-technical-correction
     reason: Move the excerpt separator outside raw, replace a literal post_url tag with a baseurl-safe link, and qualify sequential tick wording with the documented ThreadedAction exception.
+  - post: _posts/2026-07-15-OpenSource-BehaviorTree.CPP-ManualNotes.md
+    fixed_blob: 00f583a758192986523a474bcfb11ce78c11e129
+    date: 2026-09-25
+    kind: markdown-code-fence
+    reason: Wrap inline XML examples and separate list/code fences so historical examples are not emitted as live DOM elements, duplicate IDs, or invalid anchors.
   - post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
     fixed_blob: b7c7d90b9fdf9b5e20666afa12dc7363e9bb1a50
     date: 2026-09-25
@@ -46,3 +51,8 @@ fixes:
     date: 2026-09-25
     kind: missing-relative-links
     reason: Render absent companion Markdown filenames as inline code instead of broken relative links.
+  - post: _posts/2021-12-31-吾爱破解-培训第一课：破解基础知识之介绍常见工具和壳的特征-笔记.md
+    fixed_blob: afeab91b2a6c2b2bcfe3b9797444af77046553e6
+    date: 2026-09-25
+    kind: encoded-external-url
+    reason: Percent-encode the literal space in the historical PEiD download URL so the generated link is valid.

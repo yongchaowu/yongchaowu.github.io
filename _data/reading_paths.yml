@@ -9,11 +9,12 @@ paths:
       - C++ basics
       - Linux command line
       - Git
-    estimated_minutes: 150
+    estimated_minutes: 180
     safety_note: "涉及系统服务、动态库和部署时，先在可恢复环境中验证。"
     icon: "anchor"
     accent: "indigo"
     posts:
+      - "_posts/2026-09-25-curated-behaviortree-cpp-engineering.md"
       - "_posts/2026-09-24-curated-cpp-backend-engineering.md"
       - "_posts/2026-09-24-modern-cpp-concurrency-lifecycle.md"
       - "_posts/2026-09-24-modern-cmake-targets-packaging.md"
@@ -31,12 +32,13 @@ paths:
       - Python basics
       - HTTP and JSON
       - command-line deployment
-    estimated_minutes: 180
+    estimated_minutes: 220
     safety_note: "不要把未验证的性能数字、模型版本或沙箱隔离强度当作生产保证。"
     icon: "magic"
     accent: "teal"
     posts:
       - "_posts/2026-09-24-curated-ai-agent-engineering-map.md"
+      - "_posts/2026-09-25-curated-ray-vllm-offline-runbook.md"
       - "_posts/2026-09-24-agent-sandbox-security-runbook.md"
       - "_posts/2026-09-24-curated-llm-serving-production-checklist.md"
       - "_posts/2026-09-05-LangChain-RAG-LangGraph-Learning-Roadmap.md"
@@ -83,5 +85,6 @@ paths:
       - "_posts/2026-09-24-curated-developer-tools-workflow.md"
       - "_posts/2026-09-24-curated-database-and-protocol-notes.md"
       - "_posts/2026-09-24-curated-security-networking-lab-guide.md"
+      - "_posts/2026-09-25-curated-gpu-docker-deployment.md"
       - "_posts/2023-02-27-Tool-Git.md"
       - "_posts/2024-04-23-Tool-Mysql-安装and卸载and运行.md"

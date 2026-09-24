@@ -1,4 +1,4 @@
-header {
+#top {
     background: var(--header-bg);
     height: 52px;
     color: var(--header-text);
@@ -78,7 +78,7 @@ header {
     }
 }
 @media screen and (max-width:1200px) and (min-width: 770px) {
-    header {
+    #top {
         height: 50px;
         .wrapper {
             width: 90%;
@@ -110,7 +110,7 @@ header {
     }
 }
 @media screen and (max-width: 770px) {
-    header {
+    #top {
         height: 48px;
         margin-bottom: 15px;
         .wrapper {

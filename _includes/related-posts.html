@@ -43,7 +43,7 @@
             {% assign related_count = related_count | plus: 1 %}
             {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
             {% if related_count == 1 %}
-                <section class="related-posts">
+                <section id="similar_posts" class="related-posts">
                     <h2>Related Articles</h2>
                     <ul>
             {% endif %}
@@ -89,7 +89,7 @@
             {% assign related_count = related_count | plus: 1 %}
             {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
             {% if related_count == 1 %}
-                <section class="related-posts">
+                <section id="similar_posts" class="related-posts">
                     <h2>Related Articles</h2>
                     <ul>
             {% endif %}
@@ -135,7 +135,7 @@
             {% assign related_count = related_count | plus: 1 %}
             {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
             {% if related_count == 1 %}
-                <section class="related-posts">
+                <section id="similar_posts" class="related-posts">
                     <h2>Related Articles</h2>
                     <ul>
             {% endif %}
@@ -160,7 +160,7 @@
                     {% assign related_count = related_count | plus: 1 %}
                     {% capture related_output %}{{ related_output }}{{ post.url }}|{% endcapture %}
                     {% if related_count == 1 %}
-                        <section class="related-posts">
+                        <section id="similar_posts" class="related-posts">
                             <h2>Related Articles</h2>
                             <ul>
                     {% endif %}

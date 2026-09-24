@@ -68,7 +68,7 @@ type: page
                 <div><span class="section-kicker">The complete shelf</span><h2 id="curated-all-title">All curated notes</h2></div>
                 <span class="section-count">{{ curated_posts | size }} articles</span>
             </div>
-            <div class="curated-list">
+            <ul class="curated-list">
                 {% for curated_post in curated_posts %}
                 <li class="curated-card">
                     <div class="curated-card-meta"><span>{{ curated_post.categories.first }}</span><time datetime="{{ curated_post.date | date_to_xmlschema }}">{{ curated_post.date | date: "%Y-%m-%d" }}</time></div>
@@ -78,7 +78,7 @@ type: page
                     {% if curated_post.source_posts %}<span class="curated-source-count">{{ curated_post.source_posts | size }} source notes</span>{% endif %}
                 </li>
                 {% endfor %}
-            </div>
+            </ul>
         </section>
 
         <section class="curated-policy">

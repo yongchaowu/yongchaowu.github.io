@@ -7,21 +7,21 @@
 
 | 指标 | 数量 |
 | --- | ---: |
-| 已发布文章总数 | 347 |
+| 已发布文章总数 | 350 |
 | 原有历史文章 | 331 |
-| 本次新增的重组文章 | 16 |
-| 重组文章引用的历史来源 | 168 |
+| 本次新增的重组文章 | 19 |
+| 重组文章引用的历史来源 | 178 |
 | 主题数 | 11 |
 | 当前标签数 | 以构建后的 `/tag/` 页面为准 |
 
-原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。历史 URL 和发布日期保持不变；本轮仅对 9 篇文件做了已登记的格式/转义/链接解析或有证据的技术勘误，未做无依据的大规模重写；本次新增内容作为新的入口层发布。
+原有 331 篇 Markdown 文件没有被批量重写、删除、重命名或移动。历史 URL 和发布日期保持不变；本轮仅对 11 篇文件做了已登记的格式/转义/链接解析或有证据的技术勘误，未做无依据的大规模重写；本次新增内容作为新的入口层发布。
 
 ### 主题覆盖
 
 | 主题 | 原有文章 | 新增精选/深挖文章 |
 | --- | ---: | ---: |
-| AI & LLM | 17 | 3 |
-| C & C++ | 48 | 2 |
+| AI & LLM | 17 | 5 |
+| C & C++ | 48 | 3 |
 | Systems | 51 | 2 |
 | DevOps & Infrastructure | 13 | 1 |
 | Developer Tools | 69 | 2 |
@@ -63,7 +63,10 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 13. 现代 CMake 工程化：Targets、依赖发现、安装与 CPack；
 14. Linux ELF 动态链接与 C++ 部署排障；
 15. 现代 C++ 并发与生命周期；
-16. Agent 沙箱与工具权限安全 Runbook。
+16. Agent 沙箱与工具权限安全 Runbook；
+17. BehaviorTree.CPP 工程指南：从执行模型到仿真系统；
+18. Ray + vLLM 离线多节点部署：从可复现安装到安全运维；
+19. GPU / CUDA / Docker 部署兼容性清单：从镜像到模型服务。
 
 ### 2.2 保留原文并增加可追溯性
 
@@ -83,7 +86,7 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 - 统一 Liquid 与 Python 的标签 slug 解析规则，修复 `C++`、`CI/CD`、下划线标签等历史链接不一致；
 - 统一 `/tag/` 的页面归属，避免 `page/2tags.html` 与生成的 `tag/index.md` 产生目标冲突；
 - 搜索元数据增加 `curated`、`content_origin`、内容类型、验证状态、风险和来源字段，并提供精选/类型/证据筛选；
-- GitHub Pages 构建后自动执行 Python 标签页一致性检查、来源校验、claim-level 引用校验和 smoke test；smoke test 还会验证 sitemap、404、全部源标签路由、归属记录和生成站点内部链接。
+- GitHub Pages 构建后自动执行 Python 标签页一致性检查、来源校验、claim-level 引用校验、rendered site review 和 smoke test；site review 覆盖 landmark、标题、表单控件、当前菜单状态、外链安全和核心壳层标记。
 
 ## 3. 对原文的处理建议
 
@@ -114,8 +117,10 @@ Programming 类文章目前通过 C++、系统、工具和 AI 入口交叉覆盖
 | `display_title` | 约 240 篇历史文章没有单独设置 | 现有模板会回退到 `title`，暂不批量添加 |
 | 标签变体 | `JavaScript/javascript`、`Performance/performance` 等 | 后续在 `_data/tag_slugs.yml` 和新内容中统一，旧标签保持兼容 |
 | 外部链接/版本 | 旧文章中有历史下载页、版本和外部站点；部分导入资料的作者/许可证仍不完整 | 逐簇复核；新文章只引用稳定入口并加复核提示；已确认的 attribution 不得扩展为未验证的许可声明 |
-| 构建格式与技术勘误 | 9 篇历史文章存在 raw/excerpt、Liquid 模板、空链接、缺失相对链接或有来源依据的技术问题 | 已在 `_data/format_fixes.yml` 登记并绑定修复后的 blob；后续新增例外必须单独说明 |
+| 构建格式与技术勘误 | 11 篇历史文章存在 raw/excerpt、Liquid 模板、空链接、缺失相对链接、code-fence/URL 渲染问题或有来源依据的技术问题 | 已在 `_data/format_fixes.yml` 登记并绑定修复后的 blob；后续新增例外必须单独说明 |
 | `/tag/` 输出 | 已统一由 `page/2tags.html` 提供，生成器不再写重复的 `tag/index.md` | 保持单一 canonical 页面；新增标签后重新运行生成器 |
+| 全站交互与显示 | 已增加 rendered site review、响应式菜单、移动目录、搜索/标签/归档交互修复 | 在真实浏览器补做 375/820/1440px 点击和触屏回归 |
+| 历史文章语言 | 286 篇历史文章未显式声明 `lang` | 先抽样建立语言 sidecar，不批量改写历史 frontmatter |
 
 本轮历史文件修复包括 Markdown/Liquid 包装、excerpt 分隔符、模板示例转义、链接解析，以及少量有来源依据的技术勘误。每一项都记录在 `_data/format_fixes.yml`，并绑定修复后的 Git blob；`scripts/verify-post-history.rb` 不再按路径无条件放行。
 

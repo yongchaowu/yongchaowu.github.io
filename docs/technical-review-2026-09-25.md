@@ -26,6 +26,14 @@
 - The New API, VitePress and BehaviorTree source pages carry visible correction notices or targeted corrections; each changed historical blob is recorded in `_data/format_fixes.yml`.
 - The Agent map distinguishes containerized/local orchestration from genuinely air-gapped model access.
 
+## Rendered site review
+
+- Added an additive site review task covering navigation, landmarks, headings, form-control names, current-page state, external-link safety, archive controls, tag filtering, search states, mobile drawers, and copy-code behavior.
+- Generated-site checks are recorded in `wyclswq.top-master-modification-plan.md`; `scripts/site-review.py` is a static complement to browser-based QA, not a replacement for real-device testing.
+- Inline code contrast, search entity decoding, responsive navigation, archive hash expansion, pagination headings, and the post/page drawer were corrected in the shell without rewriting historical posts.
+- Headless Chrome probes verified the initial search query, theme toggle, mobile menu open/Escape state, article drawer open/Escape state, and the corrected 390px article layout after the CSS containment changes.
+- Historical code-fence/link rendering fixes are blob-bound; remaining list/fence examples are explicit review warnings rather than silent allowlists.
+
 ## Still requiring human or environment-specific review
 
 - GPU, driver, CUDA, model, image and provider versions in historical deployment notes.

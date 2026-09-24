@@ -134,9 +134,17 @@ Compact vs Explicit representation
 
 Tools like Groot require either the explicit syntax or additional information, that can be added using the tag `<TreeNodeModel>`.
 
-Subtrees,`<SubTree ID="xxx"/>`
+Subtrees use:
 
-Include external files,`<include path="relative_or_absolute_path_to_file">`
+```xml
+<SubTree ID="xxx"/>
+```
+
+Include external files with:
+
+```xml
+<include path="relative_or_absolute_path_to_file">
+```
 
 
 #### Tutorials(Basic)
@@ -589,6 +597,7 @@ int main()
 ##### How to use multiple XML files
 
 1. Load multiple files manually (recommended)
+
 ```xml
 #SubTree_A.xml
 <root>
@@ -666,6 +675,7 @@ Robot says: Executing Sub_A
 
 
 2. Add multiple files with "include"
+
 ```xml
 <root BTCPP_format="4">
     <include path="./subtree_A.xml" />
@@ -728,6 +738,7 @@ factory.registerNodeType<Action_A>("Action_A", 42, "hello world");
 
 
 2. Use an "initialize" method , then visitor
+
 ```c++
 class Action_B: public SyncActionNode
 {
@@ -994,6 +1005,7 @@ Groot2 is the official IDE to Edit, Monitor and interact with a Behavior Tree cr
 Groot requires a "TreeNode model".
 - The Node type
 - Name and type (input/output) of ports.
+
 ```xml
   <TreeNodesModel>
     <Action ID="SaySomething">
@@ -1099,6 +1111,7 @@ The content inside the blackboard is sent to Groot2 using a JSON format.
 Basic types (integers, reals, strings) are supported out of the box. To allow Groot2 to visualize your own custom types, you need to include behaviortree_cpp/json_export.h and define a JSON converter.
 
 - Using the BT_JSON_CONVERTER macro (recommended)
+
 ```c++
 struct Position2D
 {
@@ -1135,6 +1148,7 @@ BT::RegisterJsonDefinition<Waypoint>();
 ```
 
 - Manual converter (alternative)
+
 ```c++
 void PositionToJson(nlohmann::json& dest, const Position2D& pos) {
   dest["x"] = pos.x;

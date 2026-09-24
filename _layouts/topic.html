@@ -138,6 +138,28 @@ layout: default
             </div>
         </section>
         {% endif %}
+        <section class="topic-mobile-relations" aria-labelledby="topic-mobile-relations-title">
+            <div class="section-kicker">Keep exploring</div>
+            <h2 id="topic-mobile-relations-title">Connected topics</h2>
+            <ul>
+                {% for relation in site.data.topic_relations.relations %}
+                    {% if relation.from == page.topic_id %}
+                        {% assign related_topic_id = relation.to %}
+                    {% elsif relation.to == page.topic_id %}
+                        {% assign related_topic_id = relation.from %}
+                    {% else %}
+                        {% assign related_topic_id = nil %}
+                    {% endif %}
+                    {% if related_topic_id %}
+                        {% for related_topic in site.data.topics.topics %}
+                            {% if related_topic.id == related_topic_id %}
+                                <li><a href="{{ '/topics/' | append: related_topic.id | append: '/' | relative_url }}">{{ related_topic.name }}</a><small>{{ relation.label }}</small></li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </section>
     </div>
 
     <aside class="right">
