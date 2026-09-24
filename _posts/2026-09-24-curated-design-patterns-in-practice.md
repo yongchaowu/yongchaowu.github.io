@@ -14,7 +14,7 @@ tags:
   - Software Design
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: deep-dive
 version: curated-v1
 source_posts:
   - "_posts/2023-03-03-Book-深入设计模式.md"

@@ -1,0 +1,25 @@
+{% assign editorial_post = include.post | default: page %}
+{% assign editorial_path = editorial_post.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% assign editorial = nil %}
+{% for item in site.data.post_editorial.posts %}
+    {% if item.post == editorial_path %}
+        {% assign editorial = item %}
+    {% endif %}
+{% endfor %}
+{% if editorial %}
+<span class="editorial-badges" aria-label="Editorial metadata">
+    <span class="editorial-badge editorial-badge--type">{{ editorial.content_type | replace: '-', ' ' }}</span>
+    {% if editorial.placement == 'featured' %}<span class="editorial-badge editorial-badge--featured">Featured</span>{% endif %}
+    {% if editorial.verification == 'reported-tested' %}<span class="editorial-badge editorial-badge--tested">Reported tested source</span>{% endif %}
+    {% if editorial.verification == 'editorial-review' %}<span class="editorial-badge editorial-badge--review">Editorial review</span>{% endif %}
+    {% if editorial.verification == 'not-tested' %}<span class="editorial-badge editorial-badge--unverified">Not tested</span>{% endif %}
+    {% if editorial.verification == 'review-required' %}<span class="editorial-badge editorial-badge--review">Review required</span>{% endif %}
+    {% if editorial.freshness == 'version-sensitive' %}<span class="editorial-badge editorial-badge--version">Version-sensitive</span>{% endif %}
+    {% if editorial.freshness == 'historical' %}<span class="editorial-badge editorial-badge--historical">Historical context</span>{% endif %}
+    {% if editorial.origin == 'ai-assisted' %}<span class="editorial-badge editorial-badge--ai">AI-assisted</span>{% endif %}
+    {% if editorial.origin == 'imported' %}<span class="editorial-badge editorial-badge--imported">Imported / attributed</span>{% endif %}
+    {% if editorial.risk == 'caution' %}<span class="editorial-badge editorial-badge--caution">Use caution</span>{% endif %}
+</span>
+{% elsif editorial_post.curated %}
+<span class="editorial-badges"><span class="editorial-badge editorial-badge--featured">Curated guide</span></span>
+{% endif %}

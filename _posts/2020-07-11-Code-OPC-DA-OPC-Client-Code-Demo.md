@@ -9,11 +9,11 @@ tags:
 - Code
 ---
 
-{% raw %}
 摘自 [A very simple OPC Client: the code](https://lhcb-online.web.cern.ch/ecs/opcevaluation/opcclienttutorial/SimpleClient.html)
 https://lhcb-online.web.cern.ch/ecs/opcevaluation/opcclienttutorial/SimpleClient.html
 
 <!--more-->
+{% raw %}
 ------
 ```language
 A very simple OPC Client: the code

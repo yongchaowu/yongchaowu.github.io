@@ -1,0 +1,87 @@
+paths:
+  - id: backend
+    eyebrow: "Track 01"
+    title: "C++ Backend Engineering"
+    title_zh: "C++ 后端工程"
+    description: "从可重复构建、生命周期和并发，到 Linux 部署、性能分析与故障定位。"
+    outcome: "把 C++ 代码组织成可构建、可诊断、可部署的后端模块。"
+    prerequisites:
+      - C++ basics
+      - Linux command line
+      - Git
+    estimated_minutes: 150
+    safety_note: "涉及系统服务、动态库和部署时，先在可恢复环境中验证。"
+    icon: "anchor"
+    accent: "indigo"
+    posts:
+      - "_posts/2026-09-24-curated-cpp-backend-engineering.md"
+      - "_posts/2026-09-24-modern-cpp-concurrency-lifecycle.md"
+      - "_posts/2026-09-24-modern-cmake-targets-packaging.md"
+      - "_posts/2026-09-24-linux-elf-linking-deployment.md"
+      - "_posts/2026-09-24-curated-linux-systems-troubleshooting.md"
+      - "_posts/2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated).md"
+
+  - id: ai
+    eyebrow: "Track 02"
+    title: "AI Agents & LLM Systems"
+    title_zh: "AI Agent 与 LLM 系统"
+    description: "从模型调用、RAG 和工作流，到 Agent 权限、推理服务与生产运维。"
+    outcome: "建立从模型调用到 Agent 权限、推理服务和可观测运行的完整思路。"
+    prerequisites:
+      - Python basics
+      - HTTP and JSON
+      - command-line deployment
+    estimated_minutes: 180
+    safety_note: "不要把未验证的性能数字、模型版本或沙箱隔离强度当作生产保证。"
+    icon: "magic"
+    accent: "teal"
+    posts:
+      - "_posts/2026-09-24-curated-ai-agent-engineering-map.md"
+      - "_posts/2026-09-24-agent-sandbox-security-runbook.md"
+      - "_posts/2026-09-24-curated-llm-serving-production-checklist.md"
+      - "_posts/2026-09-05-LangChain-RAG-LangGraph-Learning-Roadmap.md"
+      - "_posts/2026-09-05-OpenSource-Agent-Swarm.md"
+      - "_posts/2026-09-05-opencode-cli-guide.md"
+
+  - id: foundations
+    eyebrow: "Track 03"
+    title: "Computer Science Foundations"
+    title_zh: "计算机科学基础"
+    description: "用数据结构、设计模式和 books 笔记建立更稳的问题建模与实现基础。"
+    outcome: "能把问题模型、复杂度、边界条件和实现可靠性联系起来。"
+    prerequisites:
+      - basic programming
+      - willingness to test edge cases
+    estimated_minutes: 160
+    safety_note: "示例代码用于理解思路；生产实现仍需结合语言版本和测试验证。"
+    icon: "bookmark-o"
+    accent: "amber"
+    posts:
+      - "_posts/2026-09-24-curated-data-structures-algorithms-roadmap.md"
+      - "_posts/2026-09-24-curated-design-patterns-in-practice.md"
+      - "_posts/2023-05-04-C++-Primer-Plus-(第六版)-中文版(部分章节).md"
+      - "_posts/2023-06-24-Book-Effective-C++-改善程序与设计的55个具体做法.md"
+      - "_posts/2023-02-24-数据结构和算法-小甲鱼【笔记】.md"
+      - "_posts/2023-05-23-Book-Git从入门到精通.md"
+
+  - id: delivery
+    eyebrow: "Track 04"
+    title: "Reliable Delivery"
+    title_zh: "可靠交付与工具链"
+    description: "把 Git、CI/CD、Docker、数据库、安全和开发工具串成可复现的交付流程。"
+    outcome: "能设计一条可复现、可诊断、可回滚的交付流程。"
+    prerequisites:
+      - Git basics
+      - Linux shell
+      - one deployed service
+    estimated_minutes: 170
+    safety_note: "备份、权限、数据库和设备操作先确认范围、备份与回滚方式。"
+    icon: "list-ol"
+    accent: "coral"
+    posts:
+      - "_posts/2026-09-24-curated-devops-delivery-playbook.md"
+      - "_posts/2026-09-24-curated-developer-tools-workflow.md"
+      - "_posts/2026-09-24-curated-database-and-protocol-notes.md"
+      - "_posts/2026-09-24-curated-security-networking-lab-guide.md"
+      - "_posts/2023-02-27-Tool-Git.md"
+      - "_posts/2024-04-23-Tool-Mysql-安装and卸载and运行.md"

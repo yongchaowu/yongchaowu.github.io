@@ -17,7 +17,7 @@ tags:
   - OpenCode
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: roadmap
 version: curated-v1
 source_posts:
   - "_posts/2026-09-05-LangChain-RAG-LangGraph-Learning-Roadmap.md"
@@ -71,7 +71,7 @@ RAG 的最小闭环是：文档如何进入系统、如何切分、如何检索�
 
 ### 4. 最后引入长任务和多 Agent
 
-[Agent Swarm](#source-posts-title) 和 [DeepAgents 沙箱](#source-posts-title) 适合研究离线部署、任务队列和多角色协作。前提是单 Agent 流程已经可观测、可停止、可恢复，并且每个工具的权限边界已经明确。
+[Agent Swarm](#source-posts-title) 和 [DeepAgents 沙箱](#source-posts-title) 适合研究容器化/本地编排、任务队列和多角色协作；这不等于模型 Provider 或模型文件已经离线。前提是单 Agent 流程已经可观测、可停止、可恢复，并且每个工具的权限边界已经明确。
 
 ## 一个可上线的最小契约
 
@@ -98,6 +98,7 @@ Agent / 模型版本：
 - 远程模型输出属于不可信输入，不能直接拼接成 shell、SQL 或高权限 URL 请求。
 - 对循环、重试和子 Agent 设置预算、时间上限和最大步数。
 - 重要动作提供预览、审批、幂等键和回滚路径。
+- 所谓“离线/内网”部署要逐项核对：模型文件、Provider、SDK、容器镜像、遥测和更新服务是否仍会访问外部网络。
 
 ## 从历史文章中继续阅读
 

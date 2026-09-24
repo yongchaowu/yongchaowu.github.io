@@ -14,7 +14,7 @@ tags:
   - DSLR
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: roadmap
 version: curated-v1
 source_posts:
   - "_posts/2020-09-05-摄影-单反相机.md"

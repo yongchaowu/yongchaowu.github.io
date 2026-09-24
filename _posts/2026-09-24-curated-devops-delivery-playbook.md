@@ -16,7 +16,7 @@ tags:
   - Operations
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: runbook
 version: curated-v1
 source_posts:
   - "_posts/2023-02-27-Tool-Git.md"

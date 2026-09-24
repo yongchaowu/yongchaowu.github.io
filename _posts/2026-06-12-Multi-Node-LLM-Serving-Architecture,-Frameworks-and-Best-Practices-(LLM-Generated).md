@@ -960,6 +960,7 @@ export NCCL_DEBUG=TRACE     # 最详细，会输出每一步通信操作
 
 在 Prometheus 中配置以下告警规则，及时发现异常：
 
+{% raw %}
 ```yaml
 # prometheus-rules.yml
 groups:
@@ -1025,6 +1026,7 @@ groups:
           summary: "KV Cache 使用率超过 98%"
           description: "并发请求可能被拒绝"
 ```
+{% endraw %}
 
 **告警通知渠道**（在 alertmanager.yml 中配置）：
 

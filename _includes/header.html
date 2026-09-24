@@ -1,33 +1,54 @@
+{% assign is_home = false %}
+{% if page.url == '/' or paginator %}{% assign is_home = true %}{% endif %}
+{% assign is_topic = false %}
+{% if page.url == '/category/' or page.url contains '/topics/' or page.layout == 'topic' %}{% assign is_topic = true %}{% endif %}
+{% if page.layout == 'post' %}
+    {% for topic in site.data.topics.topics %}
+        {% if page.categories contains topic.name %}{% assign is_topic = true %}{% endif %}
+    {% endfor %}
+{% endif %}
+{% assign is_tag = false %}
+{% if page.url contains '/tag/' %}{% assign is_tag = true %}{% endif %}
+{% assign is_curated = false %}
+{% if page.curated %}{% assign is_curated = true %}{% endif %}
 <header id="top">
     <div class="wrapper">
-        <a href="{{ site.baseurl }}/" class="brand">{{ site.title }}</a>
-        <small>{{site.brief-intro}}</small>
+        <a href="{{ '/' | relative_url }}" class="brand" aria-label="{{ site.title }} home">
+            <span class="brand-mark">YC</span>
+            <span class="brand-name">{{ site.title }}</span>
+        </a>
+        <small class="brand-tagline">{{ site.brief-intro }}</small>
         <button id="headerMenu" class="menu" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false">{% include icon.html name="bars" %}</button>
-        <nav id="headerNav">
+        <nav id="headerNav" aria-label="Primary navigation">
             <ul>
                 <li>
-                    {% if page.url == '/' %}
-                    <a class="active" href="{{site.baseurl}}/">
-                        {% else %}
-                    <a href="{{site.baseurl}}/">
+                    {% if is_home %}
+                    <a class="active" href="{{ '/' | relative_url }}" aria-current="page">
+                    {% else %}
+                    <a href="{{ '/' | relative_url }}">
                     {% endif %}
                         {% include icon.html name="home" %}Home
                     </a>
                 </li>
 
-                {% for my_page in site.pages %}
-                    {% if my_page.type == 'page' %}
-                    <li>
-                        {% if my_page.url == page.url %}
-                        <a class="active" href="{{ my_page.url | prepend: site.baseurl }}">
-                            {% else %}
-                        <a href="{{ my_page.url | prepend: site.baseurl }}">
-                        {% endif %}
-                            {% include icon.html name=my_page.icon %}{{ my_page.title }}
-                        </a>
-                    </li>
+                {% for item in site.data.navigation.primary %}
+                {% assign item_active = false %}
+                {% if page.url == item.url %}{% assign item_active = true %}{% endif %}
+                {% if item.url == '/category/' and is_topic %}{% assign item_active = true %}{% endif %}
+                {% if item.url == '/tag/' and is_tag %}{% assign item_active = true %}{% endif %}
+                {% if item.url == '/curated/' and is_curated %}{% assign item_active = true %}{% endif %}
+                {% if item.url == '/archive/' and page.layout == 'post' and is_curated == false %}{% assign item_active = true %}{% endif %}
+                <li>
+                    {% if item_active %}
+                    <a class="active" href="{{ item.url | relative_url }}" aria-current="page">
+                    {% else %}
+                    <a href="{{ item.url | relative_url }}">
                     {% endif %}
+                        {% include icon.html name=item.icon %}{{ item.title }}
+                    </a>
+                </li>
                 {% endfor %}
+
                 <li>
                     <a href="https://github.com/yongchaowu" target="_blank" rel="noopener">
                         {% include icon.html name="github" %}GitHub

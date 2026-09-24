@@ -16,7 +16,7 @@ tags:
   - CPack
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: deep-dive
 version: curated-v1
 source_posts:
   - "_posts/2023-04-12-Tool-CMake.md"
@@ -35,7 +35,7 @@ source_posts:
 
 CMake 记录通常从“怎样编译一个可执行文件”开始，但真正可维护的工程还需要回答：依赖如何传递、安装后的库如何被找到、测试如何运行、交叉编译如何隔离、发布包如何生成。现代 CMake 的核心是 **target**：把目标的属性、依赖和用法写成显式关系。
 
-> 本文是基于历史 CMake 笔记的重组稿，不要求某个固定的最低 CMake 版本。实际项目应以所用工具链和支持矩阵为准。
+> 本文是基于历史 CMake 笔记的重组稿。示例使用 CMake 3.21 语法来说明 target 关系；实际项目应以所用工具链、生成器和支持矩阵为准。
 
 <!--more-->
 
@@ -75,17 +75,10 @@ target_link_libraries(app PRIVATE core)
 
 ```cmake
 find_package(Threads REQUIRED)
-
-find_path(JSON_INCLUDE_DIR nlohmann_json.hpp)
-find_library(JSON_LIBRARY nlohmann_json)
-
-if(NOT JSON_INCLUDE_DIR OR NOT JSON_LIBRARY)
-    message(FATAL_ERROR "nlohmann_json was not found")
-endif()
+find_package(nlohmann_json CONFIG REQUIRED)
 
 add_library(json_adapter INTERFACE)
-target_include_directories(json_adapter INTERFACE "${JSON_INCLUDE_DIR}")
-target_link_libraries(json_adapter INTERFACE "${JSON_LIBRARY}")
+target_link_libraries(json_adapter INTERFACE nlohmann_json::nlohmann_json)
 ```
 
 查找结果应支持用户传入 `CMAKE_PREFIX_PATH`、toolchain 或 package registry，而不是把开发机路径硬编码进项目。相关历史记录见 [find_library](#source-posts-title)、[CMake 总览](#source-posts-title) 和 [交叉编译工具链](#source-posts-title)。
@@ -107,6 +100,8 @@ add_custom_command(
 add_custom_target(generate_version DEPENDS generated/version.hpp)
 add_library(core_dependencies INTERFACE)
 add_dependencies(core_dependencies generate_version)
+add_dependencies(core generate_version)
+target_sources(core PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated/version.hpp")
 ```
 
 生成文件、复制资源、编译代码生成器和打包前检查都可以采用这个模式，但不要把所有逻辑都塞进一个巨大的 `add_custom_target`。

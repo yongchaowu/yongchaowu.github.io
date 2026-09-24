@@ -15,7 +15,7 @@ tags:
   - Documentation
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: tutorial
 version: curated-v1
 source_posts:
   - "_posts/2020-07-03-Visual-Studio-Code.md"

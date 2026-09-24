@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Curated Notes
-display_title: 'Curated Notes / 精选重组'
-description: "A non-destructive reading layer for the blog archive: synthesized guides that preserve the original posts."
+display_title: 'Curated Library / 精选重组'
+description: "A non-destructive reading layer for the blog archive: curated guides and ordered paths that preserve original posts."
 permalink: /curated/
 icon: archive
 type: page
@@ -12,68 +12,95 @@ type: page
     <div class="left">
         {% assign curated_posts = site.posts | where: "curated", true %}
         {% assign historical_post_count = site.posts.size | minus: curated_posts.size %}
-        <h1>{{ page.display_title | default: page.title }}</h1>
-        <p class="curated-meta">{{ curated_posts | size }} curated articles · {{ historical_post_count }} historical posts preserved</p>
+        <header class="curated-header">
+            <div>
+                <span class="section-kicker">The modern reading layer</span>
+                <h1>{{ page.display_title | default: page.title }}</h1>
+                <p>{{ curated_posts | size }} curated guides, organized into paths that make the archive easier to enter without erasing its history.</p>
+            </div>
+            <div class="curated-header-stats"><strong>{{ curated_posts | size }}</strong><span>curated</span><strong>{{ historical_post_count }}</strong><span>preserved</span></div>
+        </header>
+
         <div class="curated-notice">
-            <strong>阅读说明</strong>
-            <p>这里的内容是从历史文章中重新组织、校订和补充上下文的入口。原始 Markdown 文件、历史 URL 和发布日期均保留；需要逐字查阅时，请从每篇文章底部的“资料来源”进入原文。</p>
+            <strong>How to read this layer</strong>
+            <p>精选文章是对历史资料的主题化重组，不是对原文的替换。每篇文章底部保留来源关系；需要逐字查阅时，请进入对应的历史文章。</p>
         </div>
-        <hr>
-
-        <h2>How to use this layer</h2>
-        <ol class="curated-steps">
-            <li>先从下面的主题入口建立知识框架，再按文章中的顺序阅读历史资料。</li>
-            <li>看到版本号、命令或外部链接时，以当前官方文档和实际环境复核；重组稿不替代原始记录。</li>
-            <li>如果发现技术错误，优先在来源文章中补充讨论或新建修订稿，不覆盖历史正文。</li>
-        </ol>
-
-        <h2>Coverage by topic</h2>
-        <div class="curated-coverage">
-            {% for topic in site.data.topics.topics %}
-                {% assign topic_curated_count = 0 %}
-                {% for curated_post in curated_posts %}
-                    {% if curated_post.categories contains topic.name %}
-                        {% assign topic_curated_count = topic_curated_count | plus: 1 %}
-                    {% endif %}
-                {% endfor %}
-                <div class="curated-coverage-row">
-                    <span>{{ topic.name }}</span>
-                    <span class="badge">{{ topic_curated_count }}</span>
-                </div>
-            {% endfor %}
+        <div class="editorial-legend" aria-label="Editorial label legend">
+            <strong>Labels</strong>
+            <span>Editorial review = 来源已整理并复核结构</span>
+            <span>Review required = 技术事实仍需独立复核</span>
+            <span>Not tested = 未保留可复现实测证据</span>
+            <span>Version-sensitive = 命令或结论可能受版本影响</span>
+            <span>Use caution = 涉及系统、安全或数据操作风险</span>
         </div>
 
-        <h2>Curated reading paths</h2>
-        <ul class="curated-list">
-            {% assign curated_posts = site.posts | where: "curated", true %}
-            {% for curated_post in curated_posts %}
-                <li class="curated-card">
-                    <div class="curated-card-meta">
-                        <span>{{ curated_post.categories.first }}</span>
-                        <time datetime="{{ curated_post.date | date_to_xmlschema }}">{{ curated_post.date | date: "%Y-%m-%d" }}</time>
+        <section class="curated-paths" aria-labelledby="curated-paths-title">
+            <div class="section-heading">
+                <div><span class="section-kicker">Start with a sequence</span><h2 id="curated-paths-title">Reading paths</h2></div>
+                <a class="section-link" href="{{ '/start-here/' | relative_url }}#paths">All paths →</a>
+            </div>
+            <div class="curated-path-grid">
+                {% for path in site.data.reading_paths.paths %}
+                <article id="path-{{ path.id }}" class="path-card path-card--{{ path.accent }}">
+                    <div class="path-card-top"><span class="path-icon">{% include icon.html name=path.icon %}</span><span class="path-eyebrow">{{ path.eyebrow }}</span></div>
+                    <h3>{{ path.title }}</h3>
+                    <p class="path-title-zh">{{ path.title_zh }}</p>
+                    <p>{{ path.description }}</p>
+                    {% if path.outcome %}<p class="path-outcome"><strong>Outcome:</strong> {{ path.outcome }}</p>{% endif %}
+                    <div class="path-meta">
+                        {% if path.estimated_minutes %}<span>Approx. {{ path.estimated_minutes }} min</span>{% endif %}
+                        {% if path.safety_note %}<span class="path-safety">{{ path.safety_note }}</span>{% endif %}
                     </div>
+                    <ol class="path-post-list">
+                        {% for source_path in path.posts %}
+                            {% assign path_post = site.posts | where: "path", source_path | first %}
+                            {% if path_post %}<li><a href="{{ path_post.url | relative_url }}">{{ path_post.display_title | default: path_post.title }}</a>{% include editorial-badge.html post=path_post %}</li>{% endif %}
+                        {% endfor %}
+                    </ol>
+                    <a class="path-card-link" href="{{ '/start-here/' | relative_url }}#path-{{ path.id }}">Review path details <span>→</span></a>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="curated-all" aria-labelledby="curated-all-title">
+            <div class="section-heading">
+                <div><span class="section-kicker">The complete shelf</span><h2 id="curated-all-title">All curated notes</h2></div>
+                <span class="section-count">{{ curated_posts | size }} articles</span>
+            </div>
+            <div class="curated-list">
+                {% for curated_post in curated_posts %}
+                <li class="curated-card">
+                    <div class="curated-card-meta"><span>{{ curated_post.categories.first }}</span><time datetime="{{ curated_post.date | date_to_xmlschema }}">{{ curated_post.date | date: "%Y-%m-%d" }}</time></div>
                     <h3><a href="{{ curated_post.url | relative_url }}">{{ curated_post.display_title | default: curated_post.title }}</a></h3>
+                    {% include editorial-badge.html post=curated_post %}
                     {% if curated_post.summary %}<p>{{ curated_post.summary }}</p>{% endif %}
                     {% if curated_post.source_posts %}<span class="curated-source-count">{{ curated_post.source_posts | size }} source notes</span>{% endif %}
                 </li>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </div>
+        </section>
 
-        <h2>What happens to the original archive?</h2>
-        <p>历史文章不做批量重写、删除或重命名。它们继续出现在 <a href="{{ '/archive/' | relative_url }}">Archive</a>、主题页和标签页中；本页面只提供一个面向今天读者的入口层。这样既保留旧链接和历史语境，也可以逐步增加经过验证的新版本。</p>
+        <section class="curated-policy">
+            <span class="section-kicker">Archive policy</span>
+            <h2>Keep the history. Improve the path into it.</h2>
+            <p>历史文章不做批量重写、删除或重命名；精选内容通过来源关系和主题路径逐步补充。</p>
+            <a class="button button--quiet" href="{{ '/archive/' | relative_url }}">Browse the full archive</a>
+        </section>
     </div>
 
-    <div class="right">
+    <aside class="right">
         <div class="wrap">
             <div class="side">
                 <div>{% include icon.html name="bookmark-o" %} Curated layer</div>
                 <ul class="content-ul">
-                    <li><a href="{{ '/archive/' | relative_url }}">Browse all historical posts</a></li>
-                    <li><a href="{{ '/category/' | relative_url }}">Browse by topic</a></li>
-                    <li><a href="{{ '/search/' | relative_url }}">Search the full archive</a></li>
+                    <li><a href="{{ '/start-here/' | relative_url }}">Start here</a></li>
+                    <li><a href="{{ '/category/' | relative_url }}">Browse topics</a></li>
+                    <li><a href="{{ '/archive/' | relative_url }}">Browse by date</a></li>
+                    <li><a href="{{ '/search/' | relative_url }}">Search full archive</a></li>
                 </ul>
             </div>
         </div>
-    </div>
+    </aside>
 </main>
 <script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>

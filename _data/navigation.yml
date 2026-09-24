@@ -1,0 +1,22 @@
+primary:
+  - title: Start here
+    url: /start-here/
+    icon: bookmark-o
+  - title: Topics
+    url: /category/
+    icon: th-list
+  - title: Tags
+    url: /tag/
+    icon: tags
+  - title: Curated
+    url: /curated/
+    icon: archive
+  - title: Archive
+    url: /archive/
+    icon: newspaper-o
+  - title: Search
+    url: /search/
+    icon: search
+  - title: About
+    url: /about/
+    icon: user

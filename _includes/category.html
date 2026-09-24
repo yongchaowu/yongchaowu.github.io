@@ -1,11 +1,27 @@
 {% capture categories %}
   {% if post %}
     {% for category in post.categories %}
-        <a href="{{ root_url }}/{{ site.category_dir }}#{{ category | slugify }}" title="Category: {{ category }}" rel="category">{{ category | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        {% assign category_topic = nil %}
+        {% for topic in site.data.topics.topics %}
+            {% if topic.name == category %}{% assign category_topic = topic %}{% endif %}
+        {% endfor %}
+        {% if category_topic %}
+            <a href="{{ '/topics/' | append: category_topic.id | append: '/' | relative_url }}" title="Topic: {{ category }}" rel="category">{{ category }}</a>
+        {% else %}
+            <a href="{{ '/category/' | relative_url }}#{{ category | slugify }}" title="Category: {{ category }}" rel="category">{{ category }}</a>
+        {% endif %}{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% else %}
     {% for category in page.categories %}
-        <a href="{{ root_url }}/{{ site.category_dir }}#{{ category | slugify }}" title="Category: {{ category }}" rel="category">{{ category | join: "/" }}</a>{% unless forloop.last %}&nbsp;{% endunless %}
+        {% assign category_topic = nil %}
+        {% for topic in site.data.topics.topics %}
+            {% if topic.name == category %}{% assign category_topic = topic %}{% endif %}
+        {% endfor %}
+        {% if category_topic %}
+            <a href="{{ '/topics/' | append: category_topic.id | append: '/' | relative_url }}" title="Topic: {{ category }}" rel="category">{{ category }}</a>
+        {% else %}
+            <a href="{{ '/category/' | relative_url }}#{{ category | slugify }}" title="Category: {{ category }}" rel="category">{{ category }}</a>
+        {% endif %}{% unless forloop.last %}&nbsp;{% endunless %}
     {% endfor %}
   {% endif %}
 {% endcapture %}

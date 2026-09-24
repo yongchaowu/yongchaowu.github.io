@@ -16,7 +16,7 @@ tags:
   - Deployment
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: runbook
 version: curated-v1
 source_posts:
   - "_posts/2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated).md"
@@ -33,6 +33,8 @@ source_posts:
 推理服务的难点不只是把模型启动起来，而是让它在目标硬件、上下文长度、并发和网络条件下稳定运行。生产上线应把“架构选择”“资源估算”“部署验证”“流量治理”和“故障回滚”分开验收。
 
 > 本文是对多篇部署记录的安全化重组。历史文章中的具体 GPU、CUDA、驱动、端口和模型版本都可能过时；不要直接照抄命令，先在隔离环境验证。
+
+> **来源校勘（2026-09-25）**：历史 AI-assisted 来源中有一处数量级错误：`1,000,000 × 500` 等于 `500,000,000` tokens/day（约 `0.5B`），按一天平均约 `5,800` tokens/s，不是 `500B` 或 `5.8M` tokens/s。本文不采用原数字，容量规划必须以目标环境实测为准。
 
 <!--more-->
 

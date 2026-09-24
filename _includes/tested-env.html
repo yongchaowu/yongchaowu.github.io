@@ -1,6 +1,6 @@
 {% if page.tested %}
 <div class="post-tested">
-    <div class="post-tested-title">{% include icon.html name="flask" %} Tested environment</div>
+    <div class="post-tested-title">{% include icon.html name="flask" %} Reported environment</div>
     <dl>
         {% for item in page.tested %}
         <div class="post-tested-row">
@@ -9,6 +9,6 @@
         </div>
         {% endfor %}
     </dl>
-    <div class="post-tested-note">Verified on this environment.</div>
+    <div class="post-tested-note">Environment recorded in this post; verify it against your own system before applying commands.</div>
 </div>
 {% endif %}

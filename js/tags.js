@@ -3,14 +3,16 @@
  * tags.js — tag post listing (tags are server-rendered)
  */
 (function() {
+    var app = document.querySelector('[data-tag-index]')
     var postsEl = document.getElementById('tag-posts')
     var headingEl = document.getElementById('tag-heading')
     var listEl = document.getElementById('tag-post-list')
-    if (!postsEl) return
+    if (!postsEl || !app) return
 
     var DATA = null
     var LOADING = false
-    var indexUrl = '/posts-meta.json'
+    var indexUrl = app.getAttribute('data-index-url') || 'posts-meta.json'
+    var baseUrl = app.getAttribute('data-base-url') || ''
 
     function load(cb) {
         if (DATA) return cb()
@@ -38,7 +40,7 @@
             li.appendChild(time)
             li.appendChild(document.createTextNode(' '))
             var a = document.createElement('a')
-            a.href = p.url
+            a.href = baseUrl + p.url
             a.textContent = p.display_title || p.title
             li.appendChild(a)
             listEl.appendChild(li)
@@ -65,17 +67,8 @@
         }
     }
 
-    // wire up server-rendered tag buttons
-    var btns = document.querySelectorAll('.tag-btn')
-    for (var i = 0; i < btns.length; i++) {
-        btns[i].onclick = (function(btn) {
-            return function(e) {
-                e.preventDefault()
-                var tag = btn.getAttribute('data-tag')
-                load(function() { selectTag(tag) })
-            }
-        })(btns[i])
-    }
+    // Tag buttons remain ordinary canonical links; the optional ?tag= view is
+    // retained only for legacy/bookmarked index URLs.
 
     // check ?tag= parameter
     var m = location.search.match(/[?&]tag=([^&]*)/)

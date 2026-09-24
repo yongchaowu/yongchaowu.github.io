@@ -16,7 +16,7 @@ tags:
   - OpenCode
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: runbook
 version: curated-v1
 source_posts:
   - "_posts/2026-05-19-基于DeepAgents的可私有化部署的沙箱方案.md"

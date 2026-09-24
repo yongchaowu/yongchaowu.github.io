@@ -15,7 +15,7 @@ tags:
   - C++
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: roadmap
 version: curated-v1
 source_posts:
   - "_posts/2023-02-26-数据结构(借鉴408)-数组.md"
@@ -50,7 +50,7 @@ source_posts:
 
 ### 第一阶段：复杂度与基础存储
 
-从 [数组](#source-posts-title)2023-02-24-数据结构(借鉴408)-数组.md) 和 [线性表](#source-posts-title) 开始，掌握连续存储与链式存储的取舍。复杂度分析要同时看时间、空间和常数项，尤其是数组搬移、扩容和缓存局部性。
+从 [数组](#source-posts-title) 和 [线性表](#source-posts-title) 开始，掌握连续存储与链式存储的取舍。复杂度分析要同时看时间、空间和常数项，尤其是数组搬移、扩容和缓存局部性。
 
 ### 第二阶段：线性约束
 

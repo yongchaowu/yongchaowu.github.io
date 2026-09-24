@@ -15,7 +15,7 @@ tags:
   - Testing
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: roadmap
 version: curated-v1
 source_posts:
   - "_posts/2023-04-12-Tool-CMake.md"

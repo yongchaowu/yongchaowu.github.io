@@ -3,6 +3,14 @@
 [
 {% for post in site.posts %}
 {% include topic-for-post.html post=post %}
+{% assign meta_editorial = nil %}
+{% assign meta_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% for item in site.data.post_editorial.posts %}
+    {% if item.post == meta_editorial_path %}{% assign meta_editorial = item %}{% endif %}
+{% endfor %}
+{% assign meta_content_type = meta_editorial.content_type | default: site.data.post_editorial.defaults.content_type %}
+{% assign meta_placement = meta_editorial.placement | default: site.data.post_editorial.defaults.placement %}
+{% assign meta_origin = meta_editorial.origin | default: site.data.post_editorial.defaults.origin %}
 {
 "title": {{ post.title | jsonify }},
 "display_title": {{ post.display_title | default: post.title | jsonify }},
@@ -11,7 +19,10 @@
 "topic": {{ canonical_topic | default: post.categories.first | jsonify }},
 "tags": {{ post.tags | jsonify }},
 "curated": {{ post.curated | default: false | jsonify }},
-"content_origin": {{ post.content_origin | jsonify }}
+"content_origin": {{ post.content_origin | jsonify }},
+"content_type": {{ meta_content_type | jsonify }},
+"placement": {{ meta_placement | jsonify }},
+"origin": {{ meta_origin | jsonify }}
 }{% unless forloop.last %},{% endunless %}
 {% endfor %}
 ]

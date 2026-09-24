@@ -16,7 +16,7 @@ tags:
   - Deployment
 curated: true
 content_origin: curated
-curation_level: synthesis
+curation_level: runbook
 version: curated-v1
 source_posts:
   - "_posts/2020-10-22-OS-Linux-动态链接文件设置环境变量-etcld.so.conf-ldconfig-ldd.md"
@@ -25,6 +25,7 @@ source_posts:
   - "_posts/2023-05-07-Book-Linux-UNIX-系统编程手册-下册-41章-共享库基础.md"
   - "_posts/2025-09-25-OS-KylinV10-加载动态库运行异常-全局函数重名或未使用命名空间.md"
   - "_posts/2024-07-15-Tool-Cross-compilation-Toolchain-ARM-Linaro.md"
+  - "_posts/2023-10-12-Tool-CMake-设置SONAME.md"
 ---
 
 “程序在开发机正常，部署到服务器就找不到库”通常不是单一的环境变量问题。ELF 动态链接同时涉及可执行文件请求的 SONAME、运行时的搜索规则、库的 ABI、符号版本和进程环境。排查时先画出加载链，再决定是否需要改变配置。
