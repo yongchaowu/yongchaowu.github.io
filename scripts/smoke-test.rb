@@ -105,10 +105,27 @@ if File.exist?(search_path)
     
     missing_dt = data.find { |e| !e['display_title'] || e['display_title'].empty? }
     check("All entries have display_title", missing_dt.nil?)
-    entity_index = data.find { |e| e['text'].to_s.match?(/&(?:lt|gt|amp|quot|#39);/i) }
-    check('Search index decodes common HTML entities', entity_index.nil?, entity_index && entity_index['url'])
-    code_search = data.find { |e| e['url'].to_s.include?('C++-Performance-Analysis') }
-    check('Exact code punctuation is searchable', code_search && code_search['text'].to_s.include?('std::vector<int>'))
+
+    # The body corpus moved to search-text.json so the first paint only needs the
+    # small metadata index (~44 KB gzipped instead of ~842 KB). These two checks
+    # are about the article text, so they must read that file — reading them off
+    # search.json would make the entity check pass vacuously (no text at all) and
+    # break the punctuation check outright.
+    text_path = File.join(SITE_DIR, 'search-text.json')
+    text_index = File.exist?(text_path) ? (JSON.parse(File.read(text_path)) rescue nil) : nil
+    check('search-text.json exists', !text_index.nil?)
+    if text_index
+      check('Text corpus covers the same posts', text_index.size == data.length)
+      index_urls = data.map { |e| e['url'] }.sort
+      check('Text corpus URLs match the index', index_urls == text_index.keys.sort)
+      check('Metadata index carries no body text', data.none? { |e| e.key?('text') })
+      entity_index = text_index.find { |_url, body| body.to_s.match?(/&(?:lt|gt|amp|quot|#39);/i) }
+      check('Search index decodes common HTML entities', entity_index.nil?, entity_index && entity_index[0])
+      cpp_url = data.map { |e| e['url'] }.find { |u| u.to_s.include?('C++-Performance-Analysis') }
+      check('Exact code punctuation is searchable',
+            cpp_url && text_index[cpp_url].to_s.include?('std::vector<int>'),
+            cpp_url && "no text for #{cpp_url}")
+    end
     
     missing_topic = data.find { |e| !e['topic'] || e['topic'].empty? }
     check("All entries have topic", missing_topic.nil?)

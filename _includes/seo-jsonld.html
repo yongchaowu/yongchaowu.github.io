@@ -11,17 +11,38 @@
 {% assign jsonld_lang = page.lang | default: site.lang | default: 'en' %}
 
 {% if page.url == '/' %}
+{%- comment -%}
+  jsonld_url above is page.canonical_url | default: page.url | absolute_url — the
+  exact expression _includes/head.html uses for <link rel="canonical">. Reusing
+  it makes "WebSite.url == canonical" true by construction instead of by a
+  hand-rolled trailing-slash rule that would break under a non-empty baseurl.
+
+  The SearchAction template is built with capture rather than append: inside a
+  variable expression Liquid 4 cannot parse the literal {search_term_string},
+  because those braces collide with the }} terminator. In capture it is output.
+{%- endcomment -%}
+{%- capture search_action_template -%}
+{{- jsonld_url -}}search/?q={search_term_string}
+{%- endcapture -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": {{ site.title | jsonify }},
-  "url": {{ site.url | append: site.baseurl | jsonify }},
+  "url": {{ jsonld_url | jsonify }},
   "description": {{ site.description | jsonify }},
   "inLanguage": {{ jsonld_lang | jsonify }},
   "publisher": {
     "@type": "Person",
     "name": {{ site.title | jsonify }}
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": {{ search_action_template | jsonify }}
+    },
+    "query-input": "required name=search_term_string"
   }
 }
 </script>

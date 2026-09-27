@@ -17,8 +17,8 @@ type: page
                 <p>所有文章按时间排列。精选稿和历史记录共享同一条时间线，但不会被混为一谈。</p>
             </div>
             <div class="archive-header-stats">
-                <strong>{{ site.posts | size }}</strong><span>notes</span>
-                <strong>{{ site.posts | where: "curated", true | size }}</strong><span>curated</span>
+                <div><strong>{{ site.posts | size }}</strong><span>notes</span></div>
+                <div><strong>{{ site.posts | where: "curated", true | size }}</strong><span>curated</span></div>
             </div>
         </header>
 

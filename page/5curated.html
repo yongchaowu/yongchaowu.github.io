@@ -18,7 +18,7 @@ type: page
                 <h1>{{ page.display_title | default: page.title }}</h1>
                 <p>{{ curated_posts | size }} curated guides, organized into paths that make the archive easier to enter without erasing its history.</p>
             </div>
-            <div class="curated-header-stats"><strong>{{ curated_posts | size }}</strong><span>curated</span><strong>{{ historical_post_count }}</strong><span>preserved</span></div>
+            <div class="curated-header-stats"><div><strong>{{ curated_posts | size }}</strong><span>curated</span></div><div><strong>{{ historical_post_count }}</strong><span>preserved</span></div></div>
         </header>
 
         <div class="curated-notice">

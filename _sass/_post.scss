@@ -89,17 +89,21 @@
             float: left;
             margin-right: 15px;
             font-size: 13px;
-            color: #888;
+            /* Was #888: 3.30:1 on the post-meta background, the least readable
+               text on every article page. Now var(--text-muted), which is
+               theme-aware: 5.07:1 in light, and #9aaac0 in dark. A literal grey
+               here passes light mode and fails dark mode. */
+            color: var(--text-muted);
             .point {
                 padding: 0 10px;
-                color: #9d9d9d;
+                color: var(--text-muted);
             }
             i {
                 padding-right: 5px;
                 color: #6b6a6a;
             }
             a {
-                color: #4d6dad;
+                color: var(--text-link);
             }
         }
         .type-badge {
@@ -223,7 +227,7 @@
         }
     }
     a {
-        color: #4d6dad;
+        color: var(--text-link);
         transition: 0.5s ease;
         &:hover {
             color: #223253;
@@ -233,10 +237,10 @@
     .left {
         ul {
             >h2 {
-                color: #333;
+                color: var(--text-primary);
             }
             li {
-                color: #333;
+                color: var(--text-primary);
                 margin: 0;
             }
         }

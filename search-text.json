@@ -1,0 +1,14 @@
+---
+---
+{
+{% for post in site.posts %}
+{% assign search_text = post.content | strip_html | normalize_whitespace %}
+{% assign search_text = search_text | replace: '&lt;', '<' %}
+{% assign search_text = search_text | replace: '&gt;', '>' %}
+{% assign search_text = search_text | replace: '&quot;', '"' %}
+{% assign search_text = search_text | replace: '&#39;', "'" %}
+{% assign search_text = search_text | replace: '&#x27;', "'" %}
+{% assign search_text = search_text | replace: '&amp;', '&' %}
+{{ post.url | jsonify }}: {{ search_text | jsonify }}{% unless forloop.last %},{% endunless %}
+{% endfor %}
+}

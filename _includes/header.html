@@ -15,9 +15,10 @@
 {% if page.curated %}{% assign is_curated = true %}{% endif %}
 <header id="top">
     <div class="wrapper">
-        <a href="{{ '/' | relative_url }}" class="brand" aria-label="{{ site.title }} home">
+        <a href="{{ '/' | relative_url }}" class="brand">
             <span class="brand-mark">YC</span>
             <span class="brand-name">{{ site.title }}</span>
+            <span class="sr-only">home</span>
         </a>
         <small class="brand-tagline">{{ site.brief-intro }}</small>
         <button id="headerMenu" class="menu" type="button" aria-label="Open navigation" aria-controls="headerNav" aria-expanded="false">{% include icon.html name="bars" %}</button>

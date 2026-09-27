@@ -25,11 +25,11 @@ sitemap: false
         <a class="button button--quiet" href="{{ '/start-here/' | relative_url }}">Not sure where to start?</a>
     </header>
 
-    <div class="search-wrap" id="search-app" data-index-url="{{ '/search.json' | relative_url }}" data-base-url="{{ normalized_baseurl }}">
+    <div class="search-wrap" id="search-app" data-index-url="{{ '/search.json' | relative_url }}" data-text-url="{{ '/search-text.json' | relative_url }}" data-base-url="{{ normalized_baseurl }}">
         <div class="search-input-wrap">
             {% include icon.html name="search" %}
             <label class="sr-only" for="search-input">Search the notebook</label>
-            <input id="search-input" type="search" inputmode="search" enterkeyhint="search" placeholder="Try “CMake”, “LLM”, or “dynamic linker”" autocomplete="off" spellcheck="false">
+            <input id="search-input" type="search" inputmode="search" enterkeyhint="search" placeholder="Try “CMake”, “vLLM”, or “动态链接”" autocomplete="off" spellcheck="false">
         </div>
         <div id="topic-filter" class="topic-filter" aria-label="Filter search results">
             <button type="button" class="topic-filter-btn active" data-topic="" aria-pressed="true">All notes</button>

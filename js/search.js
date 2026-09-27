@@ -1,9 +1,19 @@
 /* jshint asi:true */
 /**
- * search.js — client-side search over search.json
+ * search.js — client-side search over a two-part index.
  *
- * The full index is intentionally lazy: the empty search page can render its
- * discovery links without downloading the multi-megabyte article index.
+ * Phase 1  search.json      ~44 KB gzipped: titles, tags, topics, summaries and
+ *                            the editorial fields. Searchable as soon as it
+ *                            arrives, so the first keystroke never waits on the
+ *                            article corpus.
+ * Phase 2  search-text.json ~822 KB gzipped: the stripped body of every post,
+ *                            fetched once the page is idle. Merging it only ever
+ *                            ADDS matches, so full-text coverage is preserved
+ *                            rather than traded away for speed; results simply
+ *                            improve a moment after first paint.
+ *
+ * Before the split the single index was 2.5 MB / 842 KB gzipped (92% of it body
+ * text) and a 400 kbps connection needed 57s before the first result appeared.
  */
 (function() {
     var input = document.getElementById('search-input')
@@ -16,6 +26,7 @@
     if (!input || !results || !app) return
 
     var indexUrl = app.getAttribute('data-index-url')
+    var textUrl = app.getAttribute('data-text-url')
     var DATA = null
     var LOADING = false
     var LOAD_ERROR = false
@@ -29,6 +40,10 @@
     var allHits = []
     var shownCount = 0
     var timer = null
+    // Phase 2 state: 'idle' | 'loading' | 'ready' | 'error'
+    var TEXT_STATE = textUrl ? 'idle' : 'ready'
+    var TEXT_SCHEDULED = false
+    var CACHE_PREFIX = 'ycw-search-text:'
 
     function load(cb) {
         if (DATA) return cb()
@@ -72,6 +87,7 @@
         var pending = callbacks.slice()
         callbacks = []
         for (var i = 0; i < pending.length; i++) pending[i](error)
+        if (!error) scheduleText()
     }
 
     function decodeEntities(value) {
@@ -86,19 +102,91 @@
     function prepareData() {
         for (var i = 0; i < DATA.length; i++) {
             var p = DATA[i]
-            p._plainText = decodeEntities(p.text)
+            p._snippet = decodeEntities(p.summary || '')
             p._titleLower = decodeEntities(p.display_title || p.title || '').toLowerCase()
-            p._haystack = [
+            p._topicLower = decodeEntities(p.topic || '').toLowerCase()
+            p._tagLower = decodeEntities((p.tags || []).join(' ')).toLowerCase()
+            p._categoryLower = decodeEntities((p.categories || []).join(' ')).toLowerCase()
+            p._metaHaystack = [
                 p.display_title || '',
                 p.title || '',
                 p.topic || '',
                 (p.tags || []).join(' '),
                 (p.categories || []).join(' '),
-                p._plainText
+                p._snippet
             ].join(' ').toLowerCase()
-            p._topicLower = decodeEntities(p.topic || '').toLowerCase()
-            p._tagLower = decodeEntities((p.tags || []).join(' ')).toLowerCase()
-            p._categoryLower = decodeEntities((p.categories || []).join(' ')).toLowerCase()
+            p._haystack = p._metaHaystack
+        }
+    }
+
+    // Phase 2: fold the body corpus into the haystacks. Purely additive — a post
+    // keeps every match it had in phase 1 and gains body matches.
+    function applyTextMap(map) {
+        if (!map) return
+        for (var i = 0; i < DATA.length; i++) {
+            var p = DATA[i]
+            var body = map[p.url]
+            if (!body) continue
+            p._snippet = decodeEntities(body)
+            p._haystack = p._metaHaystack + ' ' + p._snippet.toLowerCase()
+        }
+    }
+
+    function textCacheKey() {
+        var newest = ''
+        for (var i = 0; i < DATA.length; i++) {
+            if (!newest || DATA[i].date > newest) newest = DATA[i].date
+        }
+        return CACHE_PREFIX + DATA.length + ':' + newest
+    }
+
+    function readTextCache(key) {
+        try {
+            var raw = sessionStorage.getItem(key)
+            return raw ? JSON.parse(raw) : null
+        } catch (e) { return null }
+    }
+
+    function writeTextCache(key, map) {
+        try { sessionStorage.setItem(key, JSON.stringify(map)) } catch (e) {}
+    }
+
+    function loadText() {
+        if (TEXT_STATE === 'ready' || TEXT_STATE === 'loading' || !textUrl) return
+        TEXT_STATE = 'loading'
+        var key = textCacheKey()
+        var cached = readTextCache(key)
+        if (cached) {
+            applyTextMap(cached)
+            TEXT_STATE = 'ready'
+            if (hasIntent()) render(input.value.trim())
+            return
+        }
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET', textUrl, true)
+        xhr.onload = function() {
+            if (xhr.status < 200 || xhr.status >= 300) { TEXT_STATE = 'error'; return }
+            var map = null
+            try { map = JSON.parse(xhr.responseText) } catch (e) { TEXT_STATE = 'error'; return }
+            applyTextMap(map)
+            writeTextCache(key, map)
+            TEXT_STATE = 'ready'
+            if (hasIntent()) render(input.value.trim())
+        }
+        xhr.onerror = function() { TEXT_STATE = 'error' }
+        xhr.send()
+    }
+
+    // Kick phase 2 off only when the browser is idle, so it never competes with
+    // the first render or the user's first keystrokes.
+    function scheduleText() {
+        if (TEXT_SCHEDULED || TEXT_STATE === 'ready' || !textUrl) return
+        TEXT_SCHEDULED = true
+        var run = function() { loadText() }
+        if (typeof window.requestIdleCallback === 'function') {
+            window.requestIdleCallback(run, { timeout: 3000 })
+        } else {
+            window.setTimeout(run, 1200)
         }
     }
 
@@ -213,17 +301,46 @@
         })
     }
 
-    function snippet(text, q) {
+    // Pick the window that shows the most query terms. The old version only ever
+    // looked at terms[0], so a multi-word query could show an excerpt with none of
+    // the other words in it.
+    function snippet(text, terms) {
         var source = decodeEntities(text)
+        if (!source) return ''
         var lower = source.toLowerCase()
-        var i = lower.indexOf(q)
-        if (i < 0) return esc(source.slice(0, 80)) + '…'
-        var start = Math.max(0, i - 40)
-        var frag = source.slice(start, start + 140)
-        var safeQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-        return esc(frag).replace(new RegExp(safeQ, 'gi'), function(m) {
-            return '<mark>' + m + '</mark>'
-        })
+        var list = terms && terms.length ? terms : ['']
+        var best = -1
+        var bestScore = -1
+        for (var i = 0; i < list.length; i++) {
+            var at = list[i] ? lower.indexOf(list[i]) : 0
+            if (at < 0) continue
+            var score = 0
+            for (var j = 0; j < list.length; j++) {
+                if (list[j] && lower.indexOf(list[j]) >= 0) score++
+            }
+            if (score > bestScore || (score === bestScore && at < best)) {
+                bestScore = score
+                best = at
+            }
+        }
+        var start
+        var frag
+        if (best < 0) {
+            frag = source.slice(0, 140)
+        } else {
+            start = Math.max(0, best - 40)
+            frag = source.slice(start, start + 140)
+        }
+        var out = esc(frag)
+        for (var k = 0; k < list.length; k++) {
+            var q = list[k]
+            if (!q) continue
+            var safeQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+            out = out.replace(new RegExp(safeQ, 'gi'), function(m) {
+                return '<mark>' + m + '</mark>'
+            })
+        }
+        return (start > 0 ? '…' : '') + out + (source.length > start + 140 ? '…' : '')
     }
 
     function renderHit(hit, terms) {
@@ -284,7 +401,7 @@
         content.appendChild(a)
         if (terms.length) {
             var p = document.createElement('p')
-            p.innerHTML = snippet(hit.p.text, terms[0])
+            p.innerHTML = snippet(hit.p._snippet, terms)
             content.appendChild(p)
         }
         li.appendChild(content)
@@ -395,15 +512,21 @@
         if (!hits.length) {
             var hint = document.createElement('div')
             hint.className = 'search-empty'
-            hint.innerHTML = '<p>No matching posts found.</p>' +
-                '<p>Try fewer keywords, a broader topic, or browse tags.</p>' +
-                '<div class="search-suggestion-tags">' +
-                '<a href="' + baseUrl + '/tag/cpp/">C++</a>' +
-                '<a href="' + baseUrl + '/tag/linux/">Linux</a>' +
-                '<a href="' + baseUrl + '/tag/docker/">Docker</a>' +
-                '<a href="' + baseUrl + '/tag/llm/">LLM</a>' +
-                '<a href="' + baseUrl + '/tag/nvidia/">NVIDIA</a>' +
-                '</div>'
+            // While the body corpus is still in flight "no matches" is not a final
+            // answer — say so instead of showing a confident dead end.
+            var stillLoading = terms.length && TEXT_STATE === 'loading'
+            hint.innerHTML = stillLoading
+                ? '<p>No matches in titles, tags or summaries yet.</p>' +
+                  '<p>The full-text index is still loading; results refresh when it arrives.</p>'
+                : '<p>No matching posts found.</p>' +
+                  '<p>Try fewer keywords, a broader topic, or browse tags.</p>' +
+                  '<div class="search-suggestion-tags">' +
+                  '<a href="' + baseUrl + '/tag/cpp/">C++</a>' +
+                  '<a href="' + baseUrl + '/tag/linux/">Linux</a>' +
+                  '<a href="' + baseUrl + '/tag/docker/">Docker</a>' +
+                  '<a href="' + baseUrl + '/tag/llm/">LLM</a>' +
+                  '<a href="' + baseUrl + '/tag/nvidia/">NVIDIA</a>' +
+                  '</div>'
             results.innerHTML = ''
             results.appendChild(hint)
             if (stats) stats.textContent = ''
@@ -411,7 +534,18 @@
         }
         var visible = Math.min(PAGE_SIZE, hits.length)
         var suffix = hits.length > PAGE_SIZE ? ' · showing ' + visible : ''
-        if (stats) stats.textContent = hits.length + ' results' + suffix
+        if (stats) {
+            stats.textContent = hits.length + ' results' + suffix
+            // Be explicit that the body corpus is still arriving, otherwise a
+            // user who searched early sees fewer hits and assumes that is all
+            // there is. Only shown when it can still change the result set.
+            if (terms.length && TEXT_STATE === 'loading') {
+                var note = document.createElement('span')
+                note.className = 'search-text-pending'
+                note.textContent = ' · loading full-text index…'
+                stats.appendChild(note)
+            }
+        }
         results.innerHTML = ''
         for (var n = 0; n < visible; n++) results.appendChild(renderHit(hits[n], terms))
         shownCount = visible

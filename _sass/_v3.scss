@@ -8,7 +8,10 @@ html, body { max-width: 100%; overflow-x: hidden; }
     --bg-code: #f5f7fa;
     --text-primary: #172338;
     --text-secondary: #52627a;
-    --text-muted: #64748b;
+    /* Was #64748b: 4.43:1 on the #f4f7fb meta background, just under the 4.5:1
+       small-text threshold. Darkened to 5.07:1. Dark theme keeps its own
+       lighter value below. */
+    --text-muted: #5b6b7f;
     --text-link: #2563a6;
     --text-link-hover: #174a80;
     --border-color: #e2e8f0;
@@ -24,7 +27,11 @@ html, body { max-width: 100%; overflow-x: hidden; }
     --badge-bg: #e8f1fb;
     --badge-text: #245b9b;
     --tag-bg: #e7f5f1;
-    --tag-hover: #177d73;
+    /* 4.44:1 on --tag-bg, just under the 4.5:1 small-text threshold. Both text
+       uses (.search-topic--curated, .editorial-badge--featured) sit on --tag-bg;
+       the other two uses are hover backgrounds, where a 1-step darkening is
+       invisible. Dark theme keeps its own lighter value. */
+    --tag-hover: #177b72;
     --excerpt-border: #cfe0f2;
     --excerpt-bg: #f7faff;
     --scrollbar-thumb: #c6d2e2;
@@ -39,6 +46,21 @@ html, body { max-width: 100%; overflow-x: hidden; }
     --accent-blue: #3182ce;
     --accent-rose: #c65b83;
     --accent-green: #3d9b70;
+    /* Text-safe variants of the four track accents. The vivid values work as
+       3px card borders but measure 2.84-4.21:1 as text on a white card, and
+       2.54-3.62:1 on the 12% accent tint behind .path-icon. These clear 4.5:1
+       against both the card background and that tint. Dark theme overrides
+       them with lighter steps below. */
+    --accent-indigo-ink: #495fdf;
+    --accent-teal-ink: #0c7a70;
+    --accent-amber-ink: #97631c;
+    --accent-coral-ink: #ac5343;
+    /* Ten topic accents share this mechanism, so instead of ten more ink
+       variants, text uses mix the accent toward the body text colour: toward
+       near-black in light theme, toward near-white in dark theme (the dark
+       blocks override it). The accents stay untouched where they are used as
+       borders and fills. */
+    --accent-ink-mix: #0b1220;
 }
 
 [data-theme="dark"] {
@@ -70,7 +92,17 @@ html, body { max-width: 100%; overflow-x: hidden; }
     --excerpt-bg: #13253a;
     --scrollbar-thumb: #38516e;
     --scrollbar-track: #111c2c;
+    --accent-indigo-ink: #778cfe;
+    --accent-teal-ink: #24a89b;
+    --accent-amber-ink: #d28a27;
+    --accent-coral-ink: #e17764;
+    --accent-ink-mix: #e8eef7;
 }
+
+/* Dark theme --text-link is a light blue (#7db5ef); white label text on it
+   measured 2.16:1. The button keeps its light-blue fill and takes dark text. */
+[data-theme="dark"] .button--primary,
+[data-theme="dark"] .button--primary:hover { color: #0c1422; }
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -102,7 +134,14 @@ html, body { max-width: 100%; overflow-x: hidden; }
         --excerpt-bg: #13253a;
         --scrollbar-thumb: #38516e;
         --scrollbar-track: #111c2c;
+        --accent-indigo-ink: #778cfe;
+        --accent-teal-ink: #24a89b;
+        --accent-amber-ink: #d28a27;
+        --accent-coral-ink: #e17764;
+        --accent-ink-mix: #e8eef7;
     }
+    :root:not([data-theme="light"]) .button--primary,
+    :root:not([data-theme="light"]) .button--primary:hover { color: #0c1422; }
 }
 
 html { font-size: 16px; }
@@ -177,6 +216,33 @@ main:focus { outline: none; }
 .section-count, .section-link { color: var(--text-muted); font-size: 12px; }
 .section-link { white-space: nowrap; }
 .text-link { color: var(--text-link); font-size: 13px; font-weight: 650; }
+/* These shell links measured 12-15px tall at every width, under the 24px
+   minimum target size (WCAG 2.5.8). min-height is ignored on inline boxes, so
+   the hit area is made real here; type size and colour are unchanged. */
+.section-link,
+.text-link,
+.next,
+.footer-brand-name { display: inline-flex; align-items: center; min-height: 24px; }
+
+/* The same 24px floor for the remaining inline text links, measured at 12-22px
+   on a 375px viewport: footer columns (9 on every page, 14-17px), category and
+   tag chips (12px on the home cards, 22px in topic rows), topic note rows
+   (40 per topic page, 20px), breadcrumbs, related-post lists, the post topic
+   link and the mobile relation chips. Width is untouched, so no line breaks
+   move; only the hit area grows. */
+.footer-column a,
+.breadcrumb a,
+.topic-note-row a,
+.topic-related a,
+.related-posts a,
+.post-recent a,
+.home-post-meta .categories a,
+.post-meta .pageTag a,
+.post-meta .categories a,
+.post-topic-link,
+.topic-mobile-relations a,
+#content-side a,
+.side .content-ul a { display: inline-flex; align-items: center; min-height: 24px; }
 
 /* Header */
 #top {
@@ -257,6 +323,14 @@ main:focus { outline: none; }
 .hero-orbit span:nth-child(2) { top: 71px; right: -14px; background: var(--accent-teal); }
 .hero-orbit span:nth-child(3) { bottom: -14px; left: 71px; background: var(--accent-amber); }
 .hero-orbit span:nth-child(4) { top: 71px; left: -14px; background: var(--accent-coral); }
+/* White 10px labels on the shared accent colours measured 2.84-4.21:1, below
+   the 4.5:1 needed for small text. These darker steps are scoped to the orbit
+   markers so --accent-* keep their value where they act as borders or accents
+   on light cards. Verified: 4.55 / 4.51 / 4.51 / 4.53 against #fff. */
+.hero-orbit span { background: #4f68f4; }
+.hero-orbit span:nth-child(2) { background: #0c857a; }
+.hero-orbit span:nth-child(3) { background: #a26b1e; }
+.hero-orbit span:nth-child(4) { background: #bb5949; }
 .home-hero-note { padding: 18px; border: 1px solid var(--border-color); border-radius: 10px; background: color-mix(in srgb, var(--bg-card) 80%, transparent); }
 .home-hero-note strong { display: block; margin: 8px 0; font-size: 18px; line-height: 1.35; }
 .home-hero-note > span:last-child { color: var(--text-muted); font-size: 11px; line-height: 1.5; }
@@ -267,23 +341,23 @@ main:focus { outline: none; }
 .home-paths, .home-latest, .home-topics { margin: 0 0 10px; }
 .path-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .path-card { position: relative; display: flex; flex-direction: column; min-height: 290px; padding: 22px; border: 1px solid var(--border-color); border-top: 3px solid var(--path-accent, var(--accent-indigo)); border-radius: 12px; background: var(--bg-card); box-shadow: 0 3px 12px rgba(25,50,80,0.04); }
-.path-card--indigo { --path-accent: var(--accent-indigo); }
-.path-card--teal { --path-accent: var(--accent-teal); }
-.path-card--amber { --path-accent: var(--accent-amber); }
-.path-card--coral { --path-accent: var(--accent-coral); }
+.path-card--indigo { --path-accent: var(--accent-indigo); --path-accent-ink: var(--accent-indigo-ink); }
+.path-card--teal { --path-accent: var(--accent-teal); --path-accent-ink: var(--accent-teal-ink); }
+.path-card--amber { --path-accent: var(--accent-amber); --path-accent-ink: var(--accent-amber-ink); }
+.path-card--coral { --path-accent: var(--accent-coral); --path-accent-ink: var(--accent-coral-ink); }
 .path-card-top { display: flex; align-items: center; justify-content: space-between; }
-.path-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; color: var(--path-accent); background: color-mix(in srgb, var(--path-accent) 12%, transparent); }
+.path-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; color: var(--path-accent-ink, var(--path-accent)); background: color-mix(in srgb, var(--path-accent) 12%, transparent); }
 .path-eyebrow { color: var(--text-muted); font-size: 10px; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
 .path-card h3 { margin: 22px 0 0; border: 0; font-size: 20px; font-weight: 720; line-height: 1.2; }
-.path-title-zh { margin: 4px 0 12px !important; color: var(--path-accent) !important; font-size: 13px !important; font-weight: 650; }
+.path-title-zh { margin: 4px 0 12px !important; color: var(--path-accent-ink, var(--path-accent)) !important; font-size: 13px !important; font-weight: 650; }
 .path-card > p { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.65; }
 .path-outcome { margin-top: 10px !important; color: var(--text-primary) !important; font-size: 12px !important; }
-.path-outcome strong { color: var(--path-accent); }
+.path-outcome strong { color: var(--path-accent-ink, var(--path-accent)); }
 .path-meta { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 10px; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
-.path-safety { color: var(--accent-coral); }
+.path-safety { color: var(--accent-coral-ink, var(--accent-coral)); }
 .path-post-list { margin: 16px 0 0; padding-left: 18px; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
 .path-post-list li { margin: 3px 0; }
-.path-card-link { display: inline-block; margin-top: auto; padding-top: 18px; color: var(--path-accent); font-size: 12px; font-weight: 700; }
+.path-card-link { display: inline-block; margin-top: auto; padding-top: 18px; color: var(--path-accent-ink, var(--path-accent)); font-size: 12px; font-weight: 700; }
 .path-card-link span { margin-left: 4px; }
 .home-post-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .home-post-card { display: flex; flex-direction: column; min-height: 250px; padding: 20px; border: 1px solid var(--border-color); border-radius: 11px; background: var(--bg-card); box-shadow: 0 3px 12px rgba(25,50,80,0.04); }
@@ -300,7 +374,7 @@ main:focus { outline: none; }
 .topic-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .topic-mini-card { display: flex; align-items: center; gap: 11px; min-height: 62px; padding: 11px 14px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--bg-card); text-decoration: none; }
 .topic-mini-card:hover { border-color: var(--text-link); background: var(--bg-hover); }
-.topic-mini-icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; color: var(--topic-accent, var(--text-link)); background: color-mix(in srgb, var(--topic-accent, var(--text-link)) 12%, transparent); }
+.topic-mini-icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; color: color-mix(in srgb, var(--topic-accent, var(--text-link)) 72%, var(--accent-ink-mix)); background: color-mix(in srgb, var(--topic-accent, var(--text-link)) 12%, transparent); }
 .topic-mini-card--indigo { --topic-accent: var(--accent-indigo); }
 .topic-mini-card--teal { --topic-accent: var(--accent-teal); }
 .topic-mini-card--amber { --topic-accent: var(--accent-amber); }
@@ -391,7 +465,7 @@ main:focus { outline: none; }
 .breadcrumb a:hover { color: var(--text-link); }
 .topic-hero { position: relative; overflow: hidden; margin-bottom: 8px; padding: 38px 42px; border: 1px solid var(--border-color); border-top: 4px solid var(--topic-accent, var(--text-link)); border-radius: 15px; background: linear-gradient(135deg, var(--bg-card), var(--bg-hover)); box-shadow: var(--shadow); }
 .topic-hero::after { content: ""; position: absolute; right: -40px; bottom: -70px; width: 220px; height: 220px; border: 1px solid var(--border-color); border-radius: 50%; opacity: 0.7; }
-.topic-hero-eyebrow { display: flex; align-items: center; gap: 7px; color: var(--topic-accent, var(--text-link)); font-size: 11px; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
+.topic-hero-eyebrow { display: flex; align-items: center; gap: 7px; color: color-mix(in srgb, var(--topic-accent, var(--text-link)) 72%, var(--accent-ink-mix)); font-size: 11px; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
 .topic-hero h1 { margin: 15px 0 10px; font-size: 42px; font-weight: 760; letter-spacing: -0.04em; }
 .topic-hero-intro { max-width: 690px; margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
 .topic-hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
@@ -401,11 +475,11 @@ main:focus { outline: none; }
 .topic-feature-card:hover { border-color: var(--topic-accent, var(--text-link)); box-shadow: var(--shadow-hover); }
 .topic-feature-card--related { border-style: dashed; }
 .topic-feature-card--related .topic-feature-meta { color: var(--text-muted); }
-.topic-feature-meta { color: var(--topic-accent, var(--text-link)); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.topic-feature-meta { color: color-mix(in srgb, var(--topic-accent, var(--text-link)) 72%, var(--accent-ink-mix)); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .topic-feature-card h3 { margin: 12px 0 7px; border: 0; font-size: 17px; font-weight: 700; line-height: 1.35; }
 .topic-feature-card h3 { color: var(--text-primary); }
 .topic-feature-card p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
-.topic-feature-card .text-link { margin-top: auto; padding-top: 12px; color: var(--topic-accent, var(--text-link)); }
+.topic-feature-card .text-link { margin-top: auto; padding-top: 12px; color: color-mix(in srgb, var(--topic-accent, var(--text-link)) 72%, var(--accent-ink-mix)); }
 .topic-notes { margin-top: 36px; }
 .topic-note-list { border-top: 1px solid var(--border-color); }
 .topic-note-row { padding: 18px 0; border-bottom: 1px solid var(--border-color); }
@@ -507,7 +581,11 @@ main:focus { outline: none; }
 @media screen and (max-width: 1200px) and (min-width: 771px) {
     .page, .home-page, .start-page, .topics-page, .topic-page, .curated-page, .post-page, .archive-page, .tag-index-page, .about-page { width: 92%; }
     #top .wrapper, .site-footer .wrapper { width: 92%; }
-    #top nav a { padding: 0 7px; font-size: 11px; }
+    /* Padding only. The former `font-size: 11px` here made nav text smaller on
+       wider screens (11px at 771-1200px vs 12px at <=770px and >1200px), and it
+       also leaked into the 771-1024px drawer where an inline-nav rule has no
+       business applying. Nav labels are 12px at every width now. */
+    #top nav a { padding: 0 7px; }
     .path-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -524,17 +602,14 @@ main:focus { outline: none; }
     .brand-mark { width: 27px; height: 27px; }
     .brand-name { font-size: 16px; }
     .brand-tagline { display: none; }
-    #top nav { position: absolute; top: 56px; right: 0; left: 0; margin: 0; }
-    #top nav ul { display: block; padding: 6px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--header-bg); box-shadow: var(--shadow); }
-    #top nav li { display: block; }
-    #top nav a { display: flex; height: 40px; padding: 0 12px; border-radius: 5px; }
-    #top nav a.active { box-shadow: none; }
-    #top .menu { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; margin-left: auto; border: 1px solid rgba(255,255,255,0.18); border-radius: 7px; color: #d5e0ef; background: transparent; }
-    #top .theme-toggle { display: none; }
+    /* Drawer navigation rules moved to the max-width:1024px block below: the
+       drawer itself activates at 1024px, so stacking and row metrics must not
+       stop at 770px. See "Responsive navigation" further down. */
     .home-hero, .start-hero { grid-template-columns: 1fr; gap: 26px; margin-top: 18px; padding: 30px 22px; }
     .home-hero h1, .start-hero h1 { font-size: 38px; }
     .home-hero-aside { min-height: auto; }
-    .hero-orbit { display: none; }
+    /* .hero-orbit is hidden in the max-width:1024px block below, matching the
+       width at which the drawer takes over. */
     .home-hero-note { max-width: 320px; }
     .home-stats { grid-template-columns: 1fr 1fr; }
     .path-grid, .home-post-grid, .topic-directory-grid, .topic-featured-grid, .start-intro-grid { grid-template-columns: 1fr; }
@@ -621,6 +696,8 @@ main:focus { outline: none; }
 .search-select-filters label { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 11px; }
 .search-select-filters select { min-width: 130px; height: 32px; padding: 0 26px 0 8px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-secondary); background: var(--bg-card); font: inherit; font-size: 11px; }
 #search-stats { min-height: 18px; margin: 8px 0; color: var(--text-muted); font-size: 12px; }
+/* Phase-2 notice: the body corpus is still arriving, so the hit count can grow. */
+.search-text-pending { margin-left: 2px; opacity: 0.85; }
 #search-results { margin: 0; padding: 0; list-style: none; }
 .search-hit { display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 3px 14px; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
 .search-hit time { grid-column: 1; grid-row: 1; color: var(--text-muted); font-size: 11px; }
@@ -658,9 +735,13 @@ main:focus { outline: none; }
 .archive-header h1 { margin: 8px 0; font-size: 40px; font-weight: 760; letter-spacing: -0.04em; }
 .archive-header p { margin: 0; color: var(--text-secondary); font-size: 13px; }
 .archive-header-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; min-width: 180px; border: 1px solid var(--border-color); background: var(--border-color); }
-.archive-header-stats strong, .archive-header-stats span { background: var(--bg-card); }
-.archive-header-stats strong { padding: 12px 14px 0; font-size: 20px; }
-.archive-header-stats span { padding: 0 14px 12px; color: var(--text-muted); font-size: 10px; }
+/* Each stat is its own grid cell and stacks number over label, matching
+   .home-stats. The four children used to be unwrapped, so 1fr 1fr auto-placed
+   them as [number|label] / [number|label] and the padding below (top on the
+   number, bottom on the label) never applied to a stacked pair. */
+.archive-header-stats div { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; background: var(--bg-card); }
+.archive-header-stats strong { font-size: 20px; }
+.archive-header-stats span { color: var(--text-muted); font-size: 10px; }
 .archive-meta-line { margin: 12px 0; color: var(--text-muted); font-size: 12px; }
 .archive-year-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0 25px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-card); }
 .archive-year-nav a { padding: 4px 9px; border-radius: 5px; color: var(--text-secondary); background: var(--bg-hover); font-size: 11px; }
@@ -674,7 +755,7 @@ main:focus { outline: none; }
 .archive-list li { display: flex; gap: 14px; padding: 9px 0; border-top: 1px solid var(--border-color); }
 .archive-list time { flex: 0 0 70px; color: var(--text-muted); font-size: 11px; }
 .archive-list-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.archive-list-copy > a { color: var(--text-primary); font-size: 13px; line-height: 1.4; }
+.archive-list-copy > a { display: flex; align-items: center; min-height: 24px; color: var(--text-primary); font-size: 13px; line-height: 1.4; }
 .archive-list-copy > a:hover { color: var(--text-link); }
 .archive-list-meta { color: var(--text-muted); font-size: 10px; }
 @media screen and (max-width: 770px) {
@@ -692,10 +773,10 @@ main:focus { outline: none; }
 .editorial-badge--type { color: var(--text-link); background: var(--badge-bg); text-transform: capitalize; }
 .editorial-badge--featured { color: var(--tag-hover); background: var(--tag-bg); }
 .editorial-badge--tested { color: #287a57; background: #e6f5ec; }
-.editorial-badge--review { color: #a5651a; background: #fff2d8; }
-.editorial-badge--unverified { color: #6b7280; background: #edf0f4; }
+.editorial-badge--review { color: #9f6119; background: #fff2d8; }
+.editorial-badge--unverified { color: #676d7b; background: #edf0f4; }
 .editorial-badge--version { color: #8a5a16; background: #fff0d2; }
-.editorial-badge--historical { color: #64748b; background: #e9eef5; }
+.editorial-badge--historical { color: #5b6b7f; background: #e9eef5; }
 .editorial-badge--ai { color: #7654c7; background: #eee8ff; }
 .editorial-badge--imported { color: #526477; background: #e8eef4; }
 .editorial-badge--caution { color: #a34e4e; background: #fdeaea; }
@@ -714,9 +795,10 @@ main:focus { outline: none; }
 .curated-header h1 { margin: 8px 0; font-size: 40px; font-weight: 760; letter-spacing: -0.04em; }
 .curated-header p { max-width: 680px; margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.65; }
 .curated-header-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; min-width: 150px; border: 1px solid var(--border-color); background: var(--border-color); }
-.curated-header-stats strong, .curated-header-stats span { background: var(--bg-card); }
-.curated-header-stats strong { padding: 11px 13px 0; font-size: 19px; }
-.curated-header-stats span { padding: 0 13px 11px; color: var(--text-muted); font-size: 10px; }
+/* Same fix as .archive-header-stats: wrap each stat and stack it. */
+.curated-header-stats div { display: flex; flex-direction: column; gap: 3px; padding: 11px 13px; background: var(--bg-card); }
+.curated-header-stats strong { font-size: 19px; }
+.curated-header-stats span { color: var(--text-muted); font-size: 10px; }
 .curated-path-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .curated-path-grid .path-card { min-height: 270px; }
 .curated-all { margin-top: 8px; }
@@ -731,6 +813,17 @@ main:focus { outline: none; }
 
 /* About */
 .about-page { width: 1080px; margin: 0 auto; }
+
+/* The 771-1200px percentage rule further up lists .tag-index-page,
+   .search-page, .archive-page and .about-page, but it is declared BEFORE
+   their base widths above. Same specificity, so the later fixed pixel width
+   wins on source order: the page box overflows the viewport from 771px up to
+   1100px, and `body { overflow-x: hidden }` then clips it with no scrollbar
+   and no indication. Re-assert the percentage after the last base width so the
+   band actually applies. Verified: 771-1200px only, >=1201px keeps 1080/1180. */
+@media screen and (max-width: 1200px) and (min-width: 771px) {
+    .tag-index-page, .search-page, .archive-page, .about-page { width: 92%; }
+}
 .about-header { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin: 30px 0 18px; padding: 40px 46px; border: 1px solid var(--border-color); border-radius: 16px; background: linear-gradient(135deg, var(--bg-card), var(--bg-hover)); box-shadow: var(--shadow); }
 .about-header h1 { margin: 8px 0; font-size: 42px; font-weight: 760; letter-spacing: -0.04em; }
 .about-header p { max-width: 620px; margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
@@ -835,6 +928,27 @@ main:focus { outline: none; }
         height: 40px;
         margin-left: 4px;
     }
+}
+
+/* Drawer metrics for the whole drawer range.
+   The drawer is activated at 1024px (see the block above), but its row metrics
+   used to live in a max-width:770px block, so 771-1024px rendered a drawer
+   with tablet typography: 11px labels on a 40px row with line-height 1, i.e.
+   visibly smaller text on a wider screen. These rows also carry the explicit
+   line-height the old block never set, and the theme toggle is part of the row
+   list again (it used to be display:none below 770px, leaving phones with no
+   dark-mode control at all). */
+@media screen and (max-width: 1024px) {
+    #top nav a,
+    #top nav .theme-toggle {
+        line-height: 1.5;
+    }
+    #top nav li:last-child .theme-toggle {
+        margin-left: 0;
+    }
+    /* The decorative orbit graphic used to be hidden only below 770px, so it
+       painted on top of the open drawer between 771 and 1024px. */
+    .hero-orbit { display: none; }
 }
 
 .topic-mobile-relations { display: none; }
