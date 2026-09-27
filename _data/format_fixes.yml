@@ -17,10 +17,10 @@ fixes:
     kind: markdown-code-fence
     reason: Wrap inline XML examples and separate list/code fences so historical examples are not emitted as live DOM elements, duplicate IDs, or invalid anchors.
   - post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
-    fixed_blob: b7c7d90b9fdf9b5e20666afa12dc7363e9bb1a50
-    date: 2026-09-25
-    kind: excerpt-and-raw-wrapper-and-technical-correction
-    reason: Move the excerpt separator outside raw, mark the page as a gateway deployment note, use the official calciumion/new-api image, add the shared network, and remove the unsupported built-in-worker example.
+    fixed_blob: 50c6722a0c25f8e3e7c52595fec2715d9d482203
+    date: 2026-09-27
+    kind: excerpt-and-raw-wrapper-and-technical-correction-and-anchor
+    reason: Move the excerpt separator outside raw, mark the page as a gateway deployment note, use the official calciumion/new-api image, add the shared network, remove the unsupported built-in-worker example, and repoint the one hand-written table-of-contents link whose guessed anchor did not match the heading id kramdown actually generates (the curly quotes around the deprecation note are stripped, so the id ends at "worker" with no following hyphen).
   - post: _posts/2026-09-05-OpenSource-Agent-Swarm.md
     fixed_blob: 450c62ae3add5502fcd3c82791b553e4bf169194
     date: 2026-09-25
@@ -56,3 +56,8 @@ fixes:
     date: 2026-09-25
     kind: encoded-external-url
     reason: Percent-encode the literal space in the historical PEiD download URL so the generated link is valid.
+  - post: _posts/2023-02-26-数据结构(借鉴408)-查找.md
+    fixed_blob: 4a1391935af8a7425dc19c3ba9841fc635ecaf62
+    date: 2026-09-27
+    kind: escaped-reference-link
+    reason: Escape the opening bracket of the B-tree height subscript so kramdown stops parsing "[m/2,向上取整][(n+1)/2]+1" as a reference-style link, which had emitted a live anchor whose target was the literal string "[(n+1)/2]+1" and therefore always 404'd. The rendered text is unchanged.

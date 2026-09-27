@@ -43,7 +43,7 @@ type: page
     <section class="tag-all-section" aria-labelledby="all-tags-title">
         <div class="section-heading">
             <div><span class="section-kicker">The full index</span><h2 id="all-tags-title">All tags</h2></div>
-            <span class="section-count">{{ site.tags | size }} labels</span>
+            <span class="section-count" data-tag-total="{{ site.tags | size }}">{{ site.tags | size }} labels</span>
         </div>
         <div class="tag-controls" aria-label="Tag index controls">
             <label for="tag-filter-input">Filter tags

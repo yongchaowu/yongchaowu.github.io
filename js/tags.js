@@ -16,6 +16,7 @@
     var filterInput = document.getElementById('tag-filter-input')
     var sortSelect = document.getElementById('tag-sort')
     var allTags = document.getElementById('all-tags')
+    var countEl = document.querySelector('.section-count[data-tag-total]')
     var emptyState = null
 
     function load(cb) {
@@ -104,6 +105,13 @@
             emptyState.className = 'tag-filter-empty'
             emptyState.textContent = 'No tags match this filter.'
             allTags.parentElement.appendChild(emptyState)
+        }
+        // Keep the "N labels" heading honest: while a filter is active it described
+        // the whole index while only `visible` chips were on screen. Pluralise on
+        // the number, not on the query string.
+        if (countEl) {
+            var shown = query ? visible : parseInt(countEl.getAttribute('data-tag-total') || '0', 10)
+            countEl.textContent = shown + (shown === 1 ? ' label' : ' labels')
         }
     }
 

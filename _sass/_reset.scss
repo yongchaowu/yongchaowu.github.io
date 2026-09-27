@@ -94,6 +94,17 @@
     }
 }
 
+/* The UA stylesheet's `[hidden] { display: none }` is weaker than any author
+   `display` declaration, so scripts that hide an element by setting `.hidden`
+   silently fail wherever CSS also sets `display` — `.tag-btn` is
+   `display: inline-flex`, which made the tag-page filter box a no-op: tags.js
+   set `link.hidden = true` and all 241 chips stayed on screen. This is the
+   standard normalize.css remedy; `!important` is required because author
+   declarations beat the UA sheet regardless of specificity. */
+[hidden] {
+    display: none !important;
+}
+
 body,
 html,
 div,

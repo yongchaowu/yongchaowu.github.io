@@ -71,6 +71,28 @@ unresolved_markup = html_files.select do |path|
 end
 check('Generated HTML has no unresolved Liquid/empty links', unresolved_markup.empty?, unresolved_markup.first(3).join(', '))
 
+# Scripts that hide an element by setting `.hidden` rely on `[hidden] { display: none }`,
+# but that rule lives in the UA stylesheet and loses to ANY author `display`
+# declaration. `.tag-btn` is `display: inline-flex`, which silently turned the
+# tag-page filter box into a no-op: tags.js set `link.hidden = true` and all 241 chips
+# stayed visible. None of the other gates can see this — the HTML is valid, the JS is
+# syntactically fine, and the built route exists — so assert the shipped CSS keeps the
+# override that makes `.hidden` authoritative again.
+css_path = File.join(SITE_DIR, 'css', 'main.css')
+if File.file?(css_path)
+  # Strip comments first: the SCSS explains this rule in prose, and the minifier
+  # keeps that comment, so a naive match would "find" `[hidden] { display: none }`
+  # inside the comment text and pass a build that never shipped the override.
+  css = File.read(css_path).gsub(%r{/\*.*?\*/}m, ' ')
+  hidden_rules = css.scan(/\[hidden\]\s*\{([^}]*)\}/m).flatten
+  forces_none = hidden_rules.any? { |body| body.gsub(/\s+/, '').include?('display:none!important') }
+  conflicting = hidden_rules.reject { |body| body.gsub(/\s+/, '').match?(/display:\s*none/) }
+  check('Shipped CSS forces [hidden] to display:none', forces_none && conflicting.empty?,
+        "rules=#{hidden_rules.length} important=#{forces_none} conflicting=#{conflicting.length}")
+else
+  check('Shipped CSS forces [hidden] to display:none', false, 'css/main.css missing')
+end
+
 sitemap_path = File.join(SITE_DIR, 'sitemap.xml')
 if File.file?(sitemap_path)
   begin

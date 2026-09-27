@@ -30,7 +30,7 @@ tags:
 - [架构概览](#架构概览)
 - [环境准备](#环境准备)
 - [方案一：独立 Worker + New-API 网关（推荐）](#方案一独立-worker--new-api-网关推荐)
-- [方案二：两个 New-API 网关实例（旧版内置 Worker 方案已废弃）](#方案二两个-new-api-网关实例旧版内置-worker-方案已废弃)
+- [方案二：两个 New-API 网关实例（旧版内置 Worker 方案已废弃）](#方案二两个-new-api-网关实例旧版内置-worker方案已废弃)
 - [Docker Compose 完整部署](#docker-compose-完整部署)
 - [验证与测试](#验证与测试)
 - [性能调优](#性能调优)
