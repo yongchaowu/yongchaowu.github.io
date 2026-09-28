@@ -10,7 +10,7 @@ title: Yc.W
 brief-intro: Systems · C++ · AI Infrastructure
 description: "A living engineering notebook about C++ systems, AI infrastructure, simulation, and reliable software."
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://www.wyclswq.top" # the base hostname & protocol for your site
+url: "https://blog.wyclswq.top" # the base hostname & protocol for your site
 lang: en
 
 permalink: /:year/:month/:day/:title/
