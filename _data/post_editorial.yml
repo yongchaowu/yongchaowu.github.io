@@ -567,40 +567,9 @@ posts:
   secondary_topics:
   - security
   - tools
-  series: llm-probe
-  series_order: 10
   freshness: version-sensitive
   verification: reported-tested
   risk: caution
   review_date: 2026-09-30
   review_basis: 17 组 mock 场景本地复跑 + 两端密文互读互解实测 + 附录源码与仓库本体逐字节比对
   id: llm_probe_full
-- post: _posts/2026-09-30-llm-probe-1-four-layer-diagnosis.md
-  content_type: deep-dive
-  placement: reference
-  primary_topic: ai
-  secondary_topics:
-  - security
-  series: llm-probe
-  series_order: 20
-  freshness: version-sensitive
-  verification: reported-tested
-  risk: caution
-  review_date: 2026-09-30
-  review_basis: 自 llm-probe 合订本拆出的博客园版；附录源码与仓库本体逐字节比对
-  id: llm_probe_part1
-- post: _posts/2026-09-30-llm-probe-2-curl-port-and-key-vault.md
-  content_type: deep-dive
-  placement: reference
-  primary_topic: ai
-  secondary_topics:
-  - security
-  - tools
-  series: llm-probe
-  series_order: 30
-  freshness: version-sensitive
-  verification: reported-tested
-  risk: caution
-  review_date: 2026-09-30
-  review_basis: 自 llm-probe 合订本拆出的博客园版；附录源码与仓库本体逐字节比对
-  id: llm_probe_part2

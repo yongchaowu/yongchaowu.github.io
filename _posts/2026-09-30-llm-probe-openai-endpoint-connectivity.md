@@ -41,8 +41,7 @@ print(client.chat.completions.create(model="claude-opus-4-7",
 
 完整代码在 GitHub：<https://github.com/yongchaowu/llm-probe>，本地位于 `~/Workspace/VibeCoding/llm-probe/`。仓库里还有一份"最简 demo"（`demo_minimal.py`，97 行），见第六节；本文附录收录了两份脚本的逐行源码。
 
-> **本文是完整版。** 同一批内容另有两条更聚焦的读法：[上篇：四层诊断与 llm_probe 的 Python 实现]({{ '/2026/09/30/llm-probe-1-four-layer-diagnosis/' | relative_url }})（L1–L4、退出码、17 组 mock 实测 + py 全文）、[下篇：纯 curl/openssl shell 版与密钥加密]({{ '/2026/09/30/llm-probe-2-curl-port-and-key-vault/' | relative_url }})（密钥加密、口令来源、双实现一致性 + sh 全文）。
-> 这两篇最初是为博客园的单篇 200 KB 上限拆出来的，本站没有该限制。
+> **版本说明**：本文是完整合订本，一次读完四层诊断、密钥管理与两份脚本全文。博客园版受单篇 200 KB 上限限制，拆成了「上篇：四层诊断与 Python 实现」和「下篇：纯 curl/openssl shell 版与密钥加密」两篇发布；本站没有该限制，故不再拆分。
 
 ---
 
