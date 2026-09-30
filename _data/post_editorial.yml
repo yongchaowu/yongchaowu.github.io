@@ -496,3 +496,111 @@ posts:
   review_date: '2026-09-25'
   review_basis: authorization-backup-and-lockout-boundary
   risk_note: "仅在你拥有 GitLab 实例授权、已完成可恢复备份并确认不会锁出管理员账户时执行；不同版本的自托管实例可能需要不同命令。"
+- post: _posts/2026-09-25-clear-proxy-env-vars.md
+  content_type: runbook
+  placement: deep-dive
+  primary_topic: systems
+  secondary_topics:
+  - tools
+  freshness: current
+  verification: reported-tested
+  risk: normal
+  series: shell-tooling-mechanics
+  series_order: 10
+  id: clear_proxy_env
+- post: _posts/2026-09-25-opencode-chrome-cdp-blog-publishing.md
+  content_type: runbook
+  placement: deep-dive
+  primary_topic: tools
+  secondary_topics:
+  - ai
+  freshness: version-sensitive
+  verification: not-tested
+  risk: caution
+  id: opencode_cdp_publishing
+- post: _posts/2026-09-26-mysql-connector-cpp-26.7-call-to-bytes.md
+  content_type: deep-dive
+  placement: deep-dive
+  primary_topic: database
+  secondary_topics:
+  - cpp
+  - systems
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: mysql_connector_bytes
+- post: _posts/2026-09-26-nodejs24-nvm-install-node-24.md
+  content_type: deep-dive
+  placement: deep-dive
+  primary_topic: tools
+  secondary_topics:
+  - programming
+  - systems
+  freshness: version-sensitive
+  verification: review-required
+  risk: caution
+  id: nodejs24_nvm
+- post: _posts/2026-09-27-gh-api-disable-actions-all-forks.md
+  content_type: runbook
+  placement: deep-dive
+  primary_topic: devops
+  secondary_topics:
+  - tools
+  freshness: version-sensitive
+  verification: reported-tested
+  risk: caution
+  id: gh_actions_forks_off
+- post: _posts/2026-09-27-tool-anaconda-conda-introduction.md
+  content_type: reference
+  placement: reference
+  primary_topic: tools
+  secondary_topics:
+  - programming
+  freshness: version-sensitive
+  verification: review-required
+  risk: normal
+  id: anaconda_conda_intro
+- post: _posts/2026-09-30-llm-probe-openai-endpoint-connectivity.md
+  content_type: deep-dive
+  placement: deep-dive
+  primary_topic: ai
+  secondary_topics:
+  - security
+  - tools
+  series: llm-probe
+  series_order: 10
+  freshness: version-sensitive
+  verification: reported-tested
+  risk: caution
+  review_date: 2026-09-30
+  review_basis: 17 组 mock 场景本地复跑 + 两端密文互读互解实测 + 附录源码与仓库本体逐字节比对
+  id: llm_probe_full
+- post: _posts/2026-09-30-llm-probe-1-four-layer-diagnosis.md
+  content_type: deep-dive
+  placement: reference
+  primary_topic: ai
+  secondary_topics:
+  - security
+  series: llm-probe
+  series_order: 20
+  freshness: version-sensitive
+  verification: reported-tested
+  risk: caution
+  review_date: 2026-09-30
+  review_basis: 自 llm-probe 合订本拆出的博客园版；附录源码与仓库本体逐字节比对
+  id: llm_probe_part1
+- post: _posts/2026-09-30-llm-probe-2-curl-port-and-key-vault.md
+  content_type: deep-dive
+  placement: reference
+  primary_topic: ai
+  secondary_topics:
+  - security
+  - tools
+  series: llm-probe
+  series_order: 30
+  freshness: version-sensitive
+  verification: reported-tested
+  risk: caution
+  review_date: 2026-09-30
+  review_basis: 自 llm-probe 合订本拆出的博客园版；附录源码与仓库本体逐字节比对
+  id: llm_probe_part2

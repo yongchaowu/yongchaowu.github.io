@@ -1,0 +1,3662 @@
+---
+layout: post
+title: "LLM 端点连不上？把\"不通\"拆成四层来查：llm_probe 的 py + sh 双实现"
+display_title: "LLM 端点连不上？把\"不通\"拆成四层来查：llm_probe 的 py + sh 双实现"
+summary: "从一次 401 无效的令牌说起，讲清楚 OpenAI 兼容端点要打通要过几关（DNS/TCP/TLS、/models 认证、/chat/completions 推理、openai 0.28 与 1.x 兼容），并给出零依赖 Python 与纯 curl 两个实现：退出码直接给结论，密钥用 openssl 加密后存进 env 配置文件；v1.1 另提供显式五项 OpenAI 兼容能力矩阵。"
+lang: zh-CN
+date: 2026-09-30 10:00:00
+categories:
+  - AI & LLM
+  - Security & Networking
+  - Developer Tools
+tags:
+  - "Python"
+  - "Shell"
+  - "LLM"
+  - "网络诊断"
+  - "密钥安全"
+  - "OpenAI"
+  - "curl"
+---
+
+<!--more-->
+
+排查一个中转站的 LLM 接口时，我常常只写三行就跑起来了：
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="https://aiapiv2.pekpik.com/v1", api_key="sk-xxx")
+print(client.chat.completions.create(model="claude-opus-4-7",
+      messages=[{"role": "user", "content": "Olá!"}]).choices[0].message.content)
+```
+
+> `aiapiv2.pekpik.com` 是本文真实排障对象——一个**第三方中转站**，仅作示例。
+> `llm_probe` 自己的默认值是官方 `https://api.openai.com/v1`，任何 OpenAI 兼容端点都能填。
+
+然后它挂了。挂了之后我开始瞎猜：是网络不通？是 key 过期了？是 base_url 少写了 `/v1`？是模型名不对？还是 SDK 版本不兼容？——**一个异常信息回答不了这五个问题中的任何一个**，只能一个个改着重跑，每轮几分钟。
+
+更糟的是第二类问题：key 明文躺在脚本里，脚本进了备份、进了网盘、贴进了聊天窗口，key 就等于公开了。
+
+这篇文章对应两个文件：`llm_probe.py`（1490 行，纯标准库）和 `llm_probe.sh`（1434 行，纯 `curl` + `openssl`）。它们做同一件事——**把"连不上"翻译成"哪一层连不上"**，用退出码直接给结论；并且把密钥加密存进一份 env 配置文件，两个实现互认对方写的密文。v1.1 增加了显式 `--matrix`：在基础探测之外，验收 Chat Completions、Responses API、SSE、tool calling 与 JSON schema。
+
+完整代码在 GitHub：<https://github.com/yongchaowu/llm-probe>，本地位于 `~/Workspace/VibeCoding/llm-probe/`。仓库里还有一份"最简 demo"（`demo_minimal.py`，97 行），见第六节；本文附录收录了两份脚本的逐行源码。
+
+> **本文是完整版。** 同一批内容另有两条更聚焦的读法：[上篇：四层诊断与 llm_probe 的 Python 实现]({{ '/2026/09/30/llm-probe-1-four-layer-diagnosis/' | relative_url }})（L1–L4、退出码、17 组 mock 实测 + py 全文）、[下篇：纯 curl/openssl shell 版与密钥加密]({{ '/2026/09/30/llm-probe-2-curl-port-and-key-vault/' | relative_url }})（密钥加密、口令来源、双实现一致性 + sh 全文）。
+> 这两篇最初是为博客园的单篇 200 KB 上限拆出来的，本站没有该限制。
+
+---
+
+## 目录
+
+- [一、起因：异常信息回答不了"哪一层坏了"](#一起因异常信息回答不了哪一层坏了)
+- [二、四层探测：每一层各自回答一个问题](#二四层探测每一层各自回答一个问题)
+  - [L1 网络：DNS → TCP → TLS](#l1-网络dns--tcp--tls)
+  - [L2 认证：GET /models](#l2-认证get-models)
+  - [L3 推理：POST /chat/completions](#l3-推理post-chatcompletions)
+  - [L4 SDK：0.28 和 1.x 是两个世界](#l4-sdk028-和-1x-是两个世界)
+  - [v1.1：显式 OpenAI 兼容能力矩阵](#v11显式-openai-兼容能力矩阵)
+- [三、退出码就是结论](#三退出码就是结论)
+- [四、实测：用 mock 服务把分支跑干净](#四实测用-mock-服务把分支跑干净)
+- [五、密钥：加密后存进 env 文件](#五密钥加密后存进-env-文件)
+- [六、只想要一个最简 demo](#六只想要一个最简-demo)
+- [七、两个实现怎么保持行为一致](#七两个实现怎么保持行为一致)
+- [八、真实端点排障实录](#八真实端点排障实录)
+- [九、可以怎么改](#九可以怎么改)
+- [总结](#总结)
+- [附录：完整源码](#附录完整源码)
+
+---
+
+## 一、起因：异常信息回答不了"哪一层坏了"
+
+一个 OpenAI 兼容端点要真正可用，得依次通过四道关卡，而**每道关卡的失败长得完全不一样**：
+
+1. 域名能解析吗？TCP 能握手吗？TLS 证书有效吗？
+2. 这个 key 还活着吗？
+3. 这个模型名服务端认吗？请求参数能被接受吗？
+4. 我用的 openai SDK 版本，跟这个端点兼容吗？
+
+写死一个 `client.chat.completions.create()` 的脚本，把四道关卡压成了一个点：任何一道挂了，你看到的都是同一个 `APIConnectionError` 或者一行 401。于是排障退化成猜谜。
+
+`llm_probe` 的核心思路是**分层**：每层一个独立请求、一个独立判定、一个独立的失败理由，串起来跑一遍，报告里直接写"卡在第几层、证据是什么"。
+
+```
+[OK  ] L1 网络 [1/3]  DNS+TCP+TLS aiapiv2.pekpik.com:443 OK (153.3ms) TLSv1.3 CN=pekpik.com 有效期至 Nov 21 17:25:02 2026 GMT
+[FAIL] L2 认证 [2/3]  HTTP 403：密钥无效
+[SKIP] L3 推理 [3/3]  L2 认证未通过，已跳过（--all 可强制执行）
+------------------------------------------------------------
+结论 ❌ 认证失败：API Key 无效或已过期（HTTP 403：密钥无效）
+退出码 3
+```
+
+上面这段是真实输出：网络完全正常、证书没问题，卡在第二层。**这比我原来那三行脚本给出的信息多，而且结论是机器可判断的（退出码 3）**——可以直接写进 CI 或者 shell 的 `if` 里。
+
+## 二、四层探测：每一层各自回答一个问题
+
+### L1 网络：DNS → TCP → TLS
+
+不发 HTTP 请求，直接开 socket：先解析域名，再 TCP 连接，再做一次 TLS 握手，并把证书信息带出来（签发给谁、什么时候过期、TLS 协议版本）。
+
+```python
+context = ssl.create_default_context()
+with context.wrap_socket(sock, server_hostname=host) as tls:
+    cert = tls.getpeercert() or {}
+    subject = dict(x[0] for x in cert.get("subject", ())).get("commonName", "?")
+```
+
+这一层值得单独存在的理由有三个：
+
+- **错误可以精确分类**：`socket.gaierror` 是 DNS、`ConnectionRefusedError` 是端口没开、超时是被防火墙丢包、`SSLError` 是证书问题。这四种在 HTTP 层看起来都像"连不上"。
+- **证书快过期能提前发现**：`notAfter` 直接打在报告里。
+- **它是裸 socket，天然不走系统代理**——所以我在两个实现里都加了 `--direct`，让后面的 HTTP 层也绕开代理，保持口径一致。不然会出现"L1 说通、L2 说不通"的自相矛盾结论（真遇到过，见第七节）。
+
+shell 版没有 `ssl` 模块可用，就用 curl 的写法拿同样的信息：
+
+```sh
+curl "$@" -o /dev/null -w '%{time_connect} %{time_appconnect} %{remote_ip}' "$BASE_URL/"
+```
+
+`time_appconnect` 是 TLS 握手耗时（走代理时它等于代理到目标的握手），`remote_ip` 能一眼看出流量是不是被 TUN 劫走了。
+
+### L2 认证：GET /models
+
+```http
+GET {base_url}/models
+Authorization: Bearer {key}
+```
+
+`/models` 是 OpenAI 兼容端点里最轻的鉴权入口，不产生 token 消耗。判定规则：
+
+| 状态码 | 判定 | 是否致命 |
+|---|---|---|
+| 200 | key 有效，顺手数一下可枚举的模型数 | — |
+| 401 / 403 | **key 无效或已过期** | 致命，退出码 3 |
+| 404 | 这个中转站没实现 `/models` | **非致命**，继续测 L3 |
+| 429 | 限流或额度耗尽 | 致命，退出码 3 |
+| 5xx | 服务端故障 | 致命 |
+
+**404 必须是非致命的**，这是我踩过的坑：不少 new-api / one-api 架构的中转站对 `/models` 返回 404，但 `/chat/completions` 完全正常。如果把 404 当成失败，这类端点会被误判成"不可用"。对应报告里会打一行 `认证跳过（HTTP 404：该端点未实现 /models）`，最终结论仍可能是 0。
+
+还有一处刻意的"偷懒"：L2 判定 key 有问题之后，**默认跳过 L3**（`L2 认证未通过，已跳过`）。反正 L3 一定也会 401，何必白烧一次请求、多等一秒？要强制跑完就加 `--all`。
+
+### L3 推理：POST /chat/completions
+
+单轮、短提示、`max_tokens` 默认 64——这是"能不能推理"的最小证明，不是压测。判定：
+
+| 状态码 | 结论 | 退出码 |
+|---|---|---|
+| 200 | 打通，报告里打印回复片段和 token 用量 | 0 |
+| 400 | **模型名不被接受**（`model does not exist`） | 4 |
+| 404 | 路径不对，提示"检查 base_url 是否含 /v1" | 4 |
+| 429 | 限流 / 额度耗尽 | 4 |
+| 401 / 403 | key 问题漏到这层才暴露 | 3 |
+
+其中 400 和 404 的区分很有价值：**同样是"请求发出去了但没成"，400 指向 model，404 指向 URL**，两者的修法完全不同。
+
+### L4 SDK：0.28 和 1.x 是两个世界
+
+这一层只在加 `--sdk` 时执行，因为它要真实调一次 SDK，不是免费的。它的存在理由很具体：这台机器上装的是 `openai 0.28.1`，而脚本里写的是新版写法：
+
+```python
+from openai import OpenAI          # 0.28.1 根本没有这个类
+ImportError: cannot import name 'OpenAI' from 'openai'
+```
+
+**请求根本没发出去**，却看起来像"端点不通"。这类假阴性最难查。所以 L4 会先报 SDK 版本和走的分支，再报调用结果：
+
+```python
+if hasattr(openai, "OpenAI"):          # >= 1.0 新客户端
+    client = openai.OpenAI(base_url=..., api_key=..., timeout=...)
+    ...
+else:                                   # 0.28 老 API
+    openai.api_base = base_url
+    openai.api_key = key
+    resp = openai.ChatCompletion.create(..., request_timeout=timeout)
+```
+
+实测输出：`openai 0.28.1（0.x 老 API）调用成功 (xxms)`。SDK 完全没装时，这一层标记为非致命的 `未安装 openai SDK`，不影响 0 的结论。
+
+## v1.1：显式 OpenAI 兼容能力矩阵
+
+基础 L3 只证明“能发一条 Chat Completions”。但同一个 `/v1` 后面可能是 vLLM、DeepSeek、GLM 或
+本地代理，它们对 Responses API、SSE、工具调用和严格 JSON Schema 的支持并不相同。v1.1 因此增加
+显式的 `--matrix`，不改变默认 probe 的请求数量：
+
+```bash
+python3 llm_probe.py probe --matrix --json
+./llm_probe.sh probe --matrix --json
+```
+
+矩阵固定为五个单元：
+
+| ID | 最小请求 | 通过条件 |
+|---|---|---|
+| `chat_completions` | 非流式 `POST /chat/completions` | 200、非空 choices、assistant 文本 |
+| `responses_api` | `POST /responses` | `object=response`、`status=completed`、能找到 output text |
+| `streaming_sse` | `stream=true` | `text/event-stream`、chunk、文本 delta、`[DONE]` |
+| `tool_calling` | function tool + forced choice | `tool_calls`、ID/name、合法 arguments、`finish_reason` |
+| `json_schema` | `response_format.type=json_schema` | 内容可解析且严格匹配固定 schema |
+
+矩阵先做一次网络前置检查；认证、限流或传输失败时，后续单元默认标成 `skipped`，避免在同一个
+无效 key 上连续烧请求。能力级的 400/404/405 会继续测其它单元，最后统一返回退出码 4。只有在
+`chat_completions` 已通过时，`--allow-unsupported` 才会放宽可选能力的 404/405；400、错误路径、全端点
+失败、网络、认证、429 和 HTTP 200 但形状错误仍然不会被放宽。`--all` 保留“即使前置失败也继续跑完”的调试语义。
+
+矩阵 JSON 增加 `mode: "compatibility"` 和 `summary`，每行有稳定的 `id`、`status`、`kind` 与
+`detail`，但绝不写入模型原文、tool arguments 或 SSE body。它是能力验收，不是 benchmark：固定
+提示词、最多五次生成请求，不测 TTFT/TPOT/并发。矩阵响应体限制为 2 MiB；HTTP 层拒绝跨 origin
+重定向，避免认证 header 被转发。
+
+
+## 三、退出码就是结论
+
+| 退出码 | 含义 | 典型证据 |
+|---|---|---|
+| `0` | 端点可用 | L3 返回 200；或矩阵全部通过/仅允许的未实现能力 |
+| `1` | 用法 / 配置错误 | base_url 不是 http(s)、配置缺失、拿不到解密口令 |
+| `2` | 网络不可达 | DNS 失败、连接拒绝、超时、TLS 失败、连接被重置 |
+| `3` | 认证失败 | 401/403 无效的令牌、429 限流 |
+| `4` | 推理 / 兼容失败 | 400 模型名、404 路径、429、5xx；矩阵能力不支持或响应畸形 |
+| `5` | SDK 层失败 | 仅 `probe --sdk` |
+
+退出码是这套工具最重要的接口。有了它，排障脚本能写成：
+
+```bash
+if ./llm_probe.sh probe --json > result.json; then
+    echo "端点可用"
+else
+    case $? in
+        2) echo "网络问题，检查代理/防火墙" ;;
+        3) echo "key 失效，去后台重新生成" ;;
+        4) echo "参数问题，检查 base_url 或模型名" ;;
+    esac
+fi
+```
+
+`--json` 输出里同样带 `exit_code`、`verdict`、每层的 `detail`，方便存档或者喂给别的程序。
+
+## 四、实测：用 mock 服务把分支跑干净
+
+**结论要可信，得先在自己能控制的环境里把所有分支跑一遍。** 于是写了个 mock 服务（`MOCK_MODE` 同时覆盖基础故障与矩阵变体），覆盖 17 组场景、145 项断言：
+
+| # | 场景 | 期望退出码 | py | sh |
+|---|---|---|---|---|
+| 1 | 正常端点（密钥正确） | 0 | ✅ | ✅ |
+| 1 | 错误密钥 | 3 | ✅ | ✅ |
+| 1 | `--json` 输出是合法 JSON | 0 | ✅ | ✅ |
+| 1 | `--sdk` 走 0.28 老 API 分支 | 0 | ✅ | ✅ |
+| 2 | 全站 401 | 3 | ✅ | ✅ |
+| 2 | `--all` 强制跑 L3 | 3 | ✅ | — |
+| 3 | 路径 404 | 4 | ✅ | ✅ |
+| 4 | 模型名 400 | 4 | ✅ | ✅ |
+| 5 | 限流 429 | 4 | ✅ | ✅ |
+| 6 | `/models` 404 但推理正常 | 0 | ✅ | ✅ |
+| 7 | 端口未监听 / DNS 失败 | 2 | ✅ | ✅ |
+| 8 | 非法 scheme（`ftp://`） | 1 | ✅ | ✅ |
+| 9 | 密文互通（sh 写 py 解、py 写 sh 解） | 0 | ✅ | ✅ |
+| 9 | 错误口令必须失败 | 1 | ✅ | ✅ |
+| 10 | 配置文件里的 `$(...)` 不被执行 | — | ✅ | ✅ |
+| 11 | 口令不泄漏给子进程（curl 看不到、openssl 拿得到） | — | ✅ | ✅ |
+| 12 | `setkey` 走 stdin / 非交互无输入报错 | 1 | ✅ | ✅ |
+| 13 | 老 openssl（无 `-pbkdf2`）给出可读报错 | 1 | ✅ | ✅ |
+| 14 | 单元测试（配置解析 / 加解密 / 结论映射 / 密钥卫生） | — | ✅ | — |
+| 15 | py / sh 跨实现逐字段一致（6 种故障模式，含 L2/L3 detail） | 0/2/3/4 | ✅ | ✅ |
+| 16 | 自查发现的 12 类缺陷回归（退出码契约、0 值校验、畸形配置、双引号剥离、`~` 展开、`--only net` 泄漏、优先级上线验证） | 1 | ✅ | ✅ |
+| 17 | 五项兼容矩阵（支持/未实现/缺 DONE/坏 tool/schema/畸形 200/超大响应/连接重置/认证 gate/无 Python PATH） | 0/2/3/4 | ✅ | ✅ |
+
+全绿。**测试过程中挖出三个真 bug**，都是"写的时候觉得对、跑起来才露馅"的类型：
+
+**其一，`$(...)` 子 shell 丢赋值。** shell 版最初这么写分类函数：
+
+```sh
+STEP2_KIND=$(classify_curl_error)      # ← 函数里 LAST_CURL_MSG="..." 赋值丢了
+STEP2_DETAIL=$LAST_CURL_MSG            # ← 于是 detail 是空的
+```
+
+`$( )` 会在子 shell 里执行，函数对外只留下 stdout，内部的变量赋值全部作废。表现是报告里 L2 那行 `detail` 空白、结论变成"网络不可达："（空）。改成直接调用函数、用两个全局变量传出结果就好了。这个 bug 的隐蔽之处在于**退出码是对的，只有文案是空的**，肉眼扫一遍很容易放过。
+
+**其二，mock 返回 `\u56de\u590d`，sed 抓出来是字面量。** Python 的 `json.dumps` 默认 `ensure_ascii=True`，中文全被转成 `\uXXXX`。shell 版用 `sed` 抽 `"content"` 字段，拿到的是 `mock \u56de\u590d...`，`grep "mock 回复"` 直接失败。而 Python 版用 `json.loads` 天然免疫。
+
+修法要克制：我先试了 `printf '\u4e2d'`，结果 **dash 打印的是字面量，bash 才解码**（busybox 也不认），所以不能依赖 shell 内建解码。最终方案是"检测到 `\u` 才解，解不动就原样返回"：
+
+```sh
+json_unescape() {
+    case $1 in
+        *'\u'*) ;;
+        *) printf '%s' "$1"; return 0 ;;
+    esac
+    if command -v python3 >/dev/null 2>&1; then
+        printf '%s' "$1" | python3 -c '...'  # 有 python3 就解，没有就不解
+    else
+        printf '%s' "$1"
+    fi
+}
+```
+
+这样 shell 版的"零 Python 依赖"依然成立（没 Python 也能跑，只是中文回复显示成转义），有 Python 时显示更漂亮——**降级路径不能变成失败路径**。
+
+**其三，argparse 的 `-c` 会被子命令覆盖。** 我先给主 parser 加了 `-c/--config`，又给每个子 parser 加了一遍，结果 `llm_probe.py -c foo showkey` 里 `-c` 的值被子 parser 的默认值悄悄顶掉。修法是给公共选项建一个 `parents=[common]`，并把默认值设成 `argparse.SUPPRESS`，让"没传"的子命令不去覆盖父级已经解析到的值。
+
+## 五、密钥：加密后存进 env 文件
+
+明文 key 躺在源码里是这次要解决的第二个问题。方案要满足三条：**配置文件能直接提交/分享**、**两个实现都能读**、**不引第三方依赖**。
+
+### 密文格式
+
+```
+LLM_API_KEY_ENC=enc:v1:U2FsdGVkX18cDExvyVvz0vznzyJDRNNWRZUC+5kVACQ4nl7mB0ureTjb8+fhiCfdY1hqyNZGIwEYee0w6gB0Z4HFVBRUk1rLYIwBdjgtXNU=
+```
+
+解剖一下：
+
+- `enc:v1:` 是自描述前缀，读到它就知道"这是密文，需要口令"，不是普通字符串。
+- 后面 base64 解开是 `b"Salted__" + salt(8) + 密文`——这正是 `openssl enc -salt` 的原生输出格式。`U2FsdGVkX18` 就是 `Salted__` 的 base64，肉眼可辨。
+- 参数固定为 `AES-256-CBC` + `PBKDF2-HMAC-SHA256` + **300000 轮迭代** + 8 字节随机 salt，key 和 IV 由 PBKDF2 一次派生出 48 字节（前 32 做 key，后 16 做 IV）。
+
+关键在于：**Python 端不自己发明格式**，它产出的字节必须让 openssl CLI 能直接解开；shell 端则干脆整个调 openssl。于是互通变成天然的：
+
+```sh
+# shell 端解密（python 写的密文）
+printf '%s' "${1#enc:v1:}" \
+    | openssl base64 -d -A \
+    | openssl enc -d -aes-256-cbc -pbkdf2 -iter 300000 -md sha256 -pass env:LLM_PASSPHRASE
+```
+
+Python 端优先用 `cryptography` 模块（有就用，避免起子进程），没有就回落到同样的 openssl 命令行；两条路径都用 `hashlib.pbkdf2_hmac` 严格按同一组参数派生，实测两边互写互读全通，错误口令两边都稳定拒绝（退出码 1）。
+
+顺带一提，`-pass env:LLM_PASSPHRASE` 而不是 `-k "$PWD"`：**口令不进命令行参数**，否则 `ps` 一眼就能看到。shell 的 API key 也写入 0700 临时目录里的 header 文件，再通过 `curl -H @file` 传递，不进入 curl argv。Python HTTP opener 拒绝跨 origin 重定向，shell 默认不跟随重，避免 bearer token 被第三方 endpoint 转发。
+
+还有个坑在参数本身：`-pbkdf2` 是 **OpenSSL 1.1.1（2018）** 才加的选项，LibreSSL 没有它（而 LibreSSL 的版本号长得像 3.x，读版本号会误判）。所以两个实现都做**功能探测**——真跑一次 `-pbkdf2` 加密，成功才算支持——不支持就直接给出"需要 OpenSSL ≥ 1.1.1，或改用 `llm_probe.py` + `cryptography`"的可读报错，而不是让用户对着一屏 `Unknown option -pbkdf2` 发懵。
+
+### 口令从哪来
+
+口令**永远不写进配置文件**（写了等于没加密），也不进命令行参数。三个来源各有一块泄露面，先看表再选：
+
+| 来源 | 泄露面 | 适用场景 |
+|---|---|---|
+| `LLM_PASSPHRASE_FILE` 指向的口令文件（`chmod 600`） | 只有文件权限 | **非交互 / CI 首选** |
+| 终端交互输入（`getpass` / `stty -echo`） | 只在内存里过一遍 | **最安全** |
+| 环境变量 `LLM_PASSPHRASE` | 会被**每个子进程继承** | 权宜之计（读到即摘） |
+| `--passphrase` 参数 | **shell 历史 + `ps` 进程列表** | 仅临时测试（会打警告） |
+
+第三行值得展开：环境变量不只是"同用户进程可读"（`/proc/<pid>/environ`）的问题，它会被原样传给**每一个**子进程——curl、openssl、openai SDK 自己拉起来的进程，全都拿到一份。所以两个实现的读取函数都做了同一件事：**读到就从自己环境里摘掉**。
+
+```python
+if os.environ.get("LLM_PASSPHRASE"):
+    value = os.environ["LLM_PASSPHRASE"]
+    scrub_env("LLM_PASSPHRASE")   # 读到就摘：后面再没有子进程继承得到
+    return value
+```
+
+```sh
+PASSPHRASE=$LLM_PASSPHRASE
+unset LLM_PASSPHRASE              # 同上；openssl 用 VAR=val cmd 只喂那一条命令
+```
+
+同理，`setkey` 不再要求 `--key`：非交互时**从 stdin 读**（`printf '%s' "$KEY" | ... setkey`），密钥既不进 argv 也不进历史；真用了 `--key` / `--passphrase`，两个实现都会在 stderr 打一行警告。
+
+补一个容易漏的边界：摘除不能只做在"读取密钥"这条路上。`--only net` 根本不读密钥，但环境里的 `LLM_API_KEY` 照样会被 curl 继承；选了 `--key` 时环境里那份 key 也已经多余。两种情况现在都会摘。
+
+拿不到口令时的行为要分情况：`--only net` 这种不需要密钥的探测**直接跳过解析**，不该被口令卡住；全量探测则明确报 `配置里是加密密钥，但拿不到解密口令` 并退出 1——**宁可拒绝，也不能默默降级成匿名请求然后给出"key 无效"的错误结论**。
+
+### 配置文件不是脚本
+
+这条是我坚持的：两个实现都**自己解析** `KEY=VALUE`，绝不用 `source` / `.` 加载配置。
+
+```sh
+cfg_get() {   # 用 sed 取值，不用 source
+    sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$CONFIG" | tail -n 1
+}
+```
+
+自己解析还带来三件 `source` 顺带给了、但并不想要的事：两个实现会一致地**剥掉一层配引号**、一致地**展开 `~`**，以及一致地**拒绝坏行**——空 KEY、非 `KEY=VALUE`、`LLM_TIMEOUT=abc` 都在解析阶段退 1 并指出行号，而不是让错误一路飘到 curl 再变成一句含糊的报错。
+
+原因很直白：`source` 一份配置等于执行任意命令。配置文件里写一行 `LLM_MODEL=$(rm -rf ~)` 或者 `$(touch /tmp/pwned)`，`source` 版本会照做，我们的版本只会把它当成字符串值。测试第 10 组专门验证了这一点（配置里埋 `$(touch ...)`，断言文件没被创建）。
+
+配置文件由 `init` 生成、权限自动设为 600，格式见附录 C。
+
+### 顺手把旧账清了
+
+这次动手的直接起因，是仓库里躺着这么一个文件（`test_pekpik.py`，权限还是 664，组内可读）：
+
+```python
+client = OpenAI(base_url="https://aiapiv2.pekpik.com/v1",
+                api_key="sk-KjDK********j43s")   # 明文硬编码（此处打码）
+```
+
+这把 key 已经失效并被轮换，**该文件也一并删除了**——它的探测能力是 `llm_probe probe --sdk` 的子集，留着只会变成第二份要同步维护的代码。密钥改由 `.llm_probe.env` 加密保存：51 字节明文 → 115 字符密文，任何脚本里都不再出现明文。
+
+## 六、只想要一个最简 demo
+
+分层探测是排障工具，不是入门材料。如果你只是想**先跑通一次调用**、看看端点到底能不能用，那 1490 行的 `llm_probe.py` 显得太重了——所以仓库里另放了一个 `demo_minimal.py`，97 行、只有两个函数和一个入口，只做一件事：发一条消息，打印回复。
+
+核心调用就这么几行：
+
+```python
+key = os.environ.get("LLM_API_KEY") or decrypt_secret(cfg["LLM_API_KEY_ENC"], passphrase)
+
+client = OpenAI(base_url="https://api.openai.com/v1", api_key=key, timeout=30)
+resp = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "你好，请用一句话介绍你自己。"}],
+)
+print(resp.choices[0].message.content)
+```
+
+完整文件如下（同一份代码也在 `demo_minimal.py` 里，可直接 `python3 demo_minimal.py` 跑）：
+
+```python
+#!/usr/bin/env python3
+"""最小可运行 demo：用 openai SDK 打一个 OpenAI 兼容端点。
+
+只做一件事——发一条消息，打印回复。
+不做分层诊断、不打印耗时、不解析错误码；那些是 llm_probe.py 的活。
+
+用法:
+    export LLM_PASSPHRASE='你的口令'        # 密钥加密存着时才需要
+    python3 demo_minimal.py
+
+    # 或者完全绕过配置文件
+    LLM_API_KEY=sk-xxx LLM_BASE_URL=https://api.openai.com/v1 \
+    LLM_MODEL=gpt-4o-mini python3 demo_minimal.py
+
+依赖: openai >= 0.28（新旧两套写法都兼容）
+"""
+
+import os
+import sys
+
+# 从同目录的 llm_probe 复用"读配置 + 解密"逻辑，避免在 demo 里重复造轮子
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from llm_probe import DEFAULT_CONFIG, decrypt_secret, parse_env_file, scrub_env  # noqa: E402
+
+# 默认走官方端点；任何 OpenAI 兼容端点都可以（用 LLM_BASE_URL 覆盖）。
+# 本仓库 README 里的 aiapiv2.pekpik.com 只是第三方中转示例，别默认把密钥
+# 发给不认识的服务。
+BASE_URL = os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1"
+MODEL = os.environ.get("LLM_MODEL") or "gpt-4o-mini"
+
+
+def load_api_key():
+    """取密钥的三种来源，按优先级：环境变量 > 加密配置 > 明文配置。
+
+    拿到手就把环境变量里的密钥/口令摘掉（scrub_env）：环境变量会被后续每个
+    子进程无条件继承，包括 openai SDK 自己拉起来的那些。
+    """
+    if os.environ.get("LLM_API_KEY"):                     # 1) 环境变量
+        value = os.environ["LLM_API_KEY"]
+        scrub_env("LLM_API_KEY")
+        return value
+
+    cfg = parse_env_file(DEFAULT_CONFIG)
+    token = cfg.get("LLM_API_KEY_ENC")                    # 2) 加密配置 enc:v1:...
+    if token:
+        passphrase = os.environ.get("LLM_PASSPHRASE")
+        if not passphrase:
+            raise SystemExit(
+                "密钥是加密存储的。推荐先配置 LLM_PASSPHRASE_FILE 指向口令文件，"
+                "或临时 export LLM_PASSPHRASE=...（读到后会立即从环境里摘掉）")
+        os.environ.pop("LLM_PASSPHRASE", None)            # 读到就摘，别广播给子进程
+        return decrypt_secret(token, passphrase)
+
+    if cfg.get("LLM_API_KEY"):                            # 3) 明文配置（不推荐）
+        return cfg["LLM_API_KEY"]
+
+    raise SystemExit("没有可用的密钥：先跑 python3 llm_probe.py setkey")
+
+
+def ask(prompt):
+    """发一条消息，返回回复文本。自动适配 openai 1.x 与 0.28 两套 API。"""
+    key = load_api_key()
+    try:
+        from openai import OpenAI                         # openai >= 1.0
+    except ImportError:
+        import openai                                     # openai 0.28 老 API
+        openai.api_base = BASE_URL
+        openai.api_key = key
+        resp = openai.ChatCompletion.create(
+            model=MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            request_timeout=30,
+        )
+        return resp["choices"][0]["message"]["content"]
+
+    client = OpenAI(base_url=BASE_URL, api_key=key, timeout=30)
+    resp = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.choices[0].message.content
+
+
+if __name__ == "__main__":
+    print(f"{BASE_URL}  |  {MODEL}")
+    try:
+        print(ask("你好，请用一句话介绍你自己。"))
+    except Exception as exc:                              # 粗分类，退出码与 llm_probe 对齐
+        name, text = type(exc).__name__, str(exc).splitlines()[0][:160]
+        if "Authentication" in name or "401" in text or "403" in text:
+            print(f"认证失败（key 无效）：{text}", file=sys.stderr)
+            sys.exit(3)
+        if "Connection" in name or "Timeout" in name or "timed out" in text:
+            print(f"网络不通：{text}", file=sys.stderr)
+            sys.exit(2)
+        print(f"调用失败：{text}", file=sys.stderr)
+        sys.exit(4)
+```
+它和 `llm_probe` 的分工很清楚：
+
+| | `demo_minimal.py` | `llm_probe.py probe` |
+|---|---|---|
+| 目的 | 演示**怎么调用** | 诊断**哪里不通** |
+| 输出 | 只有回复文本 | 分层报告 + 结论 + 退出码 |
+| 失败时 | 三档粗分类（2/3/4） | 六档（0–5），能区分 400/404/429/5xx |
+| 依赖 | openai SDK | 零第三方依赖（`--sdk` 才需要） |
+| 体量 | 97 行 | 1490 行 / 1434 行 |
+
+**demo 跑通了不等于端点健康，demo 挂了也说不清原因**——所以它只是入口，结论仍以 `probe` 的退出码为准。反过来，`probe` 已经告诉你端点可用之后，真正在你的应用里要写的代码，就是上面那五行。
+
+> 这个 demo 是 `test_pekpik.py` 的替代品：那个旧文件把 key 明文写死在脚本里，功能上又是 `probe --sdk` 的子集，已经删除。
+
+## 七、两个实现怎么保持行为一致
+
+"同一份配置、同一种密文、同一套退出码"是设计约束，不是事后补齐的。落到具体：
+
+| 维度 | 做法 |
+|---|---|
+| 配置 | 都读 `.llm_probe.env`，都是自己解析、都不执行 |
+| 优先级 | 都是 `命令行 > 环境变量 > 配置文件` |
+| 密文 | 都是 `enc:v1:` + openssl 原生 `Salted__` 格式，PBKDF2 300000 轮 |
+| 退出码 | 0/1/2/3/4/5 语义完全相同 |
+| 分层 | 都是 L1/L2/L3，都是"L2 判死就跳过 L3，`--all` 强制" |
+| 404 语义 | 都把 `/models` 的 404 标成非致命 |
+| `--json` | 字段集合一致（含 `config`），`L3 推理` 恒带 `skipped` |
+| 报告文案 | L2/L3 的 detail 逐字一致（耗时归一化后比对） |
+
+有意保留的差异只有三处，都写在明面上：shell 版**没有 L4 SDK 层**（`--only sdk` 会提示改用 py 版）；`\uXXXX` 解码依赖 python3（可选增强）；L1 报告内容不同——py 能报证书 CN 与有效期，curl 拿不到证书链，就改为报 `remote_ip` 与连接/握手耗时拆分。
+
+另外两条"隐形契约"也用测试钉死了：**优先级只有一条**（命令行 > 环境变量 > 配置文件，两端都验到服务端收到的 `max_tokens`），以及**退出码不许被占用**——`2` 永远表示网络不通，所以 argparse 的参数错误（默认退 2）被改成退 1，否则 CI 里一个拼错的参数会被误判成网络故障。
+
+一致性靠测试钉住：同一组 mock 场景跑两遍，**退出码、每个步骤的 `ok`/`skipped`、结论文字、JSON 字段集合逐项比对**，密文互写互读各测一次。**"应该是一样的"不算数，跑过才算。**
+
+## 八、真实端点排障实录
+
+拿真实中转站跑一遍，报告长这样（py 版）：
+
+```text
+[OK  ] L1 网络 [1/3]  DNS+TCP+TLS aiapiv2.pekpik.com:443 OK (153.3ms) TLSv1.3 CN=pekpik.com 有效期至 Nov 21 17:25:02 2026 GMT
+[FAIL] L2 认证 [2/3]  HTTP 403：密钥无效
+[SKIP] L3 推理 [3/3]  L2 认证未通过，已跳过（--all 可强制执行）
+结论 ❌ 认证失败：API Key 无效或已过期（HTTP 403：密钥无效）
+退出码 3
+```
+
+三个值得记下来的观察：
+
+1. **L1 能过，说明问题与网络无关**——证书有效到 2026-11-21，TLS 1.3 握手 153ms。这一步直接排除了"是不是我网不好"这个最常见的自我怀疑。
+2. **同一个 key，curl 报 401 无效的令牌，Python 报 403 密钥无效**。服务端对不同客户端的响应不完全一致（大概率是网关多节点或 UA 分流），但**两个状态码在判定里都归到 `kind=auth`，结论和退出码一致**——这正是"按语义分类而不是按字面匹配"的好处。
+3. **`remote_ip` 是 `198.18.0.173`**，落在 `198.18.0.0/15` 这个 Clash/fake-ip 常用段，说明流量走了 TUN。这也解释了测试中偶发的 `SSL_read: unexpected eof`：不是目标站的问题，是本地代理链路抖动。L1 把 IP 打出来，这类"看起来像服务端炸了其实是本地代理"的情况一眼就能分开。
+
+最终结论：这个端点**网络通、key 失效**，需要去后台重新生成 key——一次定位，没有猜。
+
+## 九、可以怎么改
+
+v1.1 已把最急的兼容性验收收进显式 `--matrix`。下一步仍可以沿着同一条边界扩展：
+
+- **性能 benchmark**：在能力矩阵之上另加 TTFT/TPOT/TPS、上下文长度和并发；不要把性能数字混进基础 probe。
+- **多 key / 多端点矩阵**：批量验证一组 `(base_url, model, key)`，输出表格。
+- **把 401/403 的服务端原文存档**：`error.message` 里往往有 `request id`，拿去找服务商对账很有用（现在只截前 160 字符打印）。
+- **接入 CI**：`llm_probe.py probe --json` 或 `probe --matrix --json` 的结果可以做成健康检查，退出码非 0 就告警。
+- **换加密算法**：想上 AES-GCM 或者 chacha20-poly1305 的话，记得同时改两个实现，或者干脆让 shell 端直接调用一个共享的 openssl 参数串。
+- **`set -e`（已否决，别再"修"回去了）**：shell 版只用 `set -u` 是刻意的。本工具的核心是**抓住 curl 的非零退出码来分类故障**，`set -e` 会在第一个失败的 `err=$(curl ...)` 处直接中止：端口不通时实测 0 行输出、只剩 curl 的原始退出码 7，期望的"退出码 2 + 12 行分层报告"整个消失；健康端点虽然能跑，一遇网络故障就静默死。关键命令的状态都在脚本里显式判断，由 `tests/run_tests.sh` 兜底。
+
+## 总结
+
+- **"连不上"是四个问题叠在一起**：网络、key、模型/路径、SDK 兼容。分层探测的价值在于每层一个独立请求、一个独立判定，失败理由精确到"该改哪一行"。
+- **退出码是主要接口**，人看报告、脚本看 `$?`，两者共用同一套结论。
+- **404 要区分语义**：`/models` 404 是"这站不支持枚举"（非致命），`/chat/completions` 404 是"路径写错了"（致命）。
+- **密钥加密的核心不是算法，是格式对齐**：让 Python 和 openssl 产出同一种字节，互通就是免费的；口令单独保管、配置文件永远不被 `source`。
+- **测试要造自己的对照组**：mock 服务把 17 组分支跑干净，才敢说"这 145 项都对"；也才有机会抓到子 shell 丢赋值、`\uXXXX` 转义、argparse 覆盖这三个不跑就发现不了的 bug。
+- **能力兼容要单独验收**：`--matrix` 把“能聊天”与“支持 Responses/SSE/tools/schema”分开，避免把基础 200 误报成完整 OpenAI 兼容。
+
+---
+
+## 附录：完整源码
+
+### A. `llm_probe.py`（1490 行，Python 3.7+，零第三方依赖）
+
+```python
+#!/usr/bin/env python3
+"""LLM 端点连通性探测：OpenAI 兼容 API 分层检查 + env 配置加密存储。
+
+零第三方依赖（标准库 only），Python 3.7+。
+姊妹脚本 llm_probe.sh 提供 curl/openssl 版本，二者读同一份配置、
+用同一种密文格式，可以互相解密对方写入的 key。
+
+子命令
+------
+  probe    分层探测端点连通性（默认动作）
+  init     生成配置文件 .llm_probe.env
+  setkey   加密写入 API Key（覆盖 LLM_API_KEY_ENC，清掉明文）
+  showkey  解密显示 API Key（默认打码）
+  env      打印生效配置（密钥打码）
+
+分层探测
+------
+  L1 网络   DNS → TCP → TLS 握手
+  L2 认证   GET  {base}/models
+  L3 推理   POST {base}/chat/completions
+  L4 SDK    真实 openai SDK 调用（--sdk 时执行，自动适配 0.x / 1.x）
+  --matrix  显式验证 chat/responses/streaming/tools/json_schema 五项兼容能力
+
+退出码
+------
+  0 全部通过   1 用法/配置错误   2 网络不通
+  3 认证失败    4 推理失败        5 SDK 调用失败
+"""
+
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import socket
+import ssl
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+VERSION = "1.1"
+
+# -- 加密参数：与 `openssl enc -aes-256-cbc -pbkdf2 -iter 300000 -md sha256`
+#    完全对齐，保证 Python 和 shell 两端互认对方的密文 -----------------------
+ENC_PREFIX = "enc:v1:"
+PBKDF2_ITER = 300_000
+SALT_LEN, KEY_LEN, IV_LEN = 8, 32, 16
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_CONFIG = os.path.join(SCRIPT_DIR, ".llm_probe.env")
+
+ENV_TEMPLATE = """\
+# llm_probe 配置文件（dotenv 风格）
+# 注意：这是数据文件，不是 shell 脚本，任何一行都不会被当作命令执行。
+#
+# 生成本文件:  python3 llm_probe.py init
+# 写入密钥:    python3 llm_probe.py setkey                  （交互输入，推荐）
+#              printf '%s' "$KEY" | python3 llm_probe.py setkey   （非交互，走 stdin）
+#              python3 llm_probe.py setkey --key sk-xxx       （会进 shell 历史 / ps，
+#                                                              仅临时测试用）
+# 查看密钥:    python3 llm_probe.py showkey
+# 开始探测:    python3 llm_probe.py probe
+
+# OpenAI 兼容端点，通常以 /v1 结尾。默认填官方地址；换服务商就改成它给的
+# base_url。（README 里的 https://aiapiv2.pekpik.com/v1 是第三方中转示例，
+# 别默认把密钥发给不认识的服务。）
+LLM_BASE_URL=https://api.openai.com/v1
+
+# 模型名按服务商自己的命名填
+LLM_MODEL=gpt-4o-mini
+
+# 加密后的密钥（enc:v1:... ），由 setkey 写入，不要手填
+LLM_API_KEY_ENC=
+
+# 明文密钥：仅用于临时调试。存在时优先级低于 LLM_API_KEY_ENC。
+# 用 setkey 写入时会自动清空本行。
+LLM_API_KEY=
+
+# 解密口令来源（口令本身永远不写进本文件，否则加密就失去意义了）：
+#   1) LLM_PASSPHRASE_FILE 指向的口令文件（建议 chmod 600，非交互首选）
+#   2) 终端交互输入（最安全）
+#   3) 环境变量 LLM_PASSPHRASE（权宜之计：环境变量会被子进程继承，
+#      读到后本脚本会立即从环境里摘掉）
+LLM_PASSPHRASE_FILE=
+
+# 探测参数
+LLM_TIMEOUT=30
+LLM_PROMPT=你好
+LLM_MAX_TOKENS=64
+"""
+
+
+# ---------------------------------------------------------------------------
+# 配置文件读写
+# ---------------------------------------------------------------------------
+def parse_env_file(path):
+    """解析 dotenv：只做 KEY=VALUE 切分，不执行任何内容。"""
+    data = {}
+    with open(path, "r", encoding="utf-8") as fh:
+        for lineno, raw in enumerate(fh, 1):
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" not in line:
+                raise ValueError(f"{path}:{lineno}: 不是合法的 KEY=VALUE: {line!r}")
+            key, _, value = line.partition("=")
+            key = key.strip()
+            if not key:
+                raise ValueError(f"{path}:{lineno}: KEY 不能为空: {line!r}")
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                value = value[1:-1]
+            data[key] = value
+    return data
+
+
+def read_config(path):
+    """读配置；格式错误变成人话 + 退出码 1，而不是甩一个 traceback。"""
+    try:
+        return parse_env_file(path)
+    except ValueError as exc:
+        print(f"配置文件格式错误: {exc}", file=sys.stderr)
+        raise SystemExit(1)
+    except OSError as exc:
+        print(f"读不了配置文件 {path}: {exc}", file=sys.stderr)
+        raise SystemExit(1)
+
+
+def update_env_file(path, updates):
+    """按行更新配置文件：已存在的 key 原地覆盖，缺失的追加，注释原样保留。"""
+    lines = []
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
+    pending = dict(updates)
+    for idx, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key = stripped.partition("=")[0].strip()
+        if key in pending:
+            lines[idx] = f"{key}={pending.pop(key)}"
+    for key, value in pending.items():
+        lines.append(f"{key}={value}")
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+    try:
+        os.chmod(path, 0o600)
+    except OSError:
+        pass
+
+
+def init_config(path, force=False):
+    if os.path.exists(path) and not force:
+        print(f"配置已存在，未覆盖: {path}（要覆盖加 --force）")
+        return 1
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(ENV_TEMPLATE)
+    os.chmod(path, 0o600)
+    print(f"已生成配置: {path}（权限 600）")
+    print("下一步: python3 llm_probe.py setkey")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# 密钥加密 / 解密
+# ---------------------------------------------------------------------------
+def _derive(salt, passphrase):
+    """PBKDF2-HMAC-SHA256 派生 key+iv，等价 openssl 的 -pbkdf2 -iter 300000。"""
+    material = hashlib.pbkdf2_hmac(
+        "sha256", passphrase.encode("utf-8"), salt, PBKDF2_ITER, dklen=KEY_LEN + IV_LEN
+    )
+    return material[:KEY_LEN], material[KEY_LEN:]
+
+
+def _pkcs7_pad(data):
+    pad = IV_LEN - (len(data) % IV_LEN)
+    return data + bytes([pad]) * pad
+
+
+def _pkcs7_unpad(data):
+    if not data or len(data) % IV_LEN:
+        raise ValueError("密文长度非法")
+    pad = data[-1]
+    if pad < 1 or pad > IV_LEN or data[-pad:] != bytes([pad]) * pad:
+        raise ValueError("填充校验失败")
+    return data[:-pad]
+
+
+_OPENSSL_PBKDF2_OK = None
+
+
+def _openssl_pbkdf2_ok():
+    """功能性探测 openssl 是否支持 -pbkdf2（OpenSSL >= 1.1.1；LibreSSL 不支持）。
+
+    比读版本号可靠：LibreSSL 的版本号长成 3.x 却没有 -pbkdf2。
+    """
+    global _OPENSSL_PBKDF2_OK
+    if _OPENSSL_PBKDF2_OK is not None:
+        return _OPENSSL_PBKDF2_OK
+    try:
+        probe = subprocess.run(
+            ["openssl", "enc", "-aes-256-cbc", "-pbkdf2", "-iter", "1000",
+             "-md", "sha256", "-pass", "pass:probe", "-in", os.devnull],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        ok = probe.returncode == 0
+    except OSError:
+        ok = False
+    _OPENSSL_PBKDF2_OK = ok
+    return ok
+
+
+def _require_openssl_pbkdf2():
+    if not _openssl_pbkdf2_ok():
+        raise ValueError(
+            "这台机器的 openssl 不支持 -pbkdf2（需要 OpenSSL >= 1.1.1，LibreSSL 不支持），"
+            "也未安装 cryptography 模块。解决：升级 openssl，或 pip install cryptography。"
+        )
+
+
+def _encrypt_openssl(plain, passphrase):
+    _require_openssl_pbkdf2()
+    """走 openssl CLI（无 cryptography 模块时的兜底，也是 shell 端的实现）。"""
+    env = dict(os.environ, LLM_PP_PASSPHRASE=passphrase)
+    proc = subprocess.run(
+        [
+            "openssl", "enc", "-aes-256-cbc", "-pbkdf2",
+            "-iter", str(PBKDF2_ITER), "-md", "sha256", "-salt",
+            "-pass", "env:LLM_PP_PASSPHRASE",
+        ],
+        input=plain.encode("utf-8"),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+        check=True,
+    )
+    return proc.stdout
+
+
+def _decrypt_openssl(blob, passphrase):
+    _require_openssl_pbkdf2()
+    env = dict(os.environ, LLM_PP_PASSPHRASE=passphrase)
+    proc = subprocess.run(
+        [
+            "openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2",
+            "-iter", str(PBKDF2_ITER), "-md", "sha256",
+            "-pass", "env:LLM_PP_PASSPHRASE",
+        ],
+        input=blob,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+    )
+    if proc.returncode != 0:
+        raise ValueError("openssl 解密失败（口令错误？）")
+    return proc.stdout
+
+
+def _crypto_module():
+    try:
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        from cryptography.hazmat.primitives import padding  # noqa: F401  (需要时可用)
+        return True
+    except Exception:
+        return False
+
+
+def encrypt_secret(plain, passphrase):
+    """加密为 enc:v1:<base64( "Salted__" + salt + 密文 )>。"""
+    salt = os.urandom(SALT_LEN)
+    key, iv = _derive(salt, passphrase)
+    blob = None
+    if _crypto_module():
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        encryptor = Cipher(algorithms.AES(key), modes.CBC(iv)).encryptor()
+        blob = encryptor.update(_pkcs7_pad(plain.encode("utf-8"))) + encryptor.finalize()
+    else:
+        blob = _encrypt_openssl(plain, passphrase)
+        # openssl 自带 "Salted__"+salt 头，直接用它的输出
+        return ENC_PREFIX + base64.b64encode(blob).decode("ascii")
+    payload = b"Salted__" + salt + blob
+    return ENC_PREFIX + base64.b64encode(payload).decode("ascii")
+
+
+def decrypt_secret(token, passphrase):
+    """解密 enc:v1:... ；兼容 openssl CLI 与本模块两种产出。"""
+    if not token.startswith(ENC_PREFIX):
+        raise ValueError("不是 enc:v1: 格式的密文")
+    try:
+        blob = base64.b64decode(token[len(ENC_PREFIX):], validate=True)
+    except Exception as exc:
+        raise ValueError(f"密文 base64 解码失败: {exc}")
+    if blob[:8] != b"Salted__" or len(blob) < 16 + IV_LEN:
+        # 不是 openssl 头格式，交给 openssl 处理
+        return _decrypt_openssl(blob, passphrase).decode("utf-8")
+    salt = blob[8:16]
+    ct = blob[16:]
+    key, iv = _derive(salt, passphrase)
+    if _crypto_module():
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        decryptor = Cipher(algorithms.AES(key), modes.CBC(iv)).decryptor()
+        try:
+            plain = decryptor.update(ct) + decryptor.finalize()
+            return _pkcs7_unpad(plain).decode("utf-8")
+        except Exception as exc:
+            raise ValueError(f"解密失败（口令错误？）: {exc}")
+    return _decrypt_openssl(blob, passphrase).decode("utf-8")
+
+
+def mask_secret(secret):
+    if not secret:
+        return "(空)"
+    if len(secret) <= 10:
+        return "*" * len(secret)
+    return f"{secret[:6]}{'*' * 8}{secret[-4:]} (len={len(secret)})"
+
+
+def scrub_env(*names):
+    """读完就把口令/密钥从本进程环境变量里摘掉。
+
+    环境变量会被每个子进程无条件继承（curl、openssl、openai SDK，以及它们
+    自己再拉起的进程），留在 os.environ 等于把密钥广播给整棵进程树。取值已经
+    存进局部变量，后续逻辑不受影响。
+    """
+    for name in names:
+        os.environ.pop(name, None)
+
+
+def warn_secret_arg(flag):
+    """命令行参数里的密钥会同时出现在 shell 历史和 ps 进程列表里。"""
+    print(
+        f"⚠ 警告: {flag} 会留在 shell 历史和进程列表 (ps) 里，"
+        "仅建议临时测试用；日常请用交互输入、stdin 管道或环境变量。",
+        file=sys.stderr,
+    )
+
+
+def read_passphrase(args, cfg, *, confirm=False, allow_prompt=True):
+    """口令来源：--passphrase > LLM_PASSPHRASE 环境变量 > 口令文件 > 交互。
+
+    三个来源的权衡见 README「口令从哪来」一节：
+      * 口令文件  —— 非交互首选，chmod 600，不进进程环境
+      * 交互输入 —— 最安全，只在内存里过一遍
+      * 环境变量 —— 权宜之计；读到后立即摘掉，避免被子进程继承
+    """
+    if getattr(args, "passphrase", None):
+        warn_secret_arg("--passphrase")
+        return args.passphrase
+    if os.environ.get("LLM_PASSPHRASE"):
+        value = os.environ["LLM_PASSPHRASE"]
+        scrub_env("LLM_PASSPHRASE", "LLM_PP_PASSPHRASE")
+        return value
+    passphrase_file = cfg.get("LLM_PASSPHRASE_FILE") or ""
+    if passphrase_file:
+        passphrase_file = os.path.expanduser(passphrase_file)
+        if os.path.exists(passphrase_file):
+            with open(passphrase_file, "r", encoding="utf-8") as fh:
+                value = fh.read().strip()
+            if value:
+                return value
+    if not allow_prompt or not sys.stdin.isatty():
+        return None
+    import getpass
+    first = getpass.getpass("解密口令: ")
+    if confirm:
+        second = getpass.getpass("再输一次: ")
+        if first != second:
+            raise ValueError("两次输入的口令不一致")
+    return first or None
+
+
+# ---------------------------------------------------------------------------
+# HTTP 基础设施
+# ---------------------------------------------------------------------------
+class _SameOriginRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """允许同源跳转，拒绝把 Authorization 转发到另一 origin。"""
+
+    @staticmethod
+    def _origin(url):
+        parts = urllib.parse.urlsplit(url)
+        port = parts.port or (443 if parts.scheme.lower() == "https" else 80)
+        return parts.scheme.lower(), (parts.hostname or "").lower(), port
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if self._origin(req.full_url) != self._origin(newurl):
+            return None
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_HTTP_OPENER_CONFIGURED = False
+
+
+def install_http_opener(direct=False):
+    """安装带同源重定向保护的 opener；direct 时同时禁用系统代理。"""
+    global _HTTP_OPENER_CONFIGURED
+    handlers = [_SameOriginRedirectHandler()]
+    if direct:
+        handlers.append(urllib.request.ProxyHandler({}))
+    urllib.request.install_opener(urllib.request.build_opener(*handlers))
+    _HTTP_OPENER_CONFIGURED = True
+
+
+def classify_error(exc):
+    """把异常翻译成人类能看懂的网络结论。"""
+    if isinstance(exc, urllib.error.URLError):
+        reason = exc.reason
+        if isinstance(reason, socket.gaierror):
+            return "dns", "DNS 解析失败（域名不存在或无网络）"
+        if isinstance(reason, socket.timeout) or isinstance(exc, TimeoutError):
+            return "timeout", "连接超时（被防火墙丢包或服务未监听）"
+        if isinstance(reason, ConnectionRefusedError):
+            return "refused", "连接被拒绝（端口没开）"
+        if isinstance(reason, ssl.SSLError):
+            return "tls", f"TLS 握手失败: {reason}"
+        return "net", f"网络错误: {reason}"
+    if isinstance(exc, TimeoutError):
+        return "timeout", "请求超时"
+    if isinstance(exc, ssl.SSLError):
+        return "tls", f"TLS 错误: {exc}"
+    if isinstance(exc, ConnectionRefusedError):
+        return "refused", "连接被拒绝"
+    return "net", f"{type(exc).__name__}: {exc}"
+
+
+def http_call(url, method="GET", headers=None, payload=None, timeout=30, max_body_bytes=None):
+    """发一次 HTTP 请求，永不抛异常，统一返回结构化结果。
+
+    ``headers`` 被规范化为小写键名，兼容矩阵需要读取 Content-Type；普通 probe
+    不依赖这个扩展字段，原有返回结构保持不变。``max_body_bytes`` 用于限制
+    响应体，避免异常端点把探针变成无界内存消费者。
+    """
+    body = None
+    if payload is not None:
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(url, data=body, method=method)
+    for key, value in (headers or {}).items():
+        req.add_header(key, value)
+    start = time.monotonic()
+    if not _HTTP_OPENER_CONFIGURED:
+        install_http_opener()
+
+    def read_body(response):
+        if max_body_bytes is None:
+            return response.read(), False
+        raw = response.read(max_body_bytes + 1)
+        return raw[:max_body_bytes], len(raw) > max_body_bytes
+
+    def response_headers(response):
+        try:
+            return {str(key).lower(): str(value) for key, value in response.getheaders()}
+        except Exception:
+            return {}
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw, truncated = read_body(resp)
+            elapsed = round((time.monotonic() - start) * 1000, 1)
+            return {
+                "ok": not truncated, "status": getattr(resp, "status", resp.getcode()),
+                "body": raw, "headers": response_headers(resp), "ms": elapsed,
+                "error": {"kind": "body_too_large", "message": "响应体超过大小上限"}
+                if truncated else None,
+            }
+    except urllib.error.HTTPError as exc:
+        try:
+            raw, truncated = read_body(exc)
+        except Exception:
+            raw, truncated = b"", False
+        return {
+            "ok": False, "status": exc.code, "body": raw,
+            "headers": response_headers(exc),
+            "ms": round((time.monotonic() - start) * 1000, 1),
+            "error": {"kind": "body_too_large", "message": "响应体超过大小上限"}
+            if truncated else None,
+        }
+    except Exception as exc:
+        kind, message = classify_error(exc)
+        return {
+            "ok": False, "status": 0, "body": b"", "headers": {},
+            "ms": round((time.monotonic() - start) * 1000, 1),
+            "error": {"kind": kind, "message": message},
+        }
+
+
+def error_message(body):
+    """从响应体里挖出服务端给出的错误说明。"""
+    try:
+        data = json.loads(body.decode("utf-8", "replace"))
+    except Exception:
+        text = body.decode("utf-8", "replace").strip()
+        return text[:160] if text else ""
+    err = data.get("error")
+    if isinstance(err, dict):
+        return str(err.get("message") or err.get("code") or "")
+    if isinstance(err, str):
+        return err
+    if data.get("message"):
+        return str(data["message"])
+    return ""
+
+
+# ---------------------------------------------------------------------------
+# 分层探测
+# ---------------------------------------------------------------------------
+def step_network(base_url, timeout):
+    parts = urllib.parse.urlsplit(base_url)
+    if parts.scheme not in ("http", "https") or not parts.hostname:
+        return {"name": "L1 网络", "ok": False,
+                "detail": f"base_url 非法（需要 http(s)://host[/v1]）: {base_url!r}"}
+    host = parts.hostname
+    port = parts.port or (443 if parts.scheme == "https" else 80)
+
+    start = time.monotonic()
+    try:
+        with socket.create_connection((host, port), timeout=timeout) as sock:
+            tcp_ms = round((time.monotonic() - start) * 1000, 1)
+            if parts.scheme != "https":
+                return {"name": "L1 网络", "ok": True,
+                        "detail": f"DNS+TCP {host}:{port} OK ({tcp_ms}ms, 明文 HTTP)"}
+            context = ssl.create_default_context()
+            with context.wrap_socket(sock, server_hostname=host) as tls:
+                ms = round((time.monotonic() - start) * 1000, 1)
+                cert = tls.getpeercert() or {}
+                subject = dict(x[0] for x in cert.get("subject", ())).get("commonName", "?")
+                not_after = cert.get("notAfter", "未知")
+                return {"name": "L1 网络", "ok": True,
+                        "detail": (f"DNS+TCP+TLS {host}:{port} OK ({ms}ms) "
+                                   f"{tls.version()} CN={subject} 有效期至 {not_after}")}
+    except Exception as exc:
+        kind, message = classify_error(exc)
+        return {"name": "L1 网络", "ok": False, "kind": kind, "detail": message}
+
+
+def step_auth(base_url, key, timeout):
+    url = base_url.rstrip("/") + "/models"
+    headers = {"Accept": "application/json"}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    result = http_call(url, "GET", headers, timeout=timeout)
+    step = {"name": "L2 认证", "url": url, "status": result["status"],
+            "ms": result["ms"], "error": result["error"]}
+    if result["error"]:
+        step.update(ok=False, kind=result["error"]["kind"], detail=result["error"]["message"])
+        return step
+    status = result["status"]
+    message = error_message(result["body"])
+    if status == 200:
+        try:
+            count = len(json.loads(result["body"]).get("data", []))
+            detail = f"HTTP 200，可枚举模型 {count} 个"
+        except Exception:
+            detail = "HTTP 200"
+        step.update(ok=True, detail=f"{detail} ({result['ms']}ms)")
+    elif status in (401, 403):
+        step.update(ok=False, kind="auth", detail=f"HTTP {status}：{message or '密钥无效'}")
+    elif status == 404:
+        step.update(ok=False, kind="notfound", fatal=False,
+                    detail=f"HTTP 404：{message or '该端点未实现 /models'}（不代表 key 无效）")
+    elif status == 429:
+        step.update(ok=False, kind="ratelimit",
+                    detail=f"HTTP 429：{message or '限流 / 额度耗尽'}")
+    else:
+        step.update(ok=False, kind="server" if status >= 500 else "client",
+                    detail=f"HTTP {status}：{message or '异常响应'}")
+    return step
+
+
+def step_infer(base_url, key, model, prompt, max_tokens, timeout):
+    url = base_url.rstrip("/") + "/chat/completions"
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    if key:
+        headers["Authorization"] = f"Bearer {key}"
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": max_tokens,
+    }
+    result = http_call(url, "POST", headers, payload, timeout=timeout)
+    step = {"name": "L3 推理", "url": url, "status": result["status"],
+            "ms": result["ms"], "error": result["error"]}
+    if result["error"]:
+        step.update(ok=False, kind=result["error"]["kind"], detail=result["error"]["message"])
+        return step
+    status = result["status"]
+    message = error_message(result["body"])
+    if status != 200:
+        kind = {401: "auth", 403: "auth", 404: "notfound", 429: "ratelimit",
+                400: "badrequest", 404: "notfound"}.get(status,
+                    "server" if status >= 500 else "client")
+        step.update(ok=False, kind=kind, detail=f"HTTP {status}：{message or '推理失败'}")
+        return step
+    try:
+        data = json.loads(result["body"])
+        choice = (data.get("choices") or [{}])[0]
+        content = (choice.get("message") or {}).get("content") or ""
+        usage = data.get("usage") or {}
+        detail = (f"HTTP 200 ({result['ms']}ms) model={data.get('model', model)} "
+                  f"tokens={usage.get('prompt_tokens', '?')}/{usage.get('completion_tokens', '?')}")
+        step.update(ok=True, detail=detail,
+                    content=(content or "").strip(),
+                    finish=(choice.get("finish_reason") or ""))
+    except Exception as exc:
+        step.update(ok=False, detail=f"HTTP 200 但响应体解析失败: {exc}")
+    return step
+
+
+# ---------------------------------------------------------------------------
+# OpenAI compatibility matrix（显式 --matrix 才执行）
+# ---------------------------------------------------------------------------
+MATRIX_CELLS = (
+    ("chat_completions", "Chat Completions"),
+    ("responses_api", "Responses API"),
+    ("streaming_sse", "Streaming SSE"),
+    ("tool_calling", "Tool Calling"),
+    ("json_schema", "JSON Schema"),
+)
+MATRIX_MAX_BODY = 2 * 1024 * 1024
+MATRIX_TOOL_NAME = "llm_probe_lookup"
+MATRIX_SCHEMA = {
+    "type": "object",
+    "properties": {"status": {"type": "string", "enum": ["ok"]}},
+    "required": ["status"],
+    "additionalProperties": False,
+}
+MATRIX_NETWORK_DETAILS = {
+    "dns": "DNS 解析失败（域名不存在或无网络）",
+    "timeout": "请求超时",
+    "refused": "连接被拒绝（端口没开）",
+    "tls": "TLS 失败",
+    "net": "网络错误",
+}
+
+
+def _matrix_content_text(value):
+    """从 OpenAI 常见的字符串/分段 content 中提取文本。"""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, list):
+        pieces = []
+        for item in value:
+            if isinstance(item, str):
+                pieces.append(item)
+            elif isinstance(item, dict):
+                text = item.get("text")
+                if isinstance(text, str):
+                    pieces.append(text)
+        return "".join(pieces)
+    return ""
+
+
+def parse_chat_completion(data):
+    """校验一个最小、非流式 Chat Completions 响应。"""
+    if not isinstance(data, dict) or not isinstance(data.get("choices"), list) or not data["choices"]:
+        raise ValueError("缺少非空 choices")
+    choice = data["choices"][0]
+    message = choice.get("message") if isinstance(choice, dict) else None
+    if not isinstance(message, dict) or "content" not in message:
+        raise ValueError("缺少 message.content")
+    content = _matrix_content_text(message.get("content"))
+    if not isinstance(content, str) or not content.strip():
+        raise ValueError("message.content 不是非空文本")
+    return content, choice.get("finish_reason") or ""
+
+
+def parse_responses_object(data):
+    """校验 Responses API 的最小完成响应，允许 reasoning item 先于文本。"""
+    if not isinstance(data, dict) or data.get("object") != "response":
+        raise ValueError("object 不是 response")
+    if data.get("status") != "completed":
+        raise ValueError("status 不是 completed")
+    top_level = _matrix_content_text(data.get("output_text"))
+    if top_level.strip():
+        return top_level
+    for item in data.get("output") or []:
+        if not isinstance(item, dict):
+            continue
+        for block in item.get("content") or []:
+            if isinstance(block, dict) and block.get("type") == "output_text":
+                text = _matrix_content_text(block.get("text"))
+                if text.strip():
+                    return text
+    raise ValueError("没有 output_text")
+
+
+def parse_sse_events(body):
+    """解析 SSE，返回事件、聚合文本，并要求标准 [DONE] 终止帧。
+
+    支持 CRLF、注释/keepalive 和多行 data；不把未解析的原始 SSE 放进报告。
+    """
+    if isinstance(body, bytes):
+        text = body.decode("utf-8", "replace")
+    else:
+        text = str(body)
+    events = []
+    data_lines = []
+    terminal = False
+
+    def flush():
+        nonlocal terminal
+        if not data_lines:
+            return
+        payload = "\n".join(data_lines)
+        data_lines[:] = []
+        if payload.strip() == "[DONE]":
+            terminal = True
+            return
+        try:
+            event = json.loads(payload)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("SSE data 不是合法 JSON: %s" % exc)
+        if not isinstance(event, dict):
+            raise ValueError("SSE data 不是 JSON object")
+        events.append(event)
+
+    for line in text.splitlines():
+        if not line:
+            flush()
+            continue
+        if line.startswith(":"):
+            continue
+        if line.startswith("data:"):
+            data_lines.append(line[5:].lstrip(" "))
+    flush()
+
+    if not terminal:
+        raise ValueError("SSE 缺少 [DONE]")
+    if not events:
+        raise ValueError("SSE 没有有效事件")
+    chunks = []
+    for event in events:
+        if event.get("object") != "chat.completion.chunk":
+            raise ValueError("SSE 事件不是 chat.completion.chunk")
+        if not isinstance(event.get("choices"), list):
+            raise ValueError("SSE chunk 缺少 choices")
+        choices = event["choices"]
+        if choices and isinstance(choices[0], dict):
+            delta = choices[0].get("delta") or {}
+            if isinstance(delta, dict) and isinstance(delta.get("content"), str):
+                chunks.append(delta["content"])
+    if not "".join(chunks).strip():
+        raise ValueError("SSE 没有文本 delta")
+    return events, "".join(chunks)
+
+
+def parse_tool_call(data):
+    """校验现代 tool_calls（不把旧 function_call 误判为支持）。"""
+    if not isinstance(data, dict) or not isinstance(data.get("choices"), list) or not data["choices"]:
+        raise ValueError("缺少非空 choices")
+    choice = data["choices"][0]
+    if not isinstance(choice, dict) or choice.get("finish_reason") != "tool_calls":
+        raise ValueError("finish_reason 不是 tool_calls")
+    message = choice.get("message") or {}
+    calls = message.get("tool_calls") if isinstance(message, dict) else None
+    if not isinstance(calls, list) or not calls:
+        raise ValueError("缺少 tool_calls")
+    call = calls[0]
+    function = call.get("function") if isinstance(call, dict) else None
+    if not isinstance(call, dict) or not call.get("id") or not isinstance(function, dict):
+        raise ValueError("tool_call 缺少 id/function")
+    if function.get("name") != MATRIX_TOOL_NAME:
+        raise ValueError("tool name 不匹配")
+    arguments = function.get("arguments")
+    if not isinstance(arguments, str):
+        raise ValueError("tool arguments 不是字符串")
+    try:
+        parsed = json.loads(arguments)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("tool arguments 不是合法 JSON: %s" % exc)
+    if parsed != {"city": "Paris"} or list(parsed) != ["city"]:
+        raise ValueError("tool arguments 不符合固定 schema")
+    return call
+
+
+def parse_schema_output(data):
+    """校验 response_format=json_schema 返回的严格小对象。"""
+    if not isinstance(data, dict) or not isinstance(data.get("choices"), list) or not data["choices"]:
+        raise ValueError("缺少非空 choices")
+    choice = data["choices"][0]
+    if not isinstance(choice, dict):
+        raise ValueError("choice 不是 object")
+    message = choice.get("message") or {}
+    raw = _matrix_content_text(message.get("content"))
+    if not raw.strip():
+        raise ValueError("schema 响应没有 content")
+    try:
+        value = json.loads(raw)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("schema content 不是合法 JSON: %s" % exc)
+    if value != {"status": "ok"}:
+        raise ValueError("schema content 不符合固定 schema")
+    return value
+
+
+def _matrix_headers(key, stream=False):
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    if stream:
+        headers["Accept"] = "text/event-stream"
+    if key:
+        headers["Authorization"] = "Bearer %s" % key
+    return headers
+
+
+def _matrix_payload(feature, model, max_tokens):
+    """构造五个可重复、无副作用的兼容性请求。"""
+    if feature == "chat_completions":
+        return {
+            "model": model, "messages": [{"role": "user", "content": "Reply with exactly OK."}],
+            "max_tokens": max_tokens, "temperature": 0,
+        }
+    if feature == "responses_api":
+        return {"model": model, "input": "Reply with exactly OK.",
+                "max_output_tokens": max_tokens, "temperature": 0}
+    if feature == "streaming_sse":
+        return {
+            "model": model, "messages": [{"role": "user", "content": "Reply with exactly OK."}],
+            "max_tokens": max_tokens, "temperature": 0, "stream": True,
+        }
+    if feature == "tool_calling":
+        return {
+            "model": model,
+            "messages": [{"role": "user", "content": "Look up Paris using the tool."}],
+            "max_tokens": max_tokens, "temperature": 0,
+            "tools": [{"type": "function", "function": {
+                "name": MATRIX_TOOL_NAME,
+                "description": "Return the city for a fixed compatibility probe.",
+                "parameters": {
+                    "type": "object", "properties": {"city": {"type": "string"}},
+                    "required": ["city"], "additionalProperties": False,
+                },
+            }}],
+            "tool_choice": {"type": "function", "function": {"name": MATRIX_TOOL_NAME}},
+        }
+    if feature == "json_schema":
+        return {
+            "model": model,
+            "messages": [{"role": "user", "content": 'Return exactly {"status":"ok"}.'}],
+            "max_tokens": max_tokens, "temperature": 0,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "llm_probe_result", "strict": True, "schema": MATRIX_SCHEMA,
+                },
+            },
+        }
+    raise ValueError("未知 matrix feature: %s" % feature)
+
+
+def _matrix_http_failure(result):
+    """把非 200/传输失败归入现有 2/3/4 语义。"""
+    error = result.get("error")
+    if error:
+        kind = error.get("kind")
+        if kind in ("dns", "timeout", "refused", "tls", "net"):
+            return kind, result["ms"], MATRIX_NETWORK_DETAILS.get(kind, "网络错误")
+        if kind == "body_too_large":
+            status = result.get("status", 0)
+            return "malformed", result["ms"], "HTTP %d 但响应体超过大小上限" % status
+        return "malformed", result["ms"], "请求失败: %s" % error.get("message", "")
+    status = result.get("status", 0)
+    if status in (401, 403):
+        return "auth", result["ms"], "HTTP %d：认证失败" % status
+    if 300 <= status < 400:
+        return "redirect", result["ms"], "HTTP %d：拒绝重定向" % status
+    if status in (404, 405):
+        return "unsupported", result["ms"], "HTTP %d：该能力未实现或路径不支持" % status
+    if status == 400:
+        return "badrequest", result["ms"], "HTTP 400：该能力不支持或请求被拒绝"
+    if status == 429:
+        return "ratelimit", result["ms"], "HTTP 429：限流 / 额度耗尽"
+    if status >= 500:
+        return "server", result["ms"], "HTTP %d：服务端错误" % status
+    return "client", result["ms"], "HTTP %d：异常响应" % status
+
+
+def _matrix_run_cell(feature, base_url, key, model, max_tokens, timeout):
+    stream = feature == "streaming_sse"
+    url = base_url.rstrip("/") + ("/responses" if feature == "responses_api" else "/chat/completions")
+    result = http_call(
+        url, "POST", _matrix_headers(key, stream=stream), _matrix_payload(feature, model, max_tokens),
+        timeout=timeout, max_body_bytes=MATRIX_MAX_BODY,
+    )
+    name = dict(MATRIX_CELLS)[feature]
+    if result.get("error") or result.get("status") != 200:
+        kind, elapsed, detail = _matrix_http_failure(result)
+        supported = False if kind in ("unsupported", "badrequest", "malformed", "client", "server", "ratelimit") else None
+        return {"id": feature, "name": name, "ok": False, "skipped": False,
+                "supported": supported, "status": result.get("status", 0), "kind": kind,
+                "ms": elapsed, "detail": detail}
+    try:
+        content_type = result.get("headers", {}).get("content-type", "").split(";", 1)[0].strip().lower()
+        if stream and content_type != "text/event-stream":
+            raise ValueError("Content-Type 不是 text/event-stream")
+        if feature == "chat_completions":
+            parse_chat_completion(json.loads(result["body"].decode("utf-8")))
+            detail = "HTTP 200，chat.completions 返回可解析回复"
+        elif feature == "responses_api":
+            parse_responses_object(json.loads(result["body"].decode("utf-8")))
+            detail = "HTTP 200，Responses API 返回可解析输出"
+        elif feature == "streaming_sse":
+            parse_sse_events(result["body"])
+            detail = "HTTP 200，SSE 事件与 [DONE] 完整"
+        elif feature == "tool_calling":
+            parse_tool_call(json.loads(result["body"].decode("utf-8")))
+            detail = "HTTP 200，tool_calls、arguments 与 finish_reason 有效"
+        else:
+            parse_schema_output(json.loads(result["body"].decode("utf-8")))
+            detail = "HTTP 200，JSON Schema 输出符合约定"
+    except (UnicodeDecodeError, ValueError, TypeError, KeyError, AttributeError, IndexError) as exc:
+        return {"id": feature, "name": name, "ok": False, "skipped": False,
+                "supported": False, "status": result.get("status", 0), "kind": "malformed",
+                "ms": result["ms"], "detail": "HTTP 200 但响应格式不符合 OpenAI 兼容约定"}
+    return {"id": feature, "name": name, "ok": True, "skipped": False, "supported": True,
+            "status": 200, "kind": None, "ms": result["ms"], "detail": detail}
+
+
+def _matrix_skip(feature, detail="前置能力失败，已跳过（--all 可强制执行）", kind=None):
+    name = dict(MATRIX_CELLS)[feature]
+    return {"id": feature, "name": name, "ok": False, "skipped": True,
+            "supported": None, "status": 0, "kind": kind, "ms": 0.0, "detail": detail}
+
+
+def matrix_verdict(steps, allow_unsupported=False):
+    """汇总兼容矩阵，保持 2/3/4 的全局退出码优先级。"""
+    passed = sum(1 for step in steps if step.get("ok"))
+    skipped = sum(1 for step in steps if step.get("skipped"))
+    failed = len(steps) - passed - skipped
+    failures = [step for step in steps if not step.get("ok") and not step.get("skipped")]
+    chat_step = next((step for step in steps if step.get("id") == "chat_completions"), None)
+    chat_ok = bool(chat_step and chat_step.get("ok"))
+    network_kinds = ("dns", "timeout", "refused", "tls", "net")
+    network_steps = [step for step in steps if step.get("kind") in network_kinds]
+    if network_steps:
+        first = network_steps[0]
+        return 2, "网络不可达：%s" % first["detail"], {"passed": passed, "failed": failed,
+                                                    "skipped": skipped, "total": len(steps)}
+    if any(step.get("kind") == "auth" for step in failures):
+        first = next(step for step in failures if step.get("kind") == "auth")
+        return 3, "认证失败：%s" % first["detail"], {"passed": passed, "failed": failed,
+                                                    "skipped": skipped, "total": len(steps)}
+    if failures and allow_unsupported and chat_ok and all(
+            step.get("kind") == "unsupported" for step in failures):
+        ids = "、".join(step["id"] for step in failures)
+        return 0, "兼容能力通过（未实现：%s）" % ids, {"passed": passed, "failed": failed,
+                                                     "skipped": skipped, "total": len(steps)}
+    if failures:
+        ids = "、".join(step["id"] for step in failures)
+        if not ids:
+            ids = "chat_completions"
+        return 4, "兼容能力不通过：%s" % ids, {"passed": passed, "failed": failed,
+                                             "skipped": skipped, "total": len(steps)}
+    if not chat_ok:
+        return 4, "兼容能力不通过：chat_completions", {"passed": passed, "failed": failed,
+                                                       "skipped": skipped, "total": len(steps)}
+    return 0, "兼容能力通过：%d 项" % len(steps), {"passed": passed, "failed": failed,
+                                                 "skipped": skipped, "total": len(steps)}
+
+
+def run_compatibility_matrix(base_url, key, model, max_tokens, timeout, force_all=False,
+                             allow_unsupported=False):
+    """运行五个显式兼容性单元；默认在传输/认证故障后跳过后续请求。"""
+    network = step_network(base_url, timeout)
+    if not network.get("ok"):
+        network_kind = network.get("kind") or "net"
+        steps = [_matrix_skip(feature, network["detail"], kind=network_kind)
+                 for feature, _ in MATRIX_CELLS]
+        code, verdict, summary = matrix_verdict(steps)
+        return steps, code, verdict, summary
+    steps = []
+    gated = False
+    for feature, _ in MATRIX_CELLS:
+        if gated and not force_all:
+            steps.append(_matrix_skip(feature))
+            continue
+        row = _matrix_run_cell(feature, base_url, key, model, max_tokens, timeout)
+        steps.append(row)
+        if (not row["ok"] and not force_all and
+                row.get("kind") in ("dns", "timeout", "refused", "tls", "net", "auth", "ratelimit")):
+            gated = True
+    code, verdict, summary = matrix_verdict(steps, allow_unsupported=allow_unsupported)
+    return steps, code, verdict, summary
+
+
+def step_sdk(base_url, key, model, prompt, timeout):
+    try:
+        import openai  # noqa
+    except ImportError:
+        return {"name": "L4 SDK", "ok": False, "kind": "nosdk", "fatal": False,
+                "detail": "未安装 openai SDK（pip install -U openai）"}
+    version = getattr(openai, "__version__", "未知")
+    start = time.monotonic()
+    try:
+        if hasattr(openai, "OpenAI"):  # openai >= 1.0
+            client = openai.OpenAI(base_url=base_url, api_key=key, timeout=timeout)
+            resp = client.chat.completions.create(
+                model=model, messages=[{"role": "user", "content": prompt}],
+                max_tokens=32,
+            )
+            content = resp.choices[0].message.content or ""
+            style = "1.x 新客户端"
+        else:  # openai 0.28 老 API
+            openai.api_base = base_url
+            openai.api_key = key
+            resp = openai.ChatCompletion.create(
+                model=model, messages=[{"role": "user", "content": prompt}],
+                max_tokens=32, request_timeout=timeout,
+            )
+            content = resp["choices"][0]["message"]["content"] or ""
+            style = "0.x 老 API"
+        ms = round((time.monotonic() - start) * 1000, 1)
+        return {"name": "L4 SDK", "ok": True, "ms": ms,
+                "detail": f"openai {version}（{style}）调用成功 ({ms}ms)",
+                "content": content.strip()}
+    except Exception as exc:
+        ms = round((time.monotonic() - start) * 1000, 1)
+        message = str(exc)
+        for prefix in ("Error while finding module specification.",
+                       "Invalid URL", "HTTPSConnectionPool"):
+            if message.startswith(prefix):
+                message = message.split("\n")[0][:160]
+                break
+        return {"name": "L4 SDK", "ok": False, "kind": "sdk", "ms": ms,
+                "detail": f"openai {version} 调用失败: {message.splitlines()[0][:160]}",
+                "fatal": True}
+
+
+# ---------------------------------------------------------------------------
+# 报告
+# ---------------------------------------------------------------------------
+def verdict_of(steps):
+    """按层级给出唯一结论 + 退出码。"""
+    by_name = {s["name"]: s for s in steps}
+    net = by_name.get("L1 网络")
+    auth = by_name.get("L2 认证")
+    infer = by_name.get("L3 推理")
+    sdk = by_name.get("L4 SDK")
+
+    if net and not net["ok"]:
+        return 2, f"网络不可达：{net['detail']}"
+    if auth and not auth["ok"] and auth.get("fatal", True):
+        if auth.get("kind") == "auth":
+            return 3, f"认证失败：API Key 无效或已过期（{auth['detail']}）"
+        if auth.get("kind") == "ratelimit":
+            return 3, f"认证被拒：限流或额度耗尽（{auth['detail']}）"
+        if auth.get("kind") in ("timeout", "refused", "dns", "tls", "net"):
+            return 2, f"网络不可达：{auth['detail']}"
+        return 3, f"认证环节异常：{auth['detail']}"
+    if infer is not None and not infer["ok"]:
+        kind = infer.get("kind")
+        if kind == "auth":
+            return 3, f"认证失败：{infer['detail']}"
+        if kind == "notfound":
+            return 4, f"路径不对：{infer['detail']}（检查 base_url 是否含 /v1）"
+        if kind == "badrequest":
+            return 4, f"请求参数不被接受：{infer['detail']}（多半是模型名不对）"
+        if kind == "ratelimit":
+            return 4, f"限流 / 额度耗尽：{infer['detail']}"
+        if kind in ("timeout", "refused", "dns", "tls", "net"):
+            return 2, f"网络不可达：{infer['detail']}"
+        return 4, f"推理失败：{infer['detail']}"
+    if sdk is not None and not sdk["ok"] and sdk.get("fatal"):
+        return 5, f"SDK 调用失败：{sdk['detail']}"
+    parts = []
+    if infer and infer["ok"]:
+        parts.append("推理正常")
+    elif infer is None:
+        parts.append("推理未测")
+    if auth and auth["ok"]:
+        parts.append("认证通过")
+    if auth and not auth["ok"] and not auth.get("fatal", True):
+        parts.append(f"认证跳过（{auth['detail']}）")
+    if sdk is not None:
+        parts.append("SDK 正常" if sdk["ok"] else f"SDK {sdk['detail']}")
+    return 0, "；".join(parts)
+
+
+def print_report(result, as_json=False):
+    if as_json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+    print("=" * 60)
+    print(f"端点   : {result['base_url']}")
+    print(f"模型   : {result['model']}")
+    print(f"密钥   : {result['key_masked']}")
+    print("-" * 60)
+    total = len(result["steps"])
+    for index, step in enumerate(result["steps"], 1):
+        mark = "OK  " if step["ok"] else ("SKIP" if step.get("skipped") else "FAIL")
+        tail = f" [{index}/{total}]"
+        print(f"[{mark}] {step['name']}{tail}  {step['detail']}")
+        if step.get("content"):
+            snippet = step["content"].replace("\n", " ")[:200]
+            print(f"          回复: {snippet}")
+    if result.get("mode") == "compatibility":
+        summary = result.get("summary", {})
+        print("-" * 60)
+        print("矩阵   : %d 通过 / %d 失败 / %d 跳过 / %d 总计" % (
+            summary.get("passed", 0), summary.get("failed", 0),
+            summary.get("skipped", 0), summary.get("total", total)))
+    print("-" * 60)
+    mark = "✅" if result["exit_code"] == 0 else "❌"
+    print(f"结论 {mark} {result['verdict']}")
+    print(f"退出码 {result['exit_code']}")
+    print("=" * 60)
+
+
+# ---------------------------------------------------------------------------
+# 子命令
+# ---------------------------------------------------------------------------
+def cmd_probe(args):
+    if getattr(args, "allow_unsupported", False) and not getattr(args, "matrix", False):
+        print("参数错误：--allow-unsupported 只能与 --matrix 同时使用", file=sys.stderr)
+        return 1
+    if getattr(args, "matrix", False) and (args.only or args.sdk):
+        print("参数错误：--matrix 不能与 --only 或 --sdk 同时使用", file=sys.stderr)
+        return 1
+    config_path = os.path.expanduser(args.config)
+    cfg = {}
+    if os.path.exists(config_path):
+        cfg = read_config(config_path)
+    elif args.config != DEFAULT_CONFIG:
+        print(f"配置文件不存在: {config_path}", file=sys.stderr)
+        return 1
+
+    # 优先级：命令行 > 环境变量 > 配置文件（与 llm_probe.sh 一致）
+    base_url = args.base_url or os.environ.get("LLM_BASE_URL") or cfg.get("LLM_BASE_URL")
+    model = args.model or os.environ.get("LLM_MODEL") or cfg.get("LLM_MODEL")
+    if not base_url:
+        print("缺少 base_url：用 --base-url 或在配置里填 LLM_BASE_URL", file=sys.stderr)
+        return 1
+    if not model:
+        print("缺少模型名：用 --model 或在配置里填 LLM_MODEL", file=sys.stderr)
+        return 1
+    if not base_url.startswith(("http://", "https://")):
+        print(f"base_url 非法（需要 http(s)://host[/v1]）: {base_url}", file=sys.stderr)
+        return 1
+
+    prompt = args.prompt or os.environ.get("LLM_PROMPT") or cfg.get("LLM_PROMPT") or "你好"
+    # 注意不能用 `args.x or ...`：显式传 0 会被当成"没传"而绕过下面的校验
+    # （--timeout 0 / --max-tokens 0 必须报"必须大于 0"，而不是悄悄用默认值）
+    timeout_raw = (args.timeout if args.timeout is not None
+                   else os.environ.get("LLM_TIMEOUT") or cfg.get("LLM_TIMEOUT") or 30)
+    tokens_raw = (args.max_tokens if args.max_tokens is not None
+                  else os.environ.get("LLM_MAX_TOKENS") or cfg.get("LLM_MAX_TOKENS") or 64)
+    try:
+        timeout = float(timeout_raw)
+        max_tokens = int(tokens_raw)
+    except (TypeError, ValueError):
+        print("配置错误：timeout 必须是数字（如 30、2.5），max-tokens 必须是整数",
+              file=sys.stderr)
+        return 1
+    if timeout <= 0 or max_tokens <= 0:
+        print("配置错误：timeout 与 max-tokens 必须大于 0", file=sys.stderr)
+        return 1
+
+    if args.only == "net":
+        # 不用密钥，但环境里那份也不能留给子进程（与 sh 一致）
+        scrub_env("LLM_API_KEY")
+        key, key_source = None, "未读取（--only net 不需要密钥）"
+    else:
+        key, key_source = resolve_key(args, cfg)
+
+    # L1 是裸 socket，天然不走代理；--direct 让 L2/L3 也绕开代理，保持口径一致。
+    # HTTP opener 同时拒绝跨 origin 重定向，避免 Authorization 被转发到第三方。
+    install_http_opener(direct=args.direct)
+
+    if getattr(args, "matrix", False):
+        steps, code, verdict, summary = run_compatibility_matrix(
+            base_url, key, model, max_tokens, timeout, force_all=args.all,
+            allow_unsupported=getattr(args, "allow_unsupported", False),
+        )
+        result = {
+            "version": VERSION,
+            "mode": "compatibility",
+            "base_url": base_url,
+            "model": model,
+            "key_masked": mask_secret(key),
+            "key_source": key_source,
+            "config": config_path if os.path.exists(config_path) else None,
+            "steps": steps,
+            "summary": summary,
+            "verdict": verdict,
+            "exit_code": code,
+        }
+        print_report(result, args.json)
+        return code
+
+    # --only 决定跑哪几层：net=L1；auth=L1+L2；infer=L1+L3；sdk=L1+L4；缺省全跑
+    only = args.only
+    steps = [step_network(base_url, timeout)]
+
+    auth_step = None
+    if only in (None, "auth"):
+        auth_step = step_auth(base_url, key, timeout)
+        steps.append(auth_step)
+
+    # L2 已经判定 key 有问题时，L3 没必要再烧一次请求，除非 --all 强制
+    blocked = (auth_step is not None and not auth_step["ok"]
+               and auth_step.get("kind") in ("auth", "ratelimit") and not args.all)
+
+    if only in (None, "infer"):
+        if blocked:
+            steps.append({"name": "L3 推理", "ok": False, "skipped": True,
+                          "detail": "L2 认证未通过，已跳过（--all 可强制执行）"})
+        else:
+            step = step_infer(base_url, key, model, prompt, max_tokens, timeout)
+            # 与 sh 端 JSON 对齐：L3 恒带 skipped 字段（真跑过 = false）
+            step.setdefault("skipped", False)
+            steps.append(step)
+
+    if only in (None, "sdk") and (args.sdk or only == "sdk"):
+        steps.append(step_sdk(base_url, key, model, prompt, timeout))
+
+    code, verdict = verdict_of(steps)
+    result = {
+        "version": VERSION,
+        "base_url": base_url,
+        "model": model,
+        "key_masked": mask_secret(key),
+        "key_source": key_source,
+        "config": config_path if os.path.exists(config_path) else None,
+        "steps": steps,
+        "verdict": verdict,
+        "exit_code": code,
+    }
+    print_report(result, args.json)
+    return code
+
+
+def resolve_key(args, cfg):
+    """密钥优先级：--key > LLM_API_KEY 环境变量 > 解密 LLM_API_KEY_ENC > LLM_API_KEY 明文。"""
+    if getattr(args, "key", None):
+        warn_secret_arg("--key")
+        # --key 已经给定，环境里那份就多余了：同样摘掉，别让子进程继承
+        scrub_env("LLM_API_KEY")
+        return args.key, "--key 参数"
+    if os.environ.get("LLM_API_KEY"):
+        value = os.environ["LLM_API_KEY"]
+        scrub_env("LLM_API_KEY")   # 同口令：读到就摘，别让它跟着子进程走
+        return value, "环境变量 LLM_API_KEY"
+    token = cfg.get("LLM_API_KEY_ENC") or os.environ.get("LLM_API_KEY_ENC")
+    if token:
+        passphrase = read_passphrase(args, cfg)
+        if not passphrase:
+            raise SystemExit(
+                "配置里是加密密钥，但拿不到解密口令。按推荐顺序任选其一：\n"
+                "  1) LLM_PASSPHRASE_FILE 指向口令文件（chmod 600，非交互场景首选）\n"
+                "  2) 在终端交互输入（最安全）\n"
+                "  3) 环境变量 LLM_PASSPHRASE（权宜之计：环境变量会被子进程继承，\n"
+                "     读到后本脚本会立即摘掉；详见 README「口令从哪来」权衡表）")
+        try:
+            return decrypt_secret(token, passphrase), "配置文件（已解密）"
+        except ValueError as exc:
+            raise SystemExit(f"解密失败: {exc}")
+    plain = cfg.get("LLM_API_KEY")
+    if plain:
+        return plain, "配置文件明文 LLM_API_KEY"
+    return None, "未提供（将只做匿名探测）"
+
+
+def cmd_init(args):
+    return init_config(os.path.expanduser(args.config), force=getattr(args, "force", False))
+
+
+def cmd_setkey(args):
+    config_path = os.path.expanduser(args.config)
+    if not os.path.exists(config_path):
+        if init_config(config_path):
+            return 1
+    cfg = read_config(config_path)
+    if getattr(args, "key", None):
+        warn_secret_arg("--key")
+        key = args.key
+    else:
+        key = os.environ.get("LLM_API_KEY")
+    if key:
+        # 选完就摘：来源是 --key 还是环境变量，都不留给子进程
+        scrub_env("LLM_API_KEY")
+    if not key:
+        if sys.stdin.isatty():
+            import getpass
+            key = getpass.getpass("API Key: ").strip()
+        else:
+            # 非交互：优先从 stdin 读。管道内容不进 argv、不进 shell 历史。
+            data = sys.stdin.read().strip()
+            key = data.splitlines()[0].strip() if data else ""
+            if not key:
+                print(
+                    "拿不到密钥。非交互环境建议从管道读：\n"
+                    "  printf '%s' \"$KEY\" | python3 llm_probe.py setkey\n"
+                    "  （或用 LLM_API_KEY 环境变量；--key 会留在 shell 历史和 ps 进程列表里）",
+                    file=sys.stderr,
+                )
+                return 1
+    if not key:
+        print("密钥为空", file=sys.stderr)
+        return 1
+    passphrase = read_passphrase(args, cfg, confirm=True)
+    if not passphrase:
+        print("需要解密口令（以后读取密钥时要用同一个口令）", file=sys.stderr)
+        return 1
+    try:
+        token = encrypt_secret(key, passphrase)
+    except (ValueError, subprocess.SubprocessError) as exc:
+        print(f"加密失败: {exc}", file=sys.stderr)
+        return 1
+    update_env_file(config_path, {"LLM_API_KEY_ENC": token, "LLM_API_KEY": ""})
+    print(f"已加密写入: {config_path}")
+    print(f"密钥       : {mask_secret(key)}")
+    print(f"密文       : {token[:38]}...（共 {len(token)} 字符）")
+    print("注意：口令不会保存在配置里，别忘了它——丢了就只能重新 setkey。")
+    return 0
+
+
+def cmd_showkey(args):
+    cfg = read_config(os.path.expanduser(args.config))
+    token = cfg.get("LLM_API_KEY_ENC")
+    if not token:
+        plain = cfg.get("LLM_API_KEY")
+        if plain:
+            print(f"明文密钥: {mask_secret(plain)}")
+            return 0
+        print("配置里没有密钥", file=sys.stderr)
+        return 1
+    passphrase = read_passphrase(args, cfg)
+    if not passphrase:
+        print("拿不到解密口令", file=sys.stderr)
+        return 1
+    try:
+        key = decrypt_secret(token, passphrase)
+    except ValueError as exc:
+        print(f"解密失败: {exc}", file=sys.stderr)
+        return 1
+    print(key if args.plain else mask_secret(key))
+    return 0
+
+
+def cmd_env(args):
+    cfg = read_config(os.path.expanduser(args.config))
+    try:
+        key, source = resolve_key(args, cfg)
+    except SystemExit as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    print(f"配置文件 : {os.path.expanduser(args.config)}")
+    for name in ("LLM_BASE_URL", "LLM_MODEL", "LLM_TIMEOUT",
+                 "LLM_PROMPT", "LLM_MAX_TOKENS", "LLM_PASSPHRASE_FILE"):
+        value = cfg.get(name, "")
+        print(f"{name:<22}= {value or '(未设置)'}")
+    print(f"{'LLM_API_KEY':<22}= {mask_secret(key)}  [{source}]")
+    print(f"{'LLM_API_KEY_ENC':<22}= {cfg.get('LLM_API_KEY_ENC', '')[:32] or '(未设置)'}")
+    return 0
+
+
+class _ArgumentParser(argparse.ArgumentParser):
+    """参数/用法错误一律退出 1。
+
+    argparse 默认退出 2，而本工具的 2 = 网络不通；CI 里按退出码分诊的话，
+    一个拼错的参数会被误判成网络故障。
+    """
+
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        print(f"参数错误: {message}", file=sys.stderr)
+        raise SystemExit(1)
+
+
+def build_parser():
+    # 公共选项放在 parent 里，主命令和所有子命令都能用，且带 SUPPRESS，
+    # 这样 `llm_probe.py -c x probe` 和 `llm_probe.py probe -c x` 都不互相覆盖。
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("-c", "--config", default=argparse.SUPPRESS, metavar="FILE",
+                        help=f"配置文件 (默认: {DEFAULT_CONFIG})")
+
+    # 子命令 parser 会自动沿用这个类（add_subparsers 默认 parser_class=type(self)）
+    parser = _ArgumentParser(
+        prog="llm_probe.py",
+        parents=[common],
+        description="OpenAI 兼容 LLM 端点连通性探测（网络/认证/推理/SDK 分层检查，密钥加密存储）。",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""示例:
+  python3 llm_probe.py init                  生成配置文件
+  python3 llm_probe.py setkey                交互写入加密密钥
+  python3 llm_probe.py probe                 分层探测（不写 probe 也行）
+  python3 llm_probe.py probe --sdk           追加真实 openai SDK 调用
+  python3 llm_probe.py probe --matrix        五项 OpenAI 兼容能力矩阵
+  python3 llm_probe.py probe --matrix --json  机器可读的兼容矩阵
+  python3 llm_probe.py --base-url https://api.openai.com/v1 --model gpt-4o-mini
+
+退出码:
+  0 全部通过  1 用法/配置错误  2 网络不通  3 认证失败  4 推理失败  5 SDK 失败
+""",
+    )
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {VERSION}")
+    sub = parser.add_subparsers(dest="command", metavar="COMMAND")
+
+    probe = sub.add_parser("probe", parents=[common], help="分层探测（默认动作）")
+    probe.add_argument("--base-url", metavar="URL")
+    probe.add_argument("--model", metavar="NAME")
+    probe.add_argument("--prompt", metavar="TEXT")
+    probe.add_argument("--timeout", type=float, metavar="SEC")
+    probe.add_argument("--max-tokens", type=int, metavar="N")
+    probe.add_argument("--key", metavar="KEY",
+                       help="临时指定密钥（不读配置；会留在 shell 历史和 ps 进程列表里，仅测试用）")
+    probe.add_argument("--passphrase", metavar="PWD",
+                       help="解密口令（同上；推荐 LLM_PASSPHRASE_FILE 口令文件或交互输入）")
+    probe.add_argument("--only", choices=("net", "auth", "infer", "sdk"),
+                       help="只跑某一层: net=L1 / auth=L1+L2 / infer=L1+L3 / sdk=L1+L4")
+    probe.add_argument("--all", action="store_true", help="认证失败也继续测推理")
+    probe.add_argument("--sdk", action="store_true", help="追加 openai SDK 真实调用")
+    probe.add_argument("--matrix", action="store_true",
+                       help="运行五项 OpenAI 兼容能力矩阵（chat/responses/stream/tools/schema）")
+    probe.add_argument("--allow-unsupported", action="store_true",
+                       help="chat 已通过时，矩阵中仅 404/405 未实现能力仍返回 0")
+    probe.add_argument("--direct", action="store_true",
+                       help="不走系统代理（绕过 http_proxy/https_proxy）")
+    probe.add_argument("--json", action="store_true", help="JSON 输出")
+
+    init = sub.add_parser("init", parents=[common], help="生成配置文件")
+    init.add_argument("--force", action="store_true", help="覆盖已存在的配置")
+
+    setkey = sub.add_parser("setkey", parents=[common], help="加密写入 API Key")
+    setkey.add_argument("--key", metavar="KEY",
+                        help="密钥直接给（会留在 shell 历史/ps；推荐交互输入或 stdin 管道）")
+    setkey.add_argument("--passphrase", metavar="PWD",
+                        help="解密口令直接给（同上；推荐口令文件或交互输入）")
+
+    showkey = sub.add_parser("showkey", parents=[common], help="解密显示 API Key")
+    showkey.add_argument("--plain", action="store_true", help="显示完整明文")
+    showkey.add_argument("--passphrase", metavar="PWD",
+                         help="解密口令直接给（会留在 shell 历史/ps；推荐口令文件或交互输入）")
+
+    env = sub.add_parser("env", parents=[common], help="打印生效配置")
+    env.add_argument("--key", metavar="KEY",
+                     help="临时指定密钥（会留在 shell 历史/ps，仅测试用）")
+    env.add_argument("--passphrase", metavar="PWD",
+                     help="解密口令直接给（推荐口令文件或交互输入）")
+    return parser
+
+
+COMMANDS = ("probe", "init", "setkey", "showkey", "env")
+VALUE_OPTIONS = ("-c", "--config", "--key", "--passphrase", "--base-url", "--model",
+                 "--prompt", "--timeout", "--max-tokens", "--only")
+
+
+def _scan_argv(argv):
+    """返回 "cmd"(已显式写子命令) / "global"(只碰到 -h/-v 这类全局开关) / "none"。"""
+    index = 0
+    while index < len(argv):
+        token = argv[index]
+        if token in COMMANDS:
+            return "cmd"
+        if token in ("-h", "--help", "-v", "--version"):
+            return "global"
+        if token == "--":
+            return "none"
+        if token in VALUE_OPTIONS:   # 吃掉下一个 token，避免把 --model showkey 当子命令
+            index += 2
+            continue
+        index += 1
+    return "none"
+
+
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if _scan_argv(argv) == "none":
+        # 没写子命令也没碰全局开关 → 当作 probe（probe 的选项顶层不认识）
+        argv = ["probe"] + argv
+
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if not hasattr(args, "config"):
+        args.config = DEFAULT_CONFIG
+
+    handlers = {"probe": cmd_probe, "init": cmd_init, "setkey": cmd_setkey,
+                "showkey": cmd_showkey, "env": cmd_env}
+    command = handlers[args.command or "probe"]
+    try:
+        return command(args)
+    except KeyboardInterrupt:
+        print("\n已中断", file=sys.stderr)
+        return 130
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+### B. `llm_probe.sh`（1434 行，POSIX sh，依赖 curl + openssl，OpenSSL ≥ 1.1.1）
+
+```bash
+#!/bin/sh
+# llm_probe.sh —— OpenAI 兼容 LLM 端点连通性探测（curl + openssl 版）
+#
+# 与 llm_probe.py 是同一套工具的两个实现：
+#   * 读同一份 .llm_probe.env 配置
+#   * 认同一种密文格式 enc:v1:（openssl AES-256-CBC + PBKDF2-SHA256/300000）
+#   * 返回同样的退出码：0 通过 / 1 用法 / 2 网络 / 3 认证 / 4 推理
+#
+# 严格 POSIX，dash / bash / macOS 默认 shell 都能跑；不依赖 Python。
+#
+# 用法:
+#   ./llm_probe.sh probe                 分层探测（默认动作）
+#   ./llm_probe.sh init                  生成配置文件
+#   ./llm_probe.sh setkey                加密写入 API Key
+#   ./llm_probe.sh showkey               解密显示（默认打码）
+#   ./llm_probe.sh env                   打印生效配置
+#
+# 常用参数（probe）:
+#   -c FILE      指定配置文件
+#   --base-url / --model / --prompt / --timeout / --max-tokens
+#   --only net|auth|infer    只跑某一层
+#   --all                    认证失败也继续测推理
+#   --matrix                 五项 OpenAI 兼容能力矩阵
+#   --allow-unsupported      chat 已通过时，矩阵中仅 404/405 未实现能力仍返回 0
+#   --direct                 不走系统代理
+#   --json                   JSON 输出
+
+# 刻意只用 `set -u`，不用 `set -e`：
+# 这个脚本的核心是"抓住 curl/openssl 的非零退出码来分类故障"。`set -e` 会在
+# 第一个失败的 `err=$(curl ...)` 处直接中止，导致：
+#   * 端口不通时一行报告都不打印（实测 0 行输出），只留下 curl 的原始退出码 7
+#   * 期望的"退出码 2 + 12 行分层报告"完全丢失
+# 每个关键命令的退出状态都在下面显式判断（curl → classify_curl_error，
+# openssl → decrypt_key 的 if ! ... ），漏掉的靠 tests/run_tests.sh 兜底。
+set -u
+
+VERSION="1.1"
+PROG="llm_probe.sh"
+ENC_PREFIX="enc:v1:"
+PBKDF2_ITER=300000
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DEFAULT_CONFIG="$SCRIPT_DIR/.llm_probe.env"
+
+CONFIG="$DEFAULT_CONFIG"
+CMD=""
+BASE_URL=""
+MODEL=""
+PROMPT=""
+TIMEOUT=""
+MAX_TOKENS=""
+KEY=""
+PASSPHRASE_ARG=""
+ONLY=""
+ALL=0
+JSON=0
+DIRECT=0
+PLAIN=0
+FORCE=0
+
+BODY_FILE=""
+ERR_FILE=""
+HEAD_FILE=""
+HEADER_FILE=""
+TMP_DIR=""
+PASSPHRASE=""
+MATRIX=0
+ALLOW_UNSUPPORTED=0
+
+# load_config 可能因配置文件缺失而提前返回，这些全局必须先初始化（set -u）
+API_KEY_ENC=""
+API_KEY_PLAIN=""
+PASSPHRASE_FILE=""
+KEY=""
+KEY_SOURCE=""
+STEP2_RAN=0
+LAST_CURL_MSG=""
+
+# ---------------------------------------------------------------------------
+# 输出工具
+# ---------------------------------------------------------------------------
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+# 命令行参数里的密钥会同时留在 shell 历史和 ps 进程列表里
+warn_secret_arg() {  # $1 = 参数名
+    printf '⚠ 警告: %s 会留在 shell 历史和进程列表 (ps) 里，仅建议临时测试用；日常请用交互输入、stdin 管道或环境变量。\n' "$1" >&2
+}
+
+cleanup() {
+    [ -n "${TMP_DIR:-}" ] && rm -rf "$TMP_DIR"
+    [ -n "$BODY_FILE" ] && rm -f "$BODY_FILE"
+    [ -n "$ERR_FILE" ] && rm -f "$ERR_FILE"
+    [ -n "$HEAD_FILE" ] && rm -f "$HEAD_FILE"
+    [ -n "$HEADER_FILE" ] && rm -f "$HEADER_FILE"
+}
+# 收到信号要"清干净 + 立刻退出"：只 cleanup 不 exit 的话，脚本会从被打断的
+# 那一行继续往下跑，Ctrl-C 之后还可能打出一份半截报告。
+trap cleanup EXIT
+trap 'cleanup; trap - INT; exit 130' INT
+trap 'cleanup; trap - TERM; exit 143' TERM
+trap 'cleanup; trap - HUP; exit 129' HUP
+trap 'cleanup; trap - QUIT; exit 131' QUIT
+
+# 临时响应体集中放在一个私有目录里（umask 077 → 0700），退出即删。
+# 注意：kill -9 / SIGKILL 不触发 trap，目录会残留；下次运行是新建目录，不会
+# 复用旧的。彻底清理: rm -rf "${TMPDIR:-/tmp}"/llm_probe.*
+init_tmpdir() {
+    umask 077
+    TMP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/llm_probe.XXXXXX") || die "mktemp -d 失败：无法创建临时目录"
+    BODY_FILE="$TMP_DIR/response.json"
+    ERR_FILE="$TMP_DIR/curl.err"
+    HEAD_FILE="$TMP_DIR/response.headers"
+    HEADER_FILE="$TMP_DIR/request.headers"
+    : > "$BODY_FILE"
+    : > "$ERR_FILE"
+    : > "$HEAD_FILE"
+    : > "$HEADER_FILE"
+}
+
+usage() {
+    cat <<EOF
+$PROG $VERSION —— OpenAI 兼容 LLM 端点连通性探测（curl + openssl，零 Python 依赖）
+
+用法:
+  $PROG [probe] [选项]      分层探测（默认动作）
+  $PROG init [--force]      生成配置文件
+  $PROG setkey [--key K]    加密写入 API Key
+  $PROG showkey [--plain]   解密显示 API Key
+  $PROG env                 打印生效配置
+
+探测选项:
+  -c FILE           配置文件（默认: $DEFAULT_CONFIG）
+  --base-url URL    端点地址，如 https://api.openai.com/v1
+  --model NAME      模型名
+  --prompt TEXT     测试提示词（默认取配置 LLM_PROMPT）
+  --timeout SEC     超时秒数（默认取配置 LLM_TIMEOUT）
+  --max-tokens N    最大生成 token（默认 64）
+  --key KEY         临时密钥（会进 shell 历史和 ps，仅临时测试用）
+  --passphrase PWD  解密口令（同上；推荐口令文件或交互输入）
+  --only LEVEL      只跑某一层: net=L1 / auth=L1+L2 / infer=L1+L3
+  --all             认证失败也继续测推理
+  --matrix          五项 OpenAI 兼容能力矩阵
+  --allow-unsupported  chat 已通过时，矩阵中仅 404/405 未实现能力仍返回 0
+  --direct          不走系统代理（绕过 http_proxy/https_proxy）
+  --json            JSON 输出
+
+密钥选项:
+  setkey            交互输入密钥（推荐）
+  printf '%s' "\$K" | setkey     非交互：从 stdin 读，不进 argv / 历史
+  setkey --key K    直接给密钥（会留在 shell 历史和 ps 进程列表里）
+  setkey/showkey --passphrase P  口令直接给（同上；推荐口令文件或交互）
+
+退出码:
+  0 全部通过   1 用法/配置错误   2 网络不通   3 认证失败   4 推理/兼容失败
+
+示例:
+  $PROG init
+  $PROG setkey
+  $PROG probe
+  $PROG probe --only net --json
+  $PROG probe --base-url https://api.openai.com/v1 --model gpt-4o-mini
+EOF
+    exit "${1:-0}"
+}
+
+# ---------------------------------------------------------------------------
+# 配置文件读取（绝不 source，避免把配置当 shell 代码执行）
+# ---------------------------------------------------------------------------
+cfg_get() {  # $1 = 变量名；取配置文件里最后一次出现的值
+    [ -f "$CONFIG" ] || return 0
+    sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$CONFIG" | tail -n 1
+}
+
+strip_quotes() {
+    # 模式必须写 \"*（转义的双引号 + 任意），不能写 '"'"'"*：
+    # 后者是转义搞坏的产物，实际匹配的是"单引号+双引号"，于是所有双引号
+    # 包裹的值（LLM_BASE_URL="..."）都原样带着引号往下走。
+    case $1 in
+        \"*)  printf '%s' "$1" | sed 's/^"//; s/"$//' ;;
+        "'"*) printf '%s' "$1" | sed "s/^'//; s/'\$//" ;;
+        *)    printf '%s' "$1" ;;
+    esac
+}
+
+expand_tilde() {  # $1 = 路径；补上 shell 不会做的一步（变量里的 ~ 不展开）
+    case $1 in
+        '~')      printf '%s' "$HOME" ;;
+        '~/'*)    _rest=${1#?}                 # 去掉开头的 ~
+                  printf '%s' "$HOME/${_rest#/}" ;;
+        *)        printf '%s' "$1" ;;
+    esac
+}
+
+# 配置是数据：格式不对直接指出行号退出（严格度与 llm_probe.py 对齐）
+validate_config() {
+    bad=$(awk '
+        { line = $0
+          sub(/^[ \t]+/, "", line)
+          sub(/[ \t]+$/, "", line)
+          if (line == "" || line ~ /^#/) next
+          if (index(line, "=") == 0) { printf("%d: 不是 KEY=VALUE", NR); exit }
+          if (substr(line, 1, 1) == "=") { printf("%d: KEY 为空", NR); exit }
+        }' "$CONFIG") || true
+    [ -z "$bad" ] || die "配置文件格式错误（第 $bad 行）: $CONFIG"
+}
+
+load_config() {
+    # 注意：配置文件不存在时只是"没东西可读"，默认值与校验仍要往下走
+    # （setkey 首次创建配置的场景正好会走到这里）。
+    if [ -f "$CONFIG" ]; then
+        validate_config
+        # 优先级：命令行 > 环境变量 > 配置文件。
+        # 命令行值在 main() 里于本函数**之后**套用，这里对已有的非空值保持不动，
+        # 避免"谁最后赋值谁赢"这种隐式顺序依赖。
+        if [ -z "${LLM_BASE_URL:-}" ]; then
+            BASE_URL=$(strip_quotes "$(cfg_get LLM_BASE_URL)")
+        else
+            BASE_URL=$LLM_BASE_URL
+        fi
+        if [ -z "${LLM_MODEL:-}" ]; then
+            MODEL=$(strip_quotes "$(cfg_get LLM_MODEL)")
+        else
+            MODEL=$LLM_MODEL
+        fi
+        [ -n "$TIMEOUT" ] || TIMEOUT="${LLM_TIMEOUT:-$(strip_quotes "$(cfg_get LLM_TIMEOUT)")}"
+        [ -n "$PROMPT" ] || PROMPT="${LLM_PROMPT:-$(strip_quotes "$(cfg_get LLM_PROMPT)")}"
+        [ -n "$MAX_TOKENS" ] || MAX_TOKENS="${LLM_MAX_TOKENS:-$(strip_quotes "$(cfg_get LLM_MAX_TOKENS)")}"
+        PASSPHRASE_FILE="${LLM_PASSPHRASE_FILE:-$(strip_quotes "$(cfg_get LLM_PASSPHRASE_FILE)")}"
+        [ -n "$PASSPHRASE_FILE" ] && PASSPHRASE_FILE=$(expand_tilde "$PASSPHRASE_FILE")
+        API_KEY_ENC="${LLM_API_KEY_ENC:-$(strip_quotes "$(cfg_get LLM_API_KEY_ENC)")}"
+        API_KEY_PLAIN="${LLM_API_KEY:-$(strip_quotes "$(cfg_get LLM_API_KEY)")}"
+    fi
+
+    [ -n "$TIMEOUT" ] || TIMEOUT=30
+    [ -n "$PROMPT" ] || PROMPT="你好"
+    [ -n "$MAX_TOKENS" ] || MAX_TOKENS=64
+    validate_options
+}
+
+# 数值校验：curl 拿到 "--max-time abc" 只会含糊报错，这里给明确原因。
+# 注意不能只写 awk '$1 > 0'：非数字字段（如 abc）与数字比较会走**字符串**
+# 比较，"abc" > "0" 为真，会漏放；所以先 case 卡字符类，再做数值比较。
+# 这个函数必须在"命令行参数已套用"之后调用（main 里会再调一次），否则
+# --timeout abc / --max-tokens 0 这类 CLI 值会绕过检查。
+validate_options() {
+    case $TIMEOUT in
+        ''|*[!0-9.]*|*.*.*) die "配置错误：LLM_TIMEOUT / --timeout 必须是数字，当前 '$TIMEOUT'" ;;
+    esac
+    printf '%s' "$TIMEOUT" | awk '{ exit !(($1 + 0) > 0) }' \
+        || die "配置错误：LLM_TIMEOUT / --timeout 必须大于 0，当前 '$TIMEOUT'"
+    case $MAX_TOKENS in
+        ''|*[!0-9]*) die "配置错误：LLM_MAX_TOKENS / --max-tokens 必须是正整数，当前 '$MAX_TOKENS'" ;;
+    esac
+    printf '%s' "$MAX_TOKENS" | awk '{ exit !(($1 + 0) > 0) }' \
+        || die "配置错误：LLM_MAX_TOKENS / --max-tokens 必须大于 0，当前 '$MAX_TOKENS'"
+}
+
+write_template() { # $1 = 目标文件
+    cat > "$1" <<'EOF'
+# llm_probe 配置文件（dotenv 风格）
+# 注意：这是数据文件，不是 shell 脚本，llm_probe.sh 不会 source 它，
+# 任何一行都不会被当作命令执行。
+#
+# 生成本文件:  ./llm_probe.sh init
+# 写入密钥:    ./llm_probe.sh setkey
+# 开始探测:    ./llm_probe.sh probe
+#
+# 也可以用 python3 llm_probe.py 操作同一份配置，两端密文互通。
+
+# OpenAI 兼容端点，通常以 /v1 结尾。默认填官方地址；换服务商就改成它给的
+# base_url。（README 里的 https://aiapiv2.pekpik.com/v1 是第三方中转示例，
+# 别默认把密钥发给不认识的服务。）
+LLM_BASE_URL=https://api.openai.com/v1
+
+# 模型名按服务商自己的命名填
+LLM_MODEL=gpt-4o-mini
+
+# 加密后的密钥（enc:v1:... ），由 setkey 写入，不要手填
+LLM_API_KEY_ENC=
+
+# 明文密钥：仅用于临时调试。存在时优先级低于 LLM_API_KEY_ENC。
+LLM_API_KEY=
+
+# 解密口令文件（口令本身不写进本文件；也可以用环境变量 LLM_PASSPHRASE）
+LLM_PASSPHRASE_FILE=
+
+# 探测参数
+LLM_TIMEOUT=30
+LLM_PROMPT=你好
+LLM_MAX_TOKENS=64
+EOF
+    chmod 600 "$1"
+}
+
+set_config_value() { # $1=KEY $2=VALUE  —— 原地替换或追加，保留注释
+    key=$1
+    value=$2
+    if [ ! -f "$CONFIG" ]; then
+        write_template "$CONFIG"
+    fi
+    if grep -q "^[[:space:]]*$key=" "$CONFIG"; then
+        tmp=$(mktemp) || die "mktemp 失败：无法创建临时文件"
+        # 用 awk 替换，避免 value 里的 & / 反斜杠被 sed 解释
+        awk -v k="$key" -v v="$value" '
+            index($0, k "=") == 1 || $0 ~ ("^[[:space:]]*" k "=") {
+                print k "=" v; next
+            }
+            { print }
+        ' "$CONFIG" > "$tmp" && mv "$tmp" "$CONFIG"
+        chmod 600 "$CONFIG"
+    else
+        printf '%s=%s\n' "$key" "$value" >> "$CONFIG"
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# 密钥加密 / 解密（openssl AES-256-CBC + PBKDF2-SHA256，与 Python 端互通）
+# ---------------------------------------------------------------------------
+require_openssl() {  # -pbkdf2 需要 OpenSSL >= 1.1.1（LibreSSL 不支持）
+    [ "${OPENSSL_PBKDF2_OK:-}" = "1" ] && return 0
+    command -v openssl >/dev/null 2>&1 \
+        || die "找不到 openssl：加解密需要它（请安装 OpenSSL >= 1.1.1）"
+    probe_file=$(mktemp "${TMPDIR:-/tmp}/llm_probe_pbkdf2.XXXXXX") || die "mktemp 失败"
+    printf 'x' > "$probe_file"
+    if openssl enc -aes-256-cbc -pbkdf2 -iter 1000 -md sha256 \
+        -pass pass:probe -in "$probe_file" -out /dev/null 2>/dev/null; then
+        rm -f "$probe_file"
+        OPENSSL_PBKDF2_OK=1
+    else
+        rm -f "$probe_file"
+        die "当前 openssl 不支持 -pbkdf2（需要 OpenSSL >= 1.1.1；LibreSSL 不支持）。
+  解决：升级 openssl，或改用 python3 llm_probe.py（装了 cryptography 模块就不依赖 openssl）。"
+    fi
+}
+
+# 口令只活在这个局部变量里，**绝不 export**：一旦 export，后续每个子进程
+# （curl、openssl、被调起的任何程序）都会无条件继承它，等于把口令广播出去。
+# openssl 需要它时用 `VAR=val cmd` 形式只喂给那一条命令。
+need_passphrase() {  # $1 = 是否要求确认输入（confirm）
+    PASSPHRASE=""
+    if [ -n "$PASSPHRASE_ARG" ]; then
+        PASSPHRASE=$PASSPHRASE_ARG
+        warn_secret_arg "--passphrase"
+    elif [ -n "${LLM_PASSPHRASE:-}" ]; then
+        PASSPHRASE=$LLM_PASSPHRASE
+        # 环境变量会被子进程继承，读到就摘掉
+        unset LLM_PASSPHRASE
+    elif [ -n "${PASSPHRASE_FILE:-}" ] && [ -f "$PASSPHRASE_FILE" ]; then
+        PASSPHRASE=$(head -n 1 "$PASSPHRASE_FILE")
+    elif [ -t 0 ]; then
+        printf '解密口令: ' >&2
+        stty -echo 2>/dev/null || true
+        read -r PASSPHRASE
+        stty echo 2>/dev/null || true
+        printf '\n' >&2
+        if [ "$1" = "confirm" ]; then
+            printf '再输一次: ' >&2
+            stty -echo 2>/dev/null || true
+            read -r again
+            stty echo 2>/dev/null || true
+            printf '\n' >&2
+            [ "$PASSPHRASE" = "$again" ] || die "两次输入的口令不一致"
+        fi
+    else
+        die "拿不到解密口令，按推荐顺序任选其一：
+  1) LLM_PASSPHRASE_FILE 指向口令文件（chmod 600，非交互场景首选）
+  2) 在终端交互输入（最安全）
+  3) 环境变量 LLM_PASSPHRASE（权宜之计：环境变量会被子进程继承，见 README 权衡表）"
+    fi
+    [ -n "$PASSPHRASE" ] || die "口令为空"
+}
+
+encrypt_key() {  # stdin → enc:v1:...
+    # 口令只出现在这一条命令的环境里（VAR=val cmd，不 export）：
+    # 既不进 ps 参数列表，也不被其它子进程继承。
+    LLM_PASSPHRASE=$PASSPHRASE openssl enc -aes-256-cbc -pbkdf2 -iter "$PBKDF2_ITER" \
+        -md sha256 -salt -pass env:LLM_PASSPHRASE 2>/dev/null | openssl base64 -A
+}
+
+decrypt_key() {  # $1 = enc:v1:... → stdout 明文
+    # 常被 $( ) 子 shell 调用，这里不能 die（会只死子 shell），由调用方先 require_openssl
+    case $1 in
+        "$ENC_PREFIX"*) ;;
+        *) return 1 ;;
+    esac
+    printf '%s' "${1#"$ENC_PREFIX"}" \
+        | openssl base64 -d -A 2>/dev/null \
+        | LLM_PASSPHRASE=$PASSPHRASE openssl enc -d -aes-256-cbc -pbkdf2 -iter "$PBKDF2_ITER" \
+            -md sha256 -pass env:LLM_PASSPHRASE 2>/dev/null
+}
+
+mask_key() {
+    key=$1
+    len=$(printf '%s' "$key" | wc -c)
+    if [ -z "$key" ]; then
+        printf '(空)'
+    elif [ "$len" -le 10 ]; then
+        printf '%s' "$key" | sed 's/./*/g'
+    else
+        head=$(printf '%s' "$key" | cut -c1-6)
+        tail=$(printf '%s' "$key" | rev | cut -c1-4 | rev)
+        printf '%s********%s (len=%s)' "$head" "$tail" "$len"
+    fi
+}
+
+resolve_key() {
+    if [ -n "$KEY" ]; then
+        warn_secret_arg "--key"
+        unset LLM_API_KEY     # --key 已给定，环境里那份多余：同样摘掉
+        KEY_SOURCE="--key 参数"
+        return 0
+    fi
+    if [ -n "${LLM_API_KEY:-}" ]; then
+        KEY=$LLM_API_KEY
+        # 读到就摘：环境变量会被后续每个子进程无条件继承
+        unset LLM_API_KEY
+        KEY_SOURCE="环境变量 LLM_API_KEY"
+        return 0
+    fi
+    if [ -n "$API_KEY_ENC" ]; then
+        require_openssl
+        need_passphrase ""
+        if ! KEY=$(decrypt_key "$API_KEY_ENC"); then
+            die "解密失败：口令错误，或密文损坏"
+        fi
+        KEY_SOURCE="配置文件（已解密）"
+        return 0
+    fi
+    if [ -n "$API_KEY_PLAIN" ]; then
+        KEY=$API_KEY_PLAIN
+        KEY_SOURCE="配置文件明文 LLM_API_KEY"
+        return 0
+    fi
+    KEY=""
+    KEY_SOURCE="未提供（将只做匿名探测）"
+}
+
+# ---------------------------------------------------------------------------
+# 探测
+# ---------------------------------------------------------------------------
+CURL_AUTH_UNUSED=0
+curl_common() {  # 输出 curl 的公共参数（$1 = 超时）
+    if [ "$DIRECT" = "1" ]; then
+        printf '%s\n' "--noproxy" "*"
+    fi
+    printf '%s\n' "--silent" "--show-error" "--connect-timeout" "$1" "--max-time" "$1"
+}
+
+probe_net() {  # L1: DNS + TCP + TLS
+    opts=$(curl_common "$TIMEOUT")
+    # shellcheck disable=SC2086
+    set -- $opts
+    err=$(curl "$@" -o /dev/null \
+        -w '%{time_connect} %{time_appconnect} %{remote_ip}' \
+        "$BASE_URL/" 2>"$ERR_FILE")
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        classify_curl_error
+        STEP1_OK=0
+        STEP1_KIND=$CLASSIFY_KIND
+        STEP1_DETAIL=$LAST_CURL_MSG
+        return
+    fi
+    t_connect=$(printf '%s' "$err" | awk '{print $1}')
+    t_tls=$(printf '%s' "$err" | awk '{print $2}')
+    ip=$(printf '%s' "$err" | awk '{print $3}')
+    ms=$(awk -v a="$t_connect" -v b="$t_tls" 'BEGIN{ t=(b>0?b:a)*1000; printf "%.1f", t }')
+    STEP1_OK=1
+    STEP1_KIND=""
+    STEP1_DETAIL="DNS+TCP+TLS OK (${ms}ms) $ip（耗时: 连接 ${t_connect}s / 握手 ${t_tls}s）"
+}
+
+write_auth_header() {
+    : > "$HEADER_FILE"
+    if [ -n "$KEY" ]; then
+        printf 'Authorization: Bearer %s\n' "$KEY" > "$HEADER_FILE"
+    fi
+}
+
+probe_auth() {  # L2: GET /models
+    STEP2_RAN=1
+    opts=$(curl_common "$TIMEOUT")
+    # shellcheck disable=SC2086
+    set -- $opts
+    if [ -n "$KEY" ]; then
+        write_auth_header
+        out=$(curl "$@" --header "@$HEADER_FILE" -H "Accept: application/json" \
+            -o "$BODY_FILE" -w '%{http_code} %{time_total}' "$BASE_URL/models" 2>"$ERR_FILE")
+    else
+        out=$(curl "$@" -H "Accept: application/json" \
+            -o "$BODY_FILE" -w '%{http_code} %{time_total}' "$BASE_URL/models" 2>"$ERR_FILE")
+    fi
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        STEP2_OK=0; STEP2_FATAL=1
+        classify_curl_error   # 注意：不能写成 $(...)，那样赋值会丢在子 shell 里
+        STEP2_KIND=$CLASSIFY_KIND
+        STEP2_DETAIL=$LAST_CURL_MSG
+        return
+    fi
+    code=${out%% *}
+    ms=$(ms_of "${out##* }")
+    msg=$(extract_message)
+    case $code in
+        200)
+            count=$(grep -o '"object"[[:space:]]*:[[:space:]]*"model"' "$BODY_FILE" | wc -l | tr -d ' ')
+            STEP2_OK=1; STEP2_FATAL=1; STEP2_KIND=""
+            STEP2_DETAIL="HTTP 200，可枚举模型 ${count:-0} 个 (${ms}ms)" ;;
+        401|403)
+            STEP2_OK=0; STEP2_FATAL=1; STEP2_KIND="auth"
+            STEP2_DETAIL="HTTP $code：${msg:-密钥无效}" ;;
+        404)
+            STEP2_OK=0; STEP2_FATAL=0; STEP2_KIND="notfound"
+            STEP2_DETAIL="HTTP 404：${msg:-该端点未实现 /models}（不代表 key 无效）" ;;
+        429)
+            STEP2_OK=0; STEP2_FATAL=1; STEP2_KIND="ratelimit"
+            STEP2_DETAIL="HTTP 429：${msg:-限流 / 额度耗尽}" ;;
+        *)
+            STEP2_OK=0; STEP2_FATAL=1
+            STEP2_KIND=$([ "$code" -ge 500 ] && echo server || echo client)
+            STEP2_DETAIL="HTTP $code：${msg:-异常响应}" ;;
+    esac
+}
+
+probe_infer() {  # L3: POST /chat/completions
+    opts=$(curl_common "$TIMEOUT")
+    # shellcheck disable=SC2086
+    set -- $opts
+    payload=$(printf '{"model":"%s","messages":[{"role":"user","content":"%s"}],"max_tokens":%s}' \
+        "$(json_escape "$MODEL")" "$(json_escape "$PROMPT")" "$MAX_TOKENS")
+    if [ -n "$KEY" ]; then
+        write_auth_header
+        out=$(curl "$@" --header "@$HEADER_FILE" -H "Content-Type: application/json" \
+            -H "Accept: application/json" -d "$payload" \
+            -o "$BODY_FILE" -w '%{http_code} %{time_total}' "$BASE_URL/chat/completions" 2>"$ERR_FILE")
+    else
+        out=$(curl "$@" -H "Content-Type: application/json" \
+            -H "Accept: application/json" -d "$payload" \
+            -o "$BODY_FILE" -w '%{http_code} %{time_total}' "$BASE_URL/chat/completions" 2>"$ERR_FILE")
+    fi
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        STEP3_OK=0
+        classify_curl_error   # 必须直接调用，$(...) 子 shell 会丢掉赋值
+        STEP3_KIND=$CLASSIFY_KIND
+        STEP3_DETAIL=$LAST_CURL_MSG
+        return
+    fi
+    code=${out%% *}
+    ms=$(ms_of "${out##* }")
+    msg=$(extract_message)
+    case $code in
+        200)
+            content=$(extract_content)
+            usage=$(extract_usage)
+            [ -n "$usage" ] || usage="?/?"     # 与 llm_probe.py 的文案形状保持一致
+            STEP3_OK=1; STEP3_KIND=""
+            STEP3_DETAIL="HTTP 200 (${ms}ms) model=$MODEL tokens=$usage"
+            STEP3_CONTENT=$content ;;
+        401|403) STEP3_OK=0; STEP3_KIND="auth";      STEP3_DETAIL="HTTP $code：${msg:-密钥无效}" ;;
+        404)     STEP3_OK=0; STEP3_KIND="notfound";  STEP3_DETAIL="HTTP 404：${msg:-路径不对}" ;;
+        400)     STEP3_OK=0; STEP3_KIND="badrequest";STEP3_DETAIL="HTTP 400：${msg:-请求参数不被接受}" ;;
+        429)     STEP3_OK=0; STEP3_KIND="ratelimit"; STEP3_DETAIL="HTTP 429：${msg:-限流 / 额度耗尽}" ;;
+        *)       STEP3_OK=0
+                 STEP3_KIND=$([ "$code" -ge 500 ] && echo server || echo client)
+                 STEP3_DETAIL="HTTP $code：${msg:-推理失败}" ;;
+    esac
+}
+
+classify_curl_error() {  # 设置 LAST_CURL_MSG 与 CLASSIFY_KIND（勿在子 shell 中调用）
+    msg=$(tr -d '\n' < "$ERR_FILE")
+    LAST_CURL_MSG="网络错误: $msg"
+    CLASSIFY_KIND="net"
+    case $msg in
+        *"Could not resolve"*)
+            LAST_CURL_MSG="DNS 解析失败（域名不存在或无网络）"; CLASSIFY_KIND="dns" ;;
+        *"Connection refused"*)
+            LAST_CURL_MSG="连接被拒绝（端口没开）"; CLASSIFY_KIND="refused" ;;
+        *"timed out"*|*"Timeout"*)
+            LAST_CURL_MSG="请求超时"; CLASSIFY_KIND="timeout" ;;
+        *"unexpected eof"*|*"Connection reset"*|*"Broken pipe"*)
+            LAST_CURL_MSG="连接被重置（代理/防火墙中途掐断）: $msg"; CLASSIFY_KIND="net" ;;
+        *"SSL"*|*"TLS"*|*"certificate"*|*"handshake"*)
+            LAST_CURL_MSG="TLS 失败: $msg"; CLASSIFY_KIND="tls" ;;
+        *"proxy"*)
+            LAST_CURL_MSG="代理错误: $msg"; CLASSIFY_KIND="net" ;;
+    esac
+}
+
+json_escape() {
+    # JSON 字符串转义；逐字符处理，避免 awk gsub 对连续反斜杠的折叠。
+    printf '%s' "$1" | awk '
+        BEGIN { tab = sprintf("%c", 9); cr = sprintf("%c", 13) }
+        {
+            if (NR > 1) printf "\\n"
+            for (i = 1; i <= length($0); i++) {
+                c = substr($0, i, 1)
+                if (c == "\\") printf "\\\\"
+                else if (c == "\"") printf "\\\""
+                else if (c == tab) printf "\\t"
+                else if (c == cr) printf "\\r"
+                else printf "%s", c
+            }
+        }
+    '
+}
+
+json_unescape() {  # JSON 字符串里的 \uXXXX 解码；没有 python3 就原样返回
+    case $1 in
+        *'\u'*) ;;
+        *) printf '%s' "$1"; return 0 ;;
+    esac
+    if command -v python3 >/dev/null 2>&1; then
+        printf '%s' "$1" | python3 -c 'import sys, json
+s = sys.stdin.read()
+try:
+    s = json.loads(chr(34) + s + chr(34))
+except Exception:
+    pass
+sys.stdout.write(s)' 2>/dev/null || printf '%s' "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
+
+extract_message() {
+    raw=$(sed -n 's/.*"message"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$BODY_FILE" 2>/dev/null | head -n 1)
+    json_unescape "$raw"
+}
+
+extract_content() {
+    raw=$(sed -n 's/.*"content"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$BODY_FILE" 2>/dev/null | head -n 1)
+    json_unescape "$raw"
+}
+
+extract_usage() {  # 输出 "prompt/completion"（如 7/11）；响应里没有 usage 就输出空
+    p=$(sed -n 's/.*"prompt_tokens"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' "$BODY_FILE" 2>/dev/null | head -n 1)
+    c=$(sed -n 's/.*"completion_tokens"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' "$BODY_FILE" 2>/dev/null | head -n 1)
+    if [ -n "$p" ] && [ -n "$c" ]; then
+        printf '%s/%s' "$p" "$c"
+    fi
+}
+
+ms_of() {  # 秒 → 毫秒（一位小数）
+    awk -v s="$1" 'BEGIN{printf "%.1f", s*1000}'
+}
+
+# ---------------------------------------------------------------------------
+# OpenAI compatibility matrix（显式 --matrix 才执行）
+# ---------------------------------------------------------------------------
+MATRIX_IDS="chat_completions responses_api streaming_sse tool_calling json_schema"
+MATRIX_MAX_BODY_BYTES=2097152
+MATRIX_MAX_BODY_BLOCKS=4096
+MATRIX_CUR_ID=""
+MATRIX_CUR_NAME=""
+MATRIX_CUR_OK=false
+MATRIX_CUR_SKIPPED=false
+MATRIX_CUR_SUPPORTED=null
+MATRIX_CUR_STATUS=0
+MATRIX_CUR_KIND=null
+MATRIX_CUR_MS=0.0
+MATRIX_CUR_DETAIL=""
+
+matrix_name() {
+    case $1 in
+        chat_completions) printf '%s' "Chat Completions" ;;
+        responses_api) printf '%s' "Responses API" ;;
+        streaming_sse) printf '%s' "Streaming SSE" ;;
+        tool_calling) printf '%s' "Tool Calling" ;;
+        json_schema) printf '%s' "JSON Schema" ;;
+        *) printf '%s' "$1" ;;
+    esac
+}
+
+matrix_set_row() {  # $1 id $2 ok $3 skipped $4 supported $5 status $6 kind $7 ms $8 detail
+    MATRIX_CUR_ID=$1
+    MATRIX_CUR_NAME=$(matrix_name "$1")
+    MATRIX_CUR_OK=$2
+    MATRIX_CUR_SKIPPED=$3
+    MATRIX_CUR_SUPPORTED=$4
+    MATRIX_CUR_STATUS=$5
+    MATRIX_CUR_KIND=$6
+    MATRIX_CUR_MS=$7
+    MATRIX_CUR_DETAIL=$8
+}
+
+matrix_save_row() {
+    # 详情不写入原始响应；去掉 tab/换行，保证 POSIX read 的字段稳定。
+    detail=$(printf '%s' "$MATRIX_CUR_DETAIL" | tr '\t\r\n' '   ')
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+        "$MATRIX_CUR_ID" "$MATRIX_CUR_NAME" "$MATRIX_CUR_OK" "$MATRIX_CUR_SKIPPED" \
+        "$MATRIX_CUR_SUPPORTED" "$MATRIX_CUR_STATUS" "$MATRIX_CUR_KIND" \
+        "$MATRIX_CUR_MS" "$detail" > "$TMP_DIR/matrix.$MATRIX_CUR_ID"
+}
+
+matrix_skip() {  # $1 id $2 detail $3 kind
+    matrix_set_row "$1" false true null 0 "${3:-null}" 0.0 \
+        "${2:-前置能力失败，已跳过（--all 可强制执行）}"
+    matrix_save_row
+}
+
+matrix_network_detail() {
+    case $1 in
+        dns) printf '%s' "DNS 解析失败（域名不存在或无网络）" ;;
+        timeout) printf '%s' "请求超时" ;;
+        refused) printf '%s' "连接被拒绝（端口没开）" ;;
+        tls) printf '%s' "TLS 失败" ;;
+        *) printf '%s' "网络错误" ;;
+    esac
+}
+
+matrix_http() {  # $1 url $2 payload $3 stream(0/1)
+    matrix_url=$1
+    matrix_request_payload=$2
+    matrix_stream=${3:-0}
+    : > "$BODY_FILE"
+    : > "$ERR_FILE"
+    : > "$HEAD_FILE"
+    opts=$(curl_common "$TIMEOUT")
+    # shellcheck disable=SC2086
+    set -- $opts
+    set -- "$@" --max-filesize "$MATRIX_MAX_BODY_BYTES"
+    if [ "$matrix_stream" = "1" ]; then
+        set -- "$@" --no-buffer
+    fi
+    if [ "$matrix_stream" = "1" ]; then
+        accept="Accept: text/event-stream"
+    else
+        accept="Accept: application/json"
+    fi
+    # shellcheck disable=SC2086
+    if [ -n "$KEY" ]; then
+        write_auth_header
+        out=$(
+            ulimit -f "$MATRIX_MAX_BODY_BLOCKS" 2>/dev/null || exit 126
+            curl "$@" -D "$HEAD_FILE" --header "@$HEADER_FILE" \
+                -H "Content-Type: application/json" -H "$accept" -d "$matrix_request_payload" \
+                -o "$BODY_FILE" -w '%{http_code} %{time_total}' "$matrix_url"
+        ) 2>"$ERR_FILE"
+    else
+        out=$(
+            ulimit -f "$MATRIX_MAX_BODY_BLOCKS" 2>/dev/null || exit 126
+            curl "$@" -D "$HEAD_FILE" -H "Content-Type: application/json" \
+                -H "$accept" -d "$matrix_request_payload" -o "$BODY_FILE" \
+                -w '%{http_code} %{time_total}' "$matrix_url"
+        ) 2>"$ERR_FILE"
+    fi
+    rc=$?
+    body_bytes=$(wc -c < "$BODY_FILE" | tr -d '[:space:]')
+    if [ $rc -ne 0 ]; then
+        if [ "$rc" -eq 63 ] || [ "$body_bytes" -ge "$MATRIX_MAX_BODY_BYTES" ] \
+            || grep -Eiq 'file.*(large|limit)|maximum file size' "$ERR_FILE"; then
+            MATRIX_CUR_OK=false
+            MATRIX_CUR_SKIPPED=false
+            MATRIX_CUR_SUPPORTED=false
+            matrix_status=${out%% *}
+            case $matrix_status in
+                ''|*[!0-9]*) matrix_status=0 ;;
+            esac
+            MATRIX_CUR_STATUS=$matrix_status
+            MATRIX_CUR_KIND=malformed
+            MATRIX_CUR_MS=0.0
+            if [ "$MATRIX_CUR_STATUS" = "200" ]; then
+                MATRIX_CUR_DETAIL="HTTP 200 但响应体超过大小上限"
+            else
+                MATRIX_CUR_DETAIL="HTTP ${MATRIX_CUR_STATUS:-0} 但响应体超过大小上限"
+            fi
+            return 1
+        fi
+        classify_curl_error
+        MATRIX_CUR_OK=false
+        MATRIX_CUR_SKIPPED=false
+        MATRIX_CUR_SUPPORTED=null
+        MATRIX_CUR_STATUS=0
+        MATRIX_CUR_KIND=$CLASSIFY_KIND
+        MATRIX_CUR_MS=0.0
+        MATRIX_CUR_DETAIL=$(matrix_network_detail "$CLASSIFY_KIND")
+        return 1
+    fi
+    if [ "$body_bytes" -ge "$MATRIX_MAX_BODY_BYTES" ]; then
+        MATRIX_CUR_OK=false
+        MATRIX_CUR_SKIPPED=false
+        MATRIX_CUR_SUPPORTED=false
+        matrix_status=${out%% *}
+        case $matrix_status in
+            ''|*[!0-9]*) matrix_status=0 ;;
+        esac
+        MATRIX_CUR_STATUS=$matrix_status
+        MATRIX_CUR_KIND=malformed
+        MATRIX_CUR_MS=$(ms_of "${out##* }")
+        MATRIX_CUR_DETAIL="HTTP ${MATRIX_CUR_STATUS:-0} 但响应体超过大小上限"
+        return 1
+    fi
+    MATRIX_CUR_STATUS=${out%% *}
+    MATRIX_CUR_MS=$(ms_of "${out##* }")
+    MATRIX_CUR_OK=false
+    MATRIX_CUR_SKIPPED=false
+    MATRIX_CUR_SUPPORTED=null
+    MATRIX_CUR_KIND=null
+    return 0
+}
+
+matrix_http_failure() {
+    MATRIX_CUR_OK=false
+    MATRIX_CUR_SKIPPED=false
+    MATRIX_CUR_SUPPORTED=false
+    case $MATRIX_CUR_STATUS in
+        401|403) MATRIX_CUR_KIND=auth; MATRIX_CUR_SUPPORTED=null; MATRIX_CUR_DETAIL="HTTP $MATRIX_CUR_STATUS：认证失败" ;;
+        3??) MATRIX_CUR_KIND=redirect; MATRIX_CUR_DETAIL="HTTP $MATRIX_CUR_STATUS：拒绝重定向" ;;
+        404|405) MATRIX_CUR_KIND=unsupported; MATRIX_CUR_DETAIL="HTTP $MATRIX_CUR_STATUS：该能力未实现或路径不支持" ;;
+        400) MATRIX_CUR_KIND=badrequest; MATRIX_CUR_DETAIL="HTTP 400：该能力不支持或请求被拒绝" ;;
+        429) MATRIX_CUR_KIND=ratelimit; MATRIX_CUR_DETAIL="HTTP 429：限流 / 额度耗尽" ;;
+        *) if [ "$MATRIX_CUR_STATUS" -ge 500 ] 2>/dev/null; then
+                MATRIX_CUR_KIND=server; MATRIX_CUR_DETAIL="HTTP $MATRIX_CUR_STATUS：服务端错误"
+            else
+                MATRIX_CUR_KIND=client; MATRIX_CUR_DETAIL="HTTP $MATRIX_CUR_STATUS：异常响应"
+            fi ;;
+    esac
+}
+
+matrix_malformed() {
+    MATRIX_CUR_OK=false
+    MATRIX_CUR_SKIPPED=false
+    MATRIX_CUR_SUPPORTED=false
+    MATRIX_CUR_KIND=malformed
+    MATRIX_CUR_DETAIL="HTTP 200 但响应格式不符合 OpenAI 兼容约定"
+}
+
+matrix_compact() {
+    tr -d '[:space:]\\"' < "$BODY_FILE"
+}
+
+matrix_validate_chat() {
+    if [ "$MATRIX_CUR_STATUS" != "200" ]; then matrix_http_failure; return; fi
+    content=$(extract_content)
+    compact=$(matrix_compact)
+    if printf '%s' "$compact" | grep -Eq 'choices:\[\{.*message:\{.*content:[^,}]+' \
+        && [ -n "$content" ]; then
+        MATRIX_CUR_OK=true; MATRIX_CUR_SUPPORTED=true; MATRIX_CUR_KIND="null"
+        MATRIX_CUR_DETAIL="HTTP 200，chat.completions 返回可解析回复"
+    else
+        matrix_malformed
+    fi
+}
+
+matrix_validate_responses() {
+    if [ "$MATRIX_CUR_STATUS" != "200" ]; then matrix_http_failure; return; fi
+    compact=$(matrix_compact)
+    response_shape=0
+    if printf '%s' "$compact" | grep -Eq 'output:\[\{.*type:output_text,text:[^]]+\]'; then
+        response_shape=1
+    elif grep -Eq '"output_text"[[:space:]]*:[[:space:]]*"[^"]+"' "$BODY_FILE"; then
+        response_shape=1
+    fi
+    if grep -Eq '"object"[[:space:]]*:[[:space:]]*"response"' "$BODY_FILE" \
+        && grep -Eq '"status"[[:space:]]*:[[:space:]]*"completed"' "$BODY_FILE" \
+        && [ "$response_shape" -eq 1 ]; then
+        MATRIX_CUR_OK=true; MATRIX_CUR_SUPPORTED=true; MATRIX_CUR_KIND="null"
+        MATRIX_CUR_DETAIL="HTTP 200，Responses API 返回可解析输出"
+    else
+        matrix_malformed
+    fi
+}
+
+matrix_validate_sse() {
+    if [ "$MATRIX_CUR_STATUS" != "200" ]; then matrix_http_failure; return; fi
+    if ! grep -Eiq '^content-type:[[:space:]]*text/event-stream([[:space:]]*;|[[:space:]]*$)' "$HEAD_FILE" \
+        || ! grep -Eq '^[[:space:]]*data:[[:space:]]*\{' "$BODY_FILE" \
+        || ! grep -Eq '"object"[[:space:]]*:[[:space:]]*"chat.completion.chunk"' "$BODY_FILE" \
+        || ! grep -Eq '^[[:space:]]*data:[[:space:]]*\[DONE\][[:space:]]*$' "$BODY_FILE" \
+        || ! grep -Eq '"content"[[:space:]]*:[[:space:]]*"[^"]+"' "$BODY_FILE"; then
+        matrix_malformed
+        return
+    fi
+    MATRIX_CUR_OK=true; MATRIX_CUR_SUPPORTED=true; MATRIX_CUR_KIND="null"
+    MATRIX_CUR_DETAIL="HTTP 200，SSE 事件与 [DONE] 完整"
+}
+
+matrix_validate_tools() {
+    if [ "$MATRIX_CUR_STATUS" != "200" ]; then matrix_http_failure; return; fi
+    compact=$(matrix_compact)
+    if grep -Eq '"finish_reason"[[:space:]]*:[[:space:]]*"tool_calls"' "$BODY_FILE" \
+        && grep -Eq '"tool_calls"[[:space:]]*:[[:space:]]*\[[[:space:]]*\{' "$BODY_FILE" \
+        && grep -Eq '"name"[[:space:]]*:[[:space:]]*"llm_probe_lookup"' "$BODY_FILE" \
+        && grep -Eq '"arguments"[[:space:]]*:[[:space:]]*"' "$BODY_FILE" \
+        && printf '%s' "$compact" | grep -Eq 'tool_calls:\[\{[^}]*id:[^,}]+' \
+        && printf '%s' "$compact" | grep -Eq 'tool_calls:\[\{.*function:\{.*arguments:\{city:Paris\}'; then
+        MATRIX_CUR_OK=true; MATRIX_CUR_SUPPORTED=true; MATRIX_CUR_KIND="null"
+        MATRIX_CUR_DETAIL="HTTP 200，tool_calls、arguments 与 finish_reason 有效"
+    else
+        matrix_malformed
+    fi
+}
+
+matrix_validate_schema() {
+    if [ "$MATRIX_CUR_STATUS" != "200" ]; then matrix_http_failure; return; fi
+    # 固定 schema 只有 status=ok；去掉 JSON 转义引号后仍要求完整对象，不能把 okay 当成 ok。
+    compact=$(matrix_compact)
+    if ! grep -q '```' "$BODY_FILE" \
+        && grep -Eq '"content"[[:space:]]*:[[:space:]]*"' "$BODY_FILE" \
+        && printf '%s' "$compact" | grep -Eq 'choices:\[\{.*message:\{.*content:\{status:ok\}'; then
+        MATRIX_CUR_OK=true; MATRIX_CUR_SUPPORTED=true; MATRIX_CUR_KIND="null"
+        MATRIX_CUR_DETAIL="HTTP 200，JSON Schema 输出符合约定"
+    else
+        matrix_malformed
+    fi
+}
+
+matrix_payload() {  # $1 feature
+    case $1 in
+        chat_completions)
+            printf '{"model":"%s","messages":[{"role":"user","content":"Reply with exactly OK."}],"max_tokens":%s,"temperature":0}' \
+                "$(json_escape "$MODEL")" "$MAX_TOKENS" ;;
+        responses_api)
+            printf '{"model":"%s","input":"Reply with exactly OK.","max_output_tokens":%s,"temperature":0}' \
+                "$(json_escape "$MODEL")" "$MAX_TOKENS" ;;
+        streaming_sse)
+            printf '{"model":"%s","messages":[{"role":"user","content":"Reply with exactly OK."}],"max_tokens":%s,"temperature":0,"stream":true}' \
+                "$(json_escape "$MODEL")" "$MAX_TOKENS" ;;
+        tool_calling)
+            printf '{"model":"%s","messages":[{"role":"user","content":"Look up Paris using the tool."}],"max_tokens":%s,"temperature":0,"tools":[{"type":"function","function":{"name":"llm_probe_lookup","description":"Return the city for a fixed compatibility probe.","parameters":{"type":"object","properties":{"city":{"type":"string"}},"required":["city"],"additionalProperties":false}}}],"tool_choice":{"type":"function","function":{"name":"llm_probe_lookup"}}}' \
+                "$(json_escape "$MODEL")" "$MAX_TOKENS" ;;
+        json_schema)
+            schema_prompt=$(json_escape 'Return exactly {"status":"ok"}.')
+            printf '{"model":"%s","messages":[{"role":"user","content":"%s"}],"max_tokens":%s,"temperature":0,"response_format":{"type":"json_schema","json_schema":{"name":"llm_probe_result","strict":true,"schema":{"type":"object","properties":{"status":{"type":"string","enum":["ok"]}},"required":["status"],"additionalProperties":false}}}}' \
+                "$(json_escape "$MODEL")" "$schema_prompt" "$MAX_TOKENS" ;;
+    esac
+}
+
+matrix_run_feature() {  # $1 id
+    matrix_base=$BASE_URL
+    while [ "${matrix_base%/}" != "$matrix_base" ]; do
+        matrix_base=${matrix_base%/}
+    done
+    case $1 in
+        chat_completions) url="$matrix_base/chat/completions"; stream=0 ;;
+        responses_api) url="$matrix_base/responses"; stream=0 ;;
+        streaming_sse) url="$matrix_base/chat/completions"; stream=1 ;;
+        tool_calling) url="$matrix_base/chat/completions"; stream=0 ;;
+        json_schema) url="$matrix_base/chat/completions"; stream=0 ;;
+        *) die "未知 matrix feature: $1" ;;
+    esac
+    payload=$(matrix_payload "$1")
+    if matrix_http "$url" "$payload" "$stream"; then
+        case $1 in
+            chat_completions) matrix_validate_chat ;;
+            responses_api) matrix_validate_responses ;;
+            streaming_sse) matrix_validate_sse ;;
+            tool_calling) matrix_validate_tools ;;
+            json_schema) matrix_validate_schema ;;
+        esac
+    fi
+    matrix_set_row "$1" "$MATRIX_CUR_OK" "$MATRIX_CUR_SKIPPED" \
+        "$MATRIX_CUR_SUPPORTED" "$MATRIX_CUR_STATUS" "$MATRIX_CUR_KIND" \
+        "$MATRIX_CUR_MS" "$MATRIX_CUR_DETAIL"
+    matrix_save_row
+}
+
+matrix_aggregate() {
+    MATRIX_PASSED=0; MATRIX_FAILED=0; MATRIX_SKIPPED=0
+    MATRIX_NETWORK_FOUND=0; MATRIX_AUTH_FOUND=0; MATRIX_OTHER_FOUND=0
+    MATRIX_SOFT_ONLY=1
+    MATRIX_CHAT_OK=0
+    MATRIX_FIRST_DETAIL=""; MATRIX_FIRST_ID=""; MATRIX_FAILED_IDS=""
+    for id in $MATRIX_IDS; do
+        [ -f "$TMP_DIR/matrix.$id" ] || continue
+        IFS="$(printf '\t')" read -r row_id row_name row_ok row_skipped row_supported row_status row_kind row_ms row_detail \
+            < "$TMP_DIR/matrix.$id"
+        if [ "$row_id" = "chat_completions" ] && [ "$row_ok" = "true" ]; then
+            MATRIX_CHAT_OK=1
+        fi
+        if [ "$row_skipped" = "true" ]; then
+            MATRIX_SKIPPED=$((MATRIX_SKIPPED + 1))
+            case $row_kind in
+                dns|timeout|refused|tls|net)
+                    MATRIX_NETWORK_FOUND=1
+                    [ -n "$MATRIX_FIRST_ID" ] || { MATRIX_FIRST_ID=$row_id; MATRIX_FIRST_DETAIL=$row_detail; }
+                    ;;
+            esac
+        elif [ "$row_ok" = "true" ]; then
+            MATRIX_PASSED=$((MATRIX_PASSED + 1))
+        else
+            MATRIX_FAILED=$((MATRIX_FAILED + 1))
+            [ -n "$MATRIX_FIRST_ID" ] || { MATRIX_FIRST_ID=$row_id; MATRIX_FIRST_DETAIL=$row_detail; }
+            if [ -n "$MATRIX_FAILED_IDS" ]; then MATRIX_FAILED_IDS="${MATRIX_FAILED_IDS}、"; fi
+            MATRIX_FAILED_IDS="${MATRIX_FAILED_IDS}${row_id}"
+            case $row_kind in
+                dns|timeout|refused|tls|net) MATRIX_NETWORK_FOUND=1 ;;
+                auth) MATRIX_AUTH_FOUND=1 ;;
+                unsupported) ;;
+                badrequest) MATRIX_OTHER_FOUND=1; MATRIX_SOFT_ONLY=0 ;;
+                *) MATRIX_OTHER_FOUND=1; MATRIX_SOFT_ONLY=0 ;;
+            esac
+        fi
+    done
+    if [ "$MATRIX_NETWORK_FOUND" -eq 1 ]; then
+        MATRIX_EXIT=2
+        MATRIX_VERDICT="网络不可达：$MATRIX_FIRST_DETAIL"
+    elif [ "$MATRIX_AUTH_FOUND" -eq 1 ]; then
+        MATRIX_EXIT=3
+        MATRIX_VERDICT="认证失败：$MATRIX_FIRST_DETAIL"
+    elif [ "$MATRIX_FAILED" -gt 0 ] && { [ "$MATRIX_OTHER_FOUND" -eq 1 ] || [ "$ALLOW_UNSUPPORTED" -eq 0 ] || [ "$MATRIX_CHAT_OK" -eq 0 ]; }; then
+        MATRIX_EXIT=4
+        MATRIX_VERDICT="兼容能力不通过：$MATRIX_FAILED_IDS"
+    elif [ "$MATRIX_FAILED" -gt 0 ]; then
+        MATRIX_EXIT=0
+        MATRIX_VERDICT="兼容能力通过（未实现：$MATRIX_FAILED_IDS）"
+    elif [ "$MATRIX_CHAT_OK" -eq 0 ]; then
+        MATRIX_EXIT=4
+        MATRIX_VERDICT="兼容能力不通过：chat_completions"
+    else
+        MATRIX_EXIT=0
+        MATRIX_VERDICT="兼容能力通过：5 项"
+    fi
+}
+
+matrix_json_bool() { [ "$1" = "true" ] && printf '%s' true || printf '%s' false; }
+matrix_json_kind() { [ "$1" = "null" ] && printf '%s' null || printf '"%s"' "$(json_escape "$1")"; }
+
+matrix_print_json() {
+    if [ -f "$CONFIG" ]; then config_json="\"$(json_escape "$CONFIG")\""; else config_json=null; fi
+    printf '{\n'
+    printf '  "version": "%s",\n' "$VERSION"
+    printf '  "mode": "compatibility",\n'
+    printf '  "base_url": "%s",\n' "$(json_escape "$BASE_URL")"
+    printf '  "model": "%s",\n' "$(json_escape "$MODEL")"
+    printf '  "key_masked": "%s",\n' "$(json_escape "$(mask_key "$KEY")")"
+    printf '  "key_source": "%s",\n' "$(json_escape "$KEY_SOURCE")"
+    printf '  "config": %s,\n' "$config_json"
+    printf '  "steps": [\n'
+    first=1
+    for id in $MATRIX_IDS; do
+        [ -f "$TMP_DIR/matrix.$id" ] || continue
+        IFS="$(printf '\t')" read -r row_id row_name row_ok row_skipped row_supported row_status row_kind row_ms row_detail \
+            < "$TMP_DIR/matrix.$id"
+        [ "$first" -eq 1 ] || printf ',\n'
+        first=0
+        printf '    {"id": "%s", "name": "%s", "ok": %s, "skipped": %s, "supported": %s, "status": %s, "kind": %s, "ms": %s, "detail": "%s"}' \
+            "$(json_escape "$row_id")" "$(json_escape "$row_name")" \
+            "$(matrix_json_bool "$row_ok")" "$(matrix_json_bool "$row_skipped")" \
+            "$row_supported" "$row_status" "$(matrix_json_kind "$row_kind")" "$row_ms" "$(json_escape "$row_detail")"
+    done
+    printf '\n  ],\n'
+    printf '  "summary": {"passed": %s, "failed": %s, "skipped": %s, "total": 5},\n' \
+        "$MATRIX_PASSED" "$MATRIX_FAILED" "$MATRIX_SKIPPED"
+    printf '  "verdict": "%s",\n' "$(json_escape "$MATRIX_VERDICT")"
+    printf '  "exit_code": %s\n}\n' "$MATRIX_EXIT"
+}
+
+matrix_print_human() {
+    printf '%s\n' "============================================================"
+    printf '端点   : %s\n' "$BASE_URL"
+    printf '模型   : %s\n' "$MODEL"
+    printf '密钥   : %s  [%s]\n' "$(mask_key "$KEY")" "$KEY_SOURCE"
+    printf '%s\n' "------------------------------------------------------------"
+    n=1
+    for id in $MATRIX_IDS; do
+        [ -f "$TMP_DIR/matrix.$id" ] || continue
+        IFS="$(printf '\t')" read -r row_id row_name row_ok row_skipped row_supported row_status row_kind row_ms row_detail \
+            < "$TMP_DIR/matrix.$id"
+        if [ "$row_skipped" = "true" ]; then mark="SKIP"
+        elif [ "$row_ok" = "true" ]; then mark="OK  "
+        else mark="FAIL"; fi
+        printf '[%s] %s [%s/5]  %s\n' "$mark" "$row_name" "$n" "$row_detail"
+        n=$((n + 1))
+    done
+    printf '%s\n' "------------------------------------------------------------"
+    printf '矩阵   : %s 通过 / %s 失败 / %s 跳过 / 5 总计\n' \
+        "$MATRIX_PASSED" "$MATRIX_FAILED" "$MATRIX_SKIPPED"
+    if [ "$MATRIX_EXIT" -eq 0 ]; then mark="✅"; else mark="❌"; fi
+    printf '结论 %s %s\n' "$mark" "$MATRIX_VERDICT"
+    printf '退出码 %s\n' "$MATRIX_EXIT"
+    printf '%s\n' "============================================================"
+}
+
+run_matrix() {
+    [ -n "$BASE_URL" ] || die "缺少 base_url：用 --base-url 或在配置里填 LLM_BASE_URL"
+    [ -n "$MODEL" ] || die "缺少模型名：用 --model 或在配置里填 LLM_MODEL"
+    case $BASE_URL in
+        http://*|https://*) ;;
+        *) die "base_url 非法（需要 http(s)://host[/v1]）: $BASE_URL" ;;
+    esac
+    resolve_key
+    init_tmpdir
+    probe_net
+    if [ "$STEP1_OK" -eq 0 ]; then
+        for id in $MATRIX_IDS; do matrix_skip "$id" "$STEP1_DETAIL" "$STEP1_KIND"; done
+    else
+        gated=0
+        for id in $MATRIX_IDS; do
+            if [ "$gated" -eq 1 ] && [ "$ALL" -eq 0 ]; then
+                matrix_skip "$id"
+            else
+                matrix_run_feature "$id"
+                if [ "$ALL" -eq 0 ] && [ "$MATRIX_CUR_OK" = "false" ]; then
+                    case $MATRIX_CUR_KIND in
+                        dns|timeout|refused|tls|net|auth|ratelimit) gated=1 ;;
+                    esac
+                fi
+            fi
+        done
+    fi
+    matrix_aggregate
+    if [ "$JSON" = "1" ]; then matrix_print_json; else matrix_print_human; fi
+    return "$MATRIX_EXIT"
+}
+
+# ---------------------------------------------------------------------------
+# 报告
+# ---------------------------------------------------------------------------
+run_probe() {
+    [ -n "$BASE_URL" ] || die "缺少 base_url：用 --base-url 或在配置里填 LLM_BASE_URL"
+    [ -n "$MODEL" ] || [ "$ONLY" = "net" ] || [ "$ONLY" = "auth" ] \
+        || die "缺少模型名：用 --model 或在配置里填 LLM_MODEL"
+    case $BASE_URL in
+        http://*|https://*) ;;
+        *) die "base_url 非法（需要 http(s)://host[/v1]）: $BASE_URL" ;;
+    esac
+
+    # 密钥按需解析：--only net 只测网络，不该被“拿不到解密口令”卡住
+    if [ "$ONLY" = "net" ]; then
+        KEY=""
+        unset LLM_API_KEY   # 这条路径不读密钥，但环境里那份仍不能给子进程
+        KEY_SOURCE="未读取（--only net 不需要密钥）"
+    else
+        resolve_key
+    fi
+
+    init_tmpdir
+
+    STEP1_OK=0; STEP1_KIND=""; STEP1_DETAIL=""
+    STEP2_OK=0; STEP2_FATAL=1; STEP2_KIND=""; STEP2_DETAIL=""
+    STEP3_OK=0; STEP3_KIND=""; STEP3_DETAIL=""; STEP3_CONTENT=""
+    STEP3_SKIPPED=0
+    TOTAL=1
+
+    probe_net
+    if [ "$ONLY" != "infer" ]; then
+        TOTAL=$((TOTAL + 1))
+        probe_auth
+    fi
+    if [ "$ONLY" != "auth" ] && [ "$ONLY" != "net" ]; then
+        TOTAL=$((TOTAL + 1))
+        if [ "$STEP2_OK" -eq 0 ] && [ "$STEP2_FATAL" -eq 1 ] && [ "$ALL" -eq 0 ] \
+            && [ "$ONLY" != "infer" ]; then
+            STEP3_SKIPPED=1
+            STEP3_DETAIL="L2 认证未通过，已跳过（--all 可强制执行）"
+        else
+            probe_infer
+        fi
+    fi
+
+    EXIT_CODE=0
+    verdict=""
+    if [ "$STEP1_OK" -eq 0 ]; then
+        EXIT_CODE=2; verdict="网络不可达：$STEP1_DETAIL"
+    elif [ "$STEP2_RAN" -eq 1 ] && [ "$STEP2_OK" -eq 0 ] && [ "$STEP2_FATAL" -eq 1 ]; then
+        case $STEP2_KIND in
+            auth)      EXIT_CODE=3; verdict="认证失败：API Key 无效或已过期（$STEP2_DETAIL）" ;;
+            ratelimit) EXIT_CODE=3; verdict="认证被拒：限流或额度耗尽（$STEP2_DETAIL）" ;;
+            dns|timeout|refused|tls|net) EXIT_CODE=2; verdict="网络不可达：$STEP2_DETAIL" ;;
+            *)         EXIT_CODE=3; verdict="认证环节异常：$STEP2_DETAIL" ;;
+        esac
+    elif [ "$STEP3_SKIPPED" -eq 0 ] && [ -n "$STEP3_DETAIL" ] && [ "$STEP3_OK" -eq 0 ]; then
+        case $STEP3_KIND in
+            auth)       EXIT_CODE=3; verdict="认证失败：$STEP3_DETAIL" ;;
+            notfound)   EXIT_CODE=4; verdict="路径不对：$STEP3_DETAIL（检查 base_url 是否含 /v1）" ;;
+            badrequest) EXIT_CODE=4; verdict="请求参数不被接受：$STEP3_DETAIL（多半是模型名不对）" ;;
+            ratelimit)  EXIT_CODE=4; verdict="限流 / 额度耗尽：$STEP3_DETAIL" ;;
+            dns|timeout|refused|tls|net) EXIT_CODE=2; verdict="网络不可达：$STEP3_DETAIL" ;;
+            *)          EXIT_CODE=4; verdict="推理失败：$STEP3_DETAIL" ;;
+        esac
+    else
+        parts=""
+        if [ "$STEP3_SKIPPED" -eq 0 ] && [ "$STEP3_OK" -eq 1 ]; then parts="推理正常"; fi
+        if [ "$STEP3_SKIPPED" -eq 1 ]; then parts="推理已跳过"; fi
+        if [ "$ONLY" = "net" ]; then parts="推理未测"; fi
+        if [ "$STEP2_RAN" -eq 1 ] && [ "$STEP2_OK" -eq 1 ]; then
+            parts="${parts:+$parts；}认证通过"
+        fi
+        if [ "$STEP2_RAN" -eq 1 ] && [ "$STEP2_OK" -eq 0 ] && [ "$STEP2_FATAL" -eq 0 ]; then
+            parts="${parts:+$parts；}认证跳过（$STEP2_DETAIL）"
+        fi
+        verdict="${parts:-未执行任何检查}"
+    fi
+
+    if [ "$JSON" = "1" ]; then
+        printf '{\n'
+        printf '  "version": "%s",\n' "$VERSION"
+        printf '  "base_url": "%s",\n' "$(json_escape "$BASE_URL")"
+        printf '  "model": "%s",\n' "$(json_escape "$MODEL")"
+        printf '  "key_masked": "%s",\n' "$(json_escape "$(mask_key "$KEY")")"
+        printf '  "key_source": "%s",\n' "$(json_escape "$KEY_SOURCE")"
+        if [ -f "$CONFIG" ]; then
+            printf '  "config": "%s",\n' "$(json_escape "$CONFIG")"
+        else
+            printf '  "config": null,\n'
+        fi
+        printf '  "steps": [\n'
+        printf '    {"name": "L1 网络", "ok": %s, "detail": "%s"}' \
+            "$([ "$STEP1_OK" -eq 1 ] && echo true || echo false)" "$(json_escape "$STEP1_DETAIL")"
+        if [ "$ONLY" != "infer" ]; then
+            printf ',\n    {"name": "L2 认证", "ok": %s, "detail": "%s"}' \
+                "$([ "$STEP2_OK" -eq 1 ] && echo true || echo false)" "$(json_escape "$STEP2_DETAIL")"
+        fi
+        if [ "$ONLY" != "auth" ] && [ "$ONLY" != "net" ]; then
+            printf ',\n    {"name": "L3 推理", "ok": %s, "skipped": %s, "detail": "%s"}' \
+                "$([ "$STEP3_OK" -eq 1 ] && echo true || echo false)" \
+                "$([ "$STEP3_SKIPPED" -eq 1 ] && echo true || echo false)" \
+                "$(json_escape "$STEP3_DETAIL")"
+        fi
+        printf '\n  ],\n'
+        printf '  "verdict": "%s",\n' "$(json_escape "$verdict")"
+        printf '  "exit_code": %s\n}\n' "$EXIT_CODE"
+        return "$EXIT_CODE"
+    fi
+
+    printf '%s\n' "============================================================"
+    printf '端点   : %s\n' "$BASE_URL"
+    printf '模型   : %s\n' "$MODEL"
+    printf '密钥   : %s  [%s]\n' "$(mask_key "$KEY")" "$KEY_SOURCE"
+    printf '%s\n' "------------------------------------------------------------"
+    n=1
+    if [ "$STEP1_OK" -eq 1 ]; then mark="OK  "; else mark="FAIL"; fi
+    printf '[%s] L1 网络 [%s/%s]  %s\n' "$mark" "$n" "$TOTAL" "$STEP1_DETAIL"
+    if [ "$ONLY" != "infer" ]; then
+        n=$((n + 1))
+        if [ "$STEP2_OK" -eq 1 ]; then mark="OK  "; else mark="FAIL"; fi
+        printf '[%s] L2 认证 [%s/%s]  %s\n' "$mark" "$n" "$TOTAL" "$STEP2_DETAIL"
+    fi
+    if [ "$ONLY" != "auth" ] && [ "$ONLY" != "net" ]; then
+        n=$((n + 1))
+        if [ "$STEP3_SKIPPED" -eq 1 ]; then
+            mark="SKIP"
+        elif [ "$STEP3_OK" -eq 1 ]; then
+            mark="OK  "
+        else
+            mark="FAIL"
+        fi
+        printf '[%s] L3 推理 [%s/%s]  %s\n' "$mark" "$n" "$TOTAL" "$STEP3_DETAIL"
+        if [ -n "$STEP3_CONTENT" ]; then
+            printf '          回复: %s\n' "$(printf '%s' "$STEP3_CONTENT" | cut -c1-200)"
+        fi
+    fi
+    printf '%s\n' "------------------------------------------------------------"
+    if [ "$EXIT_CODE" -eq 0 ]; then mark="✅"; else mark="❌"; fi
+    printf '结论 %s %s\n' "$mark" "$verdict"
+    printf '退出码 %s\n' "$EXIT_CODE"
+    printf '%s\n' "============================================================"
+    return "$EXIT_CODE"
+}
+
+# ---------------------------------------------------------------------------
+# 子命令
+# ---------------------------------------------------------------------------
+do_init() {
+    if [ -f "$CONFIG" ] && [ "$FORCE" -eq 0 ]; then
+        printf '配置已存在，未覆盖: %s（要覆盖加 --force）\n' "$CONFIG"
+        return 1
+    fi
+    write_template "$CONFIG"
+    printf '已生成配置: %s（权限 600）\n' "$CONFIG"
+    printf '下一步: %s setkey\n' "$PROG"
+    return 0
+}
+
+do_setkey() {
+    if [ ! -f "$CONFIG" ]; then
+        do_init || return 1
+    fi
+    load_config
+    [ -n "$KEY" ] && warn_secret_arg "--key"
+    new_key=$KEY
+    if [ -z "$new_key" ] && [ -n "${LLM_API_KEY:-}" ]; then
+        new_key=$LLM_API_KEY
+    fi
+    # 选完就摘：来源是 --key 还是环境变量，都不留给子进程
+    unset LLM_API_KEY
+    if [ -z "$new_key" ]; then
+        if [ -t 0 ]; then
+            printf 'API Key: ' >&2
+            stty -echo 2>/dev/null || true
+            read -r new_key
+            stty echo 2>/dev/null || true
+            printf '\n' >&2
+        else
+            # 非交互：从 stdin 读（管道内容不进 argv、不进 shell 历史）。
+            # 注意 `printf '%s' "$KEY" | setkey` 没有尾换行，read 会返回非 0
+            # 但变量其实已经拿到了——不能只看 read 的返回值。
+            new_key=""
+            IFS= read -r new_key || true
+            new_key=$(printf '%s' "$new_key" | head -n 1)
+            [ -n "$new_key" ] || die "拿不到密钥。非交互环境建议从管道读:
+  printf '%s' \"\$KEY\" | $PROG setkey
+（或用 LLM_API_KEY 环境变量；--key 会留在 shell 历史和 ps 进程列表里）"
+        fi
+    fi
+    [ -n "$new_key" ] || die "密钥为空"
+    require_openssl
+    need_passphrase confirm
+    token=$(printf '%s' "$new_key" | encrypt_key)
+    [ -n "$token" ] || die "加密失败（openssl 不可用？）"
+    case $token in "$ENC_PREFIX"*) ;; *) token="$ENC_PREFIX$token" ;; esac
+    set_config_value "LLM_API_KEY_ENC" "$token"
+    set_config_value "LLM_API_KEY" ""
+    printf '已加密写入: %s\n' "$CONFIG"
+    printf '密钥       : %s\n' "$(mask_key "$new_key")"
+    printf '密文       : %s...（共 %s 字符）\n' "$(printf '%s' "$token" | cut -c1-38)" "$(printf '%s' "$token" | wc -c)"
+    printf '注意：口令不会保存在配置里，别忘了它——丢了就只能重新 setkey。\n'
+    return 0
+}
+
+do_showkey() {
+    [ -f "$CONFIG" ] || die "配置文件不存在: $CONFIG"
+    load_config
+    if [ -n "$API_KEY_ENC" ]; then
+        require_openssl
+        need_passphrase ""
+        if ! plain=$(decrypt_key "$API_KEY_ENC"); then
+            die "解密失败：口令错误，或密文损坏"
+        fi
+        if [ "$PLAIN" = "1" ]; then printf '%s\n' "$plain"; else mask_key "$plain"; printf '\n'; fi
+        return 0
+    elif [ -n "$API_KEY_PLAIN" ]; then
+        printf '明文密钥: %s\n' "$(mask_key "$API_KEY_PLAIN")"
+        return 0
+    fi
+    printf '配置里没有密钥\n' >&2
+    return 1
+}
+
+do_env() {
+    [ -f "$CONFIG" ] || die "配置文件不存在: $CONFIG"
+    load_config
+    [ -n "$KEY" ] && warn_secret_arg "--key"
+    if [ -n "$API_KEY_ENC" ]; then
+        if [ -n "${LLM_PASSPHRASE:-}" ] || [ -n "$PASSPHRASE_ARG" ] \
+            || [ -n "${PASSPHRASE_FILE:-}" ] || [ -t 0 ]; then
+            require_openssl
+            need_passphrase ""
+            KEY=$(decrypt_key "$API_KEY_ENC" 2>/dev/null) || KEY=""
+            KEY_SOURCE="配置文件（已解密）"
+        fi
+    fi
+    if [ -z "${KEY:-}" ] && [ -n "${LLM_API_KEY:-}" ]; then
+        KEY=$LLM_API_KEY
+        unset LLM_API_KEY   # 读到就摘：别让它跟着子进程走
+        KEY_SOURCE="环境变量 LLM_API_KEY"
+    fi
+    printf '配置文件 : %s\n' "$CONFIG"
+    printf '%-22s= %s\n' "LLM_BASE_URL" "${BASE_URL:-(未设置)}"
+    printf '%-22s= %s\n' "LLM_MODEL" "${MODEL:-(未设置)}"
+    printf '%-22s= %s\n' "LLM_TIMEOUT" "$TIMEOUT"
+    printf '%-22s= %s\n' "LLM_PROMPT" "$PROMPT"
+    printf '%-22s= %s\n' "LLM_MAX_TOKENS" "$MAX_TOKENS"
+    printf '%-22s= %s\n' "LLM_PASSPHRASE_FILE" "${PASSPHRASE_FILE:-(未设置)}"
+    printf '%-22s= %s  [%s]\n' "LLM_API_KEY" "$(mask_key "${KEY:-}")" "${KEY_SOURCE:-未读取}"
+    printf '%-22s= %s\n' "LLM_API_KEY_ENC" "$(printf '%s' "$API_KEY_ENC" | cut -c1-32)${API_KEY_ENC:+...}"
+    return 0
+}
+
+# ---------------------------------------------------------------------------
+# 参数解析
+# ---------------------------------------------------------------------------
+parse_args() {
+    CMD=""
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -c|--config) [ $# -ge 2 ] || die "缺少 $1 的值"; CONFIG=$2; shift 2 ;;
+            --config=*)  CONFIG=${1#*=}; shift ;;
+            --base-url)  [ $# -ge 2 ] || die "缺少 $1 的值"; BASE_URL_ARG=$2; shift 2 ;;
+            --model)     [ $# -ge 2 ] || die "缺少 $1 的值"; MODEL_ARG=$2; shift 2 ;;
+            --prompt)    [ $# -ge 2 ] || die "缺少 $1 的值"; PROMPT_ARG=$2; shift 2 ;;
+            --timeout)   [ $# -ge 2 ] || die "缺少 $1 的值"; TIMEOUT_ARG=$2; shift 2 ;;
+            --max-tokens)[ $# -ge 2 ] || die "缺少 $1 的值"; MAX_TOKENS_ARG=$2; shift 2 ;;
+            --key)       [ $# -ge 2 ] || die "缺少 $1 的值"; KEY=$2; shift 2 ;;
+            --passphrase)[ $# -ge 2 ] || die "缺少 $1 的值"; PASSPHRASE_ARG=$2; shift 2 ;;
+            --only)      [ $# -ge 2 ] || die "缺少 $1 的值"; ONLY=$2; shift 2 ;;
+            --all)       ALL=1; shift ;;
+            --matrix)    MATRIX=1; shift ;;
+            --allow-unsupported) ALLOW_UNSUPPORTED=1; shift ;;
+            --direct)    DIRECT=1; shift ;;
+            --json)      JSON=1; shift ;;
+            --plain)     PLAIN=1; shift ;;
+            --force)     FORCE=1; shift ;;
+            probe|init|setkey|showkey|env)
+                [ -z "$CMD" ] || die "多余的子命令: $1"
+                CMD=$1; shift ;;
+            help|-h|--help) usage 0 ;;
+            -v|--version) printf '%s %s\n' "$PROG" "$VERSION"; exit 0 ;;
+            --)          shift; break ;;
+            *)           printf '未知参数: %s\n' "$1" >&2; usage 1 ;;
+        esac
+    done
+    [ -n "$CMD" ] || CMD=probe
+    case $ONLY in
+        ""|net|auth|infer) ;;
+        sdk) die "sh 版没有 openai SDK 层，请用: python3 llm_probe.py probe --sdk" ;;
+        *)   die "--only 只接受 net / auth / infer" ;;
+    esac
+    if [ "$MATRIX" -eq 1 ] && [ -n "$ONLY" ]; then
+        die "--matrix 不能与 --only 同时使用"
+    fi
+    if [ "$MATRIX" -eq 1 ] && [ "$CMD" != "probe" ]; then
+        die "--matrix 只能与 probe 子命令一起使用"
+    fi
+    if [ "$ALLOW_UNSUPPORTED" -eq 1 ] && [ "$MATRIX" -ne 1 ]; then
+        die "--allow-unsupported 只能与 --matrix 同时使用"
+    fi
+}
+
+main() {
+    BASE_URL_ARG=""; MODEL_ARG=""; PROMPT_ARG=""; TIMEOUT_ARG=""; MAX_TOKENS_ARG=""
+    parse_args "$@"
+    # 命令行参数 > 环境变量 > 配置文件
+    load_config
+    [ -n "$BASE_URL_ARG" ] && BASE_URL=$BASE_URL_ARG
+    [ -n "$MODEL_ARG" ] && MODEL=$MODEL_ARG
+    [ -n "$PROMPT_ARG" ] && PROMPT=$PROMPT_ARG
+    [ -n "$TIMEOUT_ARG" ] && TIMEOUT=$TIMEOUT_ARG
+    [ -n "$MAX_TOKENS_ARG" ] && MAX_TOKENS=$MAX_TOKENS_ARG
+    validate_options    # CLI 值是刚套用的，必须在这里再校验一次
+
+    case $CMD in
+        probe)
+            if [ "$MATRIX" -eq 1 ]; then run_matrix; else run_probe; fi
+            ;;
+        init)    do_init ;;
+        setkey)  do_setkey ;;
+        showkey) do_showkey ;;
+        env)     do_env ;;
+    esac
+}
+
+main "$@"
+```
+
+### C. 配置文件模板 `llm_probe.env.example`（37 行）
+
+```bash
+# llm_probe 配置文件（dotenv 风格）
+# 注意：这是数据文件，不是 shell 脚本，任何一行都不会被当作命令执行。
+#
+# 生成本文件:  python3 llm_probe.py init
+# 写入密钥:    python3 llm_probe.py setkey                  （交互输入，推荐）
+#              printf '%s' "$KEY" | python3 llm_probe.py setkey   （非交互，走 stdin）
+#              python3 llm_probe.py setkey --key sk-xxx       （会进 shell 历史 / ps，
+#                                                              仅临时测试用）
+# 查看密钥:    python3 llm_probe.py showkey
+# 开始探测:    python3 llm_probe.py probe
+
+# OpenAI 兼容端点，通常以 /v1 结尾。默认填官方地址；换服务商就改成它给的
+# base_url。（README 里的 https://aiapiv2.pekpik.com/v1 是第三方中转示例，
+# 别默认把密钥发给不认识的服务。）
+LLM_BASE_URL=https://api.openai.com/v1
+
+# 模型名按服务商自己的命名填
+LLM_MODEL=gpt-4o-mini
+
+# 加密后的密钥（enc:v1:... ），由 setkey 写入，不要手填
+LLM_API_KEY_ENC=
+
+# 明文密钥：仅用于临时调试。存在时优先级低于 LLM_API_KEY_ENC。
+# 用 setkey 写入时会自动清空本行。
+LLM_API_KEY=
+
+# 解密口令来源（口令本身永远不写进本文件，否则加密就失去意义了）：
+#   1) LLM_PASSPHRASE_FILE 指向的口令文件（建议 chmod 600，非交互首选）
+#   2) 终端交互输入（最安全）
+#   3) 环境变量 LLM_PASSPHRASE（权宜之计：环境变量会被子进程继承，
+#      读到后本脚本会立即从环境里摘掉）
+LLM_PASSPHRASE_FILE=
+
+# 探测参数
+LLM_TIMEOUT=30
+LLM_PROMPT=你好
+LLM_MAX_TOKENS=64
+```
+### D. `demo_minimal.py`（97 行，最简 demo）
+
+```python
+#!/usr/bin/env python3
+"""最小可运行 demo：用 openai SDK 打一个 OpenAI 兼容端点。
+
+只做一件事——发一条消息，打印回复。
+不做分层诊断、不打印耗时、不解析错误码；那些是 llm_probe.py 的活。
+
+用法:
+    export LLM_PASSPHRASE='你的口令'        # 密钥加密存着时才需要
+    python3 demo_minimal.py
+
+    # 或者完全绕过配置文件
+    LLM_API_KEY=sk-xxx LLM_BASE_URL=https://api.openai.com/v1 \
+    LLM_MODEL=gpt-4o-mini python3 demo_minimal.py
+
+依赖: openai >= 0.28（新旧两套写法都兼容）
+"""
+
+import os
+import sys
+
+# 从同目录的 llm_probe 复用"读配置 + 解密"逻辑，避免在 demo 里重复造轮子
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from llm_probe import DEFAULT_CONFIG, decrypt_secret, parse_env_file, scrub_env  # noqa: E402
+
+# 默认走官方端点；任何 OpenAI 兼容端点都可以（用 LLM_BASE_URL 覆盖）。
+# 本仓库 README 里的 aiapiv2.pekpik.com 只是第三方中转示例，别默认把密钥
+# 发给不认识的服务。
+BASE_URL = os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1"
+MODEL = os.environ.get("LLM_MODEL") or "gpt-4o-mini"
+
+
+def load_api_key():
+    """取密钥的三种来源，按优先级：环境变量 > 加密配置 > 明文配置。
+
+    拿到手就把环境变量里的密钥/口令摘掉（scrub_env）：环境变量会被后续每个
+    子进程无条件继承，包括 openai SDK 自己拉起来的那些。
+    """
+    if os.environ.get("LLM_API_KEY"):                     # 1) 环境变量
+        value = os.environ["LLM_API_KEY"]
+        scrub_env("LLM_API_KEY")
+        return value
+
+    cfg = parse_env_file(DEFAULT_CONFIG)
+    token = cfg.get("LLM_API_KEY_ENC")                    # 2) 加密配置 enc:v1:...
+    if token:
+        passphrase = os.environ.get("LLM_PASSPHRASE")
+        if not passphrase:
+            raise SystemExit(
+                "密钥是加密存储的。推荐先配置 LLM_PASSPHRASE_FILE 指向口令文件，"
+                "或临时 export LLM_PASSPHRASE=...（读到后会立即从环境里摘掉）")
+        os.environ.pop("LLM_PASSPHRASE", None)            # 读到就摘，别广播给子进程
+        return decrypt_secret(token, passphrase)
+
+    if cfg.get("LLM_API_KEY"):                            # 3) 明文配置（不推荐）
+        return cfg["LLM_API_KEY"]
+
+    raise SystemExit("没有可用的密钥：先跑 python3 llm_probe.py setkey")
+
+
+def ask(prompt):
+    """发一条消息，返回回复文本。自动适配 openai 1.x 与 0.28 两套 API。"""
+    key = load_api_key()
+    try:
+        from openai import OpenAI                         # openai >= 1.0
+    except ImportError:
+        import openai                                     # openai 0.28 老 API
+        openai.api_base = BASE_URL
+        openai.api_key = key
+        resp = openai.ChatCompletion.create(
+            model=MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            request_timeout=30,
+        )
+        return resp["choices"][0]["message"]["content"]
+
+    client = OpenAI(base_url=BASE_URL, api_key=key, timeout=30)
+    resp = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.choices[0].message.content
+
+
+if __name__ == "__main__":
+    print(f"{BASE_URL}  |  {MODEL}")
+    try:
+        print(ask("你好，请用一句话介绍你自己。"))
+    except Exception as exc:                              # 粗分类，退出码与 llm_probe 对齐
+        name, text = type(exc).__name__, str(exc).splitlines()[0][:160]
+        if "Authentication" in name or "401" in text or "403" in text:
+            print(f"认证失败（key 无效）：{text}", file=sys.stderr)
+            sys.exit(3)
+        if "Connection" in name or "Timeout" in name or "timed out" in text:
+            print(f"网络不通：{text}", file=sys.stderr)
+            sys.exit(2)
+        print(f"调用失败：{text}", file=sys.stderr)
+        sys.exit(4)
+```
+> 测试用的 mock 服务（`tests/mock_llm.py`，基础模式与 `matrix_*` 变体）和分支测试脚本（`tests/run_tests.sh`，17 组场景、145 项断言；另有 `tests/test_units.py` 的 27 项单元测试）随代码一起放在 `~/Workspace/VibeCoding/llm-probe/tests/`，直接 `./tests/run_tests.sh` 即可复现第四节的全部结论（期望 `PASS=145 FAIL=0`，单元测试用 `python3 tests/test_units.py`；`.github/workflows/test.yml` 会在每次 push/PR 上自动跑这两套用例）。测试刻意不读取真实配置的解密口令：前 8 组用 `--key` 显式传密钥，密文互通那组用临时配置配自己的口令。
