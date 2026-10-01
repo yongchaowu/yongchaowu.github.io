@@ -5,4 +5,6 @@ tag: "Driver"
 slug: "driver"
 permalink: /tag/driver/
 generated: true
+noindex: true
+sitemap: false
 ---

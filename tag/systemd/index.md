@@ -5,4 +5,6 @@ tag: "systemd"
 slug: "systemd"
 permalink: /tag/systemd/
 generated: true
+noindex: true
+sitemap: false
 ---

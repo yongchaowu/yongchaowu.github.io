@@ -5,4 +5,6 @@ tag: "Key"
 slug: "key"
 permalink: /tag/key/
 generated: true
+noindex: true
+sitemap: false
 ---

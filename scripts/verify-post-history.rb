@@ -14,7 +14,7 @@ require 'set'
 require 'yaml'
 require 'date'
 
-BASELINE = ENV.fetch('POST_HISTORY_BASELINE', 'b1dc48b52cc291e1ca771bd514ed2cf251b14054')
+BASELINE = ENV.fetch('POST_HISTORY_BASELINE', '28c89b4645a8f6dc8683daa62c259f81a86befae')
 FORMAT_FIXES_FILE = File.expand_path('../_data/format_fixes.yml', __dir__)
 failures = []
 

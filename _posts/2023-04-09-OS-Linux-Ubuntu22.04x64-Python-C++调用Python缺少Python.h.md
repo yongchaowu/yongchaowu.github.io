@@ -13,31 +13,27 @@ tags:
 - IDE
 - OS
 ---
-
 - [使用 C 或 C++ 扩展 Python](https://docs.python.org/zh-cn/3.10/extending/extending.html#extracting-parameters-in-extension-functions "使用 C 或 C++ 扩展 Python")
 - [扩展和嵌入 Python 解释器](https://docs.python.org/zh-cn/3.10/extending/index.html "扩展和嵌入 Python 解释器")
 - [Python 3.10.11 Python/C API 参考手册](https://docs.python.org/zh-cn/3.10/c-api/index.html#c-api-index "Python 3.10.11 Python/C API 参考手册")
-- [Python 3.11.3 Python/C API 参考手册](https://docs.python.org/zh-cn/3/c-api/index.html#c-api-index "Python 3.11.3 Python/C API 参考手册")
+- [Python 3.11 Python/C API 参考手册](https://docs.python.org/zh-cn/3.11/c-api/index.html#c-api-index "Python 3.11 Python/C API 参考手册")
 
-<!--more-->
 参考
 1. https://www.cnblogs.com/lidabo/p/17043302.html
 2. https://blog.csdn.net/zong596568821xp/article/details/115690713
+
+<!--more-->
 
 在环境中缺少Python.h文件
 - `python` `python2` `python3` 查看python是否安装以及安装版本
 - `whereis python`	查找python的安装位置
 - `locate Python.h` 查找Python.h文件位置
 
+## python3-dev
 
-## python-dev
-安装python-dev。
-python-dev包含构建Python扩展所需的头文件。（在Linux上，通常，python等包的二进制库和头文件是分开的。因此，可以安装Python并且一切正常，但是构建扩展时，需要安装相应的开发包。）
+在 Debian/Ubuntu 上，构建 Python 扩展所需的 `Python.h` 通常由 `python3-dev` 提供；如果需要指定 Python 小版本，可以安装对应的 `python3.X-dev` 包。`python-dev` 在部分 Ubuntu 版本中是 Python 2 兼容包，不适用于 Python 3。
 
-
-Python-dev 2.0.0.dev0   上次发布日期: 2023-04-08 14:11:02
-`pip install Python-dev`：[https://www.cnpython.com/pypi/python-dev](https://www.cnpython.com/pypi/python-dev "pip install Python-dev")
-
+`pip install Python-dev` 不是安装 Python 开发头文件的官方方式；Python 官方文档要求使用 Python 的 C API，并通过系统包管理器安装对应的开发包。下面的失败输出也说明该 PyPI 包不能解决此问题。
 
 1.`sudo apt-get install python-dev`
 结果为：
@@ -85,7 +81,6 @@ Python-dev 2.0.0.dev0   上次发布日期: 2023-04-08 14:11:02
 解压缩后会消耗 25.2 MB 的额外空间。
 您希望继续执行吗？ [Y/n] Y
 
-
 python3-dev 已经是最新版 (3.10.6-1~22.04)
 ```
 
@@ -98,7 +93,7 @@ ERROR: No matching distribution found for Python-dev
 ```
 
 4.*Python.h 所在位置*
-`locate Python.h`时因为未`updatedb`,所以显示没找到文件，这导致我不确定是此时就已经存在Python.h还是在步骤5、步骤6之后才存在的。
+`locate Python.h`时因为未`updatedb`,所以显示没找到文件，这导致我不确定是此时就已经存在Python.h还是再步骤5、步骤6之后才存在的。
 ps：关于`locate`的问题，在后面章节中`python 3.11.3-->Build Instructions`中又出现过一次，才了解到需要使用更新命令`sudo updatedb`。（所以修改此处描述）
 
 ```
@@ -117,7 +112,6 @@ tasks.json
 "-L/usr/local/lib/python3.11",
 "-lpython3.11",
 ```
-
 
 5.install python
 Python-3.11.3.tar.xz from  [https://www.python.org/downloads/](https://www.python.org/downloads/ "Python3.11.3 Download")
@@ -138,16 +132,15 @@ Python-3.11.3.tar.xz
 
 ### Build Instructions
 On Unix, Linux, BSD, macOS, and Cygwin::
-```bash
+```
     ./configure  --enable-optimizations  
-	# --prefix=/usr/local
+	//--prefix=/usr/local
     make
-    # make test
+    //make test
     sudo make install
 ```
 This will install Python as `python3`.
 To get an optimized build of Python, `configure --enable-optimizations` before you run `make`.  This sets the default make targets up to enable Profile Guided Optimization (PGO) and may be used to auto-enable Link Time Optimization (LTO) on some platforms.
-
 
 ----------
 
@@ -158,7 +151,8 @@ WARNING: Running pip as the 'root' user can result in broken permissions and con
 
 后来发现在`/usr/local/lib`中有libpython3.11.so，但是locate找不到~然而原有的libpython3.10.so却可以locate出来
 
-```locate libpython3.11.so
+```console
+$ locate libpython3.11.so
 yongchao@yongchao-virtual-machine:/usr/local/lib$ ll
 总计 70372
 drwxr-xr-x  5 root root     4096  4月  9 01:23 ./
@@ -176,8 +170,8 @@ yongchao@yongchao-virtual-machine:/usr/local/lib$
 
 ```
 
-```locate libpython3.10.so
-yongchao@yongchao-virtual-machine:/usr/local/lib$ locate libpython3.10.so
+```console
+$ locate libpython3.10.so
 /usr/lib/python3.10/config-3.10-x86_64-linux-gnu/libpython3.10.so
 /usr/lib/x86_64-linux-gnu/libpython3.10.so
 /usr/lib/x86_64-linux-gnu/libpython3.10.so.1
@@ -190,7 +184,7 @@ yongchao@yongchao-virtual-machine:/usr/local/lib$
 - 好处是定位速度快，缺点就是有时候找不到文件。
 - 若找不到文件，终端执行：`updatedb`，重新建立整个系统所有文件和目录的资料库，方便以后再查找文件。
 
-find命令进行文件查找执行速度要比locate慢得多，find是使用时再从硬盘查找，比较耗磁盘空间，所以一般优先使用locate查找。
+find命令进行文件查找执行速度要比locate慢的多，find是使用时再从硬盘查找，比较耗磁盘空间，所以一般优先使用locate查找。
 - `locate file_name` 
 - `find -name file_name`
 
@@ -208,8 +202,6 @@ find命令进行文件查找执行速度要比locate慢得多，find是使用时
 `sudo apt-get purge python3.10` 
 or 
 `sudo apt-get purge --auto-remove python3.10`
-
-
 
 ----------
 
@@ -242,11 +234,10 @@ tasks.json中args值如下：
             ]
 ```
 
-
 ## loading shared libraries: libpython3.11.so.1.0: cannot open shared object file: No such file or directory
 因为动态链接库找不到，所以要在你的配置文件里加入库的路径。
-解决方法是在`/etc/ld.so.conf.d`中添加`python3.conf`文件，并添加lib路径，最后`ldconfig`。
-```bash
+解决方法是在·`etc/ld.so.conf.d`中添加`python3.conf`文件，并添加lib路径，最后`ldconfig`。
+```
 cd  /etc/ld.so.conf.d
 sudo gedit python3.conf
 /usr/local/lib
@@ -265,3 +256,7 @@ yongchao@yongchao-virtual-machine:/usr/local/lib$ nm -D libpython3.11.so.1.0  | 
 000000000029fda0 T Py_InitializeFromConfig
 000000000029ffd0 T _Py_InitializeMain
 ```
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

@@ -5,4 +5,6 @@ tag: "TCP/IP ECN"
 slug: "tcp-ip-ecn"
 permalink: /tag/tcp-ip-ecn/
 generated: true
+noindex: true
+sitemap: false
 ---

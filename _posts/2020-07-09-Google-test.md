@@ -10,21 +10,21 @@ tags:
 - Open Source
 - Test Engineer&QC
 ---
-
 ## Building
 - [Github](https://github.com/google/googletest.git)
 - 配置使用Cmake
 - 测试项目:
     1.创建Win32控制台应用程序，创建完成后把include和lib文件夹拷贝到项目路径下
     2.项目配置：
-        点击项目属性》c/c++》代码生成中运行库中修改为“多线程调试(/MTd)”
+        击项目属性》c/c++》代码生成中运行库中修改为“多线程调试(/MTd)”
         点击项目属性》c/c++》常规中附加包含目录中添加头文件路径
         点击项目属性》链接器》常规中附加包含目录中添加lib路径
-        点击项目属性》链接器》输入中附加依赖项中添加gtestd.lib
+        点击项目属性》链接器》输入中附加包依赖项中添加gtestd.lib
+
+## Inroduce
+[Googletest入门](https://www.cnblogs.com/zjutzz/p/10304075.html)
 
 <!--more-->
-## Introduction
-[Googletest入门](https://www.cnblogs.com/zjutzz/p/10304075.html)
 
 ## Code Test
 - Test struct
@@ -60,7 +60,7 @@ tags:
       }
 
     public:
-      struct T1 m_T;
+      struct T1 m_T{0};
     };
    //第二步
     TEST_P(FooTest, DoesBlah) {
@@ -82,3 +82,7 @@ tags:
       return RUN_ALL_TESTS();
     }
 	```
+
+本文修订依据：C++11 工作草案 [N3337 `dcl.init`](https://timsong-cpp.github.io/cppwp/n3337/dcl.init) 与 [`dcl.init.aggr`](https://timsong-cpp.github.io/cppwp/n3337/dcl.init.aggr)，并以 C++17 N4659 [`dcl.init`](https://timsong-cpp.github.io/cppwp/n4659/dcl.init) 交叉核对。示例已使用 `override`，本次仅将未初始化的 `m_T.a` 改为确定初始化。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 09:11（UTC+08:00）。修订仅为 `m_T` 增加初始化，避免读取未确定的值。

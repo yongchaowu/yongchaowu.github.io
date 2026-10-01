@@ -5,4 +5,6 @@ tag: "国家图书馆"
 slug: "国家图书馆"
 permalink: /tag/国家图书馆/
 generated: true
+noindex: true
+sitemap: false
 ---

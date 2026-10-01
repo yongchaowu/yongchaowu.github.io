@@ -9,16 +9,16 @@ tags:
 - Code
 - Linux
 ---
-
 - 利用fstream文件流输出
 - 利用stat查看文件大小
 - 设定文件最大值宏定义
 
-<!--more-->
-```cpp
+```
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
+
+<!--more-->
 
 #include <iostream>
 
@@ -28,15 +28,15 @@ void exportFile(std::string strFileName, int nVal)
 {
 
     std::string strFilePath = "./" + strFileName;
-    
+
     std::ofstream osFile;
     struct stat64 statbuf;
-    stat64(strFilePath.c_str(), &statbuf);
-    if(statbuf.st_size > LOG_FILE_MAX_SIZE){
+    if (stat64(strFilePath.c_str(), &statbuf) == 0 &&
+        statbuf.st_size > LOG_FILE_MAX_SIZE) {
         if(remove(strFilePath.c_str()) != 0)
             return;
     }
-        
+
     osFile.open(strFilePath.c_str(), std::ios::app | std::ios::out);
     if (!osFile.is_open())
         return;
@@ -51,7 +51,7 @@ mode:要打开文件的方式
 access:打开文件的属性
 打开文件的方式在类ios(是所有流式I/O类的基类)中定义，常用的值如下：
 ios::app:以追加的方式打开文件
-ios::ate:文件打开后定位到文件尾,ios::app就包含有此属性
+ios::ate:文件打开后定位到文件尾,ios:app就包含有此属性
 ios::binary:以二进制方式打开文件，缺省的方式是文本方式。两种方式的区别见前文
 ios::in:文件以输入方式打开（文件数据输入到内存）
 ios::out:文件以输出方式打开（内存数据输出到文件）
@@ -72,11 +72,12 @@ int main()
     // while(i < 100){
         exportFile("log", i++);
     // }
-    
+
     struct stat64 statbuf;
-    stat64("./log", &statbuf);
-    std::cout << "log file size is  " << statbuf.st_size << std::endl;
-    parseFileSize(statbuf.st_size);
+    if (stat64("./log", &statbuf) == 0) {
+        std::cout << "log file size is  " << statbuf.st_size << std::endl;
+        parseFileSize(statbuf.st_size);
+    }
 
     return 0;
 }
@@ -128,3 +129,9 @@ void parseFileSize(const off_t &st_size)
 
 // int64_t parsePreSetSize(){}
 ```
+
+`stat64` 成功时返回 `0`，失败时返回 `-1`；只有在成功返回后才能读取 `statbuf.st_size`。参考：[Linux `stat(2)` 手册](https://man7.org/linux/man-pages/man2/stat.2.html)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:58（UTC+08:00）。

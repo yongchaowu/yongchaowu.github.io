@@ -9,10 +9,8 @@ tags:
 - Code
 - C++
 ---
-
 November 28, 2020 4:56 PM
 
-<!--more-->
 最近遇到需要进行时间转换的实现。
 以下是从mongoose.c中截取的，与之后在网上找到的思路是一致的。
 ## Function
@@ -26,7 +24,7 @@ double cs_time(void) {
 #else
   SYSTEMTIME sysnow;
   FILETIME ftime;
-  GetLocalTime(&sysnow);
+  GetSystemTime(&sysnow);
   SystemTimeToFileTime(&sysnow, &ftime);
   /*
    * 1. VC 6.0 doesn't support conversion uint64 -> double, so, using int64
@@ -45,6 +43,8 @@ double cs_time(void) {
 }
 ```
 
+<!--more-->
+
 ## 网上抄的代码
 转自[Windows中的时间(SYSTEMTIME和FILETIME)](https://www.cnblogs.com/liquntao/articles/9785601.html)
 ```c++
@@ -56,7 +56,6 @@ using namespace std;
 #include <stdio.h>
 #include <time.h>
 #include <windows.h>
-
 
 int main()
 {
@@ -89,3 +88,11 @@ int main()
 }
 
 ```
+
+`GetSystemTime` 返回 UTC，而 `GetLocalTime` 返回本地时间；本段将系统时间转换为 UTC FILETIME，因此使用 `GetSystemTime`。
+
+参考：[Microsoft Learn：GetSystemTime](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtime) 和 [GetLocalTime](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlocaltime)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:41（UTC+08:00）。

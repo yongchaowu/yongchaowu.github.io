@@ -5,4 +5,6 @@ tag: "协议"
 slug: "协议"
 permalink: /tag/协议/
 generated: true
+noindex: true
+sitemap: false
 ---

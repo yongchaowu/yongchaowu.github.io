@@ -98,4 +98,4 @@ type: page
         <ul id="tag-post-list" class="tag-result-list"></ul>
     </section>
 </main>
-<script src="{{ '/js/tags.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/tags.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>

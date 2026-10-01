@@ -5,4 +5,6 @@ tag: "网站"
 slug: "网站"
 permalink: /tag/网站/
 generated: true
+noindex: true
+sitemap: false
 ---

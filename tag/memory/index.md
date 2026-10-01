@@ -5,4 +5,6 @@ tag: "Memory"
 slug: "memory"
 permalink: /tag/memory/
 generated: true
+noindex: true
+sitemap: false
 ---

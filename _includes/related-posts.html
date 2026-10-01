@@ -2,11 +2,8 @@
 {% assign related_max = 4 %}
 {% assign related_count = 0 %}
 {% assign related_output = '' %}
-{% assign page_editorial = nil %}
 {% assign page_editorial_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == page_editorial_path %}{% assign page_editorial = item %}{% endif %}
-{% endfor %}
+{%- assign page_editorial = site.data.post_editorial.posts[page_editorial_path] -%}
 
 {% comment %}Score: same series +5, same primary topic +2, same tag +3, same category +1{% endcomment %}
 
@@ -16,11 +13,8 @@
     {% if related_count >= related_max %}{% break %}{% endif %}
 
     {% assign score = 0 %}
-    {% assign candidate_editorial = nil %}
-    {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-    {% for item in site.data.post_editorial.posts %}
-        {% if item.post == candidate_editorial_path %}{% assign candidate_editorial = item %}{% endif %}
-    {% endfor %}
+        {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+    {%- assign candidate_editorial = site.data.post_editorial.posts[candidate_editorial_path] -%}
     {% if page_editorial.series and candidate_editorial.series == page_editorial.series %}
         {% assign score = score | plus: 5 %}
     {% endif %}
@@ -62,11 +56,8 @@
     {% if related_output contains post.url %}{% continue %}{% endif %}
 
     {% assign score = 0 %}
-    {% assign candidate_editorial = nil %}
-    {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-    {% for item in site.data.post_editorial.posts %}
-        {% if item.post == candidate_editorial_path %}{% assign candidate_editorial = item %}{% endif %}
-    {% endfor %}
+        {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+    {%- assign candidate_editorial = site.data.post_editorial.posts[candidate_editorial_path] -%}
     {% if page_editorial.series and candidate_editorial.series == page_editorial.series %}
         {% assign score = score | plus: 5 %}
     {% endif %}
@@ -108,11 +99,8 @@
     {% if related_output contains post.url %}{% continue %}{% endif %}
 
     {% assign score = 0 %}
-    {% assign candidate_editorial = nil %}
-    {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-    {% for item in site.data.post_editorial.posts %}
-        {% if item.post == candidate_editorial_path %}{% assign candidate_editorial = item %}{% endif %}
-    {% endfor %}
+        {% assign candidate_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+    {%- assign candidate_editorial = site.data.post_editorial.posts[candidate_editorial_path] -%}
     {% if page_editorial.series and candidate_editorial.series == page_editorial.series %}
         {% assign score = score | plus: 5 %}
     {% endif %}

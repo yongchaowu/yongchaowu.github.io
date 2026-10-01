@@ -5,4 +5,6 @@ tag: "Build System"
 slug: "build-system"
 permalink: /tag/build-system/
 generated: true
+noindex: true
+sitemap: false
 ---

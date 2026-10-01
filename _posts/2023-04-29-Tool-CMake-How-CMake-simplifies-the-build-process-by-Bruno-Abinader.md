@@ -8,14 +8,13 @@ tags:
 - CMake
 - Tool
 ---
-
 >https://gitlab.kitware.com/cmake/community/-/wikis/home
 
-<!--more-->
 >https://brunoabinader.github.io/2009/12/07/how-cmake-simplifies-the-build-process-part-1-basic-build-system/
 
->https://brunoabinader.github.io/2009/12/09/how-cmake-simplifies-the-build-process-part-2-advanced-build-system/
+<!--more-->
 
+>https://brunoabinader.github.io/2009/12/09/how-cmake-simplifies-the-build-process-part-2-advanced-build-system/
 
 ----------
 
@@ -26,7 +25,7 @@ CMake macro `MacroOutOfSourceBuild.cmake` which requires the user to build the s
 
 ### example project
 two directories (base directory and src/ directory)
-```bash
+```
 $ find helloworld
 helloworld/
 helloworld/src
@@ -45,7 +44,7 @@ helloworld/CMakeLists.txt
 # Project name is not mandatory, but you should use it
 project(helloworld)
 
-# States that CMake required version must be greater than 2.6
+# States that the project requires CMake 2.6 or newer
 cmake_minimum_required(VERSION 2.6)
 
 # Appends the cmake/modules path inside the MAKE_MODULE_PATH variable which stores the
@@ -77,7 +76,7 @@ add_executable(helloworld ${helloworld_SOURCES})
 ```
 
 #### create a shadow build directory (i.e. build/) 
-```bash
+```
 $ mkdir build
 $ cd build
 $ cmake ..
@@ -104,14 +103,13 @@ Linking CXX executable helloworld
 
 ----------
 
-## Part 2: Advanced build system
+## Part 2：Advanced build system
 https://brunoabinader.github.io/2009/12/09/how-cmake-simplifies-the-build-process-part-2-advanced-build-system/
 
-
-#### ./src/CMakeLists.txt
+####./stc/CMakeFiles.txt
 `# Installs the header files into the {build_dir}/include/itemviews-ng directory
 install(FILES ${itemviews-ng_HEADERS} DESTINATION include/itemviews-ng)`
- 
+
 `# Installs the target file (libitemviews-ng.so) into the {build_dir}/lib directory
 install(TARGETS itemviews-ng LIBRARY DESTINATION lib)`
 
@@ -120,22 +118,26 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Create a variable containing a list of all implementation files
 file(GLOB itemviews-ng_SOURCES *.cpp)
- 
+
 # The same applies for headers which generates MOC files (excluding private implementation ones)
 file(GLOB itemviews-ng HEADERS *[^_p].h)
- 
+
 # Now the magic happens: The function below is responsible for generating the MOC files)
 automoc4_moc_headers(itemviews-ng ${itemviews-ng_HEADERS})
- 
+
 # Creates a target itemviews-ng which creates a shard library with the given sources
 automoc4_add_library(itemviews-ng SHARED ${itemviews-ng_SOURCES})
- 
+
 # Tells the shared library to be linked against Qt ones
 target_link_libraries(itemviews-ng ${QT_LIBRARIES})
- 
+
 # Installs the header files into the {build_dir}/include/itemviews-ng directory
 install(FILES ${itemviews-ng_HEADERS} DESTINATION include/itemviews-ng)
- 
+
 # Installs the target file (libitemviews-ng.so) into the {build_dir}/lib directory
 install(TARGETS itemviews-ng LIBRARY DESTINATION lib)
 ```
+
+本文修订依据：CMake `v2.6.4` tag 的 [`cmCMakeMinimumRequired.cxx` commit `cae437457cd3859ab95af83303bb826eecd7e36f`](https://github.com/Kitware/CMake/blob/cae437457cd3859ab95af83303bb826eecd7e36f/Source/cmCMakeMinimumRequired.cxx#L89-L103)、CMake 3.4.3 的 [`cmake_minimum_required` 文档](https://cmake.org/cmake/help/v3.4/command/cmake_minimum_required.html)，以及 [CMake 2.6.4 发布公告](https://www.kitware.com/cmake-2-6-4-released)。`VERSION 2.6` 表示最低版本为 2.6，而不是严格大于 2.6；本文保留该历史示例。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 09:39（UTC+08:00）。修订仅修正 `cmake_minimum_required(VERSION 2.6)` 的注释含义。

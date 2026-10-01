@@ -5,4 +5,6 @@ tag: "Knowledge Management"
 slug: "knowledge-management"
 permalink: /tag/knowledge-management/
 generated: true
+noindex: true
+sitemap: false
 ---

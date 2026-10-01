@@ -5,4 +5,6 @@ tag: "Grub"
 slug: "grub"
 permalink: /tag/grub/
 generated: true
+noindex: true
+sitemap: false
 ---

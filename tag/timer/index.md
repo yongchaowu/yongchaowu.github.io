@@ -5,4 +5,6 @@ tag: "Timer"
 slug: "timer"
 permalink: /tag/timer/
 generated: true
+noindex: true
+sitemap: false
 ---

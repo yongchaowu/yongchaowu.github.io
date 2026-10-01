@@ -5,4 +5,6 @@ tag: "PostgreSQL"
 slug: "postgresql"
 permalink: /tag/postgresql/
 generated: true
+noindex: true
+sitemap: false
 ---

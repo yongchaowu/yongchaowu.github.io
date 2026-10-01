@@ -5,4 +5,6 @@ tag: "OpenMP"
 slug: "openmp"
 permalink: /tag/openmp/
 generated: true
+noindex: true
+sitemap: false
 ---

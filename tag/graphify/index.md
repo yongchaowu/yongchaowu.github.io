@@ -5,4 +5,6 @@ tag: "Graphify"
 slug: "graphify"
 permalink: /tag/graphify/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -10,3 +10,18 @@ IMPLEMENTATION-BASELINE.md
 __pycache__/
 *.pyc
 .venv/
+
+# Bundled gems. `.bundle/config` pins BUNDLE_PATH to vendor/bundle, so a local
+# `bundle install` recreates this tree in place and any `git add -A` would put
+# ~3,200 files and 56 MB of native binaries (sass.snapshot, dart, *.so, *.gem
+# caches) back into history. It is also dead weight: the committed tree is Ruby
+# 3.0.0 while CI builds on Ruby 3.2, so it cannot serve as an offline fallback.
+vendor/
+.bundle/
+
+# Unpublished drafts. Jekyll never builds `_drafts/`, but git has no notion of
+# "private": anything tracked here is in every clone, is indexed by GitHub code
+# search, and can be archived by third parties. Keep personal and
+# pre-publication material in ~/Workspace/Blog/ref/ instead, which is not a
+# public repository. See docs/review-2026-10-01.md F4.
+_drafts/

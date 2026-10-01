@@ -3,11 +3,8 @@
 [
 {% for post in site.posts %}
 {% include topic-for-post.html post=post %}
-{% assign search_editorial = nil %}
 {% assign search_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == search_editorial_path %}{% assign search_editorial = item %}{% endif %}
-{% endfor %}
+{%- assign search_editorial = site.data.post_editorial.posts[search_editorial_path] -%}
 {% assign search_content_type = search_editorial.content_type | default: site.data.post_editorial.defaults.content_type %}
 {% assign search_placement = search_editorial.placement | default: site.data.post_editorial.defaults.placement %}
 {% assign search_freshness = search_editorial.freshness | default: site.data.post_editorial.defaults.freshness %}
@@ -15,7 +12,19 @@
 {% assign search_risk = search_editorial.risk | default: site.data.post_editorial.defaults.risk %}
 {% assign search_origin = search_editorial.origin | default: site.data.post_editorial.defaults.origin %}
 {% assign search_series = search_editorial.series %}
-{% assign search_summary = post.summary | default: post.excerpt | strip_html | normalize_whitespace | truncate: 300 %}
+{%- comment -%}
+  Card text, same resolution as the homepage and topic cards: front-matter
+  summary, then excerpt, then the generated sidecar's first slice of readable
+  prose. Without the last step, 7 entries shipped an empty "summary" field and
+  the 12 code-only posts still have none -- which is correct for them, they
+  genuinely contain no prose.
+{%- endcomment -%}
+{% assign search_card_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% assign search_summary = post.summary | default: post.excerpt | strip_html | normalize_whitespace | strip %}
+{% unless search_summary.size > 0 %}
+    {% assign search_summary = site.data.post_meta.posts[search_card_path].card_summary %}
+{% endunless %}
+{% assign search_summary = search_summary | strip | truncate: 300 %}
 {
 "title": {{ post.title | jsonify }},
 "display_title": {{ post.display_title | default: post.title | jsonify }},

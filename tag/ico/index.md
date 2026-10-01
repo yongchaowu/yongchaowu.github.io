@@ -5,4 +5,6 @@ tag: "ICO"
 slug: "ico"
 permalink: /tag/ico/
 generated: true
+noindex: true
+sitemap: false
 ---

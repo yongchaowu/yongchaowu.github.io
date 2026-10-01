@@ -3,16 +3,22 @@ layout: default
 ---
 
 {% assign current_topic = nil %}
+{% comment %}
+  Re-derived here, not inherited from _layouts/default.html: Jekyll renders this
+  layout first and only then wraps it, so default.html's assigns are not yet in
+  scope. Keep these two blocks in sync with the copies in default.html and
+  _includes/head.html.
+{% endcomment %}
+{% assign meta_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% assign page_meta = site.data.post_meta.posts[meta_path] %}
+{% assign page_lang = page.lang | default: page_meta.lang | default: site.lang | default: 'en' %}
 {% for topic in site.data.topics.topics %}
     {% if page.categories contains topic.name %}
         {% assign current_topic = topic %}
     {% endif %}
 {% endfor %}
-{% assign editorial = nil %}
 {% assign editorial_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == editorial_path %}{% assign editorial = item %}{% endif %}
-{% endfor %}
+{%- assign editorial = site.data.post_editorial.posts[editorial_path] -%}
 {% assign content_kind = editorial.content_type | default: page.content_type %}
 {% unless content_kind %}
     {% if page.curated %}{% assign content_kind = "curated" %}{% else %}{% assign content_kind = "note" %}{% endif %}
@@ -66,16 +72,38 @@ layout: default
                 {% if page.version %}<span> · {{ page.version }}</span>{% endif %}
             </span>
 
+            {%- comment -%}
+              Count and reading estimate come from the generated sidecar rather
+              than from Liquid, because Liquid cannot separate CJK characters from
+              Latin words. The old code divided one raw character count by 800,
+              which is right for Chinese but roughly 4x too slow for English, and
+              it labelled every article with a hardcoded "字". The sidecar measures
+              each script separately (CJK at 800 chars/min, Latin at 220
+              words/min) and reports whichever dominates, so the number and the
+              unit now agree. Regenerate with scripts/generate_post_meta.py.
+            {%- endcomment -%}
             <span class="label-card">
-                {% include icon.html name="pencil" %}{{ content | strip_html | size }} 字
-                {% assign char_count = content | strip_html | strip_newlines | size %}
-                {% assign reading_time = char_count | divided_by: 800 %}
-                {% if reading_time < 1 %}{% assign reading_time = 1 %}{% endif %}
-                · ~{{ reading_time }} min
+                {% include icon.html name="pencil" %}
+                {%- if page_meta -%}
+                    {%- if page_meta.reading_unit == 'chars' -%}
+                        {{ page_meta.count }} 字
+                    {%- else -%}
+                        {{ page_meta.count }} words
+                    {%- endif %} · ~{{ page_meta.reading_minutes }} min
+                {%- else -%}
+                    {%- assign fallback_chars = content | strip_html | size -%}
+                    {{ fallback_chars }} 字 · ~{{ fallback_chars | divided_by: 800 }} min
+                {%- endif -%}
             </span>
 
             <span class="label-card type-badge type-badge--{{ content_kind }}">{{ content_kind | replace: '-', ' ' | capitalize }}</span>
-            {% if page.lang %}<span class="label-card">{{ page.lang }}</span>{% endif %}
+            {%- comment -%}
+              Always shown, using the same resolution as <html lang> and the
+              JSON-LD. Previously this rendered only for the 71 posts that
+              declared lang in front matter, so 286 articles showed no language
+              at all even though the document was declaring one.
+            {%- endcomment -%}
+            {%- if page_lang %}<span class="label-card">{{ page_lang }}</span>{%- endif -%}
 
             <span class="label-card">{% include category.html %}</span>
             <span class="label-card">{% include tag.html %}</span>
@@ -101,7 +129,15 @@ layout: default
 
         {% include tested-env.html %}
         {% include series-nav.html %}
-        <article class="post-article" itemscope itemtype="http://schema.org/BlogPosting">
+        {%- comment -%}
+          No itemscope/itemtype here on purpose. _includes/seo-jsonld.html already
+          emits a complete ["TechArticle","BlogPosting"] JSON-LD graph for this
+          page, so a second, property-less microdata graph was making the page
+          declare structured data twice — and the empty one is exactly the shape
+          that produces "missing required field" errors in consumers that parse
+          microdata first. JSON-LD is the form Google prefers anyway.
+        {%- endcomment -%}
+        <article class="post-article">
         {{content}}
         </article>
         {% include source-posts.html %}
@@ -130,7 +166,7 @@ layout: default
         </div>
     </aside>
 </main>
-<script src="{{ '/js/toc.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/toc.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>
 <script>
 /**
  * target _blank for external links only
@@ -145,4 +181,4 @@ layout: default
     })
 }());
 </script>
-<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/pageContent.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>

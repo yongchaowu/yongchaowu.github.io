@@ -14,6 +14,9 @@ tags:
 - systemd
 - 日志
 - 运维
+upstream_sync: off
+upstream_sync_reason: >-
+  仓库已把正文 H1 降级（上游 68 个 H1 / 仓库 43 个 H1），避免与页面标题重复。
 ---
 在 Linux 系统中，USB 设备的插拔、块设备识别、挂载和卸载，可能分别出现在 `dmesg`、传统 syslog、`auditd`、systemd journal 以及 `/proc/mounts` 等位置。
 

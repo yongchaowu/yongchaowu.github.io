@@ -5,4 +5,6 @@ tag: "单反"
 slug: "单反"
 permalink: /tag/单反/
 generated: true
+noindex: true
+sitemap: false
 ---

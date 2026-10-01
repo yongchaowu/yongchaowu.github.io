@@ -1,11 +1,7 @@
 {% assign editorial_post = include.post | default: page %}
 {% assign editorial_path = editorial_post.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% assign editorial = nil %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == editorial_path %}
-        {% assign editorial = item %}
-    {% endif %}
-{% endfor %}
+{%- assign editorial = site.data.post_editorial.posts[editorial_path] -%}
+{%- assign editorial_meta = site.data.post_meta.posts[editorial_path] -%}
 {% if editorial %}
 <span class="editorial-badges" aria-label="Editorial metadata">
     <span class="editorial-badge editorial-badge--type">{{ editorial.content_type | replace: '-', ' ' }}</span>
@@ -19,6 +15,24 @@
     {% if editorial.origin == 'ai-assisted' %}<span class="editorial-badge editorial-badge--ai">AI-assisted</span>{% endif %}
     {% if editorial.origin == 'imported' %}<span class="editorial-badge editorial-badge--imported">Imported / attributed</span>{% endif %}
     {% if editorial.risk == 'caution' %}<span class="editorial-badge editorial-badge--caution">Use caution</span>{% endif %}
+    {%- comment -%}
+      Last-reviewed date. Technical guides lose their value to version drift, so
+      "when was this last checked" is the question a reader actually has, and the
+      status words above answer a different one. The value is only shown when it
+      is traceable: an `updated` field in front matter, or the date of the most
+      recent entry in _data/format_fixes.yml. Both come from
+      scripts/generate_post_meta.py. No date is invented for the other 344 posts.
+    {%- endcomment -%}
+    {%- assign reviewed = editorial_meta.reviewed | default: '' | strip -%}
+    {%- comment -%}
+      Liquid treats an empty string as truthy, so the emptiness test has to be
+      explicit. Without the size check this rendered a bare "reviewed " on the 344
+      posts that have no traceable date.
+    {%- endcomment -%}
+    {%- if reviewed.size > 0 -%}
+        {%- assign reviewed_display = reviewed | date: "%Y-%m-%d" -%}
+        <span class="editorial-badge editorial-badge--reviewed" title="Last reviewed">reviewed {{ reviewed_display }}</span>
+    {%- endif -%}
 </span>
 {% elsif editorial_post.curated %}
 <span class="editorial-badges"><span class="editorial-badge editorial-badge--featured">Curated guide</span></span>

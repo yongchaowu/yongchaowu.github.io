@@ -5,4 +5,6 @@ tag: "Chrome"
 slug: "chrome"
 permalink: /tag/chrome/
 generated: true
+noindex: true
+sitemap: false
 ---

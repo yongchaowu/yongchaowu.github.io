@@ -5,4 +5,6 @@ tag: "fcitx"
 slug: "fcitx"
 permalink: /tag/fcitx/
 generated: true
+noindex: true
+sitemap: false
 ---

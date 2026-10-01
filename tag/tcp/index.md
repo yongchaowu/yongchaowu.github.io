@@ -5,4 +5,6 @@ tag: "TCP"
 slug: "tcp"
 permalink: /tag/tcp/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -7,14 +7,14 @@ categories:
 tags:
 - C
 ---
-
 照着书敲了一遍然后又重新读了一次才发现程序通过while循环识别的 -xn这种输入。
 
-<!--more-->
 ```C
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+<!--more-->
 
 #define MAXLINE 1000
 
@@ -65,5 +65,10 @@ int getline(char *line, int max)
     else
         return strlen(line);
 }
-
 ```
+
+参考：[Microsoft Learn：printf format specification](https://learn.microsoft.com/en-us/cpp/c-runtime-library/format-specification-syntax-printf-and-wprintf-functions?view=msvc-170)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 01:56（UTC+08:00）。

@@ -8,27 +8,23 @@ tags:
 - OS
 - macOS
 ---
-
 ## 安装方式
 
-<!--more-->
 苹果系统有几种安装方式：
+
+<!--more-->
 
 1、macOS Monterey.app直接双击安装；
 
-2、InstallESD.Dmg安装，一般用于U盘制作启动引导盘；
+2、 InstallESD.Dmg安装，一般用于U盘制作启动引导盘；
 
 3、InstallAssistant.pkg双击安装。
 
 这3种都是官方的原版安装
 
-macOS Monterey系统下载地址
-
-
+macOS Monterey系统下载地址：https://swcdn.apple.com/content/downloads/39/60/002-23774-A_KNETE2LDIN/4ll6ahj3st7jhqfzzjt1bjp1nhwl4p4zx7/InstallAssistant.pkg
 
 4.虚拟机镜像
-
-
 
 ## 版本概况
 
@@ -51,8 +47,6 @@ macOS Monterey系统下载地址
 | Mac OS X Leopard      | 10.5.8    | 9L30   | [原版镜像](https://www.apple114.com/threads/18/)  | 不区分                                            | N/A                                                          | [Combo Update](http://support.apple.com/downloads/DL866/zh_CN/MacOSXUpdCombo10.5.8.dmg) | -                                                    | 2009-08-12 | 9L34          |
 | Mac OS X Tiger        | 10.4.11   | 8S165  | [原版镜像](https://www.apple114.com/threads/5/)   | 不区分                                            | N/A                                                          | [Combo Update](https://download.info.apple.com/Mac_OS_X/061-3461.20071114.8Uy45/MacOSXUpdCombo10.4.11PPC.dmg) | -                                                    | 2007-11-14 | 仅支持PPC     |
 
-
-
 ## 参考资料&说明(适用于全新引导安装)
 
 参考 https://www.apple114.com/pages/macos/
@@ -65,8 +59,6 @@ macOS Monterey系统下载地址
 
 总结:跨版本升级请下载原版镜像，如需要全新格式化硬盘安装系统，下载可引导镜像更方便，因为可引导镜像支持在windows或macOS系统下导入到U盘。
 
-
-
 10.5.8-10.8.5 可以直接用原版镜像文件(其实也是可引导镜像)导入到U盘后全新引导安装，导入方法请看:http://www.apple114.com/threads/40/
 
 10.9.5或以上如果下载原版系统，需要用Apple官方指南导入到U盘后全新引导安装，制作方法请看:https://www.apple114.com/threads/41/
@@ -75,22 +67,18 @@ macOS Monterey系统下载地址
 
 macOS系统重装恢复请看这里:http://www.apple114.com/threads/38/
 
-
-
-
-
 ## U盘启动盘制作
 
 ### Windows
 
 #### 软件
 
-macOS镜像
+macos镜像
 
 | **macOS 12 正式版下载**                                      | **Ver** | **Build** | **App** | **有效** | **日期** |
 | ------------------------------------------------------------ | ------- | --------- | ------- | -------- | -------- |
-| InstallAssistant.pkg | 12.1.0  | 21C52     | 17.1.04 | 是       | 12/13/21 |
-| InstallAssistant.pkg | 12.0.1  | 21A559    | 17.0.07 | 是       | 10/25/21 |
+| [InstallAssistant.pkg](http://swcdn.apple.com/content/downloads/06/34/002-42435-A_MA7OBDUK86/6xzypeod1xebasc92qkw2iv44e1j9pv09f/InstallAssistant.pkg) | 12.1.0  | 21C52     | 17.1.04 | 是       | 12/13/21 |
+| [InstallAssistant.pkg](https://swcdn.apple.com/content/downloads/39/60/002-23774-A_KNETE2LDIN/4ll6ahj3st7jhqfzzjt1bjp1nhwl4p4zx7/InstallAssistant.pkg) | 12.0.1  | 21A559    | 17.0.07 | 是       | 10/25/21 |
 
 虚拟机及相关unlocker：
 
@@ -148,7 +136,7 @@ macOS镜像
    \EFI\<小写系统名，如：ubuntu>\grubx64.efi
    ```
 
-   按下Ctrl+S再按下Enter键保存文件，然后按下Ctrl+Q再按下Enter退出编辑
+   按下Ctrl S再按下Enter键保存文件，然后按下Ctrl Q再按下Enter退出编辑
 
    ```
    <ctrl+s 保存>
@@ -171,11 +159,7 @@ macOS镜像
 
 - https://www.jianshu.com/p/dea92fbf00a4
 
-
-
 ---
-
-
 
 ## VMWare虚拟机使用.cdr格式安装（验证成功，macOS Mojave 10.14 18A391）
 
@@ -190,3 +174,7 @@ macOS Mojave 10.14 18A391 Lazy Installer.cdr
 ​		安装darwin `macOS 10.14`即`Mojave`匹配，链接: https://pan.baidu.com/s/104Nr_an8_xzG6JQ_AXFfcQ?pwd=jrww 提取码: jrww 
 
 ​		按照提示设置系统偏好设置，安装后重新启动，设置安全性与隐私->辅助功能->解锁 vmware-tools-daemon
+
+本文修订依据：Apple Support [`Download macOS High Sierra 10.13.6 Combo Update`](https://support.apple.com/en-us/106398)。Apple 页面明确提供 `macOSUpdCombo10.13.6.dmg` 的官方下载链接；本文仅将 High Sierra 10.13.6 行中误指向 10.14.3 的 URL 替换为该 10.13.6 artifact，其他历史版本信息未改写。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 10:50（UTC+08:00）。修订仅纠正 High Sierra 10.13.6 组合更新下载链接。

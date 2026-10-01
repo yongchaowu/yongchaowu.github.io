@@ -5,4 +5,6 @@ tag: "Operations"
 slug: "operations"
 permalink: /tag/operations/
 generated: true
+noindex: true
+sitemap: false
 ---

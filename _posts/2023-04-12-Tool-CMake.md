@@ -8,7 +8,6 @@ tags:
 - Tool
 - CMake
 ---
-
 >[https://cmake.org/](https://cmake.org/)
 >[https://cmake.org/download/](https://cmake.org/download/ "cmake download")
 >[https://cmake.org/documentation/](https://cmake.org/documentation/)
@@ -17,8 +16,9 @@ tags:
 >[https://github.com/Kitware/CMake](https://github.com/Kitware/CMake)
 >
 
-<!--more-->
 ----------
+
+<!--more-->
 
 >[https://gitlab.kitware.com/cmake/community/-/wikis/home](https://gitlab.kitware.com/cmake/community/-/wikis/home)
 >[https://cmake.org/cmake/help/latest/index.html](https://cmake.org/cmake/help/latest/index.html)
@@ -26,7 +26,6 @@ tags:
 ----------
 
 >[https://cmake.org/cmake/help/latest/guide/tutorial/index.html](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
-
 
 ## Intro
 CMake is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. The suite of CMake tools were created by Kitware in response to the need for a powerful, cross-platform build environment for open-source projects such as ITK and VTK.
@@ -44,7 +43,7 @@ For example, if you simply want to build and install CMake from source, you can 
 
 `$ ./bootstrap && make && sudo make install`
 Or, if you plan to develop CMake or otherwise run the test suite, create a separate build tree:
-```bash
+```
 $ mkdir cmake-build && cd cmake-build
 $ ../cmake-source/bootstrap && make
 ```
@@ -62,9 +61,9 @@ and bootstrap as above.
 ## Building CMake with CMake
 You can build CMake as any other project with a CMake-based build system: run the installed CMake on the sources of this CMake with your preferred options and generators. Then build it and install it. For instructions how to do this, see documentation on [Running CMake](https://cmake.org/runningcmake/).
 
-To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_HTML=ON` and/or `-DSPHINX_MAN=ON` to enable the "html" or "man" builder. Add `-DSPHINX_EXECUTABLE=/path/to/sphinx-build` if the tool is not found automatically.
+To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_HTML=ON` and/or` -DSPHINX_MAN=ON` to enable the "html" or "man" builder. Add `-DSPHINX_EXECUTABLE=/path/to/sphinx-build` if the tool is not found automatically.
 
-## Running CMake
+##Running CMake
 >https://cmake.org/runningcmake/
 
 1. Running CMake for Windows / Microsoft Visual C++ (MSVC)
@@ -78,9 +77,9 @@ To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_
 ## CMake Reference Documentation
 [https://cmake.org/cmake/help/latest/index.html](https://cmake.org/cmake/help/latest/index.html)
 
-- User Interaction Guide: build a source code package downloaded from the internet
-- Using Dependencies Guide: using a third-party library.
-- CMake Tutorial: start a project using CMake
+- User Interaction Guide:build a source code package downloaded from the internet
+- Using Dependencies Guide:using a third-party library.
+- CMake Tutorial:start a project using CMake
 [https://cmake.org/cmake/help/latest/guide/tutorial/index.html](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
 
 ### Command-Line Tools
@@ -118,13 +117,12 @@ To build the documentation, install `Sphinx` and configure CMake with `-DSPHINX_
 - Importing and Exporting Guide
 - IDE Integration Guide
 
-
 ## CMake Tutorial
 https://cmake.org/cmake/help/latest/guide/tutorial/index.html
 
 ### Build&Run
 
-```bash
+```
 mkdir build
 cd build
 cmake ..
@@ -150,7 +148,6 @@ project(Tutorial)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )
@@ -160,7 +157,7 @@ add_executable(Tutorial tutorial.cxx)
 
 - TutorialConfig.h.in  TutorialConfig.h
 
-```cpp
+```
 TutorialConfig.h.in
 // the configured options and settings for Tutorial
 #define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@
@@ -253,7 +250,6 @@ target_include_directories(Tutorial PUBLIC
 Exercise 1 - Setting the C++ Standard with Interface Libraries
 Exercise 2 - Adding Compiler Warning Flags with Generator Expressions
 
-
 ```
 CMakeLists.txt
 set(CMAKE_CXX_STANDARD 11)
@@ -294,7 +290,7 @@ target_compile_options(tutorial_compiler_flags INTERFACE
 Exercise 1 - Install Rules
 Exercise 2 - Testing Support
 
-```bash
+```
 cmake --install .
 cmake --install . --config Release
 cmake --build . --target install --config Debug
@@ -310,7 +306,6 @@ install(TARGETS ${installable_libs} DESTINATION lib)
 MathFunctions/CMakeLists.txt
 install(FILES MathFunctions.h DESTINATION include)
 
-
 CMakeLists.txt
 install(TARGETS Tutorial DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
@@ -318,8 +313,7 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
   )
 ```
 
-
-```bash
+```
 ctest -N 
 ctest -VV
 ctest -C <mode>
@@ -330,18 +324,15 @@ enable_testing()
 
 add_test(NAME Runs COMMAND Tutorial 25)
 
-
 add_test(NAME Usage COMMAND Tutorial)
 set_tests_properties(Usage
   PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
   )
 
-
 add_test(NAME StandardUse COMMAND Tutorial 4)
 set_tests_properties(StandardUse
   PROPERTIES PASS_REGULAR_EXPRESSION "4 is 2"
   )
-
 
 function(do_test target arg result)
   add_test(NAME Comp${arg} COMMAND ${target} ${arg})
@@ -382,7 +373,7 @@ include(CTest)
 
 #### Step 7: Adding System Introspection
 Exercise 1 - Assessing Dependency Availability
-```cpp
+```
 MathFunctions/CMakeLists.txt
 include(CheckCXXSourceCompiles)
 
@@ -402,13 +393,11 @@ check_cxx_source_compiles("
   }
 " HAVE_EXP)
 
-
 MathFunctions/CMakeLists.txt
 if(HAVE_LOG AND HAVE_EXP)
   target_compile_definitions(MathFunctions
                              PRIVATE "HAVE_LOG" "HAVE_EXP")
 endif()
-
 
 MathFunctions/mysqrt.cxx
 #include <cmath>
@@ -424,7 +413,7 @@ MathFunctions/mysqrt.cxx
 ```
 
 #### Step 8: Adding a Custom Command and Generated File
-```cpp
+```
 MathFunctions/CMakeLists.txt
 add_executable(MakeTable MakeTable.cxx)
 
@@ -447,8 +436,6 @@ target_include_directories(MathFunctions
 
 # link our compiler flags interface library
 target_link_libraries(MathFunctions tutorial_compiler_flags)
-
-
 
 MathFunctions/mysqrt.cxx
 double mysqrt(double x)
@@ -479,7 +466,7 @@ double mysqrt(double x)
 ```
 
 #### Step 9: Packaging an Installer
-```bash
+```
 CMakeLists.txt
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
@@ -492,7 +479,6 @@ cpack
 cpack -G ZIP -C Debug
 
 cpack --config CPackSourceConfig.cmake
-
 
 make package
 right click the Package target and Build Project from an IDE.
@@ -601,7 +587,7 @@ install(FILES MathFunctions.h DESTINATION include)
 
 ----------
 
-```cpp
+```
 MathFunctions/mysqrt.cxx
 #include <iostream>
 
@@ -643,7 +629,6 @@ double mysqrt(double x)
 
 ```
 
-
 ----------
 ```
 MathFunctions/MathFunctions.h
@@ -683,13 +668,11 @@ install(TARGETS ${installable_libs}
 # install include headers
 install(FILES MathFunctions.h DESTINATION include)
 
-
 CMakeLists.txt
 install(EXPORT MathFunctionsTargets
   FILE MathFunctionsTargets.cmake
   DESTINATION lib/cmake/MathFunctions
 )
-
 
 MathFunctions/CMakeLists.txt
 target_include_directories(MathFunctions
@@ -698,13 +681,11 @@ target_include_directories(MathFunctions
                             $<INSTALL_INTERFACE:include>
                            )
 
-
 Config.cmake.in
 
 @PACKAGE_INIT@
 
 include ( "${CMAKE_CURRENT_LIST_DIR}/MathFunctionsTargets.cmake" )
-
 
 CMakeLists.txt
 install(EXPORT MathFunctionsTargets
@@ -713,10 +694,6 @@ install(EXPORT MathFunctionsTargets
 )
 
 include(CMakePackageConfigHelpers)
-
-
-
-
 
 CMakeLists.txt
 install(EXPORT MathFunctionsTargets
@@ -733,7 +710,6 @@ configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   NO_CHECK_REQUIRED_COMPONENTS_MACRO
   )
 
-
 CMakeLists.txt
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfigVersion.cmake"
@@ -741,14 +717,11 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
-
-
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfigVersion.cmake
   DESTINATION lib/cmake/MathFunctions
   )
-
 
 ```
 
@@ -759,19 +732,17 @@ export(EXPORT MathFunctionsTargets
 ```
 
 #### Step 12: Packaging Debug and Release
-```bash
+```
 CMakeLists.txt
 set(CMAKE_DEBUG_POSTFIX d)
 
-add_library(tutorial_compiler_flags INTERFACE)
-
+add_library(tutorial_compiler_flags INTERFACE
 
 CMakeLists.txt
 add_executable(Tutorial tutorial.cxx)
 set_target_properties(Tutorial PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
 target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
-
 
 MathFunctions/CMakeLists.txt
 set_property(TARGET MathFunctions PROPERTY VERSION "1.0.0")
@@ -798,7 +769,11 @@ include("release/CPackConfig.cmake")
 set(CPACK_INSTALL_CMAKE_PROJECTS
     "debug;Tutorial;ALL;/"
     "release;Tutorial;ALL;/"
-)
+    )
 
 cpack --config MultiCPackConfig.cmake
 ```
+
+本文修订依据：Kitware/CMake 官方 [`v3.15.0` `MultiCPackConfig.cmake`](https://raw.githubusercontent.com/Kitware/CMake/79bcf4e1655ffa38e8f4740b19ec3a14ac567eec/Tests/Tutorial/MultiPackage/MultiCPackConfig.cmake)，tag commit `79bcf4e1655ffa38e8f4740b19ec3a14ac567eec`。本文仅补全被截断的 `release` 项目条目和 `set()` 闭合括号；文章其余 CMake 内容未改写。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 11:15（UTC+08:00）。修订仅修复 CPack 示例的截断条目和缺失闭合括号。

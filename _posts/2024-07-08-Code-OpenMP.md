@@ -8,16 +8,16 @@ tags:
 - Code
 - OpenMP
 ---
-
 - [openmp home](https://www.openmp.org/)
 - [OpenMP 入门指南 - 离心的文章 - 知乎](https://zhuanlan.zhihu.com/p/658770855)
 
-<!--more-->
 ---
 以下转自[OpenMP 入门指南 - 离心的文章 - 知乎](https://zhuanlan.zhihu.com/p/658770855)
 ## OpenMP 入门指南
 
-OpenMP是由OpenMP Architecture Review Board牵头提出的，并已被广泛接受，用于共享内存并行系统的多处理器程序设计的一套指导性编译处理方案(Compiler Directive)。OpenMP支持的编程语言包括C、C++和Fortran；而支持OpenMP的编译器包括Sun Compiler，GNU Compiler和Intel Compiler等。OpenMP提供了对并行算法的高层的抽象描述，程序员通过在源代码中加入专用的pragma来指明自己的意图，由此编译器可以自动将程序进行并行化，并在必要之处加入同步互斥以及通信。当选择忽略这些pragma，或者编译器不支持OpenMP时，程序又可退化为通常的程序(一般为串行)，代码仍然可以正常运作，只是不能利用多线程来加速程序执行。
+<!--more-->
+
+OpenMP是由OpenMP Architecture Review Board牵头提出的，并已被广泛接受，用于共享内存并行系统的多处理器程序设计的一套指导性编译处理方案(Compiler Directive)。OpenMP支持的编程语言包括C、C++和Fortran；而支持OpenMp的编译器包括Sun Compiler，GNU Compiler和Intel Compiler等。OpenMp提供了对并行算法的高层的抽象描述，程序员通过在源代码中加入专用的pragma来指明自己的意图，由此编译器可以自动将程序进行并行化，并在必要之处加入同步互斥以及通信。当选择忽略这些pragma，或者编译器不支持OpenMp时，程序又可退化为通常的程序(一般为串行)，代码仍然可以正常运作，只是不能利用多线程来加速程序执行。
 
 ### Header
 - `omp.h`
@@ -25,19 +25,23 @@ OpenMP是由OpenMP Architecture Review Board牵头提出的，并已被广泛接
 ### Vscode 配置
 - `-fopenmp`
 
-
 ### 常用线程相关的函数调用库
 ```c++
 // #include <omp.h>
-omp_set_num_threads(3); // 设置进程的线程数为 3（在此后的分支区，一共会有三个线程参与进行）
-int thread_num = omp_get_thread_num(); // 获取当前线程的编号（id），此处示例 thread_num = 0~2
-int max_thread_num = omp_get_max_threads(); // 获取最多可以用于并行计算的线程数目
+omp_set_num_threads(3); // 设置后续并行区域使用的线程数上限
+int thread_num = omp_get_thread_num(); // 获取当前线程的编号
+int max_threads = omp_get_max_threads(); // 获取最大可用线程数
+int num_threads = omp_get_num_threads(); // 获取当前线程团队中的线程数
 int thread_id = omp_get_thread_num();  // 获取当前线程的 id
-int curTime = omp_get_wtime(); // 获取当前时间，秒为单位
+double elapsed = omp_get_wtime(); // 获取从参考点开始的墙钟经过时间（秒）
 int is_in_parallel = omp_in_parallel(); // 当前程序是否在并行中，1 表示并行，0表示串行
-omp_set_nested(1); // 设置允许嵌套并行
-int is_nested =  omp_get_nested(); // 获取当前程序是否允许嵌套并行
+omp_set_nested(1); // OpenMP 5.2 起已弃用
+int is_nested = omp_get_nested(); // OpenMP 5.2 起已弃用
 ```
+
+`omp_get_thread_num()` 返回线程编号，不是线程数量；`omp_get_wtime()` 返回 `double` 类型的经过时间，而不是当前日期时间。`omp_get_nested()` 和 `omp_set_nested()` 在 OpenMP 5.2 中已标记为弃用。
+
+参考：[OpenMP 5.2 Runtime Library Routines](https://www.openmp.org/spec-html/5.2/openmp.html)。
 
 ### 常用线程相关的环境变量
 常用的 OpenMP 环境变量有：
@@ -130,7 +134,6 @@ sections 的作用是划定一块代码区域，在代码区域内指定 section
 和 for 一样，sections 也能写成单独列出，嵌套在外层 parallel 中的形式。
 
 注意：没有加 parallel 的 sections 里面的 section 是串行的。
-
 
 ##### single 和 master 指令
 single 和用在并行域内（外部嵌套有 parallel），表示一段只被单个线程执行的代码；
@@ -234,8 +237,7 @@ int main()
 ```
 - 注意1：a 应该设置成一个全局变量否则会被编译器报错
 - 注意2：使用 threadprivate ，必须关闭动态线程机制，同时不同并行区域中的线程数保持不变，以确保结果正确。
-- 注意3：尽管在第二个并行区域中并没有给变量 a 赋值，但是变量 a 的值还是保留了第一个并行区域的设置结果。
-
+- 注意3：尽管在第二个并行区域并行区域中并没有给变量 a 赋值，但是变量 a 的值还是保留了第一个并行区域的设置结果。
 
 #### 编译指导语句的子句
 
@@ -274,7 +276,7 @@ int main( ) {
 private：该子句声明列表中的所有变量都是进程私有的（变量列表列举在尾随圆括号中），如下：
 ```c++
 int x;   // 先对 x 进行定义
-#pragma omp parallel private(x)
+#progma omp parallel private(x)
 ```
 声明成线程私有变量以后，每个线程都有一个该变量的副本，这些副本可以有不相同的值，并且线程之间对这些值的操作不会互相影响。
 
@@ -442,9 +444,8 @@ schedule 子句用来描述如何将循环任务划分给一组线程，包含�
 - guided：guided 划分策略采用指导性的启发式自调度方法，开始时每个线程会分配到较大的迭代块，之后分配到的迭代块会逐渐递减。迭代块的大小会按指数级下降到指定的块大小，这个指定的最小块 chunk_size 可以由程序员自行指定。
 - runtime：runtime 表示根据环境变量值 OMP_SCHEDULE （默认为 static）确定上述调度策略中的某一种。
 
-
 ##### ordered 子句
-ordered 子句的作用是指定 for 循环必须按照正常的顺序执行，比如下面这个 for 循环中：
+order 子句的作用是指定 for 循环必须按照正常的顺序执行，比如下面这个 for 循环中：
 ```c++
 #pragma omp parallel for ordered
 {
@@ -454,3 +455,7 @@ ordered 子句的作用是指定 for 循环必须按照正常的顺序执行，�
 }
 ```
 输出为：0 1 2 3 4 5 6 7 8 9，这些数字总会是有序的。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:00（UTC+08:00）。

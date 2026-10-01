@@ -5,4 +5,6 @@ tag: "Product Manager(PM)"
 slug: "product-manager"
 permalink: /tag/product-manager/
 generated: true
+noindex: true
+sitemap: false
 ---

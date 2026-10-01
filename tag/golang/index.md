@@ -5,4 +5,6 @@ tag: "Golang"
 slug: "golang"
 permalink: /tag/golang/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -5,4 +5,6 @@ tag: "Script"
 slug: "script"
 permalink: /tag/script/
 generated: true
+noindex: true
+sitemap: false
 ---

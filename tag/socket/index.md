@@ -5,4 +5,6 @@ tag: "Socket"
 slug: "socket"
 permalink: /tag/socket/
 generated: true
+noindex: true
+sitemap: false
 ---

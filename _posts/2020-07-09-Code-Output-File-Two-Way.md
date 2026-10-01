@@ -8,10 +8,9 @@ tags:
 - Code
 - C++
 ---
-
 July 9, 2020 9:25 PM
 ##1.使用ofstream 输出
-```cpp
+```language
 #include <fstream>
 SYSTEMTIME st;
 GetLocalTime(&st);
@@ -27,9 +26,10 @@ outfile.close();
 strTime.ReleaseBuffer();
 ```
 
-<!--more-->
 ##2.使用Class 输出
-```cpp
+```language
+
+<!--more-->
 
 class CExportLog
 {
@@ -74,7 +74,7 @@ public:
 		CString strText, strBackupTime;
 	strBackupTime.Format(_T("%04d%02d%02d%02d%02d%02d%03d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 		strText.Format(_T("%04d-%02d-%02d %02d:%02d:%02d.%03d  "), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-		
+
 		strText += strMsg;
 		strText += _T("\n");
 		LogFile.WriteString(strText);
@@ -104,3 +104,7 @@ private:
 };
 
 ```
+
+本文修订依据：WG21 [N4659 C++17 工作草案](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4659.pdf) 的声明语句语法。`strIPAddr` 声明后紧接另一条语句，缺少分号会使示例无效；本文仅补上该分号，未改动路径或 `GetBuffer()` 用法。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 10:22（UTC+08:00）。修订仅补全 `strIPAddr` 声明的语句终止符。

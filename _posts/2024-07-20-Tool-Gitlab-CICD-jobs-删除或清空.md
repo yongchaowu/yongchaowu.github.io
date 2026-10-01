@@ -9,28 +9,28 @@ tags:
 - GitLab
 - Tool
 ---
-
-清空GitLab项目中所有的CI/CD Jobs列表或者说是清除Pipeline的历史记录，可以通过GitLab的Web界面或者API来实现。
+批量删除 GitLab 项目中的 CI/CD Pipeline 记录可以通过 Web 界面或 API 实现。下面的 API 示例只处理当前返回页，并不保证覆盖全部 Pipeline。
 注意：会删除Pipeline的记录和相关联的Job日志、Artifacts等信息，操作前请确保已经做好相应数据的备份。
 
-<!--more-->
 ## 通过Web界面清空
+
+<!--more-->
 
 1. 登录到GitLab。
 2. 导航到项目。
 3. 点击左侧菜单栏的“CI/CD” > “Pipelines”。
 4. 在Pipelines页面，可以看到所有历史Pipeline的列表。GitLab目前没有直接提供一键清空所有Pipelines的选项，但可以手动逐个删除Pipeline。每个Pipeline右侧会有个垃圾桶图标，点击它即可删除相应的Pipeline及其包含的所有Jobs。如果Pipeline数量非常多，这个方法可能会比较耗时。
 
-## 通过API清空
+## 通过API批量删除当前页Pipeline
 
-GitLab提供了API来管理Pipeline，包括删除Pipeline。以下是一个使用`cURL`命令通过API删除所有Pipeline的例子：
+GitLab提供了API来管理Pipeline，包括删除Pipeline。以下是一个使用`cURL`命令通过API删除当前返回页中Pipeline的例子：
 
 ```bash
 GITLAB_TOKEN="your_access_token"
 PROJECT_ID="your_project_id"
 
-# 获取所有Pipeline的ID
-pipelines=$(curl --silent --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/pipelines" | jq -r '.[].id')
+# 获取当前返回页中的Pipeline ID（默认分页）
+pipelines=$(curl --silent --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/pipelines?per_page=100&page=1" | jq -r '.[].id')
 
 # 遍历并删除每个Pipeline
 for pipeline_id in $pipelines; do
@@ -45,3 +45,11 @@ done
 - 如果GitLab实例使用的是自定义域名，请将`gitlab.example.com`替换为实际的域名。
 
 使用API批量删除是更高效的方式，但同时也需要更加小心，以免误删重要数据。
+
+GitLab 项目 Pipeline 列表是分页接口；本例固定请求第 1 页。删除父 Pipeline 不会自动删除 child pipelines，若要清空全部记录，需要遍历分页并单独处理 child pipelines。
+
+参考：[GitLab Pipelines API：List project pipelines](https://docs.gitlab.com/api/pipelines/#list-project-pipelines) 和 [Delete a pipeline](https://docs.gitlab.com/api/pipelines/#delete-a-pipeline)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:22（UTC+08:00）。

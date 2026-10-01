@@ -9,23 +9,21 @@ tags:
 - OS
 - Ubuntu
 ---
-
 - 开源 Ubuntu一直是免费下载，使用和分享
 - 安全 Ubuntu是最为安全的操作系统之一，其内建了防火墙和病毒保护软件。并且，长期支持的版本将提供5年的安全补丁和更新。
 - 可访问 计算用于所有人，不论国籍，性别或障碍。Ubuntu被完整地翻译成50多种语言，且包含了必要的辅助技术。
 
-<!--more-->
 ## cn.ubuntu.com
+
+<!--more-->
 
 https://cn.ubuntu.com/
 https://cn.ubuntu.com/desktop
 https://cn.ubuntu.com/download
 
-
 ## ubuntu.com
 
 [Ubuntu+Server+CLI+pro+tips+06.01.20.pdf](https://assets.ubuntu.com/v1/bb21c0e8-Ubuntu+Server+CLI+pro+tips+06.01.20.pdf?_ga=2.73769234.1060759144.1680618607-730245605.1680618607 "Ubuntu Server CLI pro tips")
-
 
 ### Download Address 
 [https://ubuntu.com/download/desktop](https://ubuntu.com/download/desktop "Download Ubuntu Desktop")
@@ -44,7 +42,7 @@ With Multipass you can download, configure, and control Ubuntu Server virtual ma
 Get an instant Ubuntu VM with a single command. Multipass can launch and run virtual machines and configure them with cloud-init like a public cloud. Prototype your cloud launches locally for free.
 
 #### How to launch LTS instances
-```bash
+```
 Launch an instance (by default you get the current Ubuntu LTS)
 $ multipass launch --name foo
 
@@ -91,7 +89,7 @@ You can download Ubuntu directly from the Microsoft Store.
 总使用量	1.84GB
 
 更新缓存和升级
-```bash
+```
 sudo apt-get update
 sudo apt-get upgrade
 ```
@@ -163,8 +161,11 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted 
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
 
 ```
+
+以下源列表示例仅适用于 **Ubuntu 22.04 LTS（Jammy Jellyfish，代号 `jammy`）**；Ubuntu 20.04 LTS 使用 `focal`，不要混用不同发行版的代号。
+
 4.更新缓存和升级
-```bash
+```
 sudo apt-get update
 sudo apt-get upgrade
 ```
@@ -187,7 +188,7 @@ sudo apt-get upgrade
 默认配置3389改为3390，避免和windows的端口冲突。
 
 4.配置xsession
-`echo "xfce4-session" | sudo tee ~/.xsession > /dev/null`
+`sudo echo xfce4-session > ~/.xsession`
 告诉系统，开启桌面环境的时候用xfce4-session。
 
 5.配置sesman.ini
@@ -198,7 +199,7 @@ sudo apt-get upgrade
 `sudo service xrdp restart`
 
 7.远程连接
-打开远程桌面连接[Win+R--->mstsc]，在计算机（Computer）栏输入localhost:3390，用户名使用当前配置的用户名密码。
+打开远程桌面连接[Win+R--->mstsc]，在计算机（Computer）栏输localhost:3390，用户名使用当前配置的用户名密码。
 
 8.设置为中文
 `sudo dpkg-reconfigure locales`，选择zh_CN UTF-8, 然后按空格勾选，再tab切换到ok上回车，接下来的界面选zh再回车。
@@ -219,3 +220,9 @@ win+R -> `\\wsl$` --->鼠标右键Ubuntu文件夹-->映射网络驱动器
 
 ### Run system containers with LXD
 When running Linux on Linux, consider LXD system containers instead of VMs for optimizing resources. LXD runs a full OS inside containers, providing all the benefits of a VM without the usual overhead.
+
+参考：[Ubuntu 22.04 LTS 发布页](https://releases.ubuntu.com/22.04/) 和 [Jammy `Release` 文件](https://archive.ubuntu.com/ubuntu/dists/jammy/Release)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:41（UTC+08:00）。

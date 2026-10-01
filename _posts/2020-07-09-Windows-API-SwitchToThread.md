@@ -8,16 +8,22 @@ tags:
 - Windows API
 - C++
 ---
-
 May 6, 2020 8:58 AM
 
-<!--more-->
 ## SwitchToThread
 [Windows编程－－线程的切换](https://www.cnblogs.com/fangshenghui/archive/2011/01/05/1926335.html)
 
-系统提供了一个称为SwitchToThread的函数，使得另一个可调度线程（如果存在能够运行）：BOOL SwitchToThread();
-当调用这个函数的时候，系统要查看是否存在一个迫切需要CPU时间的线程。如果没有线程迫切需要CPU时间，SwitchToThread就会立即返回。如果存在一个迫切需要CPU时间的线程，SwitchToThread就对该线程进行调度（该线程的优先级可能低于调用SwitchToThread的线程）。这个迫切需要CPU时间的线程可以运行一个时间段，然后系统调度程序照常运行。
-该函数允许一个需要资源的线程强制另一个优先级较低、而目前却拥有该资源的线程放弃该资源（抢占资源）。如果调用SwitchToThread函数时没有其他线程能够运行，那么该函数返回FALSE，否则返回一个非0值。
-- SwitchToThread和Sleep的异同
-  调用SwitchToThread函数与调用Sleep是相似的，并且传递给它一个0ms的超时。差别：是SwitchToThread允许优先级较低的线程运行。即使低优先级线程迫切需要CPU时间，Sleep也能够立即对调用线程重新进行调度。
-（FangSH注：网上有人这样说：区别在于，SwitchToThread允许执行低优先级线程，Sleep会立即重新调度主调线程，即使低优先级线程会处于饥饿状态。）
+<!--more-->
+
+系统提供了一个称为 `SwitchToThread` 的函数，使调用线程自愿让出当前处理器的一个时间片：`BOOL SwitchToThread();`。如果没有其他可运行线程，该函数立即返回 `FALSE`；如果发生了线程切换，则返回非零值。
+
+该函数不会切换到其他处理器，也不会强制其他线程释放资源或执行抢占；让出时间片也不等于保证低优先级线程获得执行机会。
+
+- SwitchToThread 和 Sleep 的异同
+  `SwitchToThread` 与 `Sleep(0)` 都会暂时让出当前线程的执行机会，但 `SwitchToThread` 的让出最多持续一个线程时间片，且只针对当前处理器上准备运行的线程；二者都不是资源抢占机制。
+
+参考：[Microsoft Learn：SwitchToThread function](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-switchtothread) 和 [Sleep function](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 01:56（UTC+08:00）。

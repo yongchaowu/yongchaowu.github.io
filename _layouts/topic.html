@@ -56,7 +56,14 @@ layout: default
                     <a class="topic-feature-card{% unless featured_is_primary %} topic-feature-card--related{% endunless %}" href="{{ featured_post.url | relative_url }}">
                         <span class="topic-feature-meta">{{ featured_post.categories.first }} · {{ featured_post.date | date: "%Y" }}{% unless featured_is_primary %} · Related note{% endunless %}</span>
                         <h3>{{ featured_post.display_title | default: featured_post.title }}</h3>
-                        <p>{{ featured_post.summary | default: featured_post.excerpt | strip_html | normalize_whitespace | truncate: 150 }}</p>
+                        {%- assign f_key = featured_post.path | split: '_posts/' | last | prepend: '_posts/' -%}
+                        {%- assign f_text = featured_post.summary | default: featured_post.excerpt | strip_html | normalize_whitespace | strip -%}
+                        {%- unless f_text.size > 0 -%}
+                            {%- assign f_text = site.data.post_meta.posts[f_key].card_summary | strip -%}
+                        {%- endunless -%}
+                        {%- if f_text.size > 0 -%}
+                        <p>{{ f_text | truncate: 150 }}</p>
+                        {%- endif -%}
                         <span class="text-link">Read note →</span>
                     </a>
                     {% endif %}
@@ -105,11 +112,8 @@ layout: default
 
         {% assign related_posts = '' | split: '' %}
         {% for post in site.posts %}
-            {% assign post_editorial = nil %}
-            {% assign post_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-            {% for item in site.data.post_editorial.posts %}
-                {% if item.post == post_editorial_path %}{% assign post_editorial = item %}{% endif %}
-            {% endfor %}
+                        {% assign post_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
+            {%- assign post_editorial = site.data.post_editorial.posts[post_editorial_path] -%}
             {% if post_editorial.secondary_topics contains page.topic_id %}
                 {% assign related_posts = related_posts | push: post %}
             {% endif %}
@@ -208,4 +212,4 @@ layout: default
         </div>
     </aside>
 </main>
-<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/pageContent.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>

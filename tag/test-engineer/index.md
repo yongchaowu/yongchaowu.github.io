@@ -5,4 +5,6 @@ tag: "Test Engineer&QC"
 slug: "test-engineer"
 permalink: /tag/test-engineer/
 generated: true
+noindex: true
+sitemap: false
 ---

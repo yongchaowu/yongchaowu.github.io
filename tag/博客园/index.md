@@ -5,4 +5,6 @@ tag: "博客园"
 slug: "博客园"
 permalink: /tag/博客园/
 generated: true
+noindex: true
+sitemap: false
 ---

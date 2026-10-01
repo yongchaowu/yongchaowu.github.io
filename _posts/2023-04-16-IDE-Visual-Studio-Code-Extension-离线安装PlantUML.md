@@ -8,17 +8,17 @@ tags:
 - Visual Studio Code
 - IDE
 ---
+>[https://www.hd2y.net/archives/plantuml-installation-and-use](https://www.hd2y.net/archives/plantuml-installation-and-use)
 
->[https://www.hd2y.net/archives/plantuml-installation-and-use](http://web.archive.org/web/20260416181302/https://www.hd2y.net/archives/plantuml-installation-and-use)
+PlantUML + Graphviz + Java
 
 <!--more-->
-PlantUML + Graphviz + Java
 
 ## PlantUML Extension
 1. [vscode marketplace](https://marketplace.visualstudio.com/vscode "Visual Studio Code Marketplace" ) *注意路径，我第一次下载的vs的插件。*
 https://marketplace.visualstudio.com/vscode
 
-2. http://web.archive.org/web/20260619130217/https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml
+2. https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml
 3. 安装插件
 - 搜索vscode的位置：`whereis code`
 
@@ -33,7 +33,7 @@ code: /usr/bin/code /usr/share/code
 `cp jebbs.plantuml-2.17.5.vsix /usr/share/code/bin`
 `cd /usr/share/code/bin`
 `code --install-extension jebbs.plantuml-2.17.5.vsix`
-或者vscode的插件管理右上角...有从VSIX安装
+或者vscode的插件管理右上角...有从visx安装
 
 ```
 yongchao@yongchao-virtual-machine:/usr/share/code/bin$ code --install-extension jebbs.plantuml-2.17.5.vsix 
@@ -81,11 +81,11 @@ Graphviz : PlantUML requires it to calculate positions in diagram.
 ## Graphviz Extension
 ### Graphviz (dot) language 
 support for Visual Studio Code
-[http://web.archive.org/web/20230927192452/https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz](http://web.archive.org/web/20230927192452/https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz)
+[https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz](https://marketplace.visualstudio.com/items?itemName=joaompinto.vscode-graphviz)
 joaompinto.vscode-graphviz-0.0.6.vsix
 
 ### Graphviz Interactive Preview
-[https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview](http://web.archive.org/web/20260417053736/https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview)
+[https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview](https://marketplace.visualstudio.com/items?itemName=tintinweb.graphviz-interactive-preview)
 tintinweb.graphviz-interactive-preview-0.3.5.vsix
 
 Language Features 
@@ -96,7 +96,7 @@ Language Features
 - Color selection via Color decoration
 - Hover information for settings
 - Shows syntax errors (only available when the preview of the document is active)
- 
+
 #### How to preview
 Open a Graphviz/Dot file in the active editor and use either of the following methods to render the preview:
 
@@ -108,7 +108,7 @@ Open a Graphviz/Dot file in the active editor and use either of the following me
 
 ## java
 jdk/jre:[https://www.oracle.com/java/technologies/downloads/#java8](https://www.oracle.com/java/technologies/downloads/#java8)
-```bash
+```
 sudo mkdir /usr/local/java
 sudo cp jdk-8u361-linux-x64.tar.gz /usr/local/java
 cd /usr/local/java
@@ -131,7 +131,10 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.361-b09, mixed mode)
 
 ```
 
-## Others
+本文修订依据：GNU Bash Reference Manual 5.3（2025-05-18 更新）的 [`Bash Startup Files`](https://www.gnu.org/software/bash/manual/bash.html#Bash-Startup-Files)。交互式非登录 Bash 读取 `~/.bashrc`；本文仅将紧邻环境变量设置后的 `~/.bahsrc` 文件名拼写错误改为 `~/.bashrc`。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 10:22（UTC+08:00）。修订仅纠正 Bash 启动文件名 `~/.bahsrc` 为 `~/.bashrc`。
+
 ### Q1
 ```
 Dot Executable: /usr/bin/dot
@@ -162,7 +165,7 @@ Error: only sequence diagrams will be generated
 
 - [https://graphviz.gitlab.io/download/source/](https://graphviz.gitlab.io/download/source/)
 
-```bash
+```
 ./configure
 make
 sudo make install

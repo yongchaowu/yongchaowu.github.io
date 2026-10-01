@@ -8,13 +8,33 @@ layout: null
     <description>{{ site.description_footer | xml_escape }}</description>
     <link>{{ site.url }}{{ site.baseurl }}/</link>
     <atom:link href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" rel="self" type="application/rss+xml"/>
+    <language>{{ site.lang | default: 'en' }}</language>
+    <managingEditor>{{ site.email }}</managingEditor>
+    <webMaster>{{ site.email }}</webMaster>
+    <ttl>1440</ttl>
+    <copyright>Copyright {{ site.posts.last.date | date: "%Y" }} {{ site.title }}</copyright>
     <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
     <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
     <generator>Jekyll v{{ jekyll.version }}</generator>
-    {% for post in site.posts limit:10 %}
+    {% for post in site.posts limit:20 %}
       <item>
         <title>{{ post.display_title | default: post.title | xml_escape }}</title>
-        <description>{{ post.excerpt | remove: '<p>' | remove: '</p>' | xml_escape }}</description>
+        {%- comment -%}
+          Prefer the hand-written front-matter `summary` over `excerpt`.
+
+          `excerpt` is whatever precedes `excerpt_separator`, and on several posts
+          that marker sits on the very first body line, so the excerpt is empty and
+          7 of the 10 feed items shipped a blank <description>. Every editorial post
+          carries a real `summary`, which is also what the homepage and archive cards
+          already render. `post.excerpt` stays the fallback for the historical posts
+          that have no `summary` key.
+        {%- endcomment -%}
+        {%- assign feed_card_path = post.path | split: '_posts/' | last | prepend: '_posts/' -%}
+        {%- assign feed_summary = post.summary | default: post.excerpt | strip_html | normalize_whitespace | strip -%}
+        {%- unless feed_summary.size > 0 -%}
+            {%- assign feed_summary = site.data.post_meta.posts[feed_card_path].card_summary -%}
+        {%- endunless -%}
+        <description>{{ feed_summary | truncate: 500 | xml_escape }}</description>
         <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
         <link>{{ post.url | prepend: site.baseurl | prepend: site.url }}</link>
         <guid isPermaLink="true">{{ post.url | prepend: site.baseurl | prepend: site.url }}</guid>

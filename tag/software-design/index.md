@@ -5,4 +5,6 @@ tag: "Software Design"
 slug: "software-design"
 permalink: /tag/software-design/
 generated: true
+noindex: true
+sitemap: false
 ---

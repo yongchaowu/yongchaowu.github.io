@@ -5,4 +5,6 @@ tag: "Composition"
 slug: "composition"
 permalink: /tag/composition/
 generated: true
+noindex: true
+sitemap: false
 ---

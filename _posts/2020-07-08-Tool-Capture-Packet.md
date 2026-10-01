@@ -10,13 +10,13 @@ tags:
 - Open Source
 - Tool
 ---
-
 July 8, 2020 10:23 PM
 
-<!--more-->
 ## Fiddler--The Web Debugging Proxy Tool Loved by Users
 [DownLoad](https://www.telerik.com/fiddler)
 Address: 127.0.0.1 Port: 8888
+
+<!--more-->
 
 Log all HTTP(S) traffic between your computer and the Internet. Inspect traffic, set breakpoints and fiddle with request/response
 
@@ -31,7 +31,7 @@ Microsoft Message Analyzer is a tool for capturing, displaying, and analyzing pr
 [DownLoad](https://netspeedmonitor64.en.softonic.com/)
 NetSpeedMonitor is a free utility tool using which you can observe the speed of your internet connection. With its help, you can track network issues, analyze the amount of transferred data, and view monthly traffic statistics. 
 
-## Tcpdump
+## tcpdump
 [HomePage](http://www.tcpdump.org/index.html)
 - a powerful command-line packet analyzer; and libpcap, a portable C/C++ library for network traffic capture
 
@@ -65,3 +65,7 @@ Npcap is the Nmap Project's packet sniffing (and sending) library for Windows. I
 - WinPcap compatibility: For applications that don't yet make use of Npcap's advanced features, Npcap can be installed in “WinPcap Compatible Mode.” This will replace any existing WinPcap installation. If compatibility mode is not selected, Npcap can coexist alongside WinPcap; applications which only know about WinPcap will continue using that, while other applications can choose to use the newer and faster Npcap driver instead.
 
 ## Wireshark
+
+本文修订依据：tcpdump 官方仓库 [`4.99.5` README](https://raw.githubusercontent.com/the-tcpdump-group/tcpdump/tcpdump-4.99.5/README.md)，tag `tcpdump-4.99.5`（tag object `b979ecb9e78bb39aeddabf1af4a45a7eff478658`，指向 commit `4a789712f187e3ac7b2c0044c3a3f8c71b83646e`，发布于 2024-08-30）。README 正文一致使用小写程序名 `tcpdump`；本文仅纠正标题大小写，未改动命令、链接或说明。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 15:43（UTC+08:00）。修订仅纠正 tcpdump 程序名的大小写。

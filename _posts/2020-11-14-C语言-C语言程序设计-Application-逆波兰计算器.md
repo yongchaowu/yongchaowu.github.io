@@ -7,14 +7,14 @@ categories:
 tags:
 - C
 ---
-
 最近软考的时候才知道的逆波兰表达式，这个竟然是C的内容之一，把书上的抄下来了。
 **主要就是对操作数的入栈出栈，以及与操作符匹配的一种应用方式。**
 
-<!--more-->
 ```C
 #include <stdio.h>
 #include <stdlib.h>   /* 为了使用atof函数*/
+
+<!--more-->
 
 #define MAXOP  100   /* 操作数或运算符的最大长度*/
 #define NUMBER '0'   /* 标识找到一个数*/
@@ -100,7 +100,6 @@ double pop(void){
     }
 }
 
-
 #include <ctype.h>
 int getch(void);
 void ungetch(int);
@@ -127,7 +126,6 @@ int getop(char s[]){
     return NUMBER;
 }
 
-
 #define BUFSIZE 100
 
 char buf[BUFSIZE]; /* 用于ungetch函数的缓冲区*/
@@ -145,3 +143,7 @@ void ungetch(int c){ /* 把字符压回到输入中*/
 }
 
 ```
+
+本文修订依据：CommonMark `0.31.2`（2024-01-28）§4.2 的 ATX heading 语法。规范要求起始 `#` 后使用空格或 tab；本文仅在文章标题的 `#` 后补入必需空格，使其解析为一级标题，C 代码块未改动。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 16:00（UTC+08:00）。修订仅补齐文章一级标题的 CommonMark 必需空格。

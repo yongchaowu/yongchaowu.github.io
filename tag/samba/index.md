@@ -5,4 +5,6 @@ tag: "SAMBA"
 slug: "samba"
 permalink: /tag/samba/
 generated: true
+noindex: true
+sitemap: false
 ---

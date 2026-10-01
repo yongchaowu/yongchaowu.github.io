@@ -12,11 +12,11 @@ tags:
 - DeepAgents
 - LLM
 ---
+引用[DeepAgents接入DeepSeek 配置指南](https://chat.deepseek.com/share/52ikg61qsi9au9e3wf)
 
-引用 DeepAgents 接入 DeepSeek 配置指南
+---
 
 <!--more-->
----
 
 ## 环境准备
 本次基于Windows进行验证
@@ -34,7 +34,7 @@ Use irm to download the script and execute it with iex:`powershell -ExecutionPol
 4. 创建虚拟环境
 `uv venv`
 5. 安装包
-`uv pip install deepagents dotenv langchain_deepseek`
+`uv pip install deepagents langchain-deepseek python-dotenv`
 
 ## 工程代码
 
@@ -95,3 +95,9 @@ DEEPSEEK_API_KEY="DeepSeek_API_Key"
 llm.py
 main.py
 ```
+
+参考：[uv 安装 Python](https://docs.astral.sh/uv/guides/install-python/)、[uv pip interface](https://docs.astral.sh/uv/pip/)、[python-dotenv](https://pypi.org/project/python-dotenv/) 和 [Deep Agents 官方文档](https://docs.langchain.com/oss/python/deepagents/overview)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:02（UTC+08:00）。

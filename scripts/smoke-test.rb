@@ -5,7 +5,9 @@
 
 require 'json'
 require 'cgi'
+require 'date'
 require 'rexml/document'
+require 'yaml'
 
 REPO_DIR = File.expand_path('..', __dir__)
 SITE_DIR = ENV.fetch('SITE_DIR', File.join(REPO_DIR, '_site'))
@@ -276,6 +278,207 @@ html_files.each do |html_path|
 end
 check("Generated internal links resolve (#{missing_internal_links.length} missing)", missing_internal_links.empty?, missing_internal_links.first(5).join(' | '))
 puts
+
+
+# ---------------------------------------------------------------------------
+# Regressions added 2026-10-01 after docs/review-2026-10-01.md.
+#
+# Every check above verifies the repository's internal self-consistency. None of
+# them looked at the relationship between the document and what it claims, which
+# is how an RSS feed shipped 7 of 10 items with empty descriptions, 267 Chinese
+# articles declared lang="en", and every post page declared structured data twice
+# while the whole pipeline stayed green. These close those gaps.
+# ---------------------------------------------------------------------------
+puts
+puts "=== Content and metadata claims (added 2026-10-01) ==="
+
+post_meta_path = File.join(REPO_DIR, '_data', 'post_meta.yml')
+if check('_data/post_meta.yml exists', File.file?(post_meta_path))
+  post_meta = YAML.safe_load(File.read(post_meta_path), permitted_classes: [Date, Time]) || {}
+  sidecar = post_meta['posts'] || {}
+
+  # --- Feed descriptions must not be empty ---------------------------------
+  feed_path = File.join(SITE_DIR, 'feed.xml')
+  if check('feed.xml exists', File.file?(feed_path))
+    feed = File.read(feed_path)
+    items = feed.scan(%r{<item>(.*?)</item>}m).flatten
+    check("Feed carries items (#{items.length})", items.length.positive?)
+    blank = items.select do |item|
+      desc = item[%r{<description>(.*?)</description>}m, 1].to_s.strip
+      desc.length < 5
+    end
+    check('Every feed item has a non-empty description', blank.empty?,
+          "#{blank.length} blank of #{items.length}")
+    %w[<language> <managingEditor>].each do |element|
+      check("Feed declares #{element}", feed.include?(element))
+    end
+    check('Feed has no raw unescaped ampersands in titles',
+          feed.scan(%r{<title>[^<]*&(?!amp;|lt;|gt;|quot;|apos;|#)[^<]*</title>}).empty?)
+  end
+
+  # --- Language metadata must be self-consistent ---------------------------
+  # Catches the original bug directly: 267 Chinese articles inherited
+  # site.lang: en and emitted lang="en" / og:locale="en" / "inLanguage": "en".
+  sample = html_files.select { |f| f.include?('/20') && f.end_with?('index.html') }
+  lang_mismatch = []
+  sample.each do |path|
+    content = File.read(path)
+    html_lang = content[%r{<html[^>]*\blang="([^"]*)"}m, 1]
+    og_locale = content[%r{<meta property="og:locale" content="([^"]*)"}m, 1]
+    in_language = content[/"inLanguage":\s*"([^"]*)"/m, 1]
+    next if html_lang.nil?
+    mismatches = []
+    mismatches << "html=#{html_lang}" if og_locale && og_locale != html_lang.tr('-', '_')
+    mismatches << "jsonld=#{in_language}" if in_language && in_language != html_lang
+    lang_mismatch << "#{path.sub(SITE_DIR, '')}: #{mismatches.join(' ')}" unless mismatches.empty?
+  end
+  check("Document language metadata agrees across html/og/json-ld (#{lang_mismatch.length} bad)",
+        lang_mismatch.empty?, lang_mismatch.first(3).join(' | '))
+
+  # The sidecar must actually cover every post, and a post that declares its own
+  # language must not be contradicted by the sidecar.
+  contradicted = sidecar.select do |path, meta|
+    fm_path = File.join(REPO_DIR, path)
+    next false unless File.file?(fm_path)
+    declared = File.read(fm_path)[/^lang:\s*(\S+)/, 1]
+    declared && declared != meta['lang']
+  end
+  check("Sidecar agrees with declared front-matter lang (#{contradicted.length} bad)",
+        contradicted.empty?, contradicted.keys.first(3).join(', '))
+  check("Sidecar covers all posts (#{sidecar.length})", sidecar.length == source_post_count)
+end
+
+# --- The permalink is a real contract, and it is timezone-derived ---------------
+# `permalink: /:year/:month/:day/:title/` is derived from each post's front-matter
+# date, and Jekyll interprets a naive `date:` value in the *build machine's* zone.
+# 78 of the 357 posts carry a time between 00:00 and 08:00 local, so before
+# `timezone: UTC` was declared in _config.yml a build running in Asia/Shanghai moved
+# those 78 URLs back one day. CI set TZ=UTC, so the live site served the correct
+# ones while local previews silently disagreed -- which made AGENTS.md's "the
+# permalink is part of the public URL contract" untrue across environments.
+#
+# The check is a join on the filename contract rather than on post metadata: the
+# filenames are already `YYYY-MM-DD-slug.md` and AGENTS.md requires the filename
+# date to equal the front-matter date, so the generated directory must be exactly
+# that pair. No timezone interpretation happens in the test itself.
+declared_tz = begin
+  cfg = YAML.safe_load(File.read(File.join(REPO_DIR, '_config.yml')), permitted_classes: [Date, Time])
+  cfg.is_a?(Hash) ? cfg['timezone'] : nil
+rescue StandardError
+  nil
+end
+check("_config.yml declares an explicit timezone (got #{declared_tz.inspect})",
+      declared_tz.to_s != '')
+
+# A direct filename->slug join is not possible: Jekyll does not use the filename
+# verbatim. `开篇·序` publishes as `开篇-序`, `3DES（Triple-DES）` as
+# `3DES-Triple-DES`, so an assertion built on that assumption fails on 34 posts
+# for the wrong reason.
+#
+# Instead compare multisets. The front-matter date is read as raw text, so the test
+# itself performs no timezone conversion; the published date comes from the
+# sitemap. If a build shifts even one article across a day boundary the two
+# multisets stop matching, which is exactly the regression this guards.
+require 'set'
+fm_dates = Hash.new(0)
+Dir.glob(File.join(REPO_DIR, '_posts', '*.md')).sort.each do |file|
+  head = File.read(file)[/\A---\s*\n(.*?)\n---\s*\n/m, 1]
+  next unless head
+  raw = head[/^date:\s*["']?(\d{4})-(\d{2})-(\d{2})/, 1]
+  next unless raw
+  fm_dates["#{Regexp.last_match(1)}/#{Regexp.last_match(2)}/#{Regexp.last_match(3)}"] += 1
+end
+
+url_dates = Hash.new(0)
+sitemap = File.join(SITE_DIR, 'sitemap.xml')
+if File.file?(sitemap)
+  File.read(sitemap).scan(%r{<loc>https?://[^/]+/(\d{4})/(\d{2})/(\d{2})/}).each do |y, mo, d|
+    url_dates["#{y}/#{mo}/#{d}"] += 1
+  end
+end
+check("Sitemap article dates match front-matter dates exactly (#{url_dates.values.sum} URLs)",
+      fm_dates == url_dates,
+      "front matter has #{fm_dates.size} distinct dates, sitemap has #{url_dates.size}; "       "first difference: #{(fm_dates.keys | url_dates.keys).sort.find { |k| fm_dates[k] != url_dates[k] }.inspect}")
+
+# --- Cards must not render an empty description -------------------------------
+# 7 posts ship no front-matter summary and have an empty excerpt, because their
+# <!--more--> marker sits on the first body line. The feed was fixed first and the
+# cards were left blank, which is the same defect in a different place.
+empty_cards = []
+html_files.each do |path|
+  content = File.read(path)
+  content.scan(%r{<p>\s*</p>}).each { empty_cards << path.sub(SITE_DIR, '') }
+  content.scan(%r{<div class="excerpt">\s*</div>}).each { empty_cards << path.sub(SITE_DIR, '') }
+end
+check("No rendered card has an empty description (#{empty_cards.length})",
+      empty_cards.empty?, empty_cards.first(3).join(', '))
+
+if File.file?(post_meta_path)
+  # --- Inferred language must not be an outright inversion --------------------
+  # The first classifier used a flat 20-CJK-character threshold, which called a
+  # 7-character all-Chinese post `en` and a 50/50 post `zh-CN`. A mislabel is
+  # only acceptable when it is visible, so low-confidence records are counted and
+  # inversions are refused outright.
+  inversions = sidecar.select do |_path, meta|
+    cjk = meta['cjk_chars'].to_i
+    words = meta['latin_words'].to_i
+    next false unless meta['lang_source'] == 'inferred'
+    (meta['lang'] == 'en' && cjk > words && cjk >= 20) ||
+      (meta['lang'] == 'zh-CN' && words > cjk * 3 && words >= 60)
+  end
+  check("Inferred language is never an outright inversion (#{inversions.length})",
+        inversions.empty?, inversions.keys.first(3).join(', '))
+
+  low = sidecar.count { |_p, m| m['lang_confidence'] == 'low' }
+  puts "  · #{low} posts carry a low-confidence inferred language (too little prose to call)"
+
+  # A post has no card text only when it has no prose at all. The sidecar is the
+  # authority on that -- it already strips headings, lists, links, HTML and code,
+  # which a second implementation in Ruby would only approximate (the first
+  # attempt here counted 4 prose-free posts against 12 blanks and failed).
+  blank_cards = sidecar.select { |_p, m| m['card_summary'].to_s.strip.empty? }
+  prose_free = sidecar.select { |_p, m| m['cjk_chars'].to_i.zero? && m['latin_words'].to_i.zero? }
+  unexplained = blank_cards.keys - prose_free.keys
+  check("Only genuinely prose-free posts lack card text (#{blank_cards.length} blank, #{prose_free.length} prose-free)",
+        unexplained.empty?, unexplained.first(3).join(', '))
+end
+
+# --- Structured data must be declared exactly once --------------------------
+# _layouts/post.html used to add an itemscope/itemtype with no itemprop inside,
+# duplicating the JSON-LD graph that _includes/seo-jsonld.html already emits.
+microdata = html_files.select { |f| File.read(f).include?('itemtype=') }
+check("No duplicate microdata structured data (#{microdata.length} pages)",
+      microdata.empty?, microdata.first(3).map { |f| f.sub(SITE_DIR, '') }.join(', '))
+
+multi_ld = html_files.select do |f|
+  File.read(f).scan('application/ld+json').length > 1
+end
+check("No page carries more than one JSON-LD block (#{multi_ld.length} pages)",
+      multi_ld.empty?, multi_ld.first(3).map { |f| f.sub(SITE_DIR, '') }.join(', '))
+
+# --- Static assets must be cache-busted -------------------------------------
+# Favicons already carried ?v=; CSS and JavaScript carried nothing, so a
+# returning visitor could pair new HTML with a stale stylesheet.
+unversioned = []
+html_files.each do |path|
+  File.read(path).scan(%r{(?:src|href)="(/(?:css|js)/[^"?]*)(\?[^"]*)?"}i).each do |asset, query|
+    unversioned << "#{path.sub(SITE_DIR, '')} -> #{asset}" if query.nil? || query == '?v='
+  end
+end
+check("Every CSS/JS reference is cache-versioned (#{unversioned.length} unversioned)",
+      unversioned.empty?, unversioned.first(5).join(' | '))
+
+# --- Mixed content ----------------------------------------------------------
+# Browsers block active http:// images on an https:// origin, so they silently
+# disappear rather than failing loudly.
+mixed = []
+html_files.each do |path|
+  File.read(path).scan(%r{<img[^>]*\ssrc="(http://[^"]+)"}i).flatten.each do |src|
+    mixed << "#{path.sub(SITE_DIR, '')} -> #{src}"
+  end
+end
+check("No http:// images (mixed content, silently blocked) (#{mixed.length})",
+      mixed.empty?, mixed.first(5).join(' | '))
 
 puts "=== Done ==="
 exit($failures.zero? ? 0 : 1)

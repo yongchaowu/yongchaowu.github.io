@@ -5,4 +5,6 @@ tag: "CI/CD"
 slug: "ci-cd"
 permalink: /tag/ci-cd/
 generated: true
+noindex: true
+sitemap: false
 ---

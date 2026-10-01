@@ -5,4 +5,6 @@ tag: "NotePad++"
 slug: "notepad-plus-plus"
 permalink: /tag/notepad-plus-plus/
 generated: true
+noindex: true
+sitemap: false
 ---

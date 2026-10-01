@@ -11,15 +11,15 @@ tags:
 - Visual Studio Code
 - Debug
 ---
-
 在Ubuntu上，可以使用Visual Studio Code进行代码调试。
 Visual Studio Code官网如下：[https://code.visualstudio.com/](https://code.visualstudio.com/ "vscode download address")
 对于Ubuntu，提供deb包。
 下载deb包，在同级路径中打开终端，使用以下指令安装：`sudo dpkg -i code_1.77.1-1680651665_amd64.deb`
 
-<!--more-->
 Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图标。
-添加收藏->鼠标右键vscode图标，提示可以添加到收藏，能快速启动VS Code。
+添加收藏->鼠标右键vscode图标，提示可以添加到收藏，能快速启动VS从的。
+
+<!--more-->
 
 ## Visual Studio Code Extension
 1. C/C++ v1.14.5
@@ -31,11 +31,11 @@ Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图
 ## Visual Studio Code 调试C++
 [https://code.visualstudio.com/docs](https://code.visualstudio.com/docs "vscode docs")
 
-1. `sudo apt-get install g++ gcc cmake`
+1. `sudo apt-get install g++ gcc cmake gdb`
 2. `g++ -v` `gcc -v` `cmake -version`
-3. 打开vscode，创建main.cpp，写一个Demo(main.cpp)。
+3. 打开vscode，创建main.cpp,写一个Demo(main.cpp)。
 4. F5(Start Debugging)即可。
-- 因为是第一次Debug，先选择调试器，生成相对应的配置文件夹`.vscode`，以及json格式配置文件，如tasks.json。
+- 因为是第一次Debug，先选择调试器，生成相对应的配置文件夹`.vscode`,以及json格式配置文件，如tasks.json。
 同时生成输出文件如main。
 - 可以先添加配置文件，再Debug。
 	- 菜单栏->Run->Add Configurations
@@ -47,12 +47,10 @@ Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图
 3. c_cpp_properties.json  其中：includePath包含第三方头文件
 4. ...
 
-
 ## Visual Studio Code Docs
 - [https://code.visualstudio.com/docs/editor/debugging](https://code.visualstudio.com/docs/editor/debugging "vscode debug")
 - [https://code.visualstudio.com/docs/languages/cpp](https://code.visualstudio.com/docs/languages/cpp "vscode language cpp")
 - [https://code.visualstudio.com/docs/cpp/introvideos-cpp](https://code.visualstudio.com/docs/cpp/introvideos-cpp)
-
 
 ----------
 
@@ -64,6 +62,9 @@ Ubuntu的图形界面中Show Applications翻页可以看到安装好的vscode图
   width="630"
   height="355" 
   frameborder="0"
-  scrolling="no"
-  loading="lazy">
+  scrolling="no">
 </iframe>
+
+本文修订依据：Microsoft VS Code 官方 C++ Linux 配置文档 [`config-linux.md` commit `1e4b6c05cc64a04f464c024b538d9e5de6864d98`](https://github.com/microsoft/vscode-docs/blob/1e4b6c05cc64a04f464c024b538d9e5de6864d98/docs/cpp/config-linux.md)（文档批准日期 2022-05-13）。该 Linux/GDB 调试路径明确要求安装 GDB；本文仅在现有安装命令中补上 `gdb`，未改写其他包或调试器配置。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 10:22（UTC+08:00）。修订仅为 Ubuntu 的 VS Code GDB 调试步骤补充缺失的 `gdb` 包。

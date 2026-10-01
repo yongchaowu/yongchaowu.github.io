@@ -89,25 +89,46 @@ def collect_tags():
     return tag_posts
 
 
-def render_tag_page(tag, slug):
+# A tag page is noindexed,follow and kept out of the sitemap when it lists fewer
+# than this many posts. 189 of the 277 tag names are used by exactly one post, so
+# the default of 2 leaves 88 indexable tag pages instead of 276 -- without
+# removing any page from the site or from internal linking. Long-tail tags with
+# two or more posts stay indexable, including ones that may be the only page
+# written about a subject.
+#
+# This lives in the generator rather than in a layout so that the decision is
+# committed, reviewable, and reproduced by `generate_tag_pages.py --check`. Set it
+# to 0 to disable the policy.
+TAG_NOINDEX_BELOW = 2
+
+
+def render_tag_page(tag, slug, post_count):
     """Return the complete generated page content."""
+    thin = 0 < TAG_NOINDEX_BELOW and post_count < TAG_NOINDEX_BELOW
+    extra = ""
+    if thin:
+        # `noindex` is honoured by _includes/head.html; `sitemap: false` is
+        # honoured by jekyll-sitemap. Both are needed: a noindexed URL that is
+        # still advertised in the sitemap spends crawl budget to be told to drop
+        # it.
+        extra = "\nnoindex: true\nsitemap: false"
     return f'''---
 layout: tag
 title: "{tag}"
 tag: "{tag}"
 slug: "{slug}"
 permalink: /tag/{slug}/
-generated: true
+generated: true{extra}
 ---
 '''
 
 
-def generate_tag_page(tag, slug, output_dir=OUTPUT_DIR):
+def generate_tag_page(tag, slug, post_count=0, output_dir=OUTPUT_DIR):
     """Generate a single tag page and return its path."""
     os.makedirs(os.path.join(output_dir, slug), exist_ok=True)
     output_path = os.path.join(output_dir, slug, 'index.md')
     with open(output_path, 'w', encoding='utf-8') as handle:
-        handle.write(render_tag_page(tag, slug))
+        handle.write(render_tag_page(tag, slug, post_count))
     return output_path
 
 
@@ -119,7 +140,8 @@ def expected_tag_pages(tag_posts, output_dir=OUTPUT_DIR):
     """
     expected = {}
     for (tag, slug) in sorted(tag_posts):
-        expected[os.path.join(output_dir, slug, 'index.md')] = render_tag_page(tag, slug)
+        expected[os.path.join(output_dir, slug, 'index.md')] = render_tag_page(
+            tag, slug, len(tag_posts[(tag, slug)]))
     return expected
 
 
@@ -193,9 +215,23 @@ def main():
     if args.check:
         return 0 if check_generated_pages(tag_posts) else 1
 
+    # Counted per generated page, not per tag: 277 tag names collapse to 274
+    # pages because a few share a slug, and each page takes the decision of the
+    # tag it actually renders. Reporting 189 against 188 written pages is the
+    # kind of small discrepancy that costs an hour later.
+    thin = 0
+    written = {}
     for (tag, slug), posts in sorted(tag_posts.items()):
-        path = generate_tag_page(tag, slug)
+        generate_tag_page(tag, slug, len(posts))
+        written[slug] = len(posts)
+    for count in written.values():
+        if 0 < TAG_NOINDEX_BELOW and count < TAG_NOINDEX_BELOW:
+            thin += 1
+    for (tag, slug), posts in sorted(tag_posts.items()):
         print(f'  {tag} -> /tag/{slug}/ ({len(posts)} posts)')
+    print(f'\n  tag names:       {len(tag_posts)}')
+    print(f'  generated pages:  {len(written)}')
+    print(f'  noindexed pages:  {thin} (fewer than {TAG_NOINDEX_BELOW} posts)')
 
     generate_tag_index(tag_posts)
     print('\nTag index is provided by page/2tags.html; no duplicate index was written.')

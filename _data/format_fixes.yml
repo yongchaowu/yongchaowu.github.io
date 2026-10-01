@@ -2,7 +2,9 @@ version: 1
 policy: Explicit, reviewable formatting and technical-correction exceptions to the pre-curation blob baseline; every exception is bound to an approved resulting blob.
 fixes:
   - post: _posts/2020-07-11-Code-OPC-DA-OPC-Client-Code-Demo.md
-    fixed_blob: 1444cc52494f2338cb3bea38bc0697b2f8148991
+    fixed_blob: d320c616d56e118d91ab2ccfc28c9f1b27657e29
+    # fixed_blob refreshed 2026-10-01 -- the upstream sync rewrote this file's body,
+    # so the pre-sync blob no longer describes the approved result.
     date: 2026-09-25
     kind: excerpt-and-raw-wrapper
     reason: Move the excerpt separator outside the raw wrapper without changing the imported code.
@@ -17,7 +19,7 @@ fixes:
     kind: markdown-code-fence
     reason: Wrap inline XML examples and separate list/code fences so historical examples are not emitted as live DOM elements, duplicate IDs, or invalid anchors.
   - post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
-    fixed_blob: 50c6722a0c25f8e3e7c52595fec2715d9d482203
+    fixed_blob: 204cb5f8e9ebd9fe0edca1b46ab7847ac2ed54f8
     date: 2026-09-27
     kind: excerpt-and-raw-wrapper-and-technical-correction-and-anchor
     reason: Move the excerpt separator outside raw, mark the page as a gateway deployment note, use the official calciumion/new-api image, add the shared network, remove the unsupported built-in-worker example, and repoint the one hand-written table-of-contents link whose guessed anchor did not match the heading id kramdown actually generates (the curly quotes around the deprecation note are stripped, so the id ends at "worker" with no following hyphen).
@@ -35,29 +37,74 @@ fixes:
     fixed_blob: ae488614be3dc3ad9e2061b2f4184becfbe96b24
     date: 2026-09-25
     kind: liquid-template-examples-and-technical-correction
-    reason: Wrap Prometheus template examples in raw Liquid, correct the token arithmetic, qualify unverified performance tables, and replace invalid GPU-allocation HPA metrics with a custom-metric example.
+    reason: Wrap Prometheus template examples in raw Liquid, correct the token arithmetic, qualify unverified perforf1da17f3445a3c06a94a03b67cf4527fdb0901b0location HPA metrics with a custom-metric example.
   - post: _posts/2023-02-28-正则表达式-30分钟入门教程.md
-    fixed_blob: 0febe42db50ab0190499c62ff6d8880569cd0f4f
+    fixed_blob: f1da17f3445a3c06a94a03b67cf4527fdb0901b0
+    # fixed_blob refreshed 2026-10-01 -- the upstream sync rewe5ce00dcd49bb1556631f5bc06738e882f071a1esync blob no longer describes the approved result.
     date: 2026-09-25
     kind: markdown-inline-code
     reason: Wrap a regex containing comment syntax in inline code so it is not parsed as a URL fragment.
   - post: _posts/2020-07-02-书签中的一些工具整理.md
-    fixed_blob: c3085f5a4c98df47f48ad9b0e348e25294d7f927
+    fixed_blob: e5ce00dcd49bb1556631f5bc06738e882f071a1e
+    # fixed_blob refreshed 2026-10-01 -- the upstream sync rewrote this file's body,
+    # so the pre-sync blob no longer describes the approved result.
     date: 2026-09-25
     kind: empty-link
-    reason: Remove an empty Markdown link target while preserving the tool name.
+    reason: Remove an empty Markdown link target while preserving the tool name. Remove an empty Markdown link target while preserving the tool name.
+      Re-applied 2026-10-01, after the upstre60b942264e1f8584859f025a650a952584495104,
+      because cnblogs still carries `[Quick Easy FTP Server]()` and `[FileZilla Server]()`
+      with no target anywhere in the text. That is the second time this exact correction was
+      lost to an upstream copy, so it is now derived c556554ac94c2221ed8fad97b273f68ac12b675ctream_text.repair_broken_links rather than re-applied by hand.
   - post: _posts/2023-05-27-Tool-CMake-vscode-cmake-tools.md
-    fixed_blob: 601b755d2e1f393336eeaef2dcbeaadacbba3c30
+    fixed_blob: 60b942264e1f8584859f025a650a952584495104
+    # fixed_blob refreshed 2026-10-01 -- the upstream sync rewrote this file's body,
+    # so the pre-sync blob no longer describes the approved result.
     date: 2026-09-25
     kind: missing-relative-links
     reason: Render absent companion Markdown filenames as inline code instead of broken relative links.
   - post: _posts/2021-12-31-吾爱破解-培训第一课：破解基础知识之介绍常见工具和壳的特征-笔记.md
-    fixed_blob: afeab91b2a6c2b2bcfe3b9797444af77046553e6
+    fixed_blob: c556554ac94c2221ed8fad97b273f68ac12b675c
     date: 2026-09-25
     kind: encoded-external-url
-    reason: Percent-encode the literal space in the historical PEiD download URL so the generated link is valid.
+    reason: Percent-encode the literal space in the historical PEiD download URL so the gener5ff01425096037ca2fb5edab2719eea252ee33c1iteral space in the historical PEiD download URL so the generated link
+      is valid.
+      Re-applied 2026-10-01, after the upstream sync restored the raw space. Note what this
+      does not do -- it does not make the link resolve. That URL answers 404 with or without
+      the encoding (verified 2026-10-01), because the file is gone from the server. A dead
+      external link from 2019 is the archive's business, and deleting the reference would lose
+      information a reader might still find useful.
   - post: _posts/2023-02-26-数据结构(借鉴408)-查找.md
-    fixed_blob: 4a1391935af8a7425dc19c3ba9841fc635ecaf62
+    fixed_blob: 5ff01425096037ca2fb5edab2719eea252ee33c1
+    # fixed_blob refreshed 2026-10-01 -- the upstream sync rewrote this file's body,
+    # so the pre-sync blob no longer describes the approved result.
     date: 2026-09-27
     kind: escaped-reference-link
     reason: Escape the opening bracket of the B-tree height subscript so kramdown stops parsing "[m/2,向上取整][(n+1)/2]+1" as a reference-style link, which had emitted a live anchor whose target was the literal string "[(n+1)/2]+1" and therefore always 404'd. The rendered text is unchanged.
+  - post: _posts/2023-04-06-OS-Linux-Tool-可视化比较与合并工具Meld.md
+    fixed_blob: c9855ba61a90295ea659c27682b41c249edb7af8
+    date: 2026-10-01
+    kind: mixed-content-image
+    # Re-applied by scripts/sync_upstream.py after every upstream sync. Without
+    # this the sync silently undoes the correction: cnblogs still carries http://
+    # URLs, so a wholesale copy reinstates active mixed content and smoke-test.rb
+    # fails on the three images. Keeping the rewrite next to its reason is what
+    # makes a recorded fix survive re-sync instead of being rediscovered each time.
+    rewrite: http://meldmerge.org/images/ -> https://meldmerge.org/images/
+    reapply:
+      - http://meldmerge.org/images/vcview.png
+      - http://meldmerge.org/images/filediff.png
+      - http://meldmerge.org/images/dirdiff.png
+    reason: Upgrade three screenshot URLs from http:// to https://. The site is served over HTTPS, so browsers classify these as active mixed content and block them silently -- the three images were not rendering at all. The https:// equivalents were verified to return 200 with image/png on 2026-10-01. Only the three image URLs changed; the two plain-text http:// links to the same host were left as they are not a rendering defect.
+
+# --- 2026-10-01 upstream sync: text defects carried in from cnblogs ---
+  - post: _posts/2023-02-27-Tool-Git.md
+    fixed_blob: 17ef35f20c105c1843ab7c0172cee1699d26a366
+    date: 2026-10-01
+    kind: empty-link-target
+    auto: upstream_text.repair_broken_links / encode_link_target_whitespace
+    # No `rewrite` rule on purpose. Unlike the meldmerge https upgrade, these repairs are
+    # derived from the text itself, so scripts/upstream_text.py re-derives them on every sync
+    # and compare_upstream.py recognises them as applied. A `rewrite` here would be a second,
+    # hand-maintained copy of logic that already works.
+    reason: >-
+      Upstream carries three links shaped `label[https://host/path]()`. The URL is present in the text but was never given a target, so kramdown rendered `<a href="">https://host/path</a>` and the link went nowhere. Each is promoted to an autolink (`<https://host/path>`), which restores a working link and changes no wording. Introduced by the 2026-10-01 upstream sync carrying the 2026-09-25 proofread; the post had zero occurrences before it. smoke-test.rb rejects empty anchors and site-review.py rejects empty anchor href, so this was a rendering defect rather than a preference.

@@ -5,4 +5,6 @@ tag: "Material"
 slug: "material"
 permalink: /tag/material/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -5,4 +5,6 @@ tag: "Json"
 slug: "json"
 permalink: /tag/json/
 generated: true
+noindex: true
+sitemap: false
 ---

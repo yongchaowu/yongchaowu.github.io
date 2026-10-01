@@ -9,12 +9,12 @@ tags:
 - Code
 - C++
 ---
-
 July 10, 2020 2:23 AM
 [COleDateTime类型的应用](https://www.cnblogs.com/carekee/articles/1948298.html)
 
+```language
+
 <!--more-->
-```cpp
 
 #include <ATLComTime.h>
 
@@ -34,10 +34,10 @@ July 10, 2020 2:23 AM
     CTimeSpan timespan(0,0,1,0); // days,hours,minutes,seconds
     timespan = CTime::GetCurrentTime() - time;
 4) 把时间转换为字符串。
-    CString sDate,sTime,sElapsedTime ;
+    CString sDate,sTime,sElapsed Time ;
     sDate = time.Format("%m/%d/%y"); //ex: 12/10/98
     sTime = time.Format("%H:%M:%S"); //ex: 9:12:02
-    sElapsedTime = timespan.Format("%D:%H:%M:%S"); // %D is total elapsed days
+    sElapsed Time = timespan.Format("%D:%H:%M:%S"); // %D is total elapsed days
 
     CString strTemp;
     COleDateTime aCOleDateTime((time_t)time);
@@ -67,8 +67,11 @@ July 10, 2020 2:23 AM
          long expi_date = timeSpan.GetDays();
 
 说明
-■ CTime和COleDateTime具有几乎同样的功能。然而，COleDateTime允许用户获得一年中的某一天(创建Julian日期的一种好方法)，以及分析一个时间文本串。
-■ 与CTime相比， COleDateTime的优点在于它支持DWORD变量。COleDateTime使用的位数是双浮点的两倍，既然CTime只是简单地计算从1970年1月1日之后经过的秒数，所以到了2037年它将达到4294967295，从而不能再使用。相反,COleDateTime是一个
-浮点数，它表示是从1899年12月30号之后的天数(小时是天的小数部分)，几千年之内不会溢出。
-
+■ CTime和COleDateTime具有几乎同样的功能。然而，COleDateTime允许用户获得一年中的某一天，以及分析一个时间文本串。
+■ `COleDateTime` 封装 OLE Automation 的 `DATE`：`DATE` 是 8 字节浮点值，以 1899-12-30 为零点按天计数，小时可表示为天的小数部分；`COleDateTime` 处理 100-01-01 至 9999-12-31 的日期。
+■ 按 Microsoft `msvc-140` 文档线，`CTime` 对象也是 8 字节，类级日期范围为 1970-01-01 至 3000-12-31，`GetTime()` 返回 `__time64_t`。2038 年限制是旧的 32 位 `time_t` 配置（例如定义 `_USE_32BIT_TIME_T`）的限制，不应直接归因于现代 `CTime` 类。
 ```
+
+本文修订依据：Microsoft Learn `msvc-140` 文档线中的 [`CTime`](https://learn.microsoft.com/en-us/cpp/atl-mfc-shared/reference/ctime-class?view=msvc-140)、[`COleDateTime`](https://learn.microsoft.com/en-us/cpp/atl-mfc-shared/reference/coledatetime-class?view=msvc-140)、[`DATE`](https://learn.microsoft.com/en-us/cpp/atl-mfc-shared/date-type?view=msvc-140) 和 [`time`](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/time-time32-time64?view=msvc-140)。该文档线将 `CTime` 描述为 8 字节、类级上限为 3000-12-31，并将 2038 年限制归因于旧的 32 位 `time_t` 配置；`DATE` 为 8 字节浮点值。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 08:33（UTC+08:00）。修订仅纠正 `CTime`、`COleDateTime` 和 `DATE` 的范围、存储及 2038 年限制说明。

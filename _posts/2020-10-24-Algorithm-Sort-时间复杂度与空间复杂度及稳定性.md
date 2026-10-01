@@ -7,9 +7,6 @@ categories:
 tags:
 - Algorithm
 ---
-
-<!--more-->
-
 <table class="table table-bordered table-striped table-condensed">
    <tr>
       <th rowspan="2">类别</th>
@@ -35,7 +32,7 @@ tags:
    </tr>
    <tr>
       <td>希尔排序(shell sort)/缩小增量排序</td>
-      <td>O(n1.3)</td>
+      <td>O(n1.3）</td>
       <td>O(n)</td>
       <td>O(n2)</td>
       <td>O(1)</td>
@@ -96,3 +93,5 @@ tags:
       <td>稳定</td>
    </tr>
 </table>
+
+<!--more-->

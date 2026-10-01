@@ -11,6 +11,9 @@ tags:
 - Kylin
 - C++
 - OS
+upstream_sync: off
+upstream_sync_reason: >-
+  仓库已把正文 15 个 H1 降为 0 个 H1 / 24 个 H2 —— 页面标题已是 H1，正文再有 H1 会重复。cnblogs 上仍是 15 个 H1。
 ---
 > Version: v2.0 Single File Final  
 > 文档类型：技术 Blog / 企业内部交付文档

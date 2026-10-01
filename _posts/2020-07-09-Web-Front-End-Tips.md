@@ -8,16 +8,16 @@ tags:
 - Front-End
 - Web
 ---
-
 ## 调试前 确认浏览器大小
 ctrl+0, 还原浏览器到100%，防止浏览器当前缩放过大或过小
 
-<!--more-->
 ## &nbsp 空格占位
 在html代码中&nbsp和空格的区别：
 在html代码中每输入一个转义字符&nbsp就表示一个空格，输入十个&nbsp，页面中就显示10个空格位置。
 而在html代码中输入空格，不管输入多少个空格，最终在页面中显示的空格位置只有一个
 - 经测试： 三个&nbsp占位能补一个汉字
+
+<!--more-->
 
 ## style- float: left/right;
 当在一行内横向排列两个或多个div时可以设置style“float:left/right”,其中本行最后一个div设置为right
@@ -58,11 +58,11 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#878d94',endCo
 ```
 ## 网页动态背景：随鼠标线条变动
 [src](https://blog.csdn.net/IT_model/article/details/89094941)
-```html
+```
 <script type="text/javascript" src="https://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
 
 ```
-```html
+```
 <!DOCTYPE html>
 <html>
 <head>
@@ -81,8 +81,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#878d94',endCo
 让div元素靠右一般常用的有三种方法
 
 - 第一种方法就是添加浮动float样式  `style:"float:right;"`
-若是与下侧的div重合，可以考虑增加高度属性`style:"height:40px;"`
-- 第二种方法就是添加外边距margin-right样式 `style:"margin-left:80%;"`
+若是与下侧的div重合，可以考虑增加高度属性`style:"height:40；"`
+- 第二种方法就是添加外边距margin-right样式 `style:"margin-left:80%;`
 - 第三种方法就是设置position样式之absolute属性 `style:"position:absolute;"`
 
 ## 对话框居中显示
@@ -128,7 +128,7 @@ B Page:
 ```
 
 ## easyUI 横向竖向分割线
-```html
+```
 <div class="datagrid-toolbar"></div> 横向分割线
 <div class="datagrid-btn-separator"/> 竖向分割线
 ```
@@ -137,25 +137,24 @@ B Page:
 ` $('#id').textbox().textbox('setValue', currPath);`
 text-box设置值只能使用id选择器选择表单元素，然后使用textbox("setValue", value); 的方式设置值
 
-很奇怪，如果先设置属性再赋值就可以：
+很奇怪，如果先设置属性在赋值就可以：
 ```
     $('#id').textbox({width:350});
     $('#id').textbox('setValue', currPath);
 ```
 表单元素使用easyui时，textbox和validatebox设置值和获取值的方式不一样
-- 为text-box设置值只能使用id选择器选择表单元素，只能使用textbox("setValue", value) 或 textbox("setText", value) 的方式设置值，使用textbox("getValue") 或textbox("getText") 获取值；
+- 为text-box设置值只能使用id选择器选择表单元素，只能使用textbox("setValue", value) 或 textbox("seText", value) 的方式设置值，使用textbox("getValue") 或textbox("getText") 获取值；
 - 为validatebox设置值可以使用id选择器和表单选择器，只能使用val()获取值和设置值。
 
 ## 获取Title
 `$('#dlg').panel('options').title`
-
 
 ## html调整Label标签宽度
 [website](https://blog.csdn.net/duanmuxiao/article/details/40045821)
 `display为inline-block或者block,然后才可以设置长、宽`
 
 ## validatebox  验证类型扩展
-```javascript
+```
 $.extend($.fn.validatebox.defaults.rules, {
  	ValueBetween: {
         validator: function(value, param){
@@ -165,13 +164,13 @@ $.extend($.fn.validatebox.defaults.rules, {
     }
 });
 
-用法：data-options="validType:'ValueBetween[0,50]'"
+用法：data-options="validType:'valueBettween[0,50]'"
 ```
 
 ## easyui datagrid 清空
 
 删除数据
-```javascript
+```
 var rows = $(id).datagrid('getRows');
 for(var i=rows.length-1;i>=0;i--){
     var index = $('#dg_careersystem').datagrid('getRowIndex', rows[i]);  
@@ -180,7 +179,7 @@ for(var i=rows.length-1;i>=0;i--){
 }
 ```
 填充空数据：
-`$('#dg_careersystem').datagrid('loadData',{total:0,rows:[]})`
+`('#dg_careersystem').datagrid('loadData',{total:0,rows:[]})`
 
 ## easyui PropertyGrid 表格内文字显示不全的内容
 `data-options="nowrap:false"`
@@ -190,7 +189,7 @@ for(var i=rows.length-1;i>=0;i--){
 可先通过jquery获取父节点的方法parents()，获取该行tr标签，再通过attr()获取属性"datagrid-row-index"，即可获取index。
 `var rowIndex = $(this).parents('.datagrid-row').attr('datagrid-row-index');`
 
-## easyui +html input 文件导入
+## easyui +html imput 文件导入
 ```
 <label for="PathCnt" class="easyui-linkbutton" >程序文件</label>
 <input id="PathCnt" type="file" accept="text" style="opacity: 0;width:60px">
@@ -201,7 +200,7 @@ $('#PathCnt').change(function(datas){
 })
 ```
 ## 上传文件 用ajax传递formdata
-```javascript
+```
 //// Web script
     //new FormData的参数是一个DOM对象，而非jQuery对象
     var formData = new FormData();
@@ -215,7 +214,7 @@ $('#PathCnt').change(function(datas){
     //   layer.alert("该上传的文件不是视频文件类型！", { icon: 5 , anim: 6 });
     //   break;
     //  }
-    //将参数以键值对的形式添加到formData构造函数
+    //将参数以键值对的形式添加到formDate构造函数
     formData.append('uploadDatas', FilePath);
     formData.append(strname, f.files[i]);
     }
@@ -280,10 +279,9 @@ app.post('/Add', function(req, res){
 });
 ```
 
-
 ## fs.writeFile
 参数1需要写到文件名，e.g. ：../Data/T.txt
-```javascript
+```
     console.log('__dirname : ' + __dirname)
     console.log('cwd       : ' + process.cwd())
     try{
@@ -294,7 +292,7 @@ app.post('/Add', function(req, res){
 ```
 
 ## Html隐藏占空间与隐藏不占空间
-```html
+```
 隐藏不占用空间：
 display:none;
 以下为示例代码：
@@ -310,7 +308,7 @@ visibility:hidden;
 ```
 
 ## JS如何设置元素样式的方法
-```html
+```
 <div id="box"></div>
 
 var box = document.getElementById("box");

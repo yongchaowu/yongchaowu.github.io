@@ -8,10 +8,8 @@ tags:
 - CMake
 - Tool
 ---
-
 https://cmake.org/examples/
 
-<!--more-->
 There are three directories involved. The top level directory has two subdirectories called ./Demo and ./Hello. In the directory ./Hello, a library is built. In the directory ./Demo, an executable is built by linking to the library. A total of three CMakeLists.txt files are created: one for each directory.
 ```
 ./
@@ -19,6 +17,8 @@ There are three directories involved. The top level directory has two subdirecto
 ./Hello
 ```
 ## top-level directory 
+
+<!--more-->
 
 ```
 ./CMakeLists.txt
@@ -61,7 +61,11 @@ target_include_directories (Hello PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable (helloDemo demo.cxx demo_b.cxx)
 
 # Link the executable to the Hello library. Since the Hello library has
-# public include directories we will use those link directories when building
+# public include directories we will use those include directories when building
 # helloDemo
 target_link_libraries (helloDemo LINK_PUBLIC Hello)
 ```
+
+本文修订依据：Kitware/CMake 官方 v2.8.11 测试源 [`target_include_directories`](https://raw.githubusercontent.com/Kitware/CMake/v2.8.11/Tests/CMakeCommands/target_include_directories/CMakeLists.txt) 与 [`target_link_libraries`](https://raw.githubusercontent.com/Kitware/CMake/v2.8.11/Tests/CMakeCommands/target_link_libraries/CMakeLists.txt)，tag commit `0ad0c37206fce114c4e4c31f5270b53e181ab3c2`（2013-05-15）。本文仅将注释中的 “link directories” 更正为 “include directories”。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 13:00（UTC+08:00）。修订仅纠正 CMake 示例注释中的 include/link 术语。

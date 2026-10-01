@@ -5,4 +5,6 @@ tag: "uv"
 slug: "uv"
 permalink: /tag/uv/
 generated: true
+noindex: true
+sitemap: false
 ---

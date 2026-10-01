@@ -5,4 +5,6 @@ tag: "TimeManagement"
 slug: "timemanagement"
 permalink: /tag/timemanagement/
 generated: true
+noindex: true
+sitemap: false
 ---

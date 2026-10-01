@@ -9,10 +9,8 @@ tags:
 - Git
 - Tool
 ---
-
 November 26, 2020 11:45 PM
 
-<!--more-->
 ## 1.github新建一个仓库，名称"TestGit"
 ```plain
 create a new repository on the command line
@@ -26,6 +24,8 @@ git push -u origin main
 ```
 xxx是用户名
 
+<!--more-->
+
 ```plain
 push an existing repository from the command line
 git remote add origin https://github.com/xxx/TestGit.git
@@ -37,7 +37,6 @@ git push -u origin main
 import code from another repository
 You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
 ```
-
 
 ## 2.指令记录
 ###查看版本
@@ -62,7 +61,7 @@ xxxx是提交的说明内容
 `git log`
 
 查看指定作者的改动：
-`git log --author='<userName>'`
+`git log --author='<usetName>'`
 
 ###配置用户名和邮箱
 ```plain
@@ -139,7 +138,7 @@ git branch -D xxx //强制删除
 git merge xxx     //合并分支
 合并分支冲突：
 - 手动修改
-- git merge --abort //保留原分支内容，忽略其他分支内容
+- git merge --abort //尝试恢复合并前的状态
 ```
 ### 创建并检出一个分支
 `git checkout -b xxx remotes/origin/xxx`
@@ -161,3 +160,9 @@ git merge xxx     //合并分支
 - Octotree          -->左侧树形结构显示
 - enhanced github   -->显示单个文件大小并可以下载
 - gitzip for github -->直接下载某一个文件夹：双击需要下载的文件夹
+
+参考：[Git `merge` 官方文档](https://git-scm.com/docs/git-merge)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:00（UTC+08:00）。

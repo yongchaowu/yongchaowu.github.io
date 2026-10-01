@@ -5,4 +5,6 @@ tag: "gh-cli"
 slug: "gh-cli"
 permalink: /tag/gh-cli/
 generated: true
+noindex: true
+sitemap: false
 ---

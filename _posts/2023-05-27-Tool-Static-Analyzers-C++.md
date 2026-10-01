@@ -9,17 +9,16 @@ tags:
 - Tool
 - Static Analyzers
 ---
-
 ## C++ Code Style
 
-<!--more-->
 ### Google styleguide
 >https://google.github.io/styleguide/
 包含cpplint
 
+<!--more-->
+
 #### Google styleguide cppguide
 >https://google.github.io/styleguide/cppguide.html
-
 
 ----------
 
@@ -52,18 +51,21 @@ Repository:
 Install：
 1. linux平台下：
 - 第一种：
-```bash
+
+> **版本范围：** 下第一种方式固定到 Tencent/TscanCode commit `3e3b6b66a7e39283d99add581fb9d54ee80c48f5`；该版本的 `release/linux` 直接包含 `TscanCodeV2.14.2395.linux` 目录。
+
+```
 $ git clone https://github.com/Tencent/TscanCode.git
-$ cd TscanCode/release/linux/
-$ unzip TscanCodeV2.14.24.linux.zip
-$ cd TscanCodeV2.14.24.linux/TscanCodeV2.14.2395.linux
+$ git checkout 3e3b6b66a7e39283d99add581fb9d54ee80c48f5
+$ cd release/linux/
+$ cd TscanCodeV2.14.2395.linux
 $ chmod a+x tscancode
 $ echo "PATH=$PATH:$(pwd)" >> ~/.bashrc
 $ source ~/.bashrc
 ```
 
 - 第二种，建议使用：
-```bash
+```
 cd trunk/
 make
 修改cfg/cfg.xml #cfg.xml 配置不当，可能导致检测结果为空，建议value="0"的再开启。通过设置value=0则禁用，value=1则启用。
@@ -73,7 +75,6 @@ Running Command:
 `./tscancode --xml --enable=all -q /home/yang/test/cpp/ >scan_result.xml 2>&1`
 
 扫描规则与配置：cfg/cfg.xml
-
 
 ----------
 ### Valgrind
@@ -85,7 +86,6 @@ Valgrind是开放源代码（GPL V2）的仿真调试工具的集合，支持Lin
 5）Massif：检查程序中堆栈使用中出现的问题；
 6）Extension：编写特定的内存调试工具。
 
-
 ----------
 ### Online website for static analyzer
 
@@ -94,7 +94,6 @@ Valgrind是开放源代码（GPL V2）的仿真调试工具的集合，支持Lin
 2. C++ Shell:`http://cpp.sh/`
 
 3. https://paiza.io/en
-
 
 ----------
 
@@ -156,7 +155,6 @@ fi
 
 ----------
 
-
 ### Clang
 
 >https://www.oschina.net/p/clang?hmsr=aladdin1e1
@@ -166,7 +164,6 @@ Clang: a C language family frontend for LLVM
 >https://clang.llvm.org/
 >https://llvm.org/docs/GettingStarted.html#checkout
 
-
 #### clang-format
 
 严格来说，它不是静态检查工具，而是代码格式化的工具，类似的工具还有astyle，但是相对来说，clang-format会好用一些，支持的配置参数也多一些。它的使用请参考Clang-Format Style Options。
@@ -174,19 +171,17 @@ Clang: a C language family frontend for LLVM
 #### codechecker
 https://github.com/Ericsson/codechecker
 
-
 #### clang-check、clang static analyzer、clang-tidy
 
 是编译器级别的检查，它们需要编译文件从而检查代码
 
-所以理论上它们的可靠性会比cpplint和cppcheck要强一些，同时它的耗时也会比它们长一些。
+所以理论上他们的可靠性会比cpplint和cppcheck要强一些，同时它的耗时也会它们长一些。
 
 >https://clang-analyzer.llvm.org/
 >http://clang.llvm.org/extra/clang-tidy/
 
 Install:
 `sudo apt install clang-tidy`
-
 
 `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ...`
 `DCMAKE_EXPORT_COMPILE_COMMANDS`这个选项会生成一个叫`compile_commands.json`的文件，有了这个文件，我们可以直接在编译目录下执行`run-clang-tidy`命令，对整个项目做静态的检查。
@@ -210,12 +205,12 @@ clang-tidy -list-checks -checks=*查看所有支持的检查
 
 #### C/C++ Advanced Lint for VS Code
 
->http://web.archive.org/web/20260411051622/https://marketplace.visualstudio.com/items?itemName=jbenden.c-cpp-flylint
+>https://marketplace.visualstudio.com/items?itemName=jbenden.c-cpp-flylint
 
 ----------
 
->http://web.archive.org/web/20260610180411/https://marketplace.visualstudio.com/items?itemName=QiuMingGe.cpp-check-lint
-```bash
+>https://marketplace.visualstudio.com/items?itemName=QiuMingGe.cpp-check-lint
+```
 http://cppcheck.net/
 sudo apt-get install cppcheck
 https://github.com/cpplint/cpplint
@@ -227,7 +222,6 @@ pip install cpplint
 ### flawfinder
 flawfinder, a simple program that examines C/C++ source code and reports possible security weaknesses (“flaws”) sorted by risk level
 >https://dwheeler.com/flawfinder/
-
 
 ### Lizard 
 Lizard is an extensible Cyclomatic Complexity Analyzer for many programming languages including C/C++ (doesn't require all the header files or Java imports). It also does copy-paste detection (code clone detection/code duplicate detection) and many other forms of static code analysis.
@@ -249,9 +243,12 @@ Analyze your code in real time as you type in your IDE and get live feedback & g
 
 Visual Studio 提供了多种用于分析和提升 C++ 代码质量的工具。
 
-
 ----------
-### conclusion
+### concultion
 
-*（图片缺失，未随博客园迁移：`.Static Analyzers.jpeg`）*
+![](.Static Analyzers.jpeg)
 ![](https://images.cnblogs.com/cnblogs_com/yongchao/2296107/o_230527125337_Static%20Analyzers.jpeg)
+
+本文修订依据：Tencent/TscanCode 官方仓库 commit [`3e3b6b66a7e39283d99add581fb9d54ee80c48f5`](https://github.com/Tencent/TscanCode/tree/3e3b6b66a7e39283d99add581fb9d54ee80c48f5) 的 [`release/linux/README.md`](https://github.com/Tencent/TscanCode/blob/3e3b6b66a7e39283d99add581fb9d54ee80c48f5/release/linux/README.md) 和 [`release/linux`](https://github.com/Tencent/TscanCode/tree/3e3b6b66a7e39283d99add581fb9d54ee80c48f5/release/linux) 目录。README 将打包版本标为 2.14.24（2018-02-24），而该提交的目录名为 `TscanCodeV2.14.2395.linux`；本文保留这两个官方标签。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 09:11（UTC+08:00）。修订仅将 TscanCode 预编译包步骤固定到明确提交并移除不存在的解压路径。

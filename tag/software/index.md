@@ -5,4 +5,6 @@ tag: "Software"
 slug: "software"
 permalink: /tag/software/
 generated: true
+noindex: true
+sitemap: false
 ---

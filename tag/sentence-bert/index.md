@@ -5,4 +5,6 @@ tag: "Sentence-BERT"
 slug: "sentence-bert"
 permalink: /tag/sentence-bert/
 generated: true
+noindex: true
+sitemap: false
 ---

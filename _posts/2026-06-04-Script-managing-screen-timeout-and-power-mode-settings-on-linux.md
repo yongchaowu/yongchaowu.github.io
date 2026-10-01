@@ -11,6 +11,9 @@ categories:
 tags:
 - OS
 - Script
+upstream_sync: off
+upstream_sync_reason: >-
+  仓库已修正上游的正则缺陷：grep -oP '\d+' 缺行尾锚点，会在 '123abc' 上误匹配；仓库为 '\d+$'。cnblogs 上仍是无锚点版本，尚未修正。
 ---
 
 背景：需要控制笔记本屏幕时间和电源模式

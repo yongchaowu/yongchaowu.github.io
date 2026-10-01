@@ -5,4 +5,6 @@ tag: "Windbg"
 slug: "windbg"
 permalink: /tag/windbg/
 generated: true
+noindex: true
+sitemap: false
 ---

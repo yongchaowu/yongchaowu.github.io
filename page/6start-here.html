@@ -146,4 +146,4 @@ type: page
         <a class="button button--primary" href="{{ '/search/' | relative_url }}">{% include icon.html name="search" %} Search the notebook</a>
     </section>
 </main>
-<script src="{{ '/js/pageContent.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/pageContent.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>

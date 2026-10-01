@@ -5,4 +5,6 @@ tag: "JNA"
 slug: "jna"
 permalink: /tag/jna/
 generated: true
+noindex: true
+sitemap: false
 ---

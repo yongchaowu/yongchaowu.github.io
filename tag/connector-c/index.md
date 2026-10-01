@@ -5,4 +5,6 @@ tag: "Connector/C++"
 slug: "connector-c"
 permalink: /tag/connector-c/
 generated: true
+noindex: true
+sitemap: false
 ---

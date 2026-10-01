@@ -18,6 +18,9 @@ tags:
   - "运维"
   - "踩坑"
   - "成本"
+upstream_sync: off
+upstream_sync_reason: >-
+  仓库已把正文 H1 降级（上游 26 个 H1 / 仓库 23 个 H1），避免与页面标题重复。
 ---
 
 <!--more-->

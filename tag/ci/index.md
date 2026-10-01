@@ -5,4 +5,6 @@ tag: "CI"
 slug: "ci"
 permalink: /tag/ci/
 generated: true
+noindex: true
+sitemap: false
 ---

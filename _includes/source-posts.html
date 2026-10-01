@@ -10,10 +10,7 @@
     <ul>
         {% for source_path in page.source_posts %}
             {% assign source_post = site.posts | where: "path", source_path | first %}
-            {% assign source_editorial = nil %}
-            {% for source_item in site.data.post_editorial.posts %}
-                {% if source_item.post == source_path %}{% assign source_editorial = source_item %}{% endif %}
-            {% endfor %}
+            {%- assign source_editorial = site.data.post_editorial.posts[source_path] -%}
             {% if source_post %}
                 <li id="source-note-{{ forloop.index }}">
                     <a href="{{ source_post.url | relative_url }}">{{ source_post.display_title | default: source_post.title }}</a>

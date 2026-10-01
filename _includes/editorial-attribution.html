@@ -4,9 +4,7 @@
 {% endcomment %}
 {% assign attribution_editorial = nil %}
 {% assign attribution_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == attribution_path %}{% assign attribution_editorial = item %}{% endif %}
-{% endfor %}
+{%- assign attribution_editorial = site.data.post_editorial.posts[attribution_path] -%}
 {% if attribution_editorial.attribution %}
 {% assign attribution = attribution_editorial.attribution %}
 <aside class="editorial-attribution" aria-labelledby="source-attribution-title">

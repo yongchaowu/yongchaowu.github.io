@@ -5,4 +5,6 @@ tag: "Static Analyzers"
 slug: "static-analyzers"
 permalink: /tag/static-analyzers/
 generated: true
+noindex: true
+sitemap: false
 ---

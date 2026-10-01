@@ -5,4 +5,6 @@ tag: "输入法"
 slug: "输入法"
 permalink: /tag/输入法/
 generated: true
+noindex: true
+sitemap: false
 ---

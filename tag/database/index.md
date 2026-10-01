@@ -5,4 +5,6 @@ tag: "Database"
 slug: "database"
 permalink: /tag/database/
 generated: true
+noindex: true
+sitemap: false
 ---

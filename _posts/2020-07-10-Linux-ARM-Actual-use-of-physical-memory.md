@@ -10,12 +10,12 @@ tags:
 - Linux
 - OS
 ---
-
 [在ARM板上的linux系统中查看进程实际使用物理内存](https://blog.csdn.net/yangjie1987636/article/details/45871103?utm_source=blogxgwz0)
 
-<!--more-->
 在/proc/pid/status可以查看，pid为你要查看进程的进程号，比如我要查看的进程"./MQTTServer"就得进入/proc/31540/status进行查看，输入，返回如下：
 ![](https://img2020.cnblogs.com/blog/1488227/202007/1488227-20200710010838452-10121562.png)
+
+<!--more-->
 
 下面对相关参数进行解释：
 
@@ -26,14 +26,13 @@ Pid           ：任务ID
 Ppid         ：父进程ID
 TracerPid ：接收跟踪该进程信息的进程的ID号
 
-
 Uid:    0       0       0       0
 Gid:    0       0       0       0
 
 解释:
 第一列数字(RUID):实际用户ID,指的是进程执行者是谁.
 第二列数字(EUID):有效用户ID,指进程执行时对文件的访问权限.
-第三列数字(SUID):保存设置用户ID,作为effective user ID的副本,在执行exec调用时后能重新恢复原来的effective user ID.
+第三列数字(SUID):保存设置用户ID,作为effective user ID的副本,在执行exec调用时后能重新恢复原来的effectiv user ID.
 第四列数字(FSUID):目前进程的文件系统的用户识别码.一般情况下,文件系统的用户识别码(fsuid)与有效的用户识别码(euid)是相同的.
 
 FDSize： 文件描述符的最大个数，file->fds
@@ -48,7 +47,7 @@ VmStk(KB)      ：任务在用户态的栈的大小 (stack_vm)
 VmExe(KB)     ：程序所拥有的可执行虚拟内存的大小，代码段，不包括任务使用的库 (end_code-start_code)
 VmLib(KB)      ：被映像到任务的虚拟内存空间的库的大小 (exec_lib)
 VmPTE           :该进程的所有页表的大小，单位：kb
-Threads          :共享使用该信号描述符的任务的个数，在POSIX多线程应用程序中，线程组中的所有线程使用同一个信号描述符。
+Threads          :共享使用该信号描述符的任务的个数，在POSIX多线程序应用程序中，线程组中的所有线程使用同一个信号描述符。
 SigQ               :待处理信号的个数
 SigPnd            :屏蔽位，存储了该线程的待处理信号
 ShdPnd           :屏蔽位，存储了该线程组的待处理信号

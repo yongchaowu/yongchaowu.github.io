@@ -36,6 +36,8 @@ jobs:
           version: "0.11.17"
       - name: Verify generated tag pages
         run: uv run --with-requirements scripts/requirements.txt scripts/generate_tag_pages.py --check
+      - name: Verify generated post metadata
+        run: uv run --with-requirements scripts/requirements.txt scripts/generate_post_meta.py --check
       - name: Build with Jekyll
         run: |
           bundle exec jekyll clean

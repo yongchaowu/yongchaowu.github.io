@@ -5,4 +5,6 @@ tag: "WinHTTP"
 slug: "winhttp"
 permalink: /tag/winhttp/
 generated: true
+noindex: true
+sitemap: false
 ---

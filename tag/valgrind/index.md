@@ -5,4 +5,6 @@ tag: "Valgrind"
 slug: "valgrind"
 permalink: /tag/valgrind/
 generated: true
+noindex: true
+sitemap: false
 ---

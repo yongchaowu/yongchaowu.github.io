@@ -5,4 +5,6 @@ tag: "Webstorm"
 slug: "webstorm"
 permalink: /tag/webstorm/
 generated: true
+noindex: true
+sitemap: false
 ---

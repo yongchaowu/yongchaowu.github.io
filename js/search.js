@@ -179,8 +179,17 @@
 
     // Kick phase 2 off only when the browser is idle, so it never competes with
     // the first render or the user's first keystrokes.
+    //
+    // search-text.json is ~2.6 MB raw / ~912 KB gzipped, so the guard below is
+    // deliberate: it states the invariant locally instead of relying on a call
+    // graph fact three functions away. Phase 2 is reached only through
+    // finishLoad() <- load() <- requestRender(), and requestRender() is itself
+    // gated on hasIntent(), so the 912 KB is already unreachable without a query
+    // or filter. Re-checking here makes that a property of this function rather
+    // than of its callers, at no runtime cost.
     function scheduleText() {
         if (TEXT_SCHEDULED || TEXT_STATE === 'ready' || !textUrl) return
+        if (!hasIntent()) return
         TEXT_SCHEDULED = true
         var run = function() { loadText() }
         if (typeof window.requestIdleCallback === 'function') {

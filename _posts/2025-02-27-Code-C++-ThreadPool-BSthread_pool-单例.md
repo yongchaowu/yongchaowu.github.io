@@ -12,11 +12,11 @@ tags:
 - C++
 - Code
 ---
-
 - https://github.com/bshoshany/thread-pool.git
 
-<!--more-->
 - https://gitcode.com/gh_mirrors/th/thread-pool
+
+<!--more-->
 
 # `BS::thread_pool`
 
@@ -64,8 +64,8 @@ private:
     static void init() { instance_.reset(new ThreadPoolSingleton()); }
 };
 // 初始化静态成员变量
-std::unique_ptr<ThreadPoolSingleton> ThreadPoolSingleton::instance_ = nullptr;
-std::once_flag ThreadPoolSingleton::init_flag_;
+inline std::unique_ptr<ThreadPoolSingleton> ThreadPoolSingleton::instance_ = nullptr;
+inline std::once_flag ThreadPoolSingleton::init_flag_;
 ```
 
 ## `demo_test.cpp`
@@ -106,7 +106,7 @@ int main()
  * ██████  ███████          ██    ██   ██ ██   ██ ███████ ██   ██ ██████  ███████ ██       ██████   ██████  ███████
  *
  * @file BS_thread_pool.hpp
- * @author Barak Shoshany (baraksh@gmail.com) (http://web.archive.org/web/20260801210706/https://baraksh.com/)
+ * @author Barak Shoshany (baraksh@gmail.com) (https://baraksh.com/)
  * @version 5.0.0
  * @date 2024-12-19
  * @copyright Copyright (c) 2024 Barak Shoshany. Licensed under the MIT license. If you found this project useful, please consider starring it on GitHub! If you use this library in software of any kind, please provide a link to the GitHub repository https://github.com/bshoshany/thread-pool in the source code and documentation. If you use this library in published research, please cite it as follows: Barak Shoshany, "A C++17 Thread Pool for High-Performance Scientific Computing", doi:10.1016/j.softx.2024.101687, SoftwareX 26 (2024) 101687, arXiv:2105.00613
@@ -2473,3 +2473,7 @@ using binary_semaphore = counting_semaphore<1>;
 #endif // BS_THREAD_POOL_HPP
 
 ```
+
+本文修订依据：C++17 工作草案 [N4659 §[basic.def.odr]](https://timsong-cpp.github.io/cppwp/n4659/basic.def.odr) 与 §[dcl.inline]](https://timsong-cpp.github.io/cppwp/n4659/dcl.inline)，以及 `BS::thread_pool` 官方 [`v5.0.0` tag](https://github.com/bshoshany/thread-pool/tree/v5.0.0)（commit `aa3fbfbe80762fe3ac90e2bf05e153b92536277a`, 2024-12-19）。本文仅为自定义头文件中的两个静态成员定义增加 C++17 `inline`，不修改随文复制的上游库内容。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 11:15（UTC+08:00）。修订仅修正自定义 `ThreadPoolSingleton` 静态成员定义的多翻译单元链接问题。

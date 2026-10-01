@@ -1,5 +1,49 @@
 <!DOCTYPE html>
-<html class="no-js" lang="{{ page.lang | default: site.lang | default: 'en' }}">
+{% comment %}
+  Asset cache-busting version.
+
+  The favicons already carried a hardcoded `?v=3`; CSS and JavaScript carried
+  nothing at all, so a returning visitor could be served a new HTML document
+  paired with a stale stylesheet or script from the CDN's long max-age cache.
+  GitHub Pages offers no asset hashing and no custom plugins, so this is
+  derived from site.time: every deploy produces fresh URLs. Pin it by setting
+  `asset_version` in _config.yml if a stable URL is preferred over guaranteed
+  freshness.
+
+  The expression is repeated in _includes/head.html, _layouts/page.html,
+  _layouts/topic.html and _layouts/post.html on purpose. Assigning it once here
+  does not work: Jekyll renders the page layout first and only then wraps the
+  result in default.html, so a variable assigned here is not yet in scope where
+  {{ content }} was produced.
+{% endcomment %}
+{%- assign asset_v = site.asset_version | default: site.time | date: '%Y%m%d%H%M' -%}
+
+{% comment %}
+  Page language. Resolution order is post front matter, then the generated
+  sidecar, then site.lang.
+
+  The sidecar matters because only 71 of 357 posts declare `lang`, and 267 of
+  the undeclared ones are written in Chinese -- they were all inheriting
+  `site.lang: en` and declaring `lang="en"` / `og:locale="en"` /
+  `"inLanguage": "en"` while displaying Chinese text. Historical post files may
+  not be rewritten, so the declared value cannot be added to them. Regenerate
+  with scripts/generate_post_meta.py after adding or editing a post.
+
+  Same rendering-order caveat as asset_v: the value is re-derived inside
+  _layouts/post.html, which is where the language badge is rendered.
+
+  These blocks use the plain comment tag with no whitespace-control dashes,
+  deliberately. The dashed form strips the newline after the doctype and emits
+  "<!DOCTYPE html><html ...>" on one line. That is valid HTML5, but it changed
+  the first line of all 687 pages for no reason. Note that the tag names cannot
+  be written literally inside a comment: Liquid parses them, comments do not
+  nest, and an example of the closing tag inside prose closes the block early and
+  leaves the real one unclosed.
+{% endcomment %}
+{%- assign meta_path = page.path | split: '_posts/' | last | prepend: '_posts/' -%}
+{%- assign page_meta = site.data.post_meta.posts[meta_path] -%}
+{%- assign page_lang = page.lang | default: page_meta.lang | default: site.lang | default: 'en' -%}
+<html class="no-js" lang="{{ page_lang }}">
 
   {% include head.html %}
 
@@ -13,9 +57,9 @@
 
     {% include footer.html %}
     {% include backToTop.html %}
-    <script src="{{ '/js/main.js' | relative_url }}" charset="utf-8"></script>
+    <script src="{{ '/js/main.js' | relative_url }}?v={{ asset_v }}" charset="utf-8"></script>
     {% if page.layout == 'post' or page.copy_code %}
-    <script src="{{ '/js/copy-code.js' | relative_url }}" charset="utf-8"></script>
+    <script src="{{ '/js/copy-code.js' | relative_url }}?v={{ asset_v }}" charset="utf-8"></script>
     {% endif %}
   </body>
 

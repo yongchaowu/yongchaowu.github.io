@@ -9,17 +9,17 @@ tags:
 - Wininet
 - Windows API
 ---
-
 July 11, 2020 10:33 PM
 
-<!--more-->
 # WinInet
 
-WinInet（“Windows Internet”）API帮助程序员使用三个常见的Internet协议，这三个协议是用于World Wide Web万维网的[超文本](https://baike.baidu.com/item/%E8%B6%85%E6%96%87%E6%9C%AC)[传输协议](https://baike.baidu.com/item/%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE)（HTTP：Hypertext Transfer Protocol）、[文件传输协议](https://baike.baidu.com/item/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE/1874113)（FTP：File Transfer Protocol）和另一个称为Gopher的文件传输协议。WinInet函数的语法与常用的Win32 API函数的语法类似，这使得使用这些协议就像使用本地硬盘上的文件一样容易。
+<!--more-->
+
+WinInet（“Windows Internet”）API帮助程序员使用三个常见的Internet协议，这三个协议是用于World Wide Web万维网的[超文本](https://baike.baidu.com/item/%E8%B6%85%E6%96%87%E6%9C%AC)[传输协议](https://baike.baidu.com/item/%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE)（HTTP：Hypertext Transfer Protocol）、[文件传输协议](https://baike.baidu.com/item/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE/1874113)（FTP：File Transfer Protocol）和另一个称为Gopher的文件传输协议。WinInet函数的语法与常用的Win32 API 函数的语法类似，这使得使用这些协议就像使用本地硬盘上的文件一样容易。
 
 ## WinInet 概述
 
-⊙ Hinternet 句柄的层次关系
+⊙ HINTERNET 句柄的层次关系
 
 ⊙ HTTP 函数层次关系
 
@@ -67,7 +67,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ InternetErrorDlg 显示错误信息对话框
 
-⊙ InternetGetLastResponseInfo 获取最近发送的 API函数的错误
+⊙ InternetGetLastResponseInfo 获取最近发送的 API 函数的错误
 
 2、HTTP 处理函数
 
@@ -79,7 +79,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ HttpEndRequest 结束一个 HTTP 请求
 
-⊙ HttpAddRequestHeaders 添加一个或多个 HTTP 请求报头到 HTTP请求句柄
+⊙ HttpAddRequestHeaders 添加一个或多个 HTTP 请求报头到 HTTP 请求句柄
 
 3、FTP 处理函数
 
@@ -97,7 +97,7 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ⊙ FtpPutFile 向 Ftp 服务器上传文件
 
-⊙ FtpRemoveDirectory 在 Ftp 服务器删除指定的目录
+⊙ FtpRemoveDirectory 在 Ftp 服务器删除指定的文件
 
 ⊙ FtpRenameFile 为 Ftp 服务器上的指定文件改名
 
@@ -105,21 +105,21 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 ## WinInet 层关系
 
-1、WinInet 是一个[网络编程](https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B)接口，包含了 Internet 底层协议 HTTP，FTP。
+1、WinInet 是一个[网络编程](https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B)接口，包含 Internet 底层的 HTTP、FTP 等协议。
 
-2、借助 WinInet 接口，可不必去了解 Winsock、TCP/IP 和特定 Internet 协议的细节就可以编写出高水平的 Internet 客户端程序。
+2、借助 WinInet 接口，应用程序不必了解 Winsock、TCP/IP 和具体 Internet 协议的细节，即可编写网络客户端程序。
 
-3、WinInet 为 HTTP、FTP 提供了统一的函数集，也就是 Win32 API 接口。
+3、WinInet 为 HTTP、FTP 提供统一的函数集，也就是 Win32 API 接口。
 
-4、WinInet 简化了 HTTP、FTP 协议的编程，可轻松地将 Internet 集成到应用程序中。
+4、WinInet 简化了 HTTP、FTP 协议编程，可以更方便地将 Internet 集成到应用程序中。
 
-### Hinternet 句柄的层次关系
+### HINTERNET 句柄的层次关系
 
-1、首先通过 [InternetOpen](https://baike.baidu.com/item/InternetOpen) 函数创建位于根部的 Hinternet 句柄，然后才能通过其进一步建立 HTTP、FTP 的连接。
+1、首先通过 [InternetOpen](https://baike.baidu.com/item/InternetOpen) 函数创建根部的 HINTERNET 句柄，然后才能通过它进一步建立 HTTP、FTP 连接。
 
-2、使用 InternetConnect 函数创建一个指定的连接，它将通过传递给它的参数为指定的站点初始化 HTTP、FTP 连接并创建一个从根句柄分支出去的 Hinternet 句柄。
+2、使用 InternetConnect 函数创建指定站点的连接。它会根据参数初始化 HTTP、FTP 连接，并返回一个从根句柄分支出来的 HINTERNET 句柄。
 
-3、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest) 和 FtpOpenFile、FtpFindFirstFile等函数将使用 InternetConnect 所创建的句柄以建立到指定站点的连接。
+3、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest)、FtpOpenFile、FtpFindFirstFile 等函数使用 InternetConnect 创建的句柄与指定站点建立连接。
 
 ### HTTP 函数层次关系
 
@@ -127,71 +127,70 @@ WinInet（“Windows Internet”）API帮助程序员使用三个常见的Intern
 
 2、由于 HTTP 协议是在不断发展的，当这些底层协议被更新后也将影响这些 HTTP 函数行为
 
-3、[InternetOpen](https://baike.baidu.com/item/InternetOpen)、InternetConnect、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest) 将返回 Hinternet 句柄，而HttpAddRequestHeaders、HttpQueryInfo、HttpSendRequest、HttpSendRequestEx、InternetErrorDlg 将使用它们所依靠的这些函数创建的 Hinternet句柄。
+3、[InternetOpen](https://baike.baidu.com/item/InternetOpen)、InternetConnect、[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest) 将返回 HINTERNET 句柄；HttpAddRequestHeaders、HttpQueryInfo、HttpSendRequest、HttpSendRequestEx、InternetErrorDlg 将使用这些函数所依赖的 HINTERNET 句柄。
 
 ### FTP 函数层次关系
 
-1、FTP 函数需要请求得到特定类型的 Hinternet句柄才能正常工作，这些句柄的创建必须按一定次序来进行：
+1、FTP 函数需要特定类型的 HINTERNET 句柄才能正常工作，这些句柄必须按照一定顺序创建：
 
-1、首先使用 [InternetOpen](https://baike.baidu.com/item/InternetOpen) 创建根句柄，然后才能通过 InternetConnect 创建一个FTP连接句柄
+1、首先使用 [InternetOpen](https://baike.baidu.com/item/InternetOpen) 创建根句柄，然后通过 InternetConnect 创建 FTP 连接句柄。
 
-2、该图展示了依赖于 InternetConnect 所返回FTP 连接句柄的 FTP函数之间的层次关系。
+2、这些函数使用 InternetConnect 返回的 FTP 连接句柄。
 
 ### 典型的 HTTP 客户端程序的处理流程
-1、目的：开始 HTTP会话，建立 HTTP 连接
+1、目的：开始 HTTP 会话，建立 HTTP 连接
 方法：InternetOpen、InternetAttemptConnect、InternetConnect
-结果：初始化 WinInet.dll 并联接服务器，返回相应的句柄
+结果：初始化 WinInet.dll 并连接服务器，返回相应的句柄
 
-2、目的：创建一个 HTTP请求
+2、目的：创建一个 HTTP 请求
 方法：[HttpOpenRequest](https://baike.baidu.com/item/HttpOpenRequest)
 结果：
 
-3、目的：发送一个 HTTP请求
+3、目的：发送一个 HTTP 请求
 方法：HttpAddRequestHeaders
 HttpSendRequest(Ex)
 结果：
 
-4、目的：读文件
+4、目的：读取文件
 方法：InternetReadFile(Ex)
-结果：使用你提供的缓冲读指定的字节
+结果：使用调用方提供的缓冲区读取指定字节
 
-5、目的：获取 HTTP请求信息
+5、目的：获取 HTTP 请求信息
 方法：HttpQueryInfo
 结果：从服务器获取 HTTP 请求头信息
 
 6、目的：[异常处理](https://baike.baidu.com/item/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86)
 方法：InternetGetLastResponseInfo、InternetErrorDlg
-结果：处理所有普通的异常类型
+结果：处理普通的异常类型
 
 7、目的：结束 HTTP 会话
 方法：HttpEndRequest、InternetCloseHandle
-结果：自动清除打开的句柄的连接
-
+结果：关闭打开的句柄及其连接
 
 ### InternetOpen 初始化
 
 #### InternetOpen(lpszAgent: PChar;
 dwAccessType: DWORD;
 lpszProxy,
-lpszProxyBypass:PChar;
+lpszProxyBypass: PChar;
 dwFlags: DWORD): HINTERNET; stdcall;
 
 参数：
 1、lpszAgent 应用程序名，可以自定义
 2、dwAccessType 存取类型，可以是：
-①INTERNET_OPEN_TYPE_PRECONFIG =0 使用 IE 中的连接设置
+①INTERNET_OPEN_TYPE_PRECONFIG =0 使用系统中的连接设置
 ②INTERNET_OPEN_TYPE_DIRECT =1 直接连接到服务器
 ③INTERNET_OPEN_TYPE_PROXY =3 通过代理服务器进行连接
-为 3 时需指定代理服务器地址
+使用代理时需指定代理服务器地址
 
-3、lpszProxy CERN 代理服务器地址，一般设置为 null;
-4、lpszProxyBypass 代理服务器地址；
+3、lpszProxy 代理服务器地址；不使用代理时应为 NULL。
+4、lpszProxyBypass 绕过代理的主机名或 IP 地址列表；不使用代理时应为 NULL。
 5、dwFlags 标记，一般设置为 0，可以是：
-①INTERNET_FLAG_DONT_CACHE 不在缓存中保存取得的内容
-②INTERNET_FLAG_OFFLINE 脱机方式
+①INTERNET_FLAG_ASYNC 使后续请求采用异步方式
+②INTERNET_FLAG_FROM_CACHE 仅从缓存读取数据
+③INTERNET_FLAG_OFFLINE 仅从缓存读取数据，不发起网络请求
 
-
-#### InternetOpenUrl   打开 Url，读取数据
+#### InternetOpenUrl 打开 URL，读取数据
 InternetOpenUrl(hInet: HINTERNET;
 lpszUrl: PChar;
 lpszHeaders: PChar;
@@ -199,22 +198,22 @@ dwHeadersLength: DWORD;
 dwFlags: DWORD;
 dwContext: DWORD): HINTERNET; stdcall;
 
-2、参数：
+参数：
 
-1、hInet 由 InternetOpen返回的句柄
-2、lpszUrl 文件 Url 地址，以 http:，ftp: 打头的 Url 地址；
-3、lpszHeaders 发送到服务器的数据头；
-4、dwHeadersLength 发送到服务器的数据头长度
+1、hInet 由 InternetOpen 返回的句柄
+2、lpszUrl 文件 URL 地址，以 http:// 或 ftp:// 开头；
+3、lpszHeaders 发送到服务器的请求头；
+4、dwHeadersLength 发送到服务器的请求头长度
 5、dwFlags 标记，可以是：
-①INTERNET_FLAG_RELOAD 强制重读数据
-②INTERNET_FLAG_DONT_CACHE 不保存到缓存
+①INTERNET_FLAG_RELOAD 强制从源服务器重新读取数据
+②INTERNET_FLAG_NO_CACHE_WRITE 不将返回实体写入缓存
 ③INTERNET_FLAG_TRANSFER_ASCII 使用文本数据
 ④INTERNET_FLAG_TRANSFER_BINARY 使用二进制数据
-6、dwContext 上下文标记，如果使用回调功能时这个值将传送给回调函数
+6、dwContext 应用程序定义的上下文值，在异步回调中用于识别请求
 
 ### Internet 的连接
 
-#### InternetConnect 
+#### InternetConnect
 InternetConnect(hInet: HINTERNET;
 lpszServerName: PChar;
 nServerPort: INTERNET_PORT;
@@ -226,12 +225,11 @@ dwContext: DWORD): HINTERNET; stdcall;
 
 参数：
 1、hInet 由 InternetOpen 返回的句柄
-2、lpszServerName 服务器的地址
-HTTP 地址必须为服务器名作InternetOpenUrl语法分析
-3、nServerPort HTTP协议端口号（缺省80）
+2、lpszServerName 服务器的主机名或 IP 地址，不包含协议和路径
+3、nServerPort 服务端口号，默认值由 dwService 决定
 4、lpszUsername 用户名
 5、lpszPassword 用户密码
-6、dwService 决定服务类型 HTTP，FTP，可以是：
+6、dwService 决定服务类型 HTTP、FTP，可以是：
 ①INTERNET_SERVICE_FTP = 1; 连接到一个 FTP 服务器上
 ②INTERNET_SERVICE_HTTP = 3; 连接到一个 HTTP 服务器上
 7、dwFlags
@@ -248,21 +246,19 @@ dwFlags: DWORD;
 dwContext: DWORD): HINTERNET; stdcall;
 
 参数：
-1、hConnect InternetConnect句柄
-2、lpszVerb 命令字，如果为 NULL，使用缺省值“GET”
+1、hConnect InternetConnect 返回的句柄
+2、lpszVerb 命令字，如果为 NULL，使用默认值“GET”
 3、lpszObjectName 命令对象，通常是一个文件名、可执行文件或是一个搜索列表
-4、lpszVersion HTTP版本，如果为空，将使用“HTTP/1.0”
+4、lpszVersion HTTP 版本；具体使用 HTTP/1.0 还是 HTTP/1.1 取决于系统 Internet 选项设置
 5、lpszReferrer 一个网址，可以为空
-6、lplpszAcceptTypes中程序接收的文件类型列表。把空值传给该函数即通知了服务器只有文本文件可以被接收'application/octet-stream'
-7、dwFlags 标志 使用 or 连接标志
-①INTERNET_FLAG_NO_CACHE_WRITE 标志不缓冲写
+6、lplpszAcceptTypes 是以 NULL 结尾的 MIME 类型数组；如果为 NULL，则不指定可接受的媒体类型，服务器通常会将缺少 Accept 类型解释为只接受 text/*
+7、dwFlags 标志，使用按位或组合
+①INTERNET_FLAG_NO_CACHE_WRITE 不将返回实体写入缓存
 ②INTERNET_FLAG_KEEP_CONNECTION 保持连接
-③INTERNET_FLAG_SECURE { use PCT/SSL if applicable (HTTP) }
-{ Security Ignore Flags, Allow HttpOpenRequest to overide
-Secure Channel (SSL/PCT) failures of the following types. }
-④INTERNET_FLAG_IGNORE_CERT_CN_INVALID { bad common name in X509 Cert. }
-⑤INTERNET_FLAG_IGNORE_CERT_DATE_INVALID { expired X509 Cert. }
-8、dwContext Integer(Self)？
+③INTERNET_FLAG_SECURE 对 HTTP 请求使用 TLS/SSL 安全事务
+④INTERNET_FLAG_IGNORE_CERT_CN_INVALID 禁用对证书主机名的检查
+⑤INTERNET_FLAG_IGNORE_CERT_DATE_INVALID 禁用对证书有效期的检查
+8、dwContext 应用程序定义的上下文值，可用于在异步回调中识别请求
 
 ### 向 HTTP 服务器发送指定的请求
 #### HttpSendRequest
@@ -273,13 +269,13 @@ lpOptional: Pointer;
 dwOptionalLength: DWORD): BOOL; stdcall;
 
 参数：
-1、hRequest HttpOpenRequest句柄
-2、lpszHeaders 服务请求的数据头
-3、dwHeadersLength 服务请求的数据头的长度
-4、lpOptional 紧跟在标题后任意数据的地址，此参数一般用于 POST 和 PUT 操作
-5、dwOptionalLength 数据的长度
+1、hRequest HttpOpenRequest 返回的句柄
+2、lpszHeaders 附加的请求头
+3、dwHeadersLength 请求头的长度
+4、lpOptional 紧跟在请求头之后发送的可选数据地址，此参数一般用于 POST 和 PUT 操作
+5、dwOptionalLength 可选数据的长度
 
-#### InternetSetOption 
+#### InternetSetOption
 InternetSetOption 设置一个 Internet 选项
 
 InternetSetOption(hInet: HINTERNET;
@@ -290,23 +286,21 @@ dwBufferLength: DWORD): BOOL; stdcall;
 参数：
 1、hInet 句柄
 2、dwOption Internet 选项，可以是：
-①INTERNET_OPTION_SEND_TIMEOUT 设置，发送请求和连接时的超时时间
-②INTERNET_OPTION_RECEIVE_TIMEOUT 设置，接收请求和连接时的超时时间
-3、lpBuffer 值
-4、dwBufferLength 值大小
+①INTERNET_OPTION_SEND_TIMEOUT 设置发送请求和连接时的超时时间，单位为毫秒
+②INTERNET_OPTION_RECEIVE_TIMEOUT 设置接收请求和连接时的超时时间，单位为毫秒
+3、lpBuffer 选项值
+4、dwBufferLength 选项值大小
 
+## WinHTTP
 
+https://learn.microsoft.com/en-us/windows/win32/winhttp/winhttp-start-page
 
+### 代码示例
 
-
-
-# WinHTTP
-https://docs.microsoft.com/en-us/windows/desktop/winhttp/porting-wininet-applications-to-winhttp
-## Code demo
 | **Header** | winhttp.h |
-| **Library** | Winhttp.lib |
-| **DLL** | Winhttp.dll |
-```cpp
+| **Library** | winhttp.lib |
+| **DLL** | winhttp.dll |
+```
     DWORD dwSize = 0;
     LPVOID lpOutBuffer = NULL;
     BOOL  bResults = FALSE;
@@ -381,8 +375,8 @@ https://docs.microsoft.com/en-us/windows/desktop/winhttp/porting-wininet-applica
     if (hSession) WinHttpCloseHandle(hSession);
 ```
 
-WinHttpQueryDataAvailable\WinHttpReadData
-```cpp
+### WinHttpQueryDataAvailable / WinHttpReadData
+```
     DWORD dwSize = 0;
     DWORD dwDownloaded = 0;
     LPSTR pszOutBuffer;
@@ -464,3 +458,7 @@ WinHttpQueryDataAvailable\WinHttpReadData
     if (hConnect) WinHttpCloseHandle(hConnect);
     if (hSession) WinHttpCloseHandle(hSession);
 ```
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-24 23:40（UTC+08:00）。

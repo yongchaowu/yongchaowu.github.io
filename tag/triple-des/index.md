@@ -5,4 +5,6 @@ tag: "Triple DES"
 slug: "triple-des"
 permalink: /tag/triple-des/
 generated: true
+noindex: true
+sitemap: false
 ---

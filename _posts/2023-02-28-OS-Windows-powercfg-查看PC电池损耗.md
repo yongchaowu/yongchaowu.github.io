@@ -9,11 +9,11 @@ tags:
 - Tool
 - Windows
 ---
+windows系统相关命令 `powercfg`
 
-Windows系统相关命令 `powercfg`
+`powercfg /?` 可以查看命令提示，
 
 <!--more-->
-`powercfg /?` 可以查看命令提示，
 
 `powercfg /batteryreport` 命令生成电池使用情况报告，
 - Design capacity(电池设计容量);
@@ -131,8 +131,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       h1 {
 
           color: #11D8E8;
@@ -140,8 +138,6 @@ POWERCFG /命令 [参数]
           font-size: 42pt;
 
       }
-
-
 
       h2 {
 
@@ -157,8 +153,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       td {
 
           padding-left: 0.3em;
@@ -166,8 +160,6 @@ POWERCFG /命令 [参数]
           padding-right: 0.3em;
 
       }
-
-
 
       .nobatts {
 
@@ -189,8 +181,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       .explanation {
 
           color: #777777;
@@ -201,8 +191,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       .explanation2 {
 
           color: #777777;
@@ -212,8 +200,6 @@ POWERCFG /命令 [参数]
           margin-bottom: 0.1em;
 
       }
-
-
 
       table {
 
@@ -231,8 +217,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       .even { background: #272727; }
 
       .odd { background: #1E1E1E; }
@@ -240,8 +224,6 @@ POWERCFG /命令 [参数]
       .even.suspend { background: #1A1A28; }
 
       .odd.suspend { background: #1A1A2C; }
-
-
 
       thead {
 
@@ -253,8 +235,6 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       text {
 
           font-size: 12pt;
@@ -265,11 +245,7 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       .centered { text-align: center; }
-
-
 
       .label {
 
@@ -281,13 +257,9 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       .dc.even { background: #40182C; }
 
       .dc.odd { background: #30141F; }
-
-
 
       td.colBreak {
 
@@ -297,11 +269,7 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       td.state { text-align: center; }
-
-
 
       td.hms {
 
@@ -313,13 +281,9 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       td.dateTime { font-family: Segoe UI Symbol; }
 
       td.nullValue { text-align: center; }
-
-
 
       td.percent {
 
@@ -331,15 +295,11 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       col:first-child { width: 13em; }
 
       col.col2 { width: 10.4em; }
 
       col.percent { width: 7.5em; }
-
-
 
       td.mw {
 
@@ -349,11 +309,7 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       td.acdc { text-align: center; }
-
-
 
       span.date {
 
@@ -362,8 +318,6 @@ POWERCFG /命令 [参数]
           width: 5.5em;
 
       }
-
-
 
       span.time {
 
@@ -375,11 +329,7 @@ POWERCFG /命令 [参数]
 
       }
 
-
-
       text { font-family: Segoe UI Symbol; }
-
-
 
       .noncontigbreak {
 
@@ -403,8 +353,6 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     function padLeft(number, length) {
 
         var str = '' + number;
@@ -415,13 +363,9 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         return str;
 
     }
-
-
 
     // Returns the number of milliseconds between 2 date-times represented as strings.
 
@@ -435,11 +379,7 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     var dateFormat = /(\d{4})-(\d{2})-(\d{2})[T](\d{2}):(\d{2}):(\d{2})/
-
-
 
     // Parses a date-time string and returns a Date (i.e. number of milliseconds)
 
@@ -451,8 +391,6 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         var match = dateFormat.exec(value)
 
         if (!match) {
@@ -461,8 +399,6 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         return Date.parse(match[1] + '/' + match[2] + '/' +
 
                           match[3] + ' ' + match[4] + ':' +
@@ -470,8 +406,6 @@ POWERCFG /命令 [参数]
                           match[5] + ':' + match[6])
 
     }
-
-
 
     // Parses just the date portion of a date-time string and returns a Date
 
@@ -485,8 +419,6 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         var match = dateFormat.exec(value)
 
         if (!match) {
@@ -495,17 +427,11 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         return Date.parse(match[1] + '/' + match[2] + '/' + match[3])
 
     }
 
-
-
     var durationFormat = /P((\d+)D)?T((\d+)H)?((\d+)M)?(\d+)S/
-
-
 
     // Convert a string of the form P10DT1H15M40S to a count of milliseconds
 
@@ -519,8 +445,6 @@ POWERCFG /命令 [参数]
 
         }
 
-
-
         var days = parseInt(match[2] || '0');
 
         var hrs = parseInt(match[4] || '0');
@@ -533,8 +457,6 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     // Converts milliseconds to days
 
     function msToDays(ms) {
@@ -543,15 +465,11 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     function daysToMs(days) {
 
         return (days * 24 * 60 * 60 * 1000);
 
     }
-
-
 
     // Formats a number of milliseconds as h:mm:ss
 
@@ -573,8 +491,6 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     // Converts a millisecond timestamp to a day and month string
 
     // Note: dayOffset is forward from date.
@@ -589,8 +505,6 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     // Takes a millisecond timestamp and returns a new millisecond timestamp
 
     // rounded down to the current day.
@@ -602,8 +516,6 @@ POWERCFG /命令 [参数]
         return Date.parse(dt.getFullYear() + '/' + (dt.getMonth() + 1) + '/' + dt.getDate());
 
     }
-
-    
 
     Timegraph = {
 
@@ -617,27 +529,17 @@ POWERCFG /命令 [参数]
 
         ticks: 10,
 
-
-
         // Maximum number of 24 hour ticks for showing 12 and 6 hour ticks
-
-
 
         ticks12Hour: 8,
 
         ticks6Hour: 4,
 
-
-
         // Shading
-
-
 
         lineColor: "#B82830",
 
         shadingColor: "#4d1d35",
-
-
 
         precompute: function (graph) {
 
@@ -649,8 +551,6 @@ POWERCFG /命令 [参数]
 
             var max = 0;
 
-
-
             graph.height = canvas.height - Timegraph.axisTop - Timegraph.axisBottom;
 
             graph.width = canvas.width - Timegraph.axisLeft - Timegraph.axisRight;
@@ -661,8 +561,6 @@ POWERCFG /命令 [参数]
 
                 data[i].t1 = parseDateTime(data[i].x1);
 
-
-
                 if (i == 0) {
 
                     min = data[i].t0;
@@ -671,15 +569,11 @@ POWERCFG /命令 [参数]
 
                 }
 
-
-
                 if (data[i].t0 < min) {
 
                     min = data[i].t0;
 
                 }
-
-
 
                 if (data[i].t1 > max) {
 
@@ -687,13 +581,9 @@ POWERCFG /命令 [参数]
 
                 }
 
-
-
                 data[i].yy0 =
 
                     Timegraph.axisTop + graph.height - data[i].y0 * graph.height;
-
-
 
                 data[i].yy1 =
 
@@ -701,13 +591,9 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             if (graph.startTime != null) {
 
                 graph.startMs = parseDateTime(graph.startTime);
-
-
 
             } else {
 
@@ -715,15 +601,11 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             graph.endMs = max;
 
             graph.durationMs = max - min;
 
         },
-
-
 
         drawFrame: function (graph) {
 
@@ -731,19 +613,13 @@ POWERCFG /命令 [参数]
 
             var context = graph.context;
 
-
-
             graph.width =
 
                 canvas.width - Timegraph.axisRight - Timegraph.axisLeft;
 
-
-
             graph.height =
 
                 canvas.height - Timegraph.axisTop - Timegraph.axisBottom;
-
-
 
             context.beginPath();
 
@@ -753,19 +629,13 @@ POWERCFG /命令 [参数]
 
                            Timegraph.axisTop);
 
-
-
             context.lineTo(Timegraph.axisLeft + graph.width,
 
                            Timegraph.axisTop + graph.height);
 
-
-
             context.lineTo(Timegraph.axisLeft,
 
                            Timegraph.axisTop + graph.height);
-
-
 
             context.lineTo(Timegraph.axisLeft, Timegraph.axisTop);
 
@@ -775,23 +645,17 @@ POWERCFG /命令 [参数]
 
         },
 
-
-
         drawRange: function (graph) {
 
             var canvas = graph.canvas;
 
             var context = graph.context;
 
-
-
             context.font = "12pt Segoe UI";
 
             context.fillStyle = "#00b0f0";
 
             context.fillText("%", 0, Timegraph.axisTop + 5, Timegraph.axisLeft);
-
-
 
             var tickSpacing = graph.height / 10;
 
@@ -809,8 +673,6 @@ POWERCFG /命令 [参数]
 
                                offset);
 
-
-
                 context.stroke();
 
                 context.fillText(tickValue.toString(),
@@ -821,8 +683,6 @@ POWERCFG /命令 [参数]
 
                                  Timegraph.axisLeft);
 
-
-
                 offset += tickSpacing;
 
                 tickValue -= 10;
@@ -830,8 +690,6 @@ POWERCFG /命令 [参数]
             }
 
         },
-
-
 
         drawDomain: function (graph, start, end) {
 
@@ -849,8 +707,6 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             var startDay = dateFloor(start);
 
             var t0 = startDay;
@@ -867,21 +723,15 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             if (t0 >= t1) {
 
                 return;
 
             }
 
-
-
             var increment =
 
                 Math.max(Math.floor((t1 - t0) / daysToMs(Timegraph.ticks)), 1);
-
-
 
             var incrementMs = daysToMs(increment);
 
@@ -896,8 +746,6 @@ POWERCFG /命令 [参数]
                  offset < (graph.width + Timegraph.axisLeft);
 
                  offset += spacing) {
-
-
 
                 context.beginPath();
 
@@ -915,15 +763,11 @@ POWERCFG /命令 [参数]
 
                                  spacing);
 
-
-
                 dayOffset += increment;
 
             }
 
         },
-
-
 
         plot: function (graph, start, end) {
 
@@ -933,15 +777,11 @@ POWERCFG /命令 [参数]
 
             var data = graph.data;
 
-
-
             if ((end < start)) {
 
                 return;
 
             }
-
-
 
             var duration = end - start;
 
@@ -955,25 +795,17 @@ POWERCFG /命令 [参数]
 
                     (data[i].t1 > end)) {
 
-
-
                     continue;
 
                 }
-
-
 
                 var x1 = (data[i].t0 - start) / duration;
 
                 x1 = x1 * graph.width + Timegraph.axisLeft;
 
-
-
                 var x2 = (data[i].t1 - start) / duration;
 
                 x2 = x2 * graph.width + Timegraph.axisLeft;
-
-
 
                 context.globalAlpha = 0.3;
 
@@ -997,8 +829,6 @@ POWERCFG /命令 [参数]
 
         },
 
-
-
         draw: function (graph) {
 
             var canvas = document.getElementById(graph.element);
@@ -1009,8 +839,6 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             var context = canvas.getContext('2d');
 
             if (context == null) {
@@ -1019,8 +847,6 @@ POWERCFG /命令 [参数]
 
             }
 
-
-
             graph.width = 0;
 
             graph.height = 0;
@@ -1028,8 +854,6 @@ POWERCFG /命令 [参数]
             graph.context = context;
 
             graph.canvas = canvas;
-
-
 
             Timegraph.precompute(graph);
 
@@ -1042,8 +866,6 @@ POWERCFG /命令 [参数]
         }
 
     };
-
-    
 
     drainGraphData = [
 
@@ -1141,11 +963,7 @@ POWERCFG /命令 [参数]
 
 { x0: "2023-02-28T21:54:28", x1: "2023-02-28T21:55:05", y0: 0.29910979228486645, y1: 0.29020771513353116 }, 
 
-
-
     ];
-
-    
 
     function main() {
 
@@ -1163,13 +981,9 @@ POWERCFG /命令 [参数]
 
     }
 
-
-
     if (window.addEventListener != null) {
 
         window.addEventListener("load", main, false);
-
-
 
     } else if (window.attachEvent != null) {
 

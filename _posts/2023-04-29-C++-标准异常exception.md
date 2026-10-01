@@ -8,14 +8,15 @@ categories:
 tags:
 - C++
 ---
-
 std::exception 定义于头文件 `<exception>` class exception;
 >https://www.apiref.com/cpp-zh/cpp/error/exception.html
 
-<!--more-->
 标准库头文件 `<stdexcept>`
 >https://www.apiref.com/cpp-zh/cpp/header/stdexcept.html
 
+<!--more-->
+
+## 
 std::exception
 std::bad_alloc
 std::bad_cast
@@ -32,16 +33,17 @@ std::range_error			报告内部计算中值域错误的异常类
 std::overflow_error			报告算术上溢的异常类
 std::underflow_error		报告算术下溢的异常类
 
-
 ----------
 ## `<exception>`
 https://www.apiref.com/cpp-zh/cpp/error/exception.html
 
 std::exception 
-定义于头文件 `<exception>`
+定义于头文件 `<exception> `
 class exception;
 提供一致的接口，以通过 throw 表达式处理错误。
 标准库所生成的所有异常继承自 std::exception
+
+> **版本范围：** 本次只校正 C++17 N4659 中 `bad_optional_access` 的继承关系；文章混合多个标准版本，其他条目未改写。
 
 ```
 - logic_error
@@ -50,7 +52,6 @@ class exception;
 	- length_error
 	- out_of_range
 	- future_error(C++11)
-	- bad_optional_access(C++17)
 - runtime_error
 	- range_error
 	- overflow_error
@@ -71,6 +72,7 @@ class exception;
 - bad_alloc
 	- bad_array_new_length(C++11)
 - bad_exception
+- bad_optional_access(C++17)
 - ios_base::failure(C++11 前)
 - bad_variant_access(C++17)
 ```
@@ -99,3 +101,7 @@ namespace std {
     class underflow_error;
 }
 ```
+
+本文修订依据：C++17 工作草案 [N4659 `optional.bad.access`](https://timsong-cpp.github.io/cppwp/n4659/optional.bad.access) 和 [`exception`](https://timsong-cpp.github.io/cppwp/n4659/exception)。N4659 将 `bad_optional_access` 声明为直接继承 `std::exception`，而不是 `std::logic_error`。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 08:56（UTC+08:00）。修订仅将 C++17 的 `bad_optional_access` 移到直接继承 `std::exception` 的层级。

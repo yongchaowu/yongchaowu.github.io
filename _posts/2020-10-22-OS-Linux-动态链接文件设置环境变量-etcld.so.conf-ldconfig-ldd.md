@@ -8,7 +8,6 @@ tags:
 - OS
 - Linux
 ---
-
 October 22, 2020 8:22 PM
 现象：在Linux下，用sh脚本可以启动的程序使用pytest的时候提示xxx.so文件不存在
 原因：so不在环境变量中，pytest查询时无法查询到
@@ -16,17 +15,18 @@ October 22, 2020 8:22 PM
 具体步骤：
 ```language
 1. vi  /etc/ld.so.conf
-2. 在文件最后加入so的文件路径，使用绝对路径
+2. 在文件最后加入“包含该 .so 的目录”的绝对路径（不是 .so 文件本身）
 3. 保存退出
 4. ldconfig
 ```
 
-<!--more-->
 ## 原理
 参照 [动态装入器（dynamic loader）](https://blog.csdn.net/leonliu06/article/details/78587511)
 ```plain
 动态装入器（dynamic loader）负责将动态可执行程序和所有必需的共享库一起装入，以使它们能正确执行。
 /lib64/ld-linux-x86-64.so.2 即是64位linux系统下的动态装入器
+
+<!--more-->
 
 动态装入器找到共享库要依靠两个文件 —— /etc/ld.so.conf和 /etc/ld.so.cache。
 
@@ -42,3 +42,9 @@ LD_LIBRARY_PATH
 $ldd命令查看程序依赖的动态库，可以判断是否有动态库缺失
 ldd [程序名]
 ```
+
+`/etc/ld.so.conf` 中应填写目录，而不是单个 `.so` 文件；目录配置由 `ldconfig` 读取并写入缓存。参考：[Linux `ld.so.conf(5)`](https://man7.org/linux/man-pages/man5/ld.so.conf.5.html)、[`ldconfig(8)`](https://man7.org/linux/man-pages/man8/ldconfig.8.html) 和 [GNU Bash Quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html)。目录规则引用的 Linux man-pages 文档版本为 6.19（2026-08-23），该规则并非仅适用于该文档版本。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:58（UTC+08:00）。

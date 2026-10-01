@@ -41,7 +41,12 @@ posts.each do |file|
   end
   
   title = frontmatter['title'] || ''
-  display_title = frontmatter['display_title'] || ''
+  # Keep "absent" and "present but blank" apart. `display_title` is an optional
+  # override used by 117 of 357 posts; conflating the two made this report 240
+  # false positives the moment it was allowed to fail, which is how the bug had
+  # been hiding behind an unconditional exit 0.
+  has_display_title = frontmatter.key?('display_title')
+  display_title = frontmatter['display_title']
   categories = frontmatter['categories'] || []
   tags = frontmatter['tags'] || []
   
@@ -55,7 +60,7 @@ posts.each do |file|
   
   # Check for missing title
   missing_titles << file if title.to_s.strip.empty?
-  empty_display_title << file if display_title.to_s.strip.empty? && !title.to_s.strip.empty?
+  empty_display_title << file if has_display_title && display_title.to_s.strip.empty?
   
   # Suspicious classifications
   title_lower = title.downcase
@@ -134,3 +139,51 @@ missing_titles.each { |f| puts "  #{f}" }
 puts
 puts "Empty display_title (has title): #{empty_display_title.length}"
 empty_display_title.each { |f| puts "  #{f}" }
+
+# ---------------------------------------------------------------------------
+# Exit status
+#
+# This script used to always exit 0, so all eleven acceptance gates could stay
+# green while the taxonomy quietly drifted. Three different failure classes are
+# now distinguished:
+#
+#   hard    -- a post with no title, a category that is not in topics.yml, or an
+#              empty display_title next to a real title. These are defects.
+#   ratchet -- "suspicious" classifications and tag case variants are heuristics,
+#              not verdicts, so failing on today's 31 would block on judgement
+#              calls. Instead the count is pinned to a baseline and the gate
+#              fails only when it grows, which catches new drift without
+#              forcing a cleanup of the existing set. Lower the baseline in this
+#              file after reviewing and fixing items.
+#   info    -- everything else.
+# ---------------------------------------------------------------------------
+BASELINE_SUSPICIOUS = 31
+BASELINE_TAG_VARIANTS = 3
+
+hard_failures = unknown_categories.length + missing_titles.length + empty_display_title.length
+tag_variant_count = tag_variants.count { |_key, variants| variants.uniq.length > 1 }
+problems = []
+problems << "#{unknown_categories.length} post(s) in a category absent from topics.yml" if unknown_categories.any?
+problems << "#{missing_titles.length} post(s) with no title" if missing_titles.any?
+problems << "#{empty_display_title.length} post(s) with an empty display_title" if empty_display_title.any?
+
+warns = []
+if suspicious.length > BASELINE_SUSPICIOUS
+  warns << "suspicious classifications grew from #{BASELINE_SUSPICIOUS} to #{suspicious.length}"
+end
+if tag_variant_count > BASELINE_TAG_VARIANTS
+  warns << "tag case/format variants grew from #{BASELINE_TAG_VARIANTS} to #{tag_variant_count}"
+end
+
+puts
+puts "=== Audit status ==="
+puts "  hard failures:      #{hard_failures}"
+puts "  suspicious:         #{suspicious.length} (baseline #{BASELINE_SUSPICIOUS})"
+puts "  tag variant groups: #{tag_variant_count} (baseline #{BASELINE_TAG_VARIANTS})"
+if hard_failures.zero? && warns.empty?
+  puts "  Content taxonomy audit: PASS"
+  exit 0
+end
+(hard_failures.zero? ? warns : problems + warns).each { |m| warn "  FAIL: #{m}" }
+warn "Content taxonomy audit: FAIL"
+exit 1

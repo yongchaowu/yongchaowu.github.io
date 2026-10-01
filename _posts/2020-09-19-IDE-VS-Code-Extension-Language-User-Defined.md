@@ -8,13 +8,13 @@ tags:
 - Visual Studio Code
 - IDE
 ---
-
 September 19, 2020 5:08 PM
-上次想做vscode自定义语言的高亮显示，最后调研结果是用vs code的插件实现，以下是总结。
+上次想做vscode自定义语言的高亮显示，最后调研结果事用vs cdoe的插件实现，以下是总结。
 
-<!--more-->
 ## 官网介绍 https://code.visualstudio.com/api
 按照官网操作基本就可以实现啦！~ 本文最后有参考的网站~
+
+<!--more-->
 
 ## 环境
 - Node
@@ -76,7 +76,7 @@ September 19, 2020 5:08 PM
 ```
 
 - language-configuration.json
-```json
+```language
 {
     "comments": {
         // symbol used for single line comment. Remove this entry if your language does not support line comments
@@ -191,7 +191,6 @@ September 19, 2020 5:08 PM
        }
 ```
 
-
 ## 参考网站
 <A HREF="https://www.runoob.com/typescript/ts-install.html">TypeScript 安装 | 菜鸟教程</A>
 <A HREF="https://blog.csdn.net/qq_504762354/article/details/81437118?utm_medium=distribute.pc_relevant.none-task-blog-title-10&spm=1001.2101.3001.4242">vs code设置自定义代码块的方法_码在当下的博客-CSDN博客</A>
@@ -205,3 +204,7 @@ September 19, 2020 5:08 PM
 <A HREF="https://macromates.com/manual/en/language_grammars">Language Grammars — TextMate 1.x Manual</A>
 <A HREF="https://macromates.com/manual/en/regular_expressions">Regular Expressions — TextMate 1.x Manual</A>
 <A HREF="https://www.apeth.com/nonblog/stories/textmatebundle.html">Writing a TextMate Grammar: Some Lessons Learned</A>
+
+本文修订依据：CommonMark `0.31.2`（2024-01-28）§4.2 的 ATX heading 语法。规范要求起始 `#` 后使用空格或 tab；本文仅在文章标题的 `#` 后补入必需空格，使其解析为一级标题，扩展清单、命令与配置内容均未改动。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 16:14（UTC+08:00）。修订仅补齐文章一级标题的 CommonMark 必需空格。

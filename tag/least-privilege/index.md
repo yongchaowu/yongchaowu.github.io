@@ -5,4 +5,6 @@ tag: "Least Privilege"
 slug: "least-privilege"
 permalink: /tag/least-privilege/
 generated: true
+noindex: true
+sitemap: false
 ---

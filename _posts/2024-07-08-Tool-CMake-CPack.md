@@ -9,10 +9,12 @@ tags:
 - CMake
 - Tool
 ---
+参考：[CMake CPack 官方文档](https://cmake.org/cmake/help/latest/module/CPack.html)
 
-`CMakeLists.txt:Cpack`
+`CMakeList.txt:Cpack`
 
 <!--more-->
+
 ```shell
 project(CpackDemo)
 #project(CpackDemo VERSION 0.0.1)
@@ -21,9 +23,9 @@ set(CPACK_PACKAGE_NAME XXX)
 
 set(CPACK_PACKAGE_VERSION 0.0.1) #Default value is 0.1.1
 
-set(CPACK_PACKAGE_VERSION_MAJOR 0)# Default value is CMAKE_PROJECT_VERSION_MAJOR
-set(CPACK_PACKAGE_VERSION_MINOR 0)# Default value is CMAKE_PROJECT_VERSION_MINOR
-set(CPACK_PACKAGE_VERSION_PATCH 1)# Default value is CMAKE_PROJECT_VERSION_PATCH
+set(CPACK_PACKAGE_VERSION_MAJOR 0)# Default depends on the project version; see CPack documentation
+set(CPACK_PACKAGE_VERSION_MINOR 0)# Default depends on the project version; see CPack documentation
+set(CPACK_PACKAGE_VERSION_PATCH 1)# Default depends on the project version; see CPack documentation
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Brief")
 
@@ -55,12 +57,11 @@ set(CPACK_GENERATOR "TGZ;ZIP")
 # NSIS64 (Null Soft Installer (64-bit))
 # NuGet (NuGet packages)
 # RPM (RPM packages)
-# STGZ (Self extracting Tar GZip compression)
-# TBZ2 (Tar BZip2 compression)
+# STGZ (Self extracting Tar GZip compression
+# TBZ2 (Tar GZip compression)
 # TXZ (Tar XZ compression)
 # TZ (Tar Compress compression)
 # ZIP (ZIP file format)
-
 
 #FILE
 install(TARGETS xx DESTINATION  bin)
@@ -71,3 +72,7 @@ install(FILES xx DESTINATION  .)
 include(CPack)
 
 ```
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

@@ -9,15 +9,15 @@ tags:
 - CMake
 - Tool
 ---
-
 >https://cmake.org/cmake/help/latest/command/find_library.html?highlight=find_library
 
+If nothing is found, the result will be `<VAR>-NOTFOUND`.
+
 <!--more-->
-If nothing is found, the result will be <VAR>-NOTFOUND
 
 ## short-hand signature
 
-`find_library (<VAR> name1 [path1 path2 ...])`
+`find_library(<VAR> name1 [path1 path2 ...])`
 ## general signature
 ```
 find_library (
@@ -56,3 +56,7 @@ message("LibPath::${LibPath}")
 
 target_link_libraries(${NAME}  ${LibPath})
 ```
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

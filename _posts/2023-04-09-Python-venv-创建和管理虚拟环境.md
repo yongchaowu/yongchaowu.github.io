@@ -8,12 +8,12 @@ categories:
 tags:
 - Python
 ---
-
 >[https://docs.python.org/3/tutorial/venv.html](https://docs.python.org/3/tutorial/venv.html "Python venv")
 
-<!--more-->
 ## 概述
 Python应用程序通常会使用不在标准库内的软件包和模块。应用程序有时需要特定版本的库，因为应用程序可能需要修复特定的错误，或者可以使用库的过时版本的接口编写应用程序。
+
+<!--more-->
 
 这意味着一个Python安装可能无法满足每个应用程序的要求。如果应用程序A需要特定模块的1.0版本但应用程序B需要2.0版本，则需求存在冲突，安装版本1.0或2.0将导致某一个应用程序无法运行。
 
@@ -34,7 +34,7 @@ Python应用程序通常会使用不在标准库内的软件包和模块。应�
 - 在Unix或MacOS上，运行:`source tutorial-env/bin/activate`（这个脚本是为`bash shell`编写的。如果你使用 `csh` 或 `fish shell`，你应该改用 `activate.csh` 或 `activate.fish` 脚本。）
 
 激活虚拟环境将改变你所用终端的提示符，以显示你正在使用的虚拟环境，并修改环境以使 python 命令所运行的将是已安装的特定 Python 版本。 例如：
-```bash
+```
 $ source ~/envs/tutorial-env/bin/activate
 (tutorial-env) $ python
 Python 3.5.1 (default, May  6 2016, 10:59:36)
@@ -46,7 +46,7 @@ Python 3.5.1 (default, May  6 2016, 10:59:36)
 >>>
 ```
 
-To deactivate a virtual environment, type: `deactivate` into the terminal.
+To deactivate a virtual environment,type:`deactivate`into the terminal.
 
 ## 使用pip管理包
 You can install, upgrade, and remove packages using a program called `pip`. By default pip will install packages from the Python Package Index. You can browse the Python Package Index by going to it in your web browser.
@@ -101,7 +101,7 @@ Requires:
 ```
 
 `python -m pip list` will display all of the packages installed in the virtual environment:
-```bash
+```
 (tutorial-env) $ python -m pip list
 novas (3.1.1.3)
 numpy (1.9.2)
@@ -118,7 +118,7 @@ novas==3.1.1.3
 numpy==1.9.2
 requests==2.7.0
 ```
-然后可以将 `requirements.txt` 提交给版本控制并作为应用程序的一部分提供。然后用户可以使用 `install -r` 安装所有必需的包：
+然后可以将 `requirements.txt` 提交给版本控制并作为应用程序的一部分提供。然后用户可以使用 `install -r`安装所有必需的包：
 ```
 (tutorial-env) $ python -m pip install -r requirements.txt
 Collecting novas==3.1.1.3 (from -r requirements.txt (line 1))

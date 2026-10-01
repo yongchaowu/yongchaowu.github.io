@@ -9,12 +9,10 @@ tags:
 - Log4cxx
 - Open Source
 ---
-
 ## Building Apache log4cxx with Microsoft Visual Studio
 
-<!--more-->
 ### Preparation
-```bash
+```
 unzip apr-1.2.11-win32-src.zip
 rename apr-1.2.11 apr
 unzip apr-util-1.2.10-win32-src.zip
@@ -25,15 +23,19 @@ configure-aprutil
 ```
 configure.bat copies the prefabricated log4cxx.hw and private/log4cxx_private.hw over to log4cxx.h and private/log4cxx_private.h.
 
+<!--more-->
+
 configure-aprutil.bat uses "sed" to modify apu.hw and apr_ldap.hw to disable APR-Iconv and LDAP which are not necessary for log4cxx and problematic to build. If "sed" is not available, the modifications would be trivial to do in any text editor.
 
 Use the Win32 source zips for APR and APR-Util to preserve the required line endings for the project files. Directories need to be renamed to "apr" and "apr-util" respectively.
 
-
 ---
 
 Supplement:
-[apache-log4cxx-0.10.0](https://logging.apache.org/log4cxx/latest_stable/download.html)
+[apache-log4cxx-0.10.0](https://logging.apache.org/log4cxx/0.10.0/download.html)
+
+> **版本范围：** 上述下载链接固定对应 Apache log4cxx `0.10.0`；`latest_stable` 页面会随当前稳定版变化。
+
 [apr-1.7.0-win32-src、apr-util-1.6.1-win32-src](https://apr.apache.org/)
 [Windows:sed](https://jaist.dl.sourceforge.net/project/gnuwin32/sed/4.2.1/),并设置环境变量
 
@@ -43,7 +45,7 @@ Open projects/log4cxx.dsw with Microsoft Visual Studio 6 or later at which time 
 Select log4cxx as active project and build.
 
 ### Running unit tests
-To pass the unit tests, gzip, zip and sed must be on the path. Also three environment variables need to be defined: TOTO=wonderful, key1=value1 and key2=value2. These must be done outside of Microsoft Visual Studio, either in the Control Panel or in a Command Prompt used to launch Microsoft Visual Studio.
+To pass the unit tests, gzip, zip and sed must be on the path. Also three environment variables need to be defined: TOTO=wonderful, key1=value1 and key2=value2. These must be done outside of Microsoft Visual Studio, either in the Control Panel or in a Command Prompt uses to launch Microsoft Visual Studio.
 
 Open projects/testsuite.dsw or projects/testsuite-standalone.dsw (test suite and implementation in one project) in Microsoft Visual Studio, select active project and build.
 
@@ -55,10 +57,9 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
 - APR-Util requires later LDAP headers than provided with Visual Studio 6 and will fail to compile. log4cxx does not use LDAP, it can be disabled in apr_ldap.hw.
 - APR-Iconv is problematic and not used by log4cxx, it can be disabled in apu.hw.
 
-
 ### 编译log4cxx的坑
 - 若出现：error C2252: 只能在命名空间范围内显式实例化模板
-    ```cpp
+    ```
     请双击 "输出" 窗口中的错误行, 此时会在 "代码窗口" 中出现错误的位置.
     选择 LOG4CXX_LIST_DEF, 按键盘 F12, 此时会跳转到该宏的定义将
     #define LOG4CXX_LIST_DEF(N, T) \
@@ -75,7 +76,7 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
     请双击第一行出错输出, 将 #if MCAST_JOIN_SOURCE_GROUP 注释, 替换为 #if defined (group_source_req)
     ```
 
-- 若出现：error C2039: “insert_iterator”: 不是“std”的成员等错误.
+- 若出现：error C2039: “insert_iterator”: 不是“std”的成员' 等错误.
 	```
     在该 .cpp 中加入头文件 #include<iterator>, 使用vs2019时，可以通过编译器的修补功能自动添加
 	```
@@ -89,7 +90,7 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
 	[apr_arch_misc.h error](https://www.apachelounge.com/viewtopic.php?p=38033)
      set in apr/include/apr.hw : #define _WIN32_WINNT 0x0600 (was 502).
 - expat.h 不存在
-	apr_xml.c中需要expat.h，这个是一个c的xml解析库。 需要自己下载编译。 用的绝对路径编译的。
+	apr.xml.c中需要expat.h，这个是一个c的xml解析库。 需要自己下载编译。 用的绝对路径编译的。
     [expat-win32bin-2.2.9](https://sourceforge.net/projects/expat/)
     [Github:expat](https://github.com/libexpat/libexpat/tree/master/expat)
 - warning MSB8012：TargetPath与Linker的OutputFile属性值不匹配
@@ -103,6 +104,7 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
 	```
     最后，	链接器->输入->附加依赖项：增加Rpcrt4.lib，最后通过。
 
+-
 ### Demo
 [Demo](https://www.cnblogs.com/lovelp/articles/3719735.html)
 ```code
@@ -117,7 +119,6 @@ On the Debug Tab of the Project/Settings dialog, set the Working Directory to ".
     using namespace std;
     using namespace log4cxx;
     using namespace log4cxx::helpers;
-
 
     LoggerPtr logger(Logger::getLogger("R"));
     LoggerPtr logger_lib_a(Logger::getLogger("Lib_a"));
@@ -156,7 +157,6 @@ log4cxx.properties:
     log4j.logger.Lib_a =debug, ap1, stdout
     log4j.logger.Lib_b =debug, ap2, stdout
 
-
     #设置不继承父Logger
     log4j.additivity.Lib_a=false
     log4j.additivity.Lib_b=false
@@ -190,3 +190,9 @@ log4cxx.properties:
     log4j.appender.ap2.layout=org.apache.log4j.PatternLayout
     log4j.appender.ap2.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} [%c]-[%p] %m%n
 ```
+
+---
+
+本文链接修订依据：[Apache Log4cxx 0.10.0 下载页](https://logging.apache.org/log4cxx/0.10.0/download.html) 和 [当前稳定版下载页](https://logging.apache.org/log4cxx/latest_stable/download.html)。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 07:36（UTC+08:00）。修订仅将 0.10.0 的下载链接固定到对应版本页面。

@@ -7,17 +7,26 @@ categories:
 tags:
 - C++
 ---
-
 July 10, 2020 2:16 AM
 
+- swap：vector/map
+```cpp
+std::vector<T>().swap(m_vStruct);
+std::map<K, V>().swap(m_map);
+```
+
 <!--more-->
-- swap：vector map
-std::vector<struct T>().swap(m_vStruct);
-std::vector<struct T>().swap(m_mStruct);
 
 - struct memset
-结构体成员有string时不可以memset,会导致内存无法释放掉（即使是结构体对象，也无法释放）
+结构体成员包含 `std::string` 等非平凡类型时，不应使用 `memset` 初始化对象；对非平凡可复制对象调用 `memset` 属于未定义行为，可能破坏对象内部资源。
 
-- struct 有map类型成员，不能初始化
-当结构体中有map成员变量的时候，不能进行初始化，否则在插入操作的时候，会出现异常。
+- struct 有 map 类型成员
+`std::map` 成员可以在结构体构造函数中初始化；不要用 `memset` 或未初始化的聚合初始化方式处理包含 `std::map` 的对象。
+
+参考：[cppreference: std::memset](https://en.cppreference.com/w/cpp/string/byte/memset)
+
 [Online resources](https://blog.csdn.net/taolinke/article/details/5269096)
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

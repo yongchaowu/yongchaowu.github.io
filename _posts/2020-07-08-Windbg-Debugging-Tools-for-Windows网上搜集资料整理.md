@@ -9,16 +9,16 @@ tags:
 - Windows
 - Tool
 ---
-
 官方下载地址：
 x64
 http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/setup/WinSDKDebuggingTools_amd64/dbg_amd64.msi
 x86
 http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/setup/WinSDKDebuggingTools/dbg_x86.msi
 
-<!--more-->
 http://www.windbg.org/ 非windbg的官网。
 [Windows 调试工具(WinDbg、KD、CDB、NTSD)](https://docs.microsoft.com/zh-cn/windows-hardware/drivers/debugger/)
+
+<!--more-->
 
 ## symbol file path
 程序运行需要将相关二进制文件（包括.exe和.dll文件）加载到内存地址空间，即内存映射文件。内存映射文件包含的是二进制信息，一批跟这些二进制文件配套的符号文件（后缀名为“*.pdb”）供调试时使用，它包含函数名、变量名等各种符号和调试信息，实际程序运行并不需要它。
@@ -65,7 +65,7 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
 注：当各个路径设置好后，需要运行“.reload”命令来加载各个符号和源码。
 
 ## 启动
-以最简单的用户模式应用程序为例，参考help文档的“Getting Started with WinDbg (User-Mode)”这一篇。
+以最简单的用户模式应用程序为例，参考help文档的“Getting Started withWinDbg(User-Mode)”这一篇。
 
 1，选择可执行文件
 
@@ -79,7 +79,6 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
 
     .srcpath C:\MyApp\MyApp
 
-
     .reload
 
 注：windbg中以“点号，.”开头的命令，都是配置环境的命令。
@@ -88,12 +87,11 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
 
     “*”，星号在windbg中属于通配符。
 
-    “!”，叹号在windbg中，一般位于模块名后，起分隔模块名和模块内符号名的作用。
+    “!”，叹号在windbg，一般位于模块名后，其分隔模块名和模块内符号名的作用。
 
       叹号在最前面，表示这是一个扩展命令，如：“!analyze -v”。
 
 4，清屏“.cls”
-
 
 5.设断点并运行
 
@@ -107,7 +105,7 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
 
     按F10或F11进行单步调试，同VS的调试器。
 
-    在单步过程中，可以通过view菜单打开“Locals”窗口查看局部变量，“Watch”窗口监视某变量，“Memory”窗口看内存，“Call Stack”窗口看调用堆栈，等等。这些功能都类似VS的调试器。
+    在单步过程中，可以通过view菜单打开“Locals”窗口查看局部变量，“Watch”窗口监视某变量，“Memory”窗口看内存，“Call Stack”窗口看调用堆栈，等等。这些功能都类是VS的调试器。
 
 7.通过命令方式
 
@@ -135,7 +133,6 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
 原文：https://blog.csdn.net/sagittarius_warrior/article/details/52512843 
 版权声明：本文为博主原创文章，转载请附上博文链接！
 
-
 ##  .lastevent
 **.lastevent** 命令显示最近一次发生的异常或事件。
 ```
@@ -145,7 +142,7 @@ b. 新增系统环境变量项：_NT_SYMBOL_PATH 值为: SRV*F:\SymbolCache*http
  1 Teb: 7ffde000 Unfrozen 
  # 2 Id: 1534.f4c Suspend: 1 Teb: 7ffdd000 Unfrozen
 ```
-当前为2号线程发生异常，线程0前面的点号(.)表示它是当前线程。线程2前面的数字号(#)表示它是产生异常或调试器附加到进程时活动的线程。如果使用CTRL+C、 CTRL+BREAK或Debug | Break中断到调试器，总是会产生一个 0x80000003异常代码。
+当前为2号线程发生异常,线程0前面的点号(.)表示它是当前线程。线程2前面的数字号(#)表示它是产生异常或调试器附加到进程时活动的线程。如果使用CTRL+C、 CTRL+BREAK或Debug | Break中断到调试器，总是会产生一个 0x80000003异常代码。
 
 ```
 0:000> .lastevent Last event: 1664.4184: Access violation - code c0000005 (first/second chance not available)
@@ -216,7 +213,7 @@ EXCEPTION_INT_OVERFLOW
 
 EXCEPTION_INVALID_DISPOSITION
 0xC0000026
-异常处理器返回一个无效的处理时引发该异常。
+异常处理器返回一个无效的处理的时引发该异常。
 
 EXCEPTION_NONCONTINUABLE_EXCEPTION
 0xC0000025
@@ -241,7 +238,7 @@ EXCEPTION_STACK_OVERFLOW
 版权声明：本文为博主原创文章，转载请附上博文链接！
 
 ## 常用命令
-bug分析：!analyze -v
+bug分析：！analyze -v
 查看栈的命令：k,kb,kn,kd,kl
 查看内存的命令：db,dw,dd,da,du
 
@@ -250,7 +247,7 @@ bug分析：!analyze -v
 Windbg的工作空间主要表示调试会话的状态、调试器的设置以及窗口布局的设置等。工作空间的使用主要分为以下几点：
 
     未加载任何调试文件的时候，选择File -> Save Workspace保存默认工作空间，则当每次打开Windbg的时候，将采用这个默认的工作空间
-    当调试器已经加载了调试文件的时候，选择File -> Save Workspace将当前工作空间保存为默认工作空间 （这个默认空间仅针对这个调试文件），则当下次还是调试这个文件的时候，则采用之前保存的默认工作空间。
+    当调试器已经加载了调试文件的时候，选择File -> Save Workspace将当前工作空间保存为默认工作空间 （这个默认空间仅针对这个调试文件）, 则当下次还是调试这个文件的时候，则采用之前保存的默认工作空间。
     可以选择File -> Save Workspace As...保存为命名的工作空间，在以后调试应用程序的时候可以选择File -> Open Workspace去打开指定的工作空间
     以上的工作空间都保存在注册表项HKEY_CURRENT_USER\Software\Microsoft\Windbg\Workspaces里面，你也可以通过File -> Save Worksapce to File...将工作空间保存到文件
 
@@ -258,17 +255,16 @@ Windbg的工作空间主要表示调试会话的状态、调试器的设置以�
 
 Windbg主要分为3大类的调试命令:
 
-    标准命令 (Standard Command): 这类命令对于所有的调试目标都适用，比如常见的k命令;
+    标准命令 (Standard Command): 这类命令对于所有的调试目标都试用，比如常见的k命令;
     元命令 (Meta-Command)： 这类目标主要针对特定的目标所做的扩展命令，比如常见的.sympath命令。因为这类命令前面都有一个.,所以也叫作Dot-Command；
-    扩展命令 (Extension Command)：标准命令和元命令都是Windbg内建的命令，而扩展命令是实现在动态加载的DLL中。这类命令前面都有一个!, 比如常用!analyze -v.
+    扩展命令 (Extension Command)：标准命令和元命令都是Windbg内建的命令，而扩展命令是实现在动态加载的DLL中。这类命令前面都有一个!, 比如常用analyze -v.
 
-顺便在这里提一个很实用的命令.hh，用来在Windbg中打开帮助文档，比如使用.hh k则帮助文档会打开到索引k命令处。
+顺便再这里提一个很实用的命令.hh，用来在Windbg中打开帮助文档，比如使用.hh k则帮助文档会打开到索引k命令处。
 --------------------- 
 作者：河边一支柳 
 来源：CSDN 
 原文：https://blog.csdn.net/cjf_iceking/article/details/51955540 
 版权声明：本文为博主原创文章，转载请附上博文链接！
-
 
 ## Other
 https://www.cnblogs.com/kekec/archive/2012/11/14/2755924.html
@@ -325,7 +321,6 @@ Debugger键值修改为下面的取值 "D:\Tools\windbg.exe " -p %ld -e %ld
 
 ![Dump分类](https://img2020.cnblogs.com/blog/1488227/202007/1488227-20200708015749367-824281289.png)
 
-
 ##### 内核dump：（**蓝屏**后，由系统生成）
 
 1\. 完全内存转储。这个文件比较大，和物理内存相当，包含了程序崩溃前系统及用户模式下的所有信息。
@@ -362,7 +357,6 @@ Debugger键值修改为下面的取值 "D:\Tools\windbg.exe " -p %ld -e %ld
 ```
 [Dump2](https://img2020.cnblogs.com/blog/1488227/202007/1488227-20200708015835191-275032785.png)
 
-
 ##### 不同信息量的minidump：
 
     (1)标准的minidump。包含了相对比较少的信息，适合在做在线分析：系统信息、加载的模块（DLL）信息、进程信息和线程信息。
@@ -373,7 +367,6 @@ Debugger键值修改为下面的取值 "D:\Tools\windbg.exe " -p %ld -e %ld
 
     (3)带有尽量多选项的minidump。包括完整的内存内容、句柄、未加载的模块，等等。文件很大（本机和局域网环境适用）~
         .dump /ma c:\bigMini.dmp（注：/ma等价于/mfFhut；/m的子参数包括：a,A,f,F,h,u,t,i,p,w,d,c,r,R ）.[dump命令详细用法](https://msdn.microsoft.com/en-us/library/windows/hardware/ff562428(v=vs.85).aspx)
-
 
 ##### 下面列出六种生成Dump文件的方法：
 
@@ -405,7 +398,6 @@ windbg附带了一个AdPlus的脚本，可以用于监控进程运行情况，�
 上述命令的意思是：监控当前运行的DebugTest.exe，如果发生了结构化异常，则生成一个Dump文件到D:\CrashDumps目录中。
 关于AdPlus更详细的介绍请参阅：[http://support.microsoft.com/kb/286350/zh-cn](http://support.microsoft.com/kb/286350/zh-cn)
 
-
 (3) 使用windbg生成Dump文件
 windbg可以通过命令生成mini-Dump文件：
 
@@ -413,10 +405,9 @@ windbg可以通过命令生成mini-Dump文件：
 
 (4) win7任务管理器 - 进程标签页 - 创建转储文件
 
-(5) 使用vs2010以上版本生成  在调试状态下【菜单】：调试 - 将转储另存为
+(5) 使用vs2010以上版本生成  在调试状态下[菜单]：调试 - 将转储另存为
 
 (6) 第三方系统工具  如：最新版本的Process Explorer、proccump.exe命令行工具等
-
 
 ##### **分析Dump文件**
 
@@ -439,7 +430,7 @@ Demo可以下载到
 
 ## MiniDumpWriteDump API DEMO
 http://www.debuginfo.com/examples/src/effminidumps/MiniDump.cpp
-```cpp
+```
 ///////////////////////////////////////////////////////////////////////////////
 //
 // MiniDump.cpp 
@@ -449,7 +440,6 @@ http://www.debuginfo.com/examples/src/effminidumps/MiniDump.cpp
 // Author: Oleg Starodumov (www.debuginfo.com)
 //
 //
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Include files 
@@ -461,13 +451,11 @@ http://www.debuginfo.com/examples/src/effminidumps/MiniDump.cpp
 #include <stdio.h>
 #include <crtdbg.h>
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Directives 
 //
 
 #pragma comment ( lib, "dbghelp.lib" )
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Function declarations 
@@ -480,7 +468,6 @@ BOOL CALLBACK MyMiniDumpCallback(
 	const PMINIDUMP_CALLBACK_INPUT   pInput, 
 	PMINIDUMP_CALLBACK_OUTPUT        pOutput 
 ); 
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Test data and code 
@@ -521,7 +508,6 @@ void DoWork()
 	pB->Print(); // here it should crash 
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // main() function 
 //
@@ -538,7 +524,6 @@ int main( int argc, char* argv[] )
 
 	return 0; 
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Minidump creation function 
@@ -588,7 +573,6 @@ void CreateMiniDump( EXCEPTION_POINTERS* pep )
 
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Custom minidump callback 
 //
@@ -601,7 +585,6 @@ BOOL CALLBACK MyMiniDumpCallback(
 {
 	BOOL bRet = FALSE; 
 
-
 	// Check parameters 
 
 	if( pInput == 0 ) 
@@ -609,7 +592,6 @@ BOOL CALLBACK MyMiniDumpCallback(
 
 	if( pOutput == 0 ) 
 		return FALSE; 
-
 
 	// Process the callbacks 
 
@@ -676,3 +658,7 @@ BOOL CALLBACK MyMiniDumpCallback(
 }
 
 ```
+
+本文修订依据：Microsoft Learn [`Configure Symbol Path: Windows Debuggers`](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/symbol-path)，源文档提交 `6c834048ede313a0f258091faf9350aa3c481411`（页面更新 2025-11-07）。该文档使用 `Microsoft` 拼写并描述 Microsoft 公共符号服务器；本文仅纠正两处 `Mircrosoft` 拼写。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 11:58（UTC+08:00）。修订仅纠正两处 `Microsoft` 拼写。

@@ -798,6 +798,8 @@ main:focus { outline: none; }
 .editorial-badge--ai { color: #7654c7; background: #eee8ff; }
 .editorial-badge--imported { color: #526477; background: #e8eef4; }
 .editorial-badge--caution { color: #a34e4e; background: #fdeaea; }
+/* Last-reviewed date. Muted on purpose: it is provenance, not a status. */
+.editorial-badge--reviewed { color: #5b6b7f; background: #eef2f7; font-variant-numeric: tabular-nums; }
 [data-theme="dark"] .editorial-badge--tested { color: #8bd6a9; background: #173b2a; }
 [data-theme="dark"] .editorial-badge--review { color: #f0c27a; background: #40321a; }
 [data-theme="dark"] .editorial-badge--unverified { color: #c1cad6; background: #293240; }
@@ -806,6 +808,7 @@ main:focus { outline: none; }
 [data-theme="dark"] .editorial-badge--ai { color: #c6b2ff; background: #342653; }
 [data-theme="dark"] .editorial-badge--imported { color: #c2d0df; background: #293a4a; }
 [data-theme="dark"] .editorial-badge--caution { color: #f0a3a3; background: #43252b; }
+[data-theme="dark"] .editorial-badge--reviewed { color: #b3c0d1; background: #232c38; }
 .search-topic--type { color: var(--text-muted); background: var(--bg-hover); }
 
 /* Curated library */

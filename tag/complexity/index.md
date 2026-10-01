@@ -5,4 +5,6 @@ tag: "Complexity"
 slug: "complexity"
 permalink: /tag/complexity/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -7,6 +7,9 @@ categories:
 tags:
 - C++
 - Code
+upstream_sync: off
+upstream_sync_reason: >-
+  cnblogs 侧把这篇几乎清空：924 字符降到 101，只剩 'std::regex;' 'std::smatch;' 'regex_replace();'，其中 std::regex; 不是合法 C++ 语句（缺变量名）。仓库版本含完整可编译示例，覆盖 regex_match / regex_search / regex_replace / regex_iterator 四种用法。属上游质量下降，而非仓库领先。
 ---
 
 C++ 正则表达式 regex

@@ -7,10 +7,8 @@ categories:
 tags:
 - C
 ---
-
 书上第一章的几个练习。 关于直方图有点头疼，之后再仔细研究一下。
 
-<!--more-->
 ```C
     /*1-8 统计空格、制表符、换行符个数*/
     int c;
@@ -33,8 +31,9 @@ tags:
     }
     printf("nl:%d\n", nl);
 
-```
+<!--more-->
 
+```
 
 ```C
  	/*1-9 连续多个空格替换为一个*/
@@ -80,11 +79,12 @@ tags:
 ```
 
 ```C
+#include <ctype.h>
  	/*1-12 每行一个单词*/
     int c;
     int nb = 0;
     while((c = getchar()) != EOF){
-        if((c>='A')&& (c<='z')){
+        if (isalnum(c)) {
                 if(nb > 0){
                     printf("\n");
                     nb = 0;
@@ -103,3 +103,7 @@ tags:
 	/*1-13 直方图*/
     待更新
 ```
+
+本文修订依据：The Open Group Base Specifications Issue 7（IEEE Std 1003.1-2017）的 [`isalnum()`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/isalnum.html) 与 [`getchar()`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/getchar.html) 文档，并交叉核对 WG14 C17 草案 [N2176](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf)。`isalnum()` 需包含 `<ctype.h>`，其参数可接收 `getchar()` 返回的 `unsigned char` 转换后的 `int` 或 `EOF`；本文仅修正 1-12 示例的字母数字判断。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 10:22（UTC+08:00）。修订仅将不可靠的字符范围判断改为 `isalnum()` 并补充所需头文件。

@@ -5,4 +5,6 @@ tag: "performance"
 slug: "performance"
 permalink: /tag/performance/
 generated: true
+noindex: true
+sitemap: false
 ---

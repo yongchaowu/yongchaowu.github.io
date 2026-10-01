@@ -3,11 +3,8 @@
 [
 {% for post in site.posts %}
 {% include topic-for-post.html post=post %}
-{% assign meta_editorial = nil %}
 {% assign meta_editorial_path = post.path | split: '_posts/' | last | prepend: '_posts/' %}
-{% for item in site.data.post_editorial.posts %}
-    {% if item.post == meta_editorial_path %}{% assign meta_editorial = item %}{% endif %}
-{% endfor %}
+{%- assign meta_editorial = site.data.post_editorial.posts[meta_editorial_path] -%}
 {% assign meta_content_type = meta_editorial.content_type | default: site.data.post_editorial.defaults.content_type %}
 {% assign meta_placement = meta_editorial.placement | default: site.data.post_editorial.defaults.placement %}
 {% assign meta_origin = meta_editorial.origin | default: site.data.post_editorial.defaults.origin %}

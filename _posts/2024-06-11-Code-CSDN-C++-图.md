@@ -8,14 +8,14 @@ tags:
 - Code
 - Data Structure
 ---
-
 **转自**
 版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
 本文链接：https://blog.csdn.net/weixin_62684026/article/details/128358023
 
-<!--more-->
 ---
 ## Code
+
+<!--more-->
 
 ### 数据结构
 
@@ -152,7 +152,7 @@ namespace link_table
 #pragma once
 #include <vector>
 #include <map>
-    //V表示的是我们点中的数据类型
+//V表示的事我们点中的数据类型
 // weight代表权重
 //Direction表示是有向图还是无向图
 namespace matrix
@@ -247,7 +247,6 @@ namespace matrix
             }
         }
 
-
     private:
         vector<V> _vertex;//顶点集合
         map<V,int> _indexmap;//顶点映射下标
@@ -307,7 +306,7 @@ void _DFS(size_t srci, vector<bool>& visited)
 
 #### 广度优先遍历
 ```c++
-//传入起点
+//传入起点`
         void BFS(const V& src)
         {
             //计算起点的下标
@@ -351,9 +350,7 @@ void _DFS(size_t srci, vector<bool>& visited)
 
 ```
 
-
 ---
-
 
 ### 最小生成树
 
@@ -556,7 +553,7 @@ void TestGraphMinTree()
                     Y[min._dsti] = false;
                     ++size;
                     totalW += min._w;
-                    //如果选出了n-1条边，那么我们选边就已经结束了
+                    //如果选出了了n-1条边，那么我们选边就已经结束了
                     if (size == n - 1)
                         break;
 
@@ -764,7 +761,6 @@ void TestGraphDijkstra()
 
             //cout << "更新边：i->j" << endl;
 
-
             // 总体最多更新n轮
             //从s->t最多经过n条边，否则就会变成回路。
             //每一条路径的更新都可能会影响别的路径
@@ -797,7 +793,6 @@ void TestGraphDijkstra()
                     break;
                 }
             }
-
 
             // 还能更新就是带负权回路，具体的例子在下面
             for (size_t i = 0; i < n; ++i)
@@ -837,7 +832,6 @@ void TestGraphBellmanFord()
             vector<int> parentPath;
             g.BellmanFord('s', dist, parentPath);
             g.PrintShortPath('s', dist, parentPath);
-
 
 ```
 

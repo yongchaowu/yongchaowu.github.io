@@ -5,4 +5,6 @@ tag: "Map"
 slug: "map"
 permalink: /tag/map/
 generated: true
+noindex: true
+sitemap: false
 ---

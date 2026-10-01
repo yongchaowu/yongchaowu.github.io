@@ -8,12 +8,12 @@ tags:
 - OS
 - Ubuntu
 ---
-
 引用：
 
-<!--more-->
 - [Ubuntu apt-get apt-cache 命令使用](https://blog.csdn.net/u010472607/article/details/77483675)
 - [apt-get下载包及所有依赖](https://blog.csdn.net/qq_51470638/article/details/127136484)
+
+<!--more-->
 
 ## 指令
 
@@ -29,8 +29,6 @@ tags:
   - `--recurse`
 - `apt-get download`
 
-
-
 ---
 
 ## 安装包缓存
@@ -39,15 +37,11 @@ tags:
 2. 缓存安装包路径为:`/var/cache/apt/archives`
 3. `apt clean all`:清空缓存
 
-
-
 ---
 
 ## 安装文件位置
 
-一般的deb包(包括新立得或者apt-get下载的)都在`/usr/share`。 
-
-
+一般的deb包(包括新立得或者apt-get下载的)都在`**/usr/share**`。 
 
 自己下载的压缩包或者编译的包，有些可以选择安装目录，一般放在`/usr/local/`，也有在`/opt`的。
 
@@ -71,14 +65,10 @@ tags:
 | **apt-cache search <pkg>**       | 使用关键字pkg搜索软件包                                      |
 | **apt-cache show**               | 显示软件包pkg_name的详细信息                                 |
 | **apt-cache depends <pkg>**      | 查看pkg所依赖的软件包                                        |
-| apt-cache rdepends <pkg>         | 查看pkg被哪些软件包所依赖                                    |
+| apt-cache rdepends <pkg>         | 查看pkg被那些软件包所依赖                                    |
 | **apt-get build-dep <pkg>**      | 构建pkg源码包的编译依赖 (这条命令很神奇，一步搞定所有编译依赖) |
 
-
-
 **apt-get命令的一般语法格式为：**`apt-get subcommands [ -d | -f | -m | -q| --purge | --reinstall | -b | -s | -y | -u | -h | -v ] [pkg] `
-
-
 
 ---
 
@@ -89,7 +79,7 @@ tags:
 ```bash
 apt-get update                  # 更新源  
 apt-get upgrade                 # 更新所有已安装的包  
-apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）
+apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）123
 ```
 
 2. 安装或重装类操作：
@@ -97,27 +87,30 @@ apt-get dist-upgrade            # 发行版升级（如，从10.10到11.04）
 ```bash
 apt-get install <pkg>             # 安装软件包<pkg>，多个软件包用空格隔开  
 apt-get install --reinstall <pkg> # 重新安装软件包<pkg>  
-apt-get install -f <pkg>          # 修复安装（破损的依赖关系）软件包<pkg>  
+apt-get install -f <pkg>          # 修复安装（破损的依赖关系）软件包<pkg>  123
 ```
 
 3. 卸载类操作：
 
 ```bash
 apt-get remove <pkg>          # 删除软件包<pkg>（不包括配置文件）  
-apt-get purge <pkg>           # 删除软件包<pkg>（包括配置文件）  
+apt-get purge <pkg>           # 删除软件包<pkg>（包括配置文件）  12
 ```
 
 4. 下载清除类操作：
 
-```bash
-apt-get source <pkg>              # 下载pkg包的源代码到当前目录  
+```
+apt-get source <pkg>              # 下载并解包pkg包的源代码到当前目录
 apt-get download <pkg>            # 下载pkg包的二进制包到当前目录  
-apt-get source --download-only <pkg>  # 仅下载源码包，不编译  
+apt-get source --download-only <pkg> # 下载源码包但不解包
+apt-get source --compile <pkg>       # 下载并编译源码包
 apt-get build-dep   <pkg>         # 构建pkg源码包的依赖环境（编译环境？）  
 apt-get clean                     # 清除缓存(/var/cache/apt/archives/{,partial}下)中所有已下载的包  
 apt-get autoclean                 # 类似于clean，但清除的是缓存中过期的包（即已不能下载或者是无用的包）  
-apt-get autoremove                # 删除因安装软件自动安装的依赖，而现在不需要的依赖包  
+apt-get autoremove                # 删除因安装软件自动安装的依赖，而现在不需要的依赖包  1234567
 ```
+
+> **版本范围：** `--download-only` 和 `--compile` 的行为按 Debian Bookworm `apt` 2.6.1 与 Ubuntu Noble `apt` 2.8.3 手册核对；其他发行版或历史版本请以本地 `apt-get(8)` 手册为准。
 
 5. 查询类操作：
 
@@ -126,14 +119,10 @@ apt-cache stats             # 显示系统软件包的统计信息
 apt-cache search <pkg>            # 使用关键字pkg搜索软件包  
 apt-cache show   <pkg_name>   # 显示软件包pkg_name的详细信息  
 apt-cache depends <pkg>       # 查看pkg所依赖的软件包  
-apt-cache rdepends <pkg>      # 查看pkg被哪些软件包所依赖  
+apt-cache rdepends <pkg>      # 查看pkg被那些软件包所依赖  
 ```
 
-
-
 ---
-
-
 
 ## 下载指定安装包依赖
 
@@ -149,7 +138,6 @@ get_all_depends()
                 --no-conflicts --no-breaks --no-enhances\
                 --no-replaces --recurse $1 | awk '{print $2}'| tr -d '<>' | sort --unique
 }
-
 
 ## 遍历命令行参数，参数应为包名。
 for pkg in $*
@@ -168,3 +156,9 @@ do
 done
 
 ```
+
+参考：[Ubuntu Noble `apt-get(8)`](https://manpages.ubuntu.com/manpages/noble/man8/apt-get.8.html) 和 [Debian Bookworm `apt-get(8)`](https://manpages.debian.org/bookworm/apt/apt-get.8.en.html)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 03:29（UTC+08:00）。

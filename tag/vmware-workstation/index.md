@@ -5,4 +5,6 @@ tag: "VMware Workstation"
 slug: "vmware-workstation"
 permalink: /tag/vmware-workstation/
 generated: true
+noindex: true
+sitemap: false
 ---

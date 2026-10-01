@@ -5,4 +5,6 @@ tag: "日记"
 slug: "日记"
 permalink: /tag/日记/
 generated: true
+noindex: true
+sitemap: false
 ---

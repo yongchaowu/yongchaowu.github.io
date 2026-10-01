@@ -5,4 +5,6 @@ tag: "CLSID"
 slug: "clsid"
 permalink: /tag/clsid/
 generated: true
+noindex: true
+sitemap: false
 ---

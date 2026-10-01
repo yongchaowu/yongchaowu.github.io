@@ -8,11 +8,11 @@ tags:
 - Docker
 - Tool
 ---
-
 2020/11/30  00:19:00
 
-<!--more-->
 之前工作中接触过Docker，最近在笔记本上想装个Vm虚拟机用，就想着来试试Docker吧。
+
+<!--more-->
 
 ##  1.Docker Hub Tutorial
 
@@ -50,7 +50,7 @@ Get started by downloading Docker Desktop, and learn how you can build, tag and 
 
    ```txt
    Docker Desktop is a native application that delivers all of the Docker tools to your Mac or Windows Computer. 
-   
+
    1.Open Docker Desktop. (Download here if you don't have it).
    2.Type the following command in your terminal: docker run -dp 80:80 docker/getting-started
    3.Open your browser to http://localhost
@@ -61,14 +61,12 @@ Get started by downloading Docker Desktop, and learn how you can build, tag and 
 
    ```txt
    Play with Docker is an interactive playground that allows you to run Docker commands on a linux terminal, no downloads required.
-   
+
    1.Log into https://labs.play-with-docker.com/ to access your PWD terminal
    2.Type the following command in your PWD terminal: docker run -dp 80:80 docker/getting-started:pwd
    3.Wait for it to start the container and click the port 80 badge
    4.Have fun!
    ```
-
-
 
 ## 3. Windows Containers with Docker
 
@@ -81,8 +79,6 @@ First, make sure the Docker installation is working:
 *我的server是linux/amd64，不支持windows，尴尬。*
 
 **解决方法：任务栏右键whale，可以选择切换server为windows。[默认安装时是linux]**
-
-
 
 Next, pull a base image that’s compatible with the evaluation build, re-tag it and do a test-run:
 
@@ -99,23 +95,19 @@ docker pull microsoft/windowsservercore:10.0.14393.321
 //-阿里云：https://<你的ID>.mirror.aliyuncs.com  
 ///阿里云镜像获取地址：https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
 //-七牛云加速器：https://reg-mirror.qiniu.com
-//-Docker 官方加速器 https://registry.docker-cn.com (已停用，推荐使用阿里云或七牛云镜像)
+//-Docker 官方加速器 https://registry.docker-cn.com (可能不能用了)
 //回到原有指令，3.738GB
 //2020/12/02 最后还是没下下来，真的放弃了，这是要让人用AWS来实现啊
 ```
 
-
-
-```bash
+```
 docker tag microsoft/windowsservercore:10.0.14393.321 microsoft/windowsservercore
 docker run microsoft/windowsservercore hostname
 ```
 
-
-
 ### Building and pushing Windows container images
 
-Pushing images to Docker Cloud requires a [free Docker ID](https://cloud.docker.com/). Storing images on Docker Cloud is a great way to save build artifacts for later use, to share base images with co-workers or to create build-pipelines that move apps from development to production with Docker.
+Pushing images to Docker Cloud requires a [free Docker ID](https://cloud.docker.com/). Storing images on Docker Cloud is a great way to save build artifacts for later user, to share base images with co-workers or to create build-pipelines that move apps from development to production with Docker.
 
 Docker images are typically built with [docker build](https://docs.docker.com/engine/reference/commandline/build/) from a [Dockerfile](https://docs.docker.com/engine/reference/builder/) recipe, but for this example, we’re going to just create an image on the fly in PowerShell.
 
@@ -125,20 +117,18 @@ Docker images are typically built with [docker build](https://docs.docker.com/en
 
 Test the image:
 
-```bash
+```
 docker run <docker-id>/windows-test-image
 Hello World!
 ```
 
 Login with `docker login` and then push the image:
 
-```bash
+```
 docker push <docker-id>/windows-test-image
 ```
 
 Images stored on Docker Cloud are available in the web interface and public images can be pulled by other Docker users in the [Docker Store](https://store.docker.com/).
-
-
 
 ## 4.Docker 命令大全
 
@@ -206,8 +196,8 @@ Images stored on Docker Cloud are available in the web interface and public imag
 - Docker Cloud: [https://cloud.docker.com](https://cloud.docker.com/)
 - Docker Hub: [https://hub.docker.com](https://hub.docker.com/)
 - Docker 的源代码仓库: https://github.com/moby/moby
-- Docker 发布版本历史: https://docs.docker.com/engine/release-notes/
-- Docker 常见问题: https://docs.docker.com/
+- Docker 发布版本历史: https://docs.docker.com/release-notes/
+- Docker 常见问题: https://docs.docker.com/engine/faq/
 - Docker 远端应用 API: https://docs.docker.com/develop/sdk/
 
 - Docker 国内镜像

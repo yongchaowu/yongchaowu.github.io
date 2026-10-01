@@ -12,6 +12,9 @@ tags:
 - Docker
 - Model
 - LLM
+upstream_sync: off
+upstream_sync_reason: >-
+  仓库有上游没有的勘误：New-API 是网关/控制面，不是内置推理 Worker，旧的内置 Worker 方案已废弃；且仓库已改用官方 calciumion/new-api 镜像。cnblogs 上该文仍讲内置 Worker（3 处）且无镜像说明，照做会失败。
 ---
 {% raw %}
 > 在生产环境中部署大语言模型时，单点故障和性能瓶颈是常见的挑战。本文将详细介绍如何通过 New-API 部署同一模型的两个独立进程，并配置不同端口，实现负载均衡和高可用架构。

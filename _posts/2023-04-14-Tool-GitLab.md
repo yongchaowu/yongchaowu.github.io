@@ -8,13 +8,13 @@ tags:
 - Tool
 - GitLab
 ---
-
 >[https://about.gitlab.com/](https://about.gitlab.com/ "gitlab")
 
-<!--more-->
 GitLab 是一个用于仓库管理系统的开源项目，使用Git作为代码管理工具，并在此基础上搭建起来的Web服务。
 安装方法是参考GitLab在GitHub上的Wiki页面。
 Gitlab是被广泛使用的基于git的开源代码管理平台, 基于Ruby on Rails构建, 主要针对软件开发过程中产生的代码和文档进行管理, Gitlab主要针对group和project两个维度进行代码和文档管理, 其中group是群组, project是工程项目, 一个group可以管理多个project, 可以理解为一个群组中有多项软件开发任务, 而一个project中可能包含多个branch, 意为每个项目中有多个分支, 分支间相互独立, 不同分支可以进行归并。
+
+<!--more-->
 
 ## GitLab 离线包下载
 https://packages.gitlab.com/gitlab/gitlab-ce
@@ -31,15 +31,15 @@ https://packages.gitlab.com/gitlab/gitlab-ce
 账户名称：root
 账户密码：不显示，但提示在 /etc/gitlab/initial_root_password(24h后删除)[可以备份一下]
 
-重置密码：https://docs.gitlab.com/ee/security/reset_user_password.html#reset-the-root-password.
+重置密码：https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-rootpassword.
 
 ## 防火墙与端口
-```bash
+```
 sudo ufw status		#查看ufw的状态 
 sudo ufw enable		#开启ufw
-sudo ufw reload		#重启防火墙ufw
+sudo ufw reload		#重新加载防火墙规则
 sudo ufw allow 9999	#对外开放9999端口
-sudo ufw status		#
+sudo ufw status		#查看防火墙状态
 ```
 
 ## 其他命令
@@ -55,25 +55,28 @@ sudo ufw status		#
 	- `gitlab-ctl tail` #查看所有日志
 	- `gitlab-ctl tail nginx/gitlab_access.log` #查看nginx访问日志
 
-
 ## 添加SSH Key
 生成密钥文件：使用`ssh-keygen`生成密钥文件`.ssh/id_rsa.pub`
 用于`git clone`
 
-
 ## 提交一份代码步骤
-```bash
-git init\git clone
+```
+git init
+# 或
+git clone <repository-url>
 git status
 git diff
 git add .
-git pull\git fetch
+# 或
+git pull
+# 或
+git fetch
 git commit -m "备注"
-git push -u origin master
+git push -uf origin master
 ```
 
 gitlab创建项目自动生成的Readme中提到的方法：
-```bash
+```
 git remote add origin projectaddress. 
 git branch -M main
 git push -uf origin main
@@ -85,18 +88,18 @@ git push -uf origin main
 - 如果希望更改默认branch，在设置中选择其他branch作为默认分支。(ps:我操作时，已保存，但是刷新后未更新过来，一直以为没该改成功，后来去看branchlist时才看到默认branch已改变，我差点要重启gitlab服务了。)
 
 ## 重命名branch
-```bash
+```
 #重命名本地分支
 git branch -m branch_old_name branch_new_name
 #删除远程自己的原分支 
 git push --delete origin branch_old_name
 #ps:我删除的默认分支的名字，push被拒绝
-#我就直接用当前工程remote add了一个新分支，然后删除原来的默认分支，我确认了commit记录都在。
+#我就直接用当前工程remoteadd了一个新分支，然后删除原来的默认分支，我确认了commit记录都在。
 -----------------------------------------
 #推送新命名的分支
 git push origin branch_new_name
 #修改后的本地分支与远程分支关联
-git branch --set-upstream-to origin/branch_new_name
+git branch --set-upstream-to origin/branc_new_name
 
 ```
 
@@ -109,3 +112,7 @@ git branch --set-upstream-to origin/branch_new_name
 ## 回退版本
 回退到指定commit-number的版本
 `git reset --hard [commit-number]`
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

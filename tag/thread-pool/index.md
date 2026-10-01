@@ -5,4 +5,6 @@ tag: "Thread Pool"
 slug: "thread-pool"
 permalink: /tag/thread-pool/
 generated: true
+noindex: true
+sitemap: false
 ---

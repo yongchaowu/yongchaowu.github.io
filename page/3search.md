@@ -73,4 +73,4 @@ sitemap: false
         <span>Use a topic filter for a narrower shelf. Use <em>Curated only</em> when you want source-linked guides instead of raw notes.</span>
     </div>
 </main>
-<script src="{{ '/js/search.js' | relative_url }}" charset="utf-8"></script>
+<script src="{{ '/js/search.js' | relative_url }}?v={{ site.asset_version | default: site.time | date: '%Y%m%d%H%M' }}" charset="utf-8"></script>

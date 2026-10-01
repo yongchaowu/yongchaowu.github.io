@@ -5,4 +5,6 @@ tag: "System Administration"
 slug: "system-administration"
 permalink: /tag/system-administration/
 generated: true
+noindex: true
+sitemap: false
 ---

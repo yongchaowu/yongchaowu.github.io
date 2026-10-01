@@ -5,4 +5,6 @@ tag: "DSLR"
 slug: "dslr"
 permalink: /tag/dslr/
 generated: true
+noindex: true
+sitemap: false
 ---

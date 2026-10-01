@@ -5,4 +5,6 @@ tag: "Physical Memory"
 slug: "physical-memory"
 permalink: /tag/physical-memory/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -7,15 +7,14 @@ categories:
 tags:
 - Tool
 ---
-
-# Tool-SVN
 2023/2/27 10:07:15 
 转自[https://www.runoob.com/svn/svn-tutorial.html](https://www.runoob.com/svn/svn-tutorial.html "菜鸟教程-SVN教程")
 
-<!--more-->
 Apache Subversion 通常被缩写成 SVN，是一个开放源代码的版本控制系统，Subversion 在 2000 年由 CollabNet Inc 开发，现在发展成为 Apache 软件基金会的一个项目，同样是一个丰富的开发者和用户社区的一部分。
 
-SVN相对于RCS、CVS，采用了分支管理系统，它的设计目标就是取代CVS。互联网上免费的版本控制服务多基于Subversion。
+<!--more-->
+
+SVN相对于的RCS、CVS，采用了分支管理系统，它的设计目标就是取代CVS。互联网上免费的版本控制服务多基于Subversion。
 
 相关链接
 SVN 官网：https://subversion.apache.org/
@@ -50,14 +49,13 @@ CVS 只能跟踪单个文件的历史, 不过 Subversion 实作了一个 "虚拟
 Subversion 有抽象的档案库存取概念, 可以让人很容易地实作新的网络机制。 Subversion 可以作为一个扩展模块嵌入到 Apache HTTP 服务器中。这个为 Subversion 提供了非常先进的稳定性和协同工作能力，除此之外还提供了许多重要功能: 举例来说, 有身份认证, 授权, 在线压缩, 以及文件库浏览等等。还有一个轻量级的独立 Subversion 服务器， 使用的是自定义的通信协议, 可以很容易地通过 ssh 以 tunnel 方式使用。
 
 （6）一致的数据处理方式
-Subversion 使用二进制差异算法来表示文件的差异, 它对文字(人类可理解的)与二进制文件(人类无法理解的) 两类的文件都一视同仁。 这两类的文件都同样地以压缩形式储存在档案库中, 而且文件差异是以两个方向在网络上传输的。
+Subversion 使用二进制差异算法来异表示文件的差异, 它对文字(人类可理解的)与二进制文件(人类无法理解的) 两类的文件都一视同仁。 这两类的文件都同样地以压缩形式储存在档案库中, 而且文件差异是以两个方向在网络上传输的。
 
 （7）有效的分支(branch)与标签(tag)
 在分支与标签上的消耗并不必一定要与项目大小成正比。 Subversion 建立分支与标签的方法, 就只是复制该项目, 使用的方法就类似于硬连接（hard-link）。 所以这些操作只会花费很小, 而且是固定的时间。
 
 （8）Hackability
 Subversion没有任何的历史包袱; 它主要是一群共用的 C 程序库, 具有定义完善的API。这使得 Subversion 便于维护, 并且可被其它应用程序与程序语言使用。
-
 
 ----------
 
@@ -73,7 +71,6 @@ Subversion没有任何的历史包袱; 它主要是一群共用的 C 程序库, 
 5、分支的开销非常小。
 
 6、优化过的数据库访问，使得一些操作不必访问数据库就可以做到。这样减少了很多不必要的和数据库主机之间的网络流量。
-
 
 ----------
 
@@ -111,7 +108,7 @@ Revert 操作重置了对工作副本的修改。它可以重置一个或多个�
 
 8. 提交更改
 Commit 操作是用来将更改从工作副本到版本库。这个操作会修改版本库的内容，其它开发者可以通过更新他们的工作副本来查看这些修改。
-在提交之前，你必须将文件/目录添加到待变更列表中。列表中记录了将会被提交的改动。当提交的时候，我们通常会提供一个注释来说明为什么会进行这些改动。这个注释也会成为版本库历史记录的一部分。Commit 是一个原子操作，也就是说要么完全提交成功，要么失败回滚。用户不会看到成功提交一半的情况。
+在提交之前，你必须将未版本控制的新文件和目录添加到待变更列表中；已受版本控制的文件发生修改时，状态会显示为 `M`，无需再次执行 `svn add`。列表中记录了将会被提交的改动。当提交的时候，我们通常会提供一个注释来说明为什么会进行这些改动。这个注释也会成为版本库历史记录的一部分。Commit 是一个原子操作，也就是说要么完全提交成功，要么失败回滚。用户不会看到成功提交一半的情况。
 
 ----------
 
@@ -163,14 +160,13 @@ user2=r
 
 使用类似这样的URL：svn://192.168.0.1/runoob　即可访问runoob版本库。
 
-
 ----------
 
 ## SVN 创建版本库
 
 使用 svn 命令创建资源库：`svnadmin create /opt/svn/runoob01`
 
-进入 `/opt/svn/runoob01/conf` 目录，修改默认配置文件配置，包括 svnserve.conf、passwd、authz 配置相关用户和权限。
+进入` /opt/svn/runoob01/conf` 目录，修改默认配置文件配置，包括 svnserve.conf、passwd、authz 配置相关用户和权限。
 
 1、svn 服务配置文件 svnserve.conf
 
@@ -190,8 +186,6 @@ realm = tiku
 - authz-db: 指定权限配置文件名，通过该文件可以实现以路径为基础的访问控制。 除非指定绝对路径，否则文件位置为相对conf目录的相对路径，默认值：authz。
 
 - realm: 指定版本库的认证域，即在登录时提示的认证域名称。若两个版本库的认证域相同，建议使用相同的用户名口令数据文件。默认值：一个UUID(Universal Unique IDentifier，全局唯一标示)。
-
-
 
 2、用户名口令文件 passwd
 
@@ -225,7 +219,6 @@ thinker = rw
 * = r
 ```
 
-
 ----------
 
 ## SVN 检出操作
@@ -252,7 +245,6 @@ drwxr-xr-x 2 root root 4096 Jul 21 19:19 tags/
 drwxr-xr-x 2 root root 4096 Jul 21 19:19 trunk/
 ```
 查看更多关于版本库的信息，执行 info 命令。
-
 
 ----------
 
@@ -296,12 +288,11 @@ Transmitting file data .
 Committed revision 7.
 ```
 
-
 ----------
 
 ## SVN 提交操作
 
-在版本库中需要增加一个readme的说明文件。
+在库本版中需要增加一个readme的说明文件。
 ```
 root@runoob:~/svn/runoob01/trunk# cat readme 
 this is SVN tutorial.
@@ -337,7 +328,6 @@ svn commit -m "SVN readme."
 ```
 现在 readme 被成功地添加到了版本库中，并且修订版本号自动增加了1。
 
-
 ----------
 
 ## SVN 版本回退
@@ -365,17 +355,15 @@ root@runoob:~/svn/runoob01/trunk#
 
 revert 操作不单单可以使单个文件恢复原状， 而且可以使整个目录恢复原状。恢复目录用 -R 命令，如下。`svn revert -R trunk`
 
-
 想恢复一个已经提交的版本:
 为了消除一个旧版本，必须撤销旧版本里的所有更改，然后提交一个新版本。这种操作叫做 reverse merge。
 找到仓库的当前版本，现在是版本 22，要撤销回之前的版本，比如版本 21。  `svn merge -r 22:21 readme `
-
 
 ----------
 
 ## SVN 查看历史信息
 
-通过svn命令可以根据时间或修订号取出过去的版本，或者某一版本所做的具体的修改。以下四个命令可以用来查看svn 的历史：
+通过svn命令可以根据时间或修订号去除过去的版本，或者某一版本所做的具体的修改。以下四个命令可以用来查看svn 的历史：
 - svn log: 用来展示svn 的版本作者、日期、路径等等。
 - svn diff: 用来显示特定修改的行级详细信息。
 - svn cat: 取得在特定版本的某文件显示在当前屏幕。
@@ -418,14 +406,12 @@ change HelloWorld.html first.
 -----------------------------------------------------
 r5 | user01 | 2016-11-07 01:50:03 +0800 (Mon, 07 Nov 2016) | 1 line
 
-
 -----------------------------------------------------
 r4 | user01 | 2016-11-07 01:45:43 +0800 (Mon, 07 Nov 2016) | 1 line
 
 Add function to accept input and to display array contents
 -----------------------------------------------------
 r3 | user01 | 2016-11-07 01:42:35 +0800 (Mon, 07 Nov 2016) | 1 line
-
 
 -----------------------------------------------------
 r2 | user01 | 2016-08-23 17:29:02 +0800 (Tue, 23 Aug 2016) | 1 line
@@ -437,7 +423,7 @@ first file
 
 带有目录的信息要加 -v。
 
-显示限定N条记录的目录信息`svn log -l N -v`。
+示限定N条记录的目录信息`svn log -l N -v`。
 ```
 root@runoob:~/svn/runoob01/trunk# svn log -l 5 -v 
 -----------------------------------------------------
@@ -451,7 +437,6 @@ r5 | user01 | 2016-11-07 01:50:03 +0800 (Mon, 07 Nov 2016) | 1 line
 Changed paths:
    M /trunk/HelloWorld.html
 
-
 -----------------------------------------------------
 r4 | user01 | 2016-11-07 01:45:43 +0800 (Mon, 07 Nov 2016) | 1 line
 Changed paths:
@@ -464,7 +449,6 @@ Changed paths:
    A /trunk/HelloWorld.html (from /trunk/helloworld.html:2)
    D /trunk/helloworld.html
 
-
 -----------------------------------------------------
 r2 | user01 | 2016-08-23 17:29:02 +0800 (Tue, 23 Aug 2016) | 1 line
 Changed paths:
@@ -475,9 +459,7 @@ first file
 
 ```
 
-
 ----------
-
 
 2. svn diff
 `svn diff`用来检查历史修改的详情。
@@ -485,7 +467,6 @@ first file
 - 检查本地修改
 - 比较工作拷贝与版本库
 - 比较版本库与版本库
-
 
 不带任何参数，将会比较工作文件与缓存在 .svn 的"原始"拷贝
 ```
@@ -509,7 +490,6 @@ Everything in moderation
 	通过 -r(revision) 传递两个通过冒号分开的版本号，这两个版本会进行比较。
 	比较 svn 工作版本中版本号2和3的这个文件的变化。`svn diff -r 2:3 rule.txt`
 
-
 ----------
 
 3. svn cat
@@ -519,12 +499,11 @@ Everything in moderation
 `svn cat -r 版本号 rule.txt`
 这个命令会显示在该版本号下的该文件内容
 
-
 ----------
 
 4. svn list
 `svn list` 可以在不下载文件到本地目录的情况下来察看目录中的文件：
-```bash
+```
 $ svn list http://192.168.0.1/runoob01
 README
 branches/
@@ -540,16 +519,13 @@ Branch 选项会给开发者创建出另外一条线路。当有人希望开发�
 
 分支其实就是 trunk 版（主干线）的一个copy版，不过分支也是具有版本控制功能的，而且是和主干线相互独立的。当然，到最后可以通过（合并）功能，将分支合并到 trunk 上来，从而最后合并为一个项目。
 
-
 ----------
-
 
 ## SVN 标签（tag）
 
 版本管理系统支持 tag 选项，通过使用 tag 的概念，我们可以给某一个具体版本的代码一个更加有意义的名字。
 
 Tags 即标签主要用于项目开发中的里程碑，比如开发到一定阶段可以单独一个版本作为发布等，它往往代表一个可以固定的完整的版本，这跟 VSS 中的 Tag 大致相同。
-
 
 ----------
 
@@ -560,3 +536,7 @@ TortoiseSVN 是 Subversion 版本控制系统的一个免费开源客户端，�
 下载地址：https://tortoisesvn.net/downloads.html, 页面里有语言包补丁的下载链接。
 
 目前最新版为 1.14.5 下载地址： https://osdn.net/projects/tortoisesvn/storage/1.14.5/
+
+本文修订依据：Subversion 1.7 官方 [`svn add`](https://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.add.html) 与 [`svn status`](https://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.status.html) 参考，并交叉核对 Subversion 1.14.2 `svn.c` 源码（commit `412ed3c1c063faef9e00de4d33193fc47d56e494`, 2022-04-02）。本文仅区分未版本控制的新文件/目录与已受版本控制文件的修改状态，未改写其他 SVN 流程。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 13:00（UTC+08:00）。修订仅纠正 `svn add` 适用范围。

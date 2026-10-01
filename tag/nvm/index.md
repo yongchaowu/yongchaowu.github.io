@@ -5,4 +5,6 @@ tag: "nvm"
 slug: "nvm"
 permalink: /tag/nvm/
 generated: true
+noindex: true
+sitemap: false
 ---

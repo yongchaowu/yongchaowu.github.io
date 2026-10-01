@@ -5,4 +5,6 @@ tag: "pyspider"
 slug: "pyspider"
 permalink: /tag/pyspider/
 generated: true
+noindex: true
+sitemap: false
 ---

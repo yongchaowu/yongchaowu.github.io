@@ -9,567 +9,572 @@ defaults:
   verification: unknown
   risk: normal
   origin: author
+# `posts` is a mapping keyed by repository-relative post path, not a list.
+# It used to be a list of {post: ...} records, which forced every consumer
+# into a linear scan; that scan ran nine times across the includes, layouts
+# and both JSON index templates, and twice more per candidate post inside
+# related-posts.html. Keying by path makes each lookup a hash hit.
 posts:
-- post: _posts/2026-09-24-curated-cpp-backend-engineering.md
-  content_type: roadmap
-  placement: featured
-  primary_topic: cpp
-  secondary_topics:
-  - tools
-  - systems
-  - computer-science
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: cpp_map
-- post: _posts/2026-09-25-curated-behaviortree-cpp-engineering.md
-  content_type: deep-dive
-  placement: featured
-  primary_topic: cpp
-  secondary_topics:
-  - systems
-  - computer-science
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: behaviortree_engineering_guide
-- post: _posts/2026-09-25-curated-ray-vllm-offline-runbook.md
-  content_type: runbook
-  placement: featured
-  primary_topic: ai
-  secondary_topics:
-  - systems
-  - devops
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: ray_vllm_offline_runbook
-- post: _posts/2026-09-25-curated-gpu-docker-deployment.md
-  content_type: case-study
-  placement: featured
-  primary_topic: ai
-  secondary_topics:
-  - systems
-  - devops
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: gpu_docker_compat
-- post: _posts/2026-09-24-modern-cmake-targets-packaging.md
-  content_type: deep-dive
-  placement: featured
-  primary_topic: tools
-  secondary_topics:
-  - cpp
-  - devops
-  series: cpp-backend-production
-  series_order: 20
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: modern_cmake
-- post: _posts/2026-09-24-modern-cpp-concurrency-lifecycle.md
-  content_type: deep-dive
-  placement: featured
-  primary_topic: cpp
-  secondary_topics:
-  - programming
-  - systems
-  series: cpp-backend-production
-  series_order: 30
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: modern_concurrency
-- post: _posts/2026-09-24-linux-elf-linking-deployment.md
-  content_type: runbook
-  placement: featured
-  primary_topic: systems
-  secondary_topics:
-  - cpp
-  series: cpp-backend-production
-  series_order: 40
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: elf_linking
-- post: _posts/2026-09-24-curated-ai-agent-engineering-map.md
-  content_type: roadmap
-  placement: featured
-  primary_topic: ai
-  secondary_topics:
-  - programming
-  - security
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: ai_map
-- post: _posts/2026-09-24-curated-llm-serving-production-checklist.md
-  content_type: runbook
-  placement: featured
-  primary_topic: ai
-  secondary_topics:
-  - systems
-  - devops
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: llm_checklist
-- post: _posts/2026-09-24-agent-sandbox-security-runbook.md
-  content_type: runbook
-  placement: featured
-  primary_topic: ai
-  secondary_topics:
-  - security
-  - systems
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: agent_sandbox
-- post: _posts/2026-09-24-curated-security-networking-lab-guide.md
-  content_type: lab-guide
-  placement: featured
-  primary_topic: security
-  secondary_topics:
-  - systems
-  - programming
-  freshness: historical
-  verification: editorial-review
-  risk: caution
-  id: security_lab
-- post: _posts/2026-09-24-curated-devops-delivery-playbook.md
-  content_type: runbook
-  placement: featured
-  primary_topic: devops
-  secondary_topics:
-  - tools
-  - systems
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: devops_playbook
-- post: _posts/2026-09-24-curated-data-structures-algorithms-roadmap.md
-  content_type: roadmap
-  placement: featured
-  primary_topic: computer-science
-  secondary_topics:
-  - cpp
-  - programming
-  freshness: current
-  verification: editorial-review
-  id: data_roadmap
-- post: _posts/2026-09-24-curated-design-patterns-in-practice.md
-  content_type: deep-dive
-  placement: featured
-  primary_topic: computer-science
-  secondary_topics:
-  - cpp
-  - programming
-  freshness: current
-  verification: editorial-review
-  id: design_patterns
-- post: _posts/2026-09-24-curated-developer-tools-workflow.md
-  content_type: tutorial
-  placement: featured
-  primary_topic: tools
-  secondary_topics:
-  - cpp
-  - programming
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: tools_workflow
-- post: _posts/2026-09-24-curated-database-and-protocol-notes.md
-  content_type: reference
-  placement: featured
-  primary_topic: database
-  secondary_topics:
-  - systems
-  - programming
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: database_notes
-- post: _posts/2026-09-24-curated-photography-learning-path.md
-  content_type: roadmap
-  placement: featured
-  primary_topic: photography
-  freshness: current
-  verification: editorial-review
-  id: photography_path
-- post: _posts/2026-09-24-blog-legacy-content-maintenance-policy.md
-  content_type: editorial
-  placement: featured
-  primary_topic: personal
-  freshness: current
-  verification: editorial-review
-  id: legacy_policy
-- post: _posts/2026-09-24-curated-linux-systems-troubleshooting.md
-  content_type: runbook
-  placement: featured
-  primary_topic: systems
-  secondary_topics:
-  - devops
-  - security
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: linux_systems_troubleshooting
-- post: _posts/2026-09-05-C++-Performance-Analysis.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: cpp
-  series: cpp-backend-production
-  series_order: 50
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: cpp_performance
-- post: _posts/2026-09-05-BehaviorTree-CPP-Performance-Optimization-Guide.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: cpp
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: behaviortree_performance
-- post: _posts/2026-09-05-vllm-cluster-docker-deploy.md
-  content_type: case-study
-  placement: deep-dive
-  primary_topic: ai
-  secondary_topics:
-  - systems
-  - devops
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: vllm_cluster
-- post: _posts/2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated).md
-  content_type: deep-dive
-  placement: reference
-  primary_topic: ai
-  secondary_topics:
-  - systems
-  - devops
-  origin: ai-assisted
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: llm_architecture
-  review_date: '2026-09-25'
-  review_basis: arithmetic-and-Kubernetes-metric-cross-check
-- post: _posts/2026-09-05-OOP-vs-ECS-Architecture-Comparison.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: programming
-  secondary_topics:
-  - cpp
-  - computer-science
-  freshness: current
-  verification: not-tested
-  id: oop_ecs
-- post: _posts/2026-09-05-Protocol-Buffers-Guide.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: programming
-  secondary_topics:
-  - cpp
-  freshness: current
-  verification: not-tested
-  id: protobuf_guide
-- post: _posts/2026-09-05-opencode-cli-guide.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: ai
-  secondary_topics:
-  - tools
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: opencode_cli
-- post: _posts/2026-09-08-kylin-v10-sp1-offline-cpp-development-environment.md
-  content_type: case-study
-  placement: deep-dive
-  primary_topic: systems
-  secondary_topics:
-  - devops
-  - cpp
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: kylin_offline
-- post: _posts/2026-09-18-LAN-File-Share-Single-File-Python.md
-  content_type: case-study
-  placement: deep-dive
-  primary_topic: programming
-  secondary_topics:
-  - security
-  - systems
-  freshness: current
-  verification: not-tested
-  risk: caution
-  id: lan_file_share
-- post: _posts/2026-09-10-linux-usb-log-cleaner-blog-v2.2.md
-  content_type: case-study
-  placement: deep-dive
-  primary_topic: systems
-  secondary_topics:
-  - security
-  freshness: current
-  verification: not-tested
-  risk: caution
-  id: usb_log_cleaner
-- post: _posts/2026-09-18-SSD-Bad-Block-Diagnosis-And-USB-Safe-Eject.md
-  content_type: case-study
-  placement: deep-dive
-  primary_topic: systems
-  secondary_topics:
-  - security
-  freshness: current
-  verification: not-tested
-  risk: caution
-  id: ssd_diagnosis
-- post: _posts/2026-06-10-Model-MiniCPM5-1B-Deploy-Ollama(Docker).md
-  content_type: tutorial
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: reported-tested
-  id: ollama_tested
-- post: _posts/2026-06-10-Model-MiniCPM5-1B-Deploy-llama.cpp(Docker).md
-  content_type: tutorial
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: reported-tested
-  id: llamacpp_tested
-- post: _posts/2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install.md
-  content_type: tutorial
-  placement: reference
-  primary_topic: systems
-  freshness: version-sensitive
-  verification: reported-tested
-  id: nvidia_tested
-- post: _posts/2026-06-12-Multi-Node-LLM-Serving-vLLM+Ray(Docker).md
-  content_type: runbook
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: reported-tested
-  risk: caution
-  id: vllm_ray_tested
-- post: _posts/2026-06-12-Python-Ray-Offline-Installation-Guide.md
-  content_type: tutorial
-  placement: reference
-  primary_topic: devops
-  secondary_topics:
-  - ai
-  freshness: version-sensitive
-  verification: reported-tested
-  id: ray_offline_tested
-- post: _posts/2026-06-01-AI-model-hub-New-API.md
-  content_type: reference
-  placement: reference
-  primary_topic: ai
-  origin: ai-assisted
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: new_api_reference
-- post: _posts/2026-06-01-Model-Sentence-Transformers-models-Sentence-BERT-模型.md
-  content_type: reference
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: sentence_bert_reference
-- post: _posts/2026-09-05-OpenSource-Agent-Swarm.md
-  content_type: case-study
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: agent_swarm_reference
-- post: _posts/2026-05-19-基于DeepAgents的可私有化部署的沙箱方案.md
-  content_type: reference
-  placement: reference
-  primary_topic: ai
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: deepagents_sandbox_reference
-- post: _posts/2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated).md
-  content_type: deep-dive
-  placement: reference
-  primary_topic: cpp
-  origin: ai-assisted
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: behaviortree_ai_reference
-  review_date: '2026-09-25'
-  review_basis: official-docs-and-ThreadedAction-caveat
-- post: _posts/2020-07-10-Data-Cleaning（百度百科）.md
-  content_type: reference
-  placement: reference
-  primary_topic: computer-science
-  origin: imported
-  freshness: historical
-  verification: unknown
-  risk: caution
-  id: data_cleaning_import
-  attribution:
-    author: w97531
-    source_url: https://blog.csdn.net/w97531/article/details/81947376
-    license: CC BY-SA 4.0
-    license_url: https://creativecommons.org/licenses/by-sa/4.0/
-    license_status: declared-in-source
-    attribution_basis: source-post-footer
-- post: _posts/2023-03-03-Book-深入设计模式.md
-  content_type: reference
-  placement: reference
-  primary_topic: computer-science
-  origin: imported
-  freshness: historical
-  verification: unknown
-  risk: caution
-  id: design_pattern_import
-  attribution:
-    author: RefactoringGuru
-    source_url: https://refactoringguru.cn/design-patterns
-    license: CC BY-NC-ND 4.0 (repository examples)
-    license_url: https://creativecommons.org/licenses/by-nc-nd/4.0/
-    license_status: partial-source-review
-    attribution_basis: linked-repository-readme
-    license_note: The linked C++ repository declares this license for its examples; coverage of the historical article's prose is not independently verified.
-- post: _posts/2020-07-08-Cryptology-3DES（Triple-DES）-1981-American.md
-  content_type: reference
-  placement: reference
-  primary_topic: security
-  origin: imported
-  freshness: historical
-  verification: unknown
-  risk: caution
-  id: triple_des_import
-  attribution:
-    author: unknown
-    source_url: https://baike.baidu.com/item/3DES/6368161
-    license: unknown
-    license_status: not-verified
-    attribution_basis: source-post-link
-    license_note: The historical post links to this page but does not identify an author or license; no additional permission is inferred.
-- post: _posts/2026-09-05-New-API-Multi-Process-Docker.md
-  content_type: runbook
-  placement: reference
-  primary_topic: ai
-  secondary_topics:
-  - devops
-  - systems
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: new_api_docker_review
-  review_date: '2026-09-25'
-  review_basis: official-New-API-docs-and-deployment-correction
-- post: _posts/2026-09-05-VitePress-Complete-Guide.md
-  content_type: tutorial
-  placement: reference
-  primary_topic: tools
-  secondary_topics:
-  - programming
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: vitepress_guide_review
-  review_date: '2026-09-25'
-  review_basis: official-alpha.20-config-reference
-- post: _posts/2024-04-23-Tool-Gitlab-重置root账户密码.md
-  content_type: runbook
-  placement: reference
-  primary_topic: devops
-  freshness: historical
-  verification: not-tested
-  risk: caution
-  id: gitlab_root_reset_security
-  review_date: '2026-09-25'
-  review_basis: authorization-backup-and-lockout-boundary
-  risk_note: "仅在你拥有 GitLab 实例授权、已完成可恢复备份并确认不会锁出管理员账户时执行；不同版本的自托管实例可能需要不同命令。"
-- post: _posts/2026-09-25-clear-proxy-env-vars.md
-  content_type: runbook
-  placement: deep-dive
-  primary_topic: systems
-  secondary_topics:
-  - tools
-  freshness: current
-  verification: reported-tested
-  risk: normal
-  series: shell-tooling-mechanics
-  series_order: 10
-  id: clear_proxy_env
-- post: _posts/2026-09-25-opencode-chrome-cdp-blog-publishing.md
-  content_type: runbook
-  placement: deep-dive
-  primary_topic: tools
-  secondary_topics:
-  - ai
-  freshness: version-sensitive
-  verification: not-tested
-  risk: caution
-  id: opencode_cdp_publishing
-- post: _posts/2026-09-26-mysql-connector-cpp-26.7-call-to-bytes.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: database
-  secondary_topics:
-  - cpp
-  - systems
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: mysql_connector_bytes
-- post: _posts/2026-09-26-nodejs24-nvm-install-node-24.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: tools
-  secondary_topics:
-  - programming
-  - systems
-  freshness: version-sensitive
-  verification: review-required
-  risk: caution
-  id: nodejs24_nvm
-- post: _posts/2026-09-27-gh-api-disable-actions-all-forks.md
-  content_type: runbook
-  placement: deep-dive
-  primary_topic: devops
-  secondary_topics:
-  - tools
-  freshness: version-sensitive
-  verification: reported-tested
-  risk: caution
-  id: gh_actions_forks_off
-- post: _posts/2026-09-27-tool-anaconda-conda-introduction.md
-  content_type: reference
-  placement: reference
-  primary_topic: tools
-  secondary_topics:
-  - programming
-  freshness: version-sensitive
-  verification: review-required
-  risk: normal
-  id: anaconda_conda_intro
-- post: _posts/2026-09-30-llm-probe-openai-endpoint-connectivity.md
-  content_type: deep-dive
-  placement: deep-dive
-  primary_topic: ai
-  secondary_topics:
-  - security
-  - tools
-  freshness: version-sensitive
-  verification: reported-tested
-  risk: caution
-  review_date: 2026-09-30
-  review_basis: 17 组 mock 场景本地复跑 + 两端密文互读互解实测 + 附录源码与仓库本体逐字节比对
-  id: llm_probe_full
+  _posts/2026-09-24-curated-cpp-backend-engineering.md:
+    content_type: roadmap
+    placement: featured
+    primary_topic: cpp
+    secondary_topics:
+    - tools
+    - systems
+    - computer-science
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: cpp_map
+  _posts/2026-09-25-curated-behaviortree-cpp-engineering.md:
+    content_type: deep-dive
+    placement: featured
+    primary_topic: cpp
+    secondary_topics:
+    - systems
+    - computer-science
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: behaviortree_engineering_guide
+  _posts/2026-09-25-curated-ray-vllm-offline-runbook.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: ai
+    secondary_topics:
+    - systems
+    - devops
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: ray_vllm_offline_runbook
+  _posts/2026-09-25-curated-gpu-docker-deployment.md:
+    content_type: case-study
+    placement: featured
+    primary_topic: ai
+    secondary_topics:
+    - systems
+    - devops
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: gpu_docker_compat
+  _posts/2026-09-24-modern-cmake-targets-packaging.md:
+    content_type: deep-dive
+    placement: featured
+    primary_topic: tools
+    secondary_topics:
+    - cpp
+    - devops
+    series: cpp-backend-production
+    series_order: 20
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: modern_cmake
+  _posts/2026-09-24-modern-cpp-concurrency-lifecycle.md:
+    content_type: deep-dive
+    placement: featured
+    primary_topic: cpp
+    secondary_topics:
+    - programming
+    - systems
+    series: cpp-backend-production
+    series_order: 30
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: modern_concurrency
+  _posts/2026-09-24-linux-elf-linking-deployment.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: systems
+    secondary_topics:
+    - cpp
+    series: cpp-backend-production
+    series_order: 40
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: elf_linking
+  _posts/2026-09-24-curated-ai-agent-engineering-map.md:
+    content_type: roadmap
+    placement: featured
+    primary_topic: ai
+    secondary_topics:
+    - programming
+    - security
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: ai_map
+  _posts/2026-09-24-curated-llm-serving-production-checklist.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: ai
+    secondary_topics:
+    - systems
+    - devops
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: llm_checklist
+  _posts/2026-09-24-agent-sandbox-security-runbook.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: ai
+    secondary_topics:
+    - security
+    - systems
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: agent_sandbox
+  _posts/2026-09-24-curated-security-networking-lab-guide.md:
+    content_type: lab-guide
+    placement: featured
+    primary_topic: security
+    secondary_topics:
+    - systems
+    - programming
+    freshness: historical
+    verification: editorial-review
+    risk: caution
+    id: security_lab
+  _posts/2026-09-24-curated-devops-delivery-playbook.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: devops
+    secondary_topics:
+    - tools
+    - systems
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: devops_playbook
+  _posts/2026-09-24-curated-data-structures-algorithms-roadmap.md:
+    content_type: roadmap
+    placement: featured
+    primary_topic: computer-science
+    secondary_topics:
+    - cpp
+    - programming
+    freshness: current
+    verification: editorial-review
+    id: data_roadmap
+  _posts/2026-09-24-curated-design-patterns-in-practice.md:
+    content_type: deep-dive
+    placement: featured
+    primary_topic: computer-science
+    secondary_topics:
+    - cpp
+    - programming
+    freshness: current
+    verification: editorial-review
+    id: design_patterns
+  _posts/2026-09-24-curated-developer-tools-workflow.md:
+    content_type: tutorial
+    placement: featured
+    primary_topic: tools
+    secondary_topics:
+    - cpp
+    - programming
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: tools_workflow
+  _posts/2026-09-24-curated-database-and-protocol-notes.md:
+    content_type: reference
+    placement: featured
+    primary_topic: database
+    secondary_topics:
+    - systems
+    - programming
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: database_notes
+  _posts/2026-09-24-curated-photography-learning-path.md:
+    content_type: roadmap
+    placement: featured
+    primary_topic: photography
+    freshness: current
+    verification: editorial-review
+    id: photography_path
+  _posts/2026-09-24-blog-legacy-content-maintenance-policy.md:
+    content_type: editorial
+    placement: featured
+    primary_topic: personal
+    freshness: current
+    verification: editorial-review
+    id: legacy_policy
+  _posts/2026-09-24-curated-linux-systems-troubleshooting.md:
+    content_type: runbook
+    placement: featured
+    primary_topic: systems
+    secondary_topics:
+    - devops
+    - security
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: linux_systems_troubleshooting
+  _posts/2026-09-05-C++-Performance-Analysis.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: cpp
+    series: cpp-backend-production
+    series_order: 50
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: cpp_performance
+  _posts/2026-09-05-BehaviorTree-CPP-Performance-Optimization-Guide.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: cpp
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: behaviortree_performance
+  _posts/2026-09-05-vllm-cluster-docker-deploy.md:
+    content_type: case-study
+    placement: deep-dive
+    primary_topic: ai
+    secondary_topics:
+    - systems
+    - devops
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: vllm_cluster
+  _posts/2026-06-12-Multi-Node-LLM-Serving-Architecture,-Frameworks-and-Best-Practices-(LLM-Generated).md:
+    content_type: deep-dive
+    placement: reference
+    primary_topic: ai
+    secondary_topics:
+    - systems
+    - devops
+    origin: ai-assisted
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: llm_architecture
+    review_date: '2026-09-25'
+    review_basis: arithmetic-and-Kubernetes-metric-cross-check
+  _posts/2026-09-05-OOP-vs-ECS-Architecture-Comparison.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: programming
+    secondary_topics:
+    - cpp
+    - computer-science
+    freshness: current
+    verification: not-tested
+    id: oop_ecs
+  _posts/2026-09-05-Protocol-Buffers-Guide.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: programming
+    secondary_topics:
+    - cpp
+    freshness: current
+    verification: not-tested
+    id: protobuf_guide
+  _posts/2026-09-05-opencode-cli-guide.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: ai
+    secondary_topics:
+    - tools
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: opencode_cli
+  _posts/2026-09-08-kylin-v10-sp1-offline-cpp-development-environment.md:
+    content_type: case-study
+    placement: deep-dive
+    primary_topic: systems
+    secondary_topics:
+    - devops
+    - cpp
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: kylin_offline
+  _posts/2026-09-18-LAN-File-Share-Single-File-Python.md:
+    content_type: case-study
+    placement: deep-dive
+    primary_topic: programming
+    secondary_topics:
+    - security
+    - systems
+    freshness: current
+    verification: not-tested
+    risk: caution
+    id: lan_file_share
+  _posts/2026-09-10-linux-usb-log-cleaner-blog-v2.2.md:
+    content_type: case-study
+    placement: deep-dive
+    primary_topic: systems
+    secondary_topics:
+    - security
+    freshness: current
+    verification: not-tested
+    risk: caution
+    id: usb_log_cleaner
+  _posts/2026-09-18-SSD-Bad-Block-Diagnosis-And-USB-Safe-Eject.md:
+    content_type: case-study
+    placement: deep-dive
+    primary_topic: systems
+    secondary_topics:
+    - security
+    freshness: current
+    verification: not-tested
+    risk: caution
+    id: ssd_diagnosis
+  _posts/2026-06-10-Model-MiniCPM5-1B-Deploy-Ollama(Docker).md:
+    content_type: tutorial
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: reported-tested
+    id: ollama_tested
+  _posts/2026-06-10-Model-MiniCPM5-1B-Deploy-llama.cpp(Docker).md:
+    content_type: tutorial
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: reported-tested
+    id: llamacpp_tested
+  _posts/2026-06-10-OS-Ubuntu-NVIDIA-Driver-Install.md:
+    content_type: tutorial
+    placement: reference
+    primary_topic: systems
+    freshness: version-sensitive
+    verification: reported-tested
+    id: nvidia_tested
+  _posts/2026-06-12-Multi-Node-LLM-Serving-vLLM+Ray(Docker).md:
+    content_type: runbook
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: reported-tested
+    risk: caution
+    id: vllm_ray_tested
+  _posts/2026-06-12-Python-Ray-Offline-Installation-Guide.md:
+    content_type: tutorial
+    placement: reference
+    primary_topic: devops
+    secondary_topics:
+    - ai
+    freshness: version-sensitive
+    verification: reported-tested
+    id: ray_offline_tested
+  _posts/2026-06-01-AI-model-hub-New-API.md:
+    content_type: reference
+    placement: reference
+    primary_topic: ai
+    origin: ai-assisted
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: new_api_reference
+  _posts/2026-06-01-Model-Sentence-Transformers-models-Sentence-BERT-模型.md:
+    content_type: reference
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: sentence_bert_reference
+  _posts/2026-09-05-OpenSource-Agent-Swarm.md:
+    content_type: case-study
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: agent_swarm_reference
+  _posts/2026-05-19-基于DeepAgents的可私有化部署的沙箱方案.md:
+    content_type: reference
+    placement: reference
+    primary_topic: ai
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: deepagents_sandbox_reference
+  _posts/2026-07-15-OpenSource-BehaviorTree.CPP_v4.9_Complete_Guide(LLM-Generated).md:
+    content_type: deep-dive
+    placement: reference
+    primary_topic: cpp
+    origin: ai-assisted
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: behaviortree_ai_reference
+    review_date: '2026-09-25'
+    review_basis: official-docs-and-ThreadedAction-caveat
+  _posts/2020-07-10-Data-Cleaning（百度百科）.md:
+    content_type: reference
+    placement: reference
+    primary_topic: computer-science
+    origin: imported
+    freshness: historical
+    verification: unknown
+    risk: caution
+    id: data_cleaning_import
+    attribution:
+      author: w97531
+      source_url: https://blog.csdn.net/w97531/article/details/81947376
+      license: CC BY-SA 4.0
+      license_url: https://creativecommons.org/licenses/by-sa/4.0/
+      license_status: declared-in-source
+      attribution_basis: source-post-footer
+  _posts/2023-03-03-Book-深入设计模式.md:
+    content_type: reference
+    placement: reference
+    primary_topic: computer-science
+    origin: imported
+    freshness: historical
+    verification: unknown
+    risk: caution
+    id: design_pattern_import
+    attribution:
+      author: RefactoringGuru
+      source_url: https://refactoringguru.cn/design-patterns
+      license: CC BY-NC-ND 4.0 (repository examples)
+      license_url: https://creativecommons.org/licenses/by-nc-nd/4.0/
+      license_status: partial-source-review
+      attribution_basis: linked-repository-readme
+      license_note: The linked C++ repository declares this license for its examples; coverage of the historical article's prose is not independently verified.
+  _posts/2020-07-08-Cryptology-3DES（Triple-DES）-1981-American.md:
+    content_type: reference
+    placement: reference
+    primary_topic: security
+    origin: imported
+    freshness: historical
+    verification: unknown
+    risk: caution
+    id: triple_des_import
+    attribution:
+      author: unknown
+      source_url: https://baike.baidu.com/item/3DES/6368161
+      license: unknown
+      license_status: not-verified
+      attribution_basis: source-post-link
+      license_note: The historical post links to this page but does not identify an author or license; no additional permission is inferred.
+  _posts/2026-09-05-New-API-Multi-Process-Docker.md:
+    content_type: runbook
+    placement: reference
+    primary_topic: ai
+    secondary_topics:
+    - devops
+    - systems
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: new_api_docker_review
+    review_date: '2026-09-25'
+    review_basis: official-New-API-docs-and-deployment-correction
+  _posts/2026-09-05-VitePress-Complete-Guide.md:
+    content_type: tutorial
+    placement: reference
+    primary_topic: tools
+    secondary_topics:
+    - programming
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: vitepress_guide_review
+    review_date: '2026-09-25'
+    review_basis: official-alpha.20-config-reference
+  _posts/2024-04-23-Tool-Gitlab-重置root账户密码.md:
+    content_type: runbook
+    placement: reference
+    primary_topic: devops
+    freshness: historical
+    verification: not-tested
+    risk: caution
+    id: gitlab_root_reset_security
+    review_date: '2026-09-25'
+    review_basis: authorization-backup-and-lockout-boundary
+    risk_note: 仅在你拥有 GitLab 实例授权、已完成可恢复备份并确认不会锁出管理员账户时执行；不同版本的自托管实例可能需要不同命令。
+  _posts/2026-09-25-clear-proxy-env-vars.md:
+    content_type: runbook
+    placement: deep-dive
+    primary_topic: systems
+    secondary_topics:
+    - tools
+    freshness: current
+    verification: reported-tested
+    risk: normal
+    series: shell-tooling-mechanics
+    series_order: 10
+    id: clear_proxy_env
+  _posts/2026-09-25-opencode-chrome-cdp-blog-publishing.md:
+    content_type: runbook
+    placement: deep-dive
+    primary_topic: tools
+    secondary_topics:
+    - ai
+    freshness: version-sensitive
+    verification: not-tested
+    risk: caution
+    id: opencode_cdp_publishing
+  _posts/2026-09-26-mysql-connector-cpp-26.7-call-to-bytes.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: database
+    secondary_topics:
+    - cpp
+    - systems
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: mysql_connector_bytes
+  _posts/2026-09-26-nodejs24-nvm-install-node-24.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: tools
+    secondary_topics:
+    - programming
+    - systems
+    freshness: version-sensitive
+    verification: review-required
+    risk: caution
+    id: nodejs24_nvm
+  _posts/2026-09-27-gh-api-disable-actions-all-forks.md:
+    content_type: runbook
+    placement: deep-dive
+    primary_topic: devops
+    secondary_topics:
+    - tools
+    freshness: version-sensitive
+    verification: reported-tested
+    risk: caution
+    id: gh_actions_forks_off
+  _posts/2026-09-27-tool-anaconda-conda-introduction.md:
+    content_type: reference
+    placement: reference
+    primary_topic: tools
+    secondary_topics:
+    - programming
+    freshness: version-sensitive
+    verification: review-required
+    risk: normal
+    id: anaconda_conda_intro
+  _posts/2026-09-30-llm-probe-openai-endpoint-connectivity.md:
+    content_type: deep-dive
+    placement: deep-dive
+    primary_topic: ai
+    secondary_topics:
+    - security
+    - tools
+    freshness: version-sensitive
+    verification: reported-tested
+    risk: caution
+    review_date: 2026-09-30
+    review_basis: 17 组 mock 场景本地复跑 + 两端密文互读互解实测 + 附录源码与仓库本体逐字节比对
+    id: llm_probe_full

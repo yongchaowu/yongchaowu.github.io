@@ -5,4 +5,6 @@ tag: "WordPress"
 slug: "wordpress"
 permalink: /tag/wordpress/
 generated: true
+noindex: true
+sitemap: false
 ---

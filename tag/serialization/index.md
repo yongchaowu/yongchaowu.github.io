@@ -5,4 +5,6 @@ tag: "serialization"
 slug: "serialization"
 permalink: /tag/serialization/
 generated: true
+noindex: true
+sitemap: false
 ---

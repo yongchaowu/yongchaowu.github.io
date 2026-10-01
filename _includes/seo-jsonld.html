@@ -8,7 +8,15 @@
 {% assign jsonld_url = page.canonical_url | default: page.url | absolute_url %}
 {% assign jsonld_modified = page.updated | default: page.date | date: "%Y-%m-%d" %}
 {% assign jsonld_published = page.date | date: "%Y-%m-%d" %}
-{% assign jsonld_lang = page.lang | default: site.lang | default: 'en' %}
+{% comment %}
+  Language resolution mirrors _layouts/default.html: post front matter, then the
+  generated _data/post_meta.yml sidecar, then site.lang. See
+  scripts/generate_post_meta.py for why the sidecar exists -- 267 Chinese posts
+  declare no language and were all inheriting site.lang: en.
+{% endcomment %}
+{% assign jsonld_meta_path = page.path | split: '_posts/' | last | prepend: '_posts/' %}
+{% assign jsonld_page_meta = site.data.post_meta.posts[jsonld_meta_path] %}
+{% assign jsonld_lang = page.lang | default: jsonld_page_meta.lang | default: site.lang | default: 'en' %}
 
 {% if page.url == '/' %}
 {%- comment -%}

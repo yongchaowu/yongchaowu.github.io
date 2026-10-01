@@ -5,4 +5,6 @@ tag: "AI Model Hub"
 slug: "ai-model-hub"
 permalink: /tag/ai-model-hub/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -15,6 +15,19 @@ lang: en
 
 permalink: /:year/:month/:day/:title/
 
+# Pin the build timezone. The permalink above is derived from each post's
+# front-matter date, and Jekyll interprets a naive `date:` value in the *build
+# machine's* zone. 78 of the 357 posts have a date between 00:00 and 08:00 local,
+# so their generated URL moves back one day when the build runs in Asia/Shanghai
+# instead of UTC. CI sets TZ=UTC, which is what the live site actually serves --
+# but a local `jekyll serve` or `jekyll build` without it silently produced
+# different URLs for those 78 posts, so previews did not match production and
+# AGENTS.md's "the permalink is part of the public URL contract" was not actually
+# stable across environments. Declaring it here makes the build deterministic
+# whatever TZ the shell happens to carry; `TZ=UTC` in the documented commands is
+# then belt-and-braces rather than load-bearing.
+timezone: UTC
+
 # other links
 twitter_username: 
 facebook_username:

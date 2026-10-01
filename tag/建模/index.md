@@ -5,4 +5,6 @@ tag: "建模"
 slug: "建模"
 permalink: /tag/建模/
 generated: true
+noindex: true
+sitemap: false
 ---

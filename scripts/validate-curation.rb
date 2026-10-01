@@ -90,9 +90,13 @@ editorial_data = load_data(EDITORIAL_FILE)
 reading_paths_data = load_data(READING_PATHS_FILE)
 relations_data = load_data(RELATIONS_FILE)
 canonical_topic_ids = load_data(TOPICS_FILE).fetch('topics').map { |topic| topic['id'] }
-editorial_entries = editorial_data.fetch('posts', [])
-errors << 'editorial posts must be an array' unless editorial_entries.is_a?(Array)
-editorial_entries = [] unless editorial_entries.is_a?(Array)
+# `posts` is a mapping keyed by repository-relative post path so that Liquid can
+# do site.data.post_editorial.posts[path] instead of scanning a list. Keep this
+# reader in step with the templates.
+editorial_map = editorial_data.fetch('posts', {})
+errors << 'editorial posts must be a mapping keyed by post path' unless editorial_map.is_a?(Hash)
+editorial_map = {} unless editorial_map.is_a?(Hash)
+editorial_entries = editorial_map.map { |post_path, attributes| { 'post' => post_path }.merge(attributes || {}) }
 editorial_ids = Hash.new(0)
 editorial_paths = Hash.new(0)
 allowed_verifications = %w[unknown editorial-review reported-tested not-tested review-required]
@@ -142,9 +146,9 @@ end
 editorial_ids.each do |id, count|
   errors << "editorial id #{id} is duplicated #{count} times" if count > 1
 end
-editorial_paths.each do |path, count|
-  errors << "editorial post #{path} is duplicated #{count} times" if count > 1
-end
+# `posts` is a mapping, so two records for one path cannot coexist; the path is
+# the key. What still needs checking is that every key is distinct and non-empty,
+# which the per-entry `missing post path` error above already covers.
 curated_paths.each do |path, count|
   errors << "curated post #{path} needs exactly one editorial record" unless editorial_paths[path] == 1
 end

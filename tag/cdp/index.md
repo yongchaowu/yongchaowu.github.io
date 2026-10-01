@@ -5,4 +5,6 @@ tag: "CDP"
 slug: "cdp"
 permalink: /tag/cdp/
 generated: true
+noindex: true
+sitemap: false
 ---

@@ -5,4 +5,6 @@ tag: "Proxy"
 slug: "proxy"
 permalink: /tag/proxy/
 generated: true
+noindex: true
+sitemap: false
 ---

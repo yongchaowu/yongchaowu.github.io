@@ -8,14 +8,12 @@ categories:
 tags:
 - Office
 ---
-
 September 8, 2020 9:26 PM
 ~腾讯课堂笔记
 ## TOOL
 样机：smartmockups   [Home](https://smartmockups.com/)
-图片拼贴制作软件:Collagelt
+图片拼贴制作软件:CollageIt
 
-<!--more-->
 ## 魔法公式
 1.回归原始和单纯、删减区别和修饰，统一格式，且回到只有文本的状态
 ```language
@@ -45,3 +43,9 @@ September 8, 2020 9:26 PM
 - 字体不超过3种
 - 色彩不超过5种
 ```
+
+<!--more-->
+
+本文修订依据：PearlMountain 官方 [CollageIt 产品页](https://www.pearlmountainsoft.com/collageit/)（核验日期 2026-09-25，页面显示版本 1.9.5）。本文仅将产品名 `Collagelt` 更正为 `CollageIt`，未改动其他工具或演示内容。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 14:02（UTC+08:00）。修订仅纠正 CollageIt 产品名拼写。

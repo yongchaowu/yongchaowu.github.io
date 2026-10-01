@@ -5,4 +5,6 @@ tag: "标准库"
 slug: "标准库"
 permalink: /tag/标准库/
 generated: true
+noindex: true
+sitemap: false
 ---

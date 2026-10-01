@@ -5,4 +5,6 @@ tag: "环境变量"
 slug: "环境变量"
 permalink: /tag/环境变量/
 generated: true
+noindex: true
+sitemap: false
 ---

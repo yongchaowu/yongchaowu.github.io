@@ -5,4 +5,6 @@ tag: "cqtdeployer"
 slug: "cqtdeployer"
 permalink: /tag/cqtdeployer/
 generated: true
+noindex: true
+sitemap: false
 ---

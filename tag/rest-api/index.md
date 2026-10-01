@@ -5,4 +5,6 @@ tag: "REST API"
 slug: "rest-api"
 permalink: /tag/rest-api/
 generated: true
+noindex: true
+sitemap: false
 ---

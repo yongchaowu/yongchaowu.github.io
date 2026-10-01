@@ -10,25 +10,30 @@ tags:
 - C++
 - Open Source
 ---
-
 ` rc:return code`
 
+> **API 范围：** 以下按 Winsock 2.2 的 API 合约校对；`SOCKET` 失败值使用 `INVALID_SOCKET`，数据收发函数失败值使用 `SOCKET_ERROR`。`GetResponseByCmd` 片段假定调用方已经完成 `InitSocket()`；若独立使用，需要自行配对 `WSAStartup`/`WSACleanup`。
+
 <!--more-->
-```cpp
+
+```language
 #include <windows.h>
 #include "pThreads/pthread.h"
 #pragma comment(lib, "./x64/pthreadVC2.lib")
+
+void* thFunction(LPVOID lpParam);
+bool InitSocket();
+
 int main()
 {
 	pthread_t m_pThtid;
-	pthread_create(&m_pThtid, NULL, thFunction, NULL);
+	pthread_create(&m_pThtid, NULL, thFunction, this);
     while(1)
     {
     	Sleep(1000);
     }
     return 0;
 }
-
 
 void* thFunction(LPVOID lpParam)
 {
@@ -37,10 +42,12 @@ void* thFunction(LPVOID lpParam)
 	if (lpParam == NULL)
 		return NULL;
 
-	InitSocket();
+	if (!InitSocket()) {
+		return NULL;
+	}
 
-	SOCKET s_fd;
-	if ((s_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	SOCKET s_fd = INVALID_SOCKET;
+	if ((s_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
 		WSACleanup();
 		return NULL;
@@ -52,36 +59,34 @@ void* thFunction(LPVOID lpParam)
 	s_fdServer.sin_port = htons(6800);
 	s_fdServer.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 
-
 		if (connect(s_fd, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR)) == SOCKET_ERROR)
 		{
 			Sleep(10000);
-			break;
-			//WSACleanup();
-			//return NULL;
+			closesocket(s_fd);
+			WSACleanup();
+			return NULL;
 		}
 
 		while (1)
 		{
         	//int sendLen = send(s_fd, "Get Lic.", 100, 0);
-			int sendLen = sendto(s_fd, "Get Lic.", 100, 0, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR));
-			if (sendLen < 0) {
+			int sendLen = sendto(s_fd, "Get Lic.", sizeof("Get Lic.") - 1, 0, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR));
+			if (sendLen == SOCKET_ERROR) {
 				cout << "发送失败！" << endl;
 				break;
 			}
 			char szBuf[65535];
 			memset(szBuf, 0, sizeof(szBuf));
-			socklen_t nLen;
+			int nLen = sizeof(s_fdServer);
             //int recvLen = recv(s_fd, szBuf, 65535, 0);
 			int recvLen = recvfrom(s_fd, szBuf, 65535, 0, (SOCKADDR*)&s_fdServer, &nLen);
-			if (recvLen < 0) {
+			if (recvLen == SOCKET_ERROR) {
 				cout << "接受失败！" << endl;
 				break;
 			}
 
 			printf("%s\n", szBuf);
 		}
-
 
 	//关闭套接字
 	closesocket(s_fd);
@@ -90,35 +95,31 @@ void* thFunction(LPVOID lpParam)
 	return NULL;
 }
 
-
-void InitSocket() 
+bool InitSocket()
 {
 	//初始化套接字库
 	WORD w_req = MAKEWORD(2, 2);//版本号
-	WSADATA wsadata;
-	int err = -1;
-	err = WSAStartup(w_req, &wsadata);
+	WSADATA wsadata = {};
+	int err = WSAStartup(w_req, &wsadata);
 	if (err != 0) {
 		cout << "初始化套接字库失败！" << endl;
+		return false;
 	}
-	else {
-		cout << "初始化套接字库成功！" << endl;
-	}
-	//检测版本号
-	if (LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wHighVersion) != 2) {
+	cout << "初始化套接字库成功！" << endl;
+	//检测协商后应使用的版本号
+	if (LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wVersion) != 2) {
 		cout << "套接字库版本号不符！" << endl;
 		WSACleanup();
+		return false;
 	}
-	else {
-		cout << "套接字库版本正确！" << endl;
-	}
+	cout << "套接字库版本正确！" << endl;
 	//填充服务端地址信息
-
+	return true;
 }
 
 ```
 
-```cpp
+```language
 int GetResponseByCmd(const char* pszCmd)
 {
 	if (pszCmd == NULL)
@@ -126,8 +127,8 @@ int GetResponseByCmd(const char* pszCmd)
 		return -1;
 	}
 
-	SOCKET s_fd;
-	if ((s_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	SOCKET s_fd = INVALID_SOCKET;
+	if ((s_fd = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
 		return -1;
 	}
@@ -143,12 +144,12 @@ int GetResponseByCmd(const char* pszCmd)
 
 	if (connect(s_fd, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR)) == SOCKET_ERROR)
 	{
-		//closesocket(s_fd);
+		closesocket(s_fd);
 		return -1;
 	}
 
-	int sendLen = sendLen = sendto(s_fd, pszCmd, strlen(pszCmd), 0, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR));
-	if (sendLen < 0)
+	int sendLen = sendto(s_fd, pszCmd, strlen(pszCmd), 0, (SOCKADDR*)&s_fdServer, sizeof(SOCKADDR));
+	if (sendLen == SOCKET_ERROR)
 	{
 		closesocket(s_fd);
 		return -1;
@@ -156,9 +157,9 @@ int GetResponseByCmd(const char* pszCmd)
 	char szBuf[65535];
 	memset(szBuf, 0, sizeof(szBuf));
 
-	socklen_t nLen;
+	int nLen = sizeof(s_fdServer);
 	int recvLen = recvfrom(s_fd, szBuf, 65535, 0, (SOCKADDR*)&s_fdServer, &nLen);
-	if (recvLen < 0) {
+	if (recvLen == SOCKET_ERROR) {
 		closesocket(s_fd);
 		return -1;
 	}
@@ -168,3 +169,9 @@ int GetResponseByCmd(const char* pszCmd)
 	return 0;
 }
 ```
+
+---
+
+本文修订依据：Microsoft Learn [`socket`](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket)、[`sendto`](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto)、[`recvfrom`](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-recvfrom) 和 [`WSAStartup`](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsastartup)（页面元数据更新于 2024-02-22）。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 07:59（UTC+08:00）。修订仅纠正 Winsock 错误哨兵、版本协商、缓冲区长度和连接失败控制流。

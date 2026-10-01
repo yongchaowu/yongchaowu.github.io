@@ -5,4 +5,6 @@ tag: "Other"
 slug: "other"
 permalink: /tag/other/
 generated: true
+noindex: true
+sitemap: false
 ---

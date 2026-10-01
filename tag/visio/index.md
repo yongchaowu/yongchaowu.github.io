@@ -5,4 +5,6 @@ tag: "Visio"
 slug: "visio"
 permalink: /tag/visio/
 generated: true
+noindex: true
+sitemap: false
 ---

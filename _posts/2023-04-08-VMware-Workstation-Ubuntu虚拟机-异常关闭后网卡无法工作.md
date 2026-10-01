@@ -11,10 +11,8 @@ tags:
 - Tool
 - OS
 ---
-
 参考https://blog.csdn.net/lhx526080338/article/details/129360808
 
-<!--more-->
 虚拟机镜像ubuntu-22.04.2-desktop-amd64.iso
 虚拟机启动之后，右上角电源处的下拉菜单中没有网络设置。
 `sudo lshw -c network`
@@ -37,17 +35,19 @@ tags:
        configuration: autonegotiation=on broadcast=yes driver=e1000 driverversion=5.19.0-38-generic duplex=full latency=0 link=no mingnt=255 multicast=yes port=twisted pair speed=1Gbit/s
        resources: irq:19 memory:fd5c0000-fd5dffff memory:fdff0000-fdffffff ioport:2000(size=64) memory:fd500000-fd50ffff
 
+<!--more-->
+
 ```
 `-network DISABLED`，恢复方法：
 
-```bash
+```
 sudo service NetworkManager stop
- 
+
 sudo rm  /var/lib/NetworkManager/NetworkManager.state
- 
+
 sudo gedit /etc/NetworkManager/NetworkManager.conf 
-# managed=true
- 
+//managed=true
+
 sudo service NetworkManager start
 
 ```

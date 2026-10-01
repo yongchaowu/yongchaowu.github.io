@@ -10,10 +10,8 @@ tags:
 - Tool
 - CPack
 ---
-
 在使用 CPack 打包过程中自动生成一个文件，其包含存储特定信息，比如版本号或者其他元数据。
 
-<!--more-->
 1. 在项目源码目录中创建一个模板文件，如 `info_template`。这个文件将包含想要填充动态信息的占位符。
 例如：
     ```plaintext
@@ -21,7 +19,9 @@ tags:
     Version: @PROJECT_VERSION@
     XXXX: @XXXX@
     ```
-注意：其中 `@XXXX@`为CMakeLists.txt中的变量或CMAKE的参数。
+注意：其中 `@XXXX@`为CMakeList.txt中的变量或CMAKE的参数。
+
+<!--more-->
 
 2. 使用 `configure_file` 配置信息文件
 

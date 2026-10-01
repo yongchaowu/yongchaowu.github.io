@@ -5,4 +5,6 @@ tag: "GPU集群"
 slug: "gpu集群"
 permalink: /tag/gpu集群/
 generated: true
+noindex: true
+sitemap: false
 ---

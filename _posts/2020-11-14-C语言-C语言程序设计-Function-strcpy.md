@@ -7,13 +7,14 @@ categories:
 tags:
 - C
 ---
-
 书上关于strcpy介绍了数组、指针、指针简化的例子，对于代码简化是个可见的例子，记录下来。
 
-<!--more-->
 ```C
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+<!--more-->
 
 int main()
 {
@@ -24,34 +25,36 @@ int main()
     char* pTmp =  "It will be better, tomorrow.";
     printf("pTmp:%s\n", pTmp);
 
-    char* pCon = malloc(100);
-    memset(pCon, 0, sizeof(char));
+    char* pCon = calloc(100, sizeof *pCon);
+    if (pCon == NULL) {
+        return 1;
+    }
+    memset(pCon, 0, 100 * sizeof *pCon);
     printf("pCon:%s\n", pCon);
 
     //
     strcpy1(pCon, pTmp);
     printf("pCon1:%s\n", pCon);
-    memset(pCon, 0, sizeof(char));
+    memset(pCon, 0, 100 * sizeof *pCon);
     printf("pCon:%s\n", pCon);
 
     strcpy2(pCon, pTmp);
     printf("pCon2:%s\n", pCon);
-    memset(pCon, 0, sizeof(char));
+    memset(pCon, 0, 100 * sizeof *pCon);
     printf("pCon:%s\n", pCon);
 
     strcpy3(pCon, pTmp);
     printf("pCon3:%s\n", pCon);
-    memset(pCon, 0, sizeof(char));
+    memset(pCon, 0, 100 * sizeof *pCon);
     printf("pCon:%s\n", pCon);
 
     strcpy4(pCon, pTmp);
     printf("pCon4:%s\n", pCon);
-    memset(pCon, 0, sizeof(char));
+    memset(pCon, 0, 100 * sizeof *pCon);
     printf("pCon:%s\n", pCon);
 
     return 0;
 }
-
 
 void strcpy1(char *s, char *t)
 {
@@ -80,3 +83,9 @@ void strcpy4(char *s, char *t)
 }
 
 ```
+
+参考：[cppreference：`calloc`](https://en.cppreference.com/w/c/memory/calloc) 和 [`memset`](https://en.cppreference.com/w/c/string/byte/memset)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:02（UTC+08:00）。

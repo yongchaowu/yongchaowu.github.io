@@ -5,4 +5,6 @@ tag: "SMB"
 slug: "smb"
 permalink: /tag/smb/
 generated: true
+noindex: true
+sitemap: false
 ---

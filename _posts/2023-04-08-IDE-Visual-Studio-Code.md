@@ -10,10 +10,8 @@ tags:
 - IDE
 - Debug
 ---
-
 Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages and runtimes (such as C++, C#, Java, Python, PHP, Go, .NET).
 
-<!--more-->
 - [https://code.visualstudio.com/download](https://code.visualstudio.com/download "vscode download")
 - [https://code.visualstudio.com/docs](https://code.visualstudio.com/docs "vscode docs")
 - [https://code.visualstudio.com/docs/getstarted/tips-and-tricks](https://code.visualstudio.com/docs/getstarted/tips-and-tricks "vscode tips-and-tricks")
@@ -23,6 +21,7 @@ Visual Studio Code is a lightweight but powerful source code editor which runs o
 - [https://code.visualstudio.com/docs/sourcecontrol/overview](https://code.visualstudio.com/docs/sourcecontrol/overview "vscode git")
 - [https://code.visualstudio.com/docs/terminal/basics](https://code.visualstudio.com/docs/terminal/basics "vscode terminal")
 
+<!--more-->
 
 ----------
 
@@ -44,10 +43,9 @@ Visual Studio Code is a lightweight but powerful source code editor which runs o
 
 - [https://code.visualstudio.com/api](https://code.visualstudio.com/api "vscode Extension API")
 
-
 ----------
 
-- KeyBindings - keyboard-shortcuts
+- Key Bindings - keyboard-shortcuts
  `Ctrl+Shift+P` is bound to Show All Commands
   View > Command Palette
 https://code.visualstudio.com/docs/getstarted/keybindings 
@@ -185,7 +183,7 @@ https://code.visualstudio.com/api
 - Debugging
  - Configure debugger
 From the Run and Debug view (Ctrl+Shift+D), select create a launch.json file, which will prompt you to select the environment that matches your project (Node.js, Python, C++, etc). This will generate a launch.json file.
- 
+
 - Preview mode
  - When you single-click or select a file in the Explorer, it is shown in a preview mode and reuses an existing Tab. This is useful if you are quickly browsing files and don't want every visited file to have its own Tab. 
  - When you start editing the file or use double-click to open the file from the Explorer, a new Tab is dedicated to that file.
@@ -227,7 +225,6 @@ The following attributes are mandatory for every launch configuration:
 - request - the request type of this launch configuration. Currently, launch and attach are supported.
 - name - the reader-friendly name to appear in the Debug launch configuration dropdown.
 
-
 Here are some optional attributes available to all launch configurations:
 - presentation using the order, group, and hidden attributes in the presentation object, you can sort, group, and hide configurations and compounds in the Debug configuration dropdown and in the Debug quick pick.
 - preLaunchTask to launch a task before the start of a debug session, set this attribute to the label of a task specified in tasks.json (in the workspace's .vscode folder). Or, this can be set to ${defaultBuildTask} to use your default build task.
@@ -235,7 +232,6 @@ Here are some optional attributes available to all launch configurations:
 - internalConsoleOptions this attribute controls the visibility of the Debug Console panel during a debugging session.
 - debugServer for debug extension authors only: this attribute allows you to connect to a specified port instead of launching the debug adapter.
 - serverReadyAction if you want to open a URL in a web browser whenever the program under debugging outputs a specific message to the debug console or integrated terminal. For details see section Automatically open a URI when debugging a server program below.
-
 
 Many debuggers support some of the following attributes:
 - program executable or file to run when launching the debugger
@@ -281,7 +277,6 @@ The following predefined variables are supported:
 - ${defaultBuildTask} the name of the default build task
 - ${pathSeparator} the character used by the operating system to separate components in file paths
 
-
 Predefined variables examples
 Supposing that you have the following requirements:
 
@@ -305,11 +300,10 @@ So you will have the following values for each variable:
 - ${execPath} location of Code.exe
 - ${pathSeparator} / on macOS or linux, \ on Windows
 
-
 ### tasks.json
 [https://code.visualstudio.com/docs/editor/tasks](https://code.visualstudio.com/docs/editor/tasks "vscode tasks.json")
 
-```json
+```
 {
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
@@ -343,8 +337,7 @@ The task's properties have the following semantic:
 - options: Override the defaults for cwd (current working directory), env (environment variables), or shell (default shell). Options can be set per task but also globally or per platform. Environment variables configured here can only be referenced from within your task script or process and will not be resolved if they are part of your args, command, or other task attributes.
 - runOptions: Defines when and how a task is run.
 
-[https://code.visualstudio.com/docs/reference/tasks-appendix](https://code.visualstudio.com/docs/reference/tasks-appendix "tasks.json schema")
-
+[https://code.visualstudio.com/docs/editor/tasks-appendix](https://code.visualstudio.com/docs/editor/tasks-appendix "tasks.json schema")
 
 ### Debug C++ in Visual Studio Code
 - [https://code.visualstudio.com/docs/cpp/introvideos-cpp](https://code.visualstudio.com/docs/cpp/introvideos-cpp "Debug C++ in Visual Studio Code")
@@ -364,7 +357,7 @@ The task's properties have the following semantic:
 The C/C++ extension for VS Code also has the ability to debug memory dumps. To debug a memory dump, open your `launch.json` file and add the `coreDumpPath` (for GDB or LLDB) or `dumpPath` (for the Visual Studio Windows Debugger) property to the C++ Launch configuration, set its value to be a string containing the path to the memory dump. This will even work for x86 programs being debugged on an x64 machine.
 
 #### Additional symbols
-If there are additional directories where the debugger can find symbol files (for example, `.pdb` files for the Visual Studio Windows Debugger), they can be specified by adding the `additionalSOLibSearchPath` (for GDB or LLDB) or `symbolSearchPath` (for the Visual Studio Windows Debugger).
+If there are additional directories where the debugger can find symbol files (for example, `.pd`b files for the Visual Studio Windows Debugger), they can be specified by adding the `additionalSOLibSearchPath` (for GDB or LLDB) or `symbolSearchPath` (for the Visual Studio Windows Debugger).
 
 For example:
 `"additionalSOLibSearchPath": "/path/to/symbols;/another/path/to/symbols" `
@@ -384,7 +377,6 @@ For example:
 
 #### GDB, LLDB, and LLDB-MI Commands (GDB/LLDB)
 For the `C++` (GDB/LLDB) debugging environment, you can execute GDB, LLDB and LLDB-MI commands directly through the debug console with the `-exec` command, but be careful, executing commands directly in the debug console is untested and might crash VS Code in some cases.
-
 
 #### Known limitations
 ##### Symbols and code navigation
@@ -417,3 +409,7 @@ You may see an error saying: `ptrace: Operation not permitted`. This is due to G
 	- When attaching to a process with GDB, the application being debugged cannot be interrupted. GDB will only bind breakpoints set while the application is not running (either before attaching to the application, or while the application is in a stopped state). This is due to a bug in GDB.
 	- Core dumps cannot be loaded when debugging with GDB because GDB does not support the core dump format used in macOS.
 	- When attached to a process with GDB, break-all will end the process.
+
+本文修订依据：Microsoft `vscode-docs` 官方仓库 [`docs/getstarted/keybindings.md`](https://github.com/microsoft/vscode-docs/blob/d567c694d1e7133c5599422ada5b9a60ca0e04a8/docs/getstarted/keybindings.md)，commit `d567c694d1e7133c5599422ada5b9a60ca0e04a8`（2020-06-12；`TOCTitle: Key Bindings`）。本文仅将旧文档列表标签 `KeyBingings` 更正为当时官方标题 `Key Bindings`，原链接与后续命令说明保持不变。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 15:16（UTC+08:00）。修订仅纠正历史 VS Code 文档标签 `Key Bindings` 的拼写。

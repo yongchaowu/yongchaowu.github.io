@@ -8,18 +8,18 @@ tags:
 - GitLab
 - Tool
 ---
-
 创建一个高效的Bug报告Issue模板。
 - `.gitlab/issue_templates/bug.md`
 ---
 以下是一个推荐的GitLab Bug Report Issue模板示例。可以根据项目的具体需求调整这个模板：
 
-<!--more-->
 ```markdown
 ---
 title: "[BUG] 简短描述问题"
 labels: bug
 assignees:
+
+<!--more-->
 
 ---
 
@@ -64,3 +64,7 @@ assignees:
 ```
 
 将此模板添加到GitLab项目的`.gitlab/issue_templates`目录下，并命名为例如`Bug_report.md`，这样当团队成员或贡献者创建新的Issue时，他们就可以选择并使用该模板来提交详细的Bug报告了。
+
+本文修订依据：GitLab 官方 [Trademark Guidelines](https://handbook.gitlab.com/handbook/marketing/brand-experience/trademark-guidelines/)（政策文本最后修订于 2024-07-03；页面源 commit `4469685d7b8ac40a08f48eb793b75f8143ed690e`，2026-08-27）。本文仅将标题中的 `Gitlab` 更正为官方产品名 `GitLab`，文件名及 Issue 模板内容均保持不变。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 15:43（UTC+08:00）。修订仅纠正标题中的 GitLab 品牌大小写。

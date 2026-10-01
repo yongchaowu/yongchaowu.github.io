@@ -5,4 +5,6 @@ tag: "图标"
 slug: "图标"
 permalink: /tag/图标/
 generated: true
+noindex: true
+sitemap: false
 ---

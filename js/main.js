@@ -119,3 +119,36 @@ if ((' ' + shellClass + ' ').indexOf(' shell-ready ') === -1) {
   }, { passive: true })
   update()
 }());
+
+//////////////////////////// article images ////////////////////////////
+/**
+ * Applied at render time rather than by editing the 49 historical posts that
+ * contain images.
+ *
+ * Two things, both of which browsers otherwise do silently and wrongly:
+ *
+ * 1. `loading="lazy"` / `decoding="async"`. Only 2 of 83 images carried it, so
+ *    every article eagerly fetched all of its screenshots. Native lazy loading
+ *    is a parse-time attribute and would be better in the HTML, but adding it
+ *    would mean editing 49 preserved post files, and each of those edits needs
+ *    an entry in _data/format_fixes.yml against the blob baseline. A render-time
+ *    pass gets the same network behaviour for free.
+ *
+ * 2. `http://` -> `https://` for image sources. On an HTTPS origin these are
+ *    active mixed content and are blocked without any visible error. The three
+ *    occurrences in meldmerge.org were fixed at source with a format_fixes
+ *    entry; this catches anything added later.
+ */
+(function() {
+  var images = document.querySelectorAll('.post-article img')
+  if (!images.length) return
+  for (var i = 0; i < images.length; i++) {
+    var img = images[i]
+    if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy')
+    if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async')
+    var src = img.getAttribute('src')
+    if (src && src.indexOf('http://') === 0) {
+      img.setAttribute('src', 'https://' + src.slice(7))
+    }
+  }
+}());

@@ -5,4 +5,6 @@ tag: "TUI"
 slug: "tui"
 permalink: /tag/tui/
 generated: true
+noindex: true
+sitemap: false
 ---

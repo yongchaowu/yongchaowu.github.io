@@ -5,4 +5,6 @@ tag: "v8"
 slug: "v8"
 permalink: /tag/v8/
 generated: true
+noindex: true
+sitemap: false
 ---

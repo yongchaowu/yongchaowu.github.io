@@ -5,4 +5,6 @@ tag: "Qwen"
 slug: "qwen"
 permalink: /tag/qwen/
 generated: true
+noindex: true
+sitemap: false
 ---

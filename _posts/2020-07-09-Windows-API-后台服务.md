@@ -9,18 +9,18 @@ tags:
 - Windows API
 - C++
 ---
-
 ## C++创建Windows后台服务程序
 [C++创建Windows后台服务程序](https://blog.csdn.net/blade1080/article/details/82015323)
 
-<!--more-->
 服务程序通常编写成控制台类型的应用程序，一个遵守服务控制管理程序接口要求的程序包含下面三个函数：
+
+<!--more-->
 
 - 服务程序主函数（main）：调用系统函数 StartServiceCtrlDispatcher 连接程序主线程到服务控制管理程序。
 - 服务入口点函数（ServiceMain）：执行服务初始化任务，同时执行多个服务的服务进程有多个服务入口函数。
 - 控制服务处理程序函数（Handler）：在服务程序收到控制请求时由控制分发线程引用。
 
-```cpp
+```
 - 服务程序主函数
 #include <iostream>
 #include "Windows.h"
@@ -43,7 +43,7 @@ int main (int argc, const char *argv[])
     return 0;
 }
 
-首先声明几个全局变量，以便在程序的多个函数之间共享它们的值。之后在主函数中创建一个分派表。分派表是SERVICE_TABLE_ENTRY 类型结构，它有两个域：
+首先声明几个全局变量，以便在程序的多个函数之间共享它们值。之后在主函数中创建一个分派表。分派表是SERVICE_TABLE_ENTRY 类型结构，它有两个域：
 
 - lpServiceName: 指向表示服务名称字符串的指针；当定义了多个服务时，那么这个域必须指定
 - lpServiceProc: 指向服务主函数的指针（服务入口点）
@@ -75,7 +75,6 @@ void WINAPI service_main(int argc, char** argv)
 
     //add your service thread here
 
-
     // Initialization complete - report running status
     ServiceStatus.dwCurrentState       = SERVICE_RUNNING;
     ServiceStatus.dwCheckPoint         = 0;
@@ -97,7 +96,6 @@ ServiceStatus 结构的每个域的用途如下：
 - dwCheckPoint 和 dwWaitHint ：这两个域表示初始化某个服务进程时要30 秒以上。本文例子服务的初始化过程很短，所以这两个域的值都为 0
 
 - SetServiceStatus 函数用于向 SCM 报告服务的状态。需要提供 hStatus 句柄和 ServiceStatus 结构。
-
 
 ```
 
@@ -144,10 +142,9 @@ STOP 请求是 SCM 终止服务的时候发送的。例如，如果用户在“ 
 - 删除服务
 `sc delete ServiceName`
 
-
 main函数及service_main函数中均有argc、argv参数，可以向这两个函数中传递参数.
 - 向main函数中传递参数需要在创建服务时指定:
-`sc create atest binPath= "D:\Project Files\ImosServer\x64\Release" -port=1024`
+`sc create atest binPath= "D:\Project Files\ImosServer\x64\Release  -port=1024"`
 - 向service_main函数中传递参数需要在启动服务时指定
 `sc start atest -port=1024`
 - 测试代码段
@@ -161,4 +158,10 @@ fclose(log);
 ```
 ————————————————
 版权声明：本文为CSDN博主「blade1080」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/blade1080/article/details/82015323
+原文链接：https://blog.csdn.net/blade1080/java/article/details/82015323
+
+参考：[Microsoft Learn：RegisterServiceCtrlHandler](https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-registerservicectrlhandlerw) 和 [sc.exe create](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sc-create)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 01:56（UTC+08:00）。

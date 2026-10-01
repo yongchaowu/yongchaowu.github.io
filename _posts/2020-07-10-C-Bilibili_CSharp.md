@@ -7,13 +7,13 @@ categories:
 tags:
 - C#
 ---
-
 https://www.bilibili.com/video/av2357992
 C#本质论.pdf
 
-<!--more-->
 文件以.cs保存
 C#支持中文
+
+<!--more-->
 
 输出 `System.Console.WriteLine();`
 输入 `System.Console.Read();`
@@ -24,15 +24,15 @@ C#支持中文
 `1.1m//decimal`
 指数写法 2E2 //200
 十六进制 0xff //255
-字符串中 使用@ 可以不使用转义（写路径时）
+字符串中 使用@ 可以不适用转义（写路径时）
 
 //判断代码执行时间
-```csharp
+```language
 using System.Diagnostics;
 Stopwatch 计时器=new Stopwatch(); //支持中文
 计时器.Start();
 ....
-计时器.Start();
+计时器.Stop();
 System.Console.WriteLine(计时器.ElapsedMilliseconds);
 ```
 
@@ -46,13 +46,13 @@ System.Console.WriteLine(计时器.ElapsedMilliseconds);
 null //含义不固定，需要设置
 
 //可空修饰
-`int? number=null; （和数据库交互）`
+`int？ number=null; （和数据库交互）`
 
 //
 var //声明
 
 //类型转换
-//显式转换  高到低
+//显示转换  高到低
 `int.MaxValue;// int 最大值`
 `checked{} //检测溢出。`
 //隐式转换 低到高
@@ -89,7 +89,7 @@ nums.Remove();
 ref string//字符串不变性
 
 重载 参数  //操作符重载，赋值操作符不能被重载
-重载自定义的类型转换操作符，须用implicit（隐式转换）或 explicit（显式转换）关键字
+重载自定义的类型转换操作符，须用implicit（隐式转换）或 explicit（显示转换）关键字
 
 泛型 模板 T   Func<T>()
 可变参数 关键字：params 必须放在参数的最后 //  int Func(params int[] nums);
@@ -98,7 +98,7 @@ ref string//字符串不变性
 捕获并处理异常  `try{} catch(){}finally{}`  //try 然后两次tab键 try 1/catch */finally 1
 catch(){ throw;}//抛出异常，外层函数处理。 
    没有throw时，程序遇到异常会继续执行。
-```csharp
+```language
 /*
 long FileOrDirCount(string path){
 	long count=0;
@@ -116,7 +116,7 @@ long FileOrDirCount(string path){
 	}
 	catch( UnauthorizedAccessException ex)
 	{
-	 System.Console.WriteLine(ex.Message);
+	 System.Console.WriteLine(ex.Message);\
 	//throw;
 	}
 	return count;
@@ -141,7 +141,7 @@ public string Name{get; set;}
 /*
  public string Name
 {
- 	get{return _Name;}
+ 	get{return _Name};
 	set{_Name=value;}//这里可以抛出异常
 }
 */
@@ -166,8 +166,8 @@ readonly  运行时 //仅能在声明、构造函数中赋值
 const  编译时
 
 嵌套类
-分部类 ，partial
-分部方法，在分部类中  partial void Func();// 必须是void
+分布类 ，partial
+分布方法，在分布类中  partial void Func();// 必须是void
 
 //继承  冒号：
 单一继承
@@ -204,11 +204,11 @@ interface
 	成员都是public
 	标准术语：实现接口
 	无法实例化一个接口
-显式/隐式接口
+显示/隐式接口
 	隐式的接口,必须要有public访问修饰符
 	显式的接口不能有任何的访问修饰符
-	隐式实现对象声明为接口和类都可以访问到其行为
-	显式实现只有声明为接口可以访问
+	隐示实现对象声明为接口和类都可以访问到其行为
+	显示实现只有声明为接口可以访问
 
 //UML Unified Modeling Language (_UML_)又称统一建模语言或标准建模语言
 vs可以查看类图  需要安装时选择类设计器组件
@@ -227,7 +227,7 @@ where T:struct//约束，值类型
 命名空间 （避免一个项目中 重命名）
 
 dll// 动态链接库
-	导入dll： 1.手动   2.[DllImport(...)],仅用于方法
+	导入dll： 1.手动   2.[DLLImport(...)],仅用于方法
 
 //垃圾回收
 内存管理的一种方式
@@ -246,7 +246,7 @@ sw.WriteLine("123");
 sw.Close();
 */
 /*
-using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAccess.Write))
+using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAccess.Write)
 {sw.WriteLine("123");}
 */
 
@@ -260,8 +260,8 @@ using(var sw=new StreamWriter(new FileStream("filename",FileMode.Create,FileAcce
 回调函数
 Lambda
 简化：
-```javascript
-语句Lambda	:
+```language
+语句Lambada	:
 		(type var,...)=>{...};
 		(var,..)=>{...};
 		var=>{...};
@@ -300,9 +300,8 @@ yield return;
 yield break;
 ```
 
-
 //集合
-实现IEnumerable接口的类
+实现IEunmerablede接口的类
 foreach 具有不可修改的特性  //与for相比
 常用集合:
 ```language
@@ -332,7 +331,7 @@ IEnumerable<T>中每一个方法
 所有的方法定义在System.Linq.Enumerable中
 使用时，只需要using System.Linq
 
-//Linq ////http://web.archive.org/web/20171028111558/http://www.bilibili.com:80/video/av2357992/
+//Linq ////https://www.bilibili.com/video/av2357992/index_14.html?t=3369#page=15
 Language INtegrated Query  语言集成查询
 查询表达式
 Where
@@ -371,15 +370,15 @@ Assembly
 用途：提供一个额外元数据
 AttributeUsage
 
-```java
+```language
 /*
 public class RequiredAttribute:System.Attribute
 {
 	public static bool IsPropertyRequired(object obj)
 	{
 	var type =obj.GetType();
-	var properties =type.GetProperties();
- 	
+	var properties =type.GerProperties();
+
 	foreach(var propetry in properties)
 	{
 		var attributes = 		propetry.GetCustomAttributes(typeof(RequiredAttribute),false);
@@ -403,7 +402,6 @@ BinaryFormatter.Deserialize
 //动态编程  ///可以解析xml
 dynamic
 
-
 //多线程 
 进程--〉线程 
 线程间可以共享数据
@@ -417,7 +415,7 @@ dynamic
 ```
 第二种方法，可有可无返回值
 ```language
- 	var task = Task.Factory.StartNew(..);
+ 	var tast = Task.Factory.StartNew(..);
   注  task.Result()会阻塞   
 	  直接执行，无需Start();
 ```
@@ -461,11 +459,11 @@ Interlocked.Increment();
 `//Debug.Assert();///断言`
 
 ```language
-//DateTime
-var dt=DateTime.Now;
+//Datetime
+var dt=Datetime.Now;
 dt.ToString("格式")
 使用前导0格式。 ///可以比较大小
-DateTime.Parse();
+Datetime.Parse();
 ```
 
 //internal   ///用于dll修饰
@@ -473,11 +471,9 @@ DateTime.Parse();
 
 ![](https://img2020.cnblogs.com/blog/1488227/202007/1488227-20200710000512251-1491700614.png)
 
-
-
 //GUID
 全局唯一标识符
-`var guid=Guid.NewGuid().ToString("D");`
+`var guid=GUID.NewGuid().ToString("D");`
 
 //访问excel
 com组件
@@ -491,8 +487,7 @@ OleDbConnection
 `Clipboard.SetText(...)`
 对于控制台稍微要麻烦点
 添加了Forms引用后，还需将Main函数头上加上[STAThread]特性
-对于多线程使用Clipboard这个类也是要将线程模式设置为STA
-
+对于多线程使用Clipbroad这个类也是要将线程模式设置为STA
 
 //避免硬编码，参数化配置
 常用反射 配置文件 数据库
@@ -500,3 +495,9 @@ OleDbConnection
 《敏捷软件开发 原则模式与实践》
 
 版本控制  多人协作
+
+参考：[Microsoft Learn：Stopwatch.Start](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.start)、[Stopwatch.Stop](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch.stop) 和 [Console.WriteLine](https://learn.microsoft.com/en-us/dotnet/api/system.console.writeline)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 01:56（UTC+08:00）。

@@ -13,10 +13,8 @@ tags:
 - Tool
 - Ubuntu
 ---
-
 [Ubuntu-Install](https://docs.docker.com/engine/install/ubuntu/)
 
-<!--more-->
 - `docker search ubuntu`:查询镜像
 - `docker pull ubuntu[:version]`:拉取镜像
 - `docker images`:查看镜像
@@ -37,7 +35,9 @@ tags:
     - `--driver bridge`
     - `--subnet 192.168.0.0/24`
     - `--gateway 192.168.0.1`
-  - `connect network-name container-name`
+  - `connect nerwork-name container-name`
     - `--ip 192.168.0.2`
   - `disconnect`
   - `rm network-name`
+
+<!--more-->

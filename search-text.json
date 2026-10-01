@@ -2,13 +2,31 @@
 ---
 {
 {% for post in site.posts %}
+{% comment %}
+  Two decode passes, and the order matters.
+
+  Markdown re-escapes a literal entity in the source, so a post whose text
+  mentions `&quot;` renders as `&amp;quot;`. A single pass that ends with
+  `&amp;` -> `&` therefore decodes only one layer and leaves `&quot;` in the
+  corpus: visible on 2020-07-06 Visual Studio-类视图和对象浏览器图标 and
+  2020-06-30 开篇·序, where the 2026-09-25 proofread note quotes the entity by
+  name. Decoding `&amp;` first and running the list twice unwraps that layer.
+
+  The second pass leaves `&#183;` alone -- it is not a name on the list -- so a
+  note that *discusses* an entity still reads correctly instead of being
+  silently rewritten.
+{% endcomment %}
 {% assign search_text = post.content | strip_html | normalize_whitespace %}
+{% assign search_text = search_text | replace: '&amp;', '&' %}
 {% assign search_text = search_text | replace: '&lt;', '<' %}
 {% assign search_text = search_text | replace: '&gt;', '>' %}
 {% assign search_text = search_text | replace: '&quot;', '"' %}
 {% assign search_text = search_text | replace: '&#39;', "'" %}
 {% assign search_text = search_text | replace: '&#x27;', "'" %}
 {% assign search_text = search_text | replace: '&amp;', '&' %}
+{% assign search_text = search_text | replace: '&lt;', '<' %}
+{% assign search_text = search_text | replace: '&gt;', '>' %}
+{% assign search_text = search_text | replace: '&quot;', '"' %}
 {{ post.url | jsonify }}: {{ search_text | jsonify }}{% unless forloop.last %},{% endunless %}
 {% endfor %}
 }

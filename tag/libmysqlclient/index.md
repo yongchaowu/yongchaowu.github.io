@@ -5,4 +5,6 @@ tag: "libmysqlclient"
 slug: "libmysqlclient"
 permalink: /tag/libmysqlclient/
 generated: true
+noindex: true
+sitemap: false
 ---

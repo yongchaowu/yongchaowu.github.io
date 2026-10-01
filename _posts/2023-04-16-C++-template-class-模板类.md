@@ -7,14 +7,14 @@ categories:
 tags:
 - C++
 ---
-
 >【C++高级教程，C++类模板一次讲透，必须收藏！】 https://www.bilibili.com/video/BV1v84y1x7Qp/?share_source=copy_web&vd_source=3809390a14c335e7731c9e076c03eeba
 
-<!--more-->
 ##类模板概念
 类模板是用于生成类的模板。
 在编译阶段，编译器会根据类模板的使用情况创建出仅部分成员数据类型，和部分成员函数的参数类型不同，其他完全相同的若干类。
 通过类模板的这些特性我们可以尝试写出用于存放不同类型数据的容器。
+
+<!--more-->
 
 ##类模板使用
 - 类模板的声明如下，其中T表示任何类型，由用户指定：
@@ -36,7 +36,7 @@ template<typename T,...>
 ```
 
 ### Demo
-```cpp
+```
 #ifndef __DEMOARRAY_H
 #define __DEMOARRAY_H
 
@@ -74,7 +74,6 @@ void DemoArray<T>::addValue(T value)
 		data[len++] = value;
 }
 
-
 /////////////////////////////
 //特化类 指定类型float
 template<>
@@ -88,8 +87,6 @@ DemoArray<float>::DemoArray()
 {
 	std::cout<<"DemoArray<float>::DemoArray()"<<std::endl;
 }
-
-
 
 #endif
 ```
@@ -113,7 +110,7 @@ class 类名<指定类型,...,不需要特化的泛型名,...>{//类成员}；
 ```
 
 ### 偏特化Demo
-```cpp
+```
 #ifndef _PAIR_H
 #define _PAIR_H
 #include <iostream>
@@ -150,3 +147,9 @@ Pair<char,T2>::Pair()
 
 #endif
 ```
+
+参考：[cppreference：类](https://en.cppreference.com/w/cpp/language/class) 和 [非静态成员函数](https://en.cppreference.com/w/cpp/language/member_functions)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 02:02（UTC+08:00）。
