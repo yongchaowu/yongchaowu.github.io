@@ -1,20 +1,57 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Verify that posts present in the pre-curation baseline still exist with the
-# same Git blob. New posts are allowed; historical edits require an explicit
-# baseline update and URL/reference review.
+# Verify that posts present in the baseline still exist with the same Git blob.
+# New posts are allowed; historical edits require an explicit baseline update and
+# URL/reference review.
 #
 # Usage: ruby scripts/verify-post-history.rb
 # Override the baseline only for an intentional migration:
 #   POST_HISTORY_BASELINE=<commit> ruby scripts/verify-post-history.rb
+#
+# Baseline history
+# ----------------
+# 28c89b46  the pre-curation import, 331 posts
+# e73203c   after the 2026-10-01 upstream sync; 248 of the 331 had their bodies
+#           replaced by the cnblogs source of truth. Bodies only -- no filename,
+#           date or front matter changed, so no published URL moved. The six posts
+#           whose corrections must not be reverted carry `upstream_sync: off`, and
+#           the 20 the sync held back are listed in docs/review-2026-10-01.md §10.
+#           format_fixes.yml still records every blob-bound exception against this
+#           baseline, so the audit trail does not restart here.
+#
+# Advancing this is not a way to make a red gate green. It states that the content
+# at this commit is the approved historical state. Do it as its own commit, after
+# the sync that motivated it has been reviewed, and say in the message which
+# migration it is -- an audit that cannot tell a deliberate migration from a
+# suppressed failure is not an audit.
 
 require 'open3'
 require 'set'
 require 'yaml'
 require 'date'
 
-BASELINE = ENV.fetch('POST_HISTORY_BASELINE', '28c89b4645a8f6dc8683daa62c259f81a86befae')
+BASELINE = ENV.fetch('POST_HISTORY_BASELINE', 'e73203c11e0c73508b9c2a8c2ef50d51790d7e41')
+
+# Post count per known baseline. Keyed by commit rather than held as a single
+# number so that POST_HISTORY_BASELINE=<older commit> -- the override the usage
+# comment documents -- checks that commit against *its* count instead of against
+# the current one. It did not: overriding to 28c89b46 reported
+# "expected 357 baseline posts, found 331" and then failed every post on top,
+# which reads as a broken migration rather than as a deliberate check of history.
+BASELINE_POST_COUNTS = {
+  '28c89b4645a8f6dc8683daa62c259f81a86befae' => 331,
+  'e73203c11e0c73508b9c2a8c2ef50d51790d7e41' => 357
+}.freeze
+
+# An unrecognised baseline skips the count assertion with a warning instead of
+# failing on a number that was never about that commit. Guessing here would
+# either invent a failure or, worse, invent a pass.
+EXPECTED_BASELINE_POSTS = BASELINE_POST_COUNTS[BASELINE]
+unless EXPECTED_BASELINE_POSTS
+  warn "verify-post-history: baseline #{BASELINE} is not in BASELINE_POST_COUNTS; " \
+       'skipping the post-count assertion. Add it when you adopt a new baseline.'
+end
 FORMAT_FIXES_FILE = File.expand_path('../_data/format_fixes.yml', __dir__)
 failures = []
 
@@ -33,7 +70,14 @@ end
 
 baseline_posts = Set.new(git_lines(repo, 'ls-tree', '-r', '--name-only', BASELINE, '--', '_posts').select { |path| path.end_with?('.md') })
 current_posts = Set.new(git_lines(repo, 'ls-tree', '-r', '--name-only', 'HEAD', '--', '_posts').select { |path| path.end_with?('.md') })
-failures << "expected 331 baseline posts, found #{baseline_posts.length}" unless baseline_posts.length == 331
+# Pinned per baseline rather than derived from HEAD: deriving it would make the
+# count check vacuous, since a baseline and a tree that drifted together would
+# always agree. 331 at 28c89b46, the pre-curation import; 357 at e73203c, which
+# adds the 19 curated guides, the merged llm-probe post and the rest of the
+# curated layer. The number only moves when BASELINE moves.
+if EXPECTED_BASELINE_POSTS
+  failures << "expected #{EXPECTED_BASELINE_POSTS} baseline posts, found #{baseline_posts.length}" unless baseline_posts.length == EXPECTED_BASELINE_POSTS
+end
 format_fixes = (YAML.safe_load_file(FORMAT_FIXES_FILE, permitted_classes: [Date], aliases: false) || {}).fetch('fixes', [])
 format_fix_paths = Hash.new(0)
 format_fix_blobs = {}
