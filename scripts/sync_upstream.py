@@ -85,7 +85,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--execute", action="store_true",
                     help="actually write (default is a dry run)")
-    ap.add_argument("--only", help="restrict to filenames containing this")
+    ap.add_argument("--only", action="append", default=[],
+                    metavar="SUBSTRING",
+                    help="restrict to filenames containing this; repeatable. "
+                         "--sync-local affects far more posts than any single "
+                         "review covered, so a deliberate sync names them.")
+    ap.add_argument("--sync-local", action="store_true",
+                    help="also write posts the date rule holds back. Never applies to a "
+                         "post marked upstream_sync: off -- that marker is a decision, "
+                         "the date threshold is only a heuristic, and a flag must not "
+                         "outrank a decision")
     ap.add_argument("--verbose", action="store_true", help="show block diffs")
     args = ap.parse_args()
 
@@ -114,11 +123,12 @@ def main():
 
     changed = skipped = tier1 = tier2 = 0
     held, ahead, lost_facilities, reinstated, links_fixed = [], [], [], [], []
+    forced = []
     written = []
 
     for pr in pairs:
         post = pr["post"]
-        if args.only and args.only not in post:
+        if args.only and not any(sub in post for sub in args.only):
             continue
         r_raw, r_fm, r_body = load_parts(os.path.join("_posts", post))
         _, _, u_body = load_parts(os.path.join(pairing.EXPORT_DIR, pr["export"]))
@@ -161,8 +171,16 @@ def main():
             continue
 
         if T.flow_direction(post, r_raw) == "local":
-            held.append(post)
-            continue
+            # `upstream_sync: off` is a per-post decision and stays binding under
+            # any flag. The date rule is a heuristic, so --sync-local overrides
+            # that and nothing else.
+            if T.front_matter_field(r_raw, "upstream_sync") == "off":
+                held.append(post)
+                continue
+            if not args.sync_local:
+                held.append(post)
+                continue
+            forced.append(post)
 
         if len(u_body.strip()) < 5 < len(r_body.strip()):
             # Refuse rather than infer: an empty upstream body for a substantive
@@ -210,7 +228,11 @@ def main():
     print(f"  held back for review       {len(held) + len(ahead)}"
           f"   (flow direction is not forward)")
     print(f"    already ahead of upstream {len(ahead)}")
-    print(f"    direction mixed          {len(held)}")
+    print(f"    direction mixed          {len(held) + len(forced)}")
+    if forced:
+        print(f"      of which synced        {len(forced)}  (--sync-local)")
+        for post in forced:
+            print(f"        FORCED {post[:56]}")
     for post in ahead:
         print(f"      AHEAD {post[:58]}")
     for post in held:

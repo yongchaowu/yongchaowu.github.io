@@ -3270,9 +3270,9 @@ posts:
     lang_source: "declared"
     lang_confidence: "high"
     reviewed: ""
-    cjk_chars: 43
-    latin_words: 103
-    count: 103
+    cjk_chars: 127
+    latin_words: 119
+    count: 119
     reading_unit: "words"
     reading_minutes: 1
   _posts/2026-06-02-AI-coding-agent-OpenCode.md:
@@ -3325,9 +3325,9 @@ posts:
     lang_source: "declared"
     lang_confidence: "high"
     reviewed: ""
-    cjk_chars: 470
-    latin_words: 50
-    count: 470
+    cjk_chars: 559
+    latin_words: 75
+    count: 559
     reading_unit: "chars"
     reading_minutes: 1
   _posts/2026-06-03-Yuxi-Know.md:
@@ -3434,10 +3434,10 @@ posts:
     lang: "en"
     lang_source: "declared"
     lang_confidence: "high"
-    reviewed: ""
-    cjk_chars: 0
-    latin_words: 59
-    count: 59
+    reviewed: "2026-10-01"
+    cjk_chars: 90
+    latin_words: 76
+    count: 76
     reading_unit: "words"
     reading_minutes: 1
   _posts/2026-07-15-OpenSource-BehaviorTree.CPP-ManualNotes.md:
@@ -3600,9 +3600,9 @@ posts:
     lang_source: "declared"
     lang_confidence: "high"
     reviewed: ""
-    cjk_chars: 2683
-    latin_words: 387
-    count: 2683
+    cjk_chars: 2496
+    latin_words: 365
+    count: 2496
     reading_unit: "chars"
     reading_minutes: 3
   _posts/2026-09-08-kylin-v10-sp1-offline-cpp-development-environment.md:

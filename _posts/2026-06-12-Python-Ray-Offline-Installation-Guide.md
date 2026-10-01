@@ -16,10 +16,12 @@ tags:
 - Python
 - Ray
 ---
+> **版本范围：** 本文离线安装流程固定使用 Ray `2.40.0`；下载依赖与离线安装必须使用同一精确版本。
 
 ## Prerequisites
 
 <!--more-->
+
 - Python 3.12
 - pip >= 21.0
 
@@ -51,6 +53,12 @@ tags:
    ```bash
    pip install --no-index --find-links=./ray_offline_pkgs ray[default]==2.40.0
    ```
+
+---
+
+本文版本依据：[PyPI: ray 2.40.0](https://pypi.org/project/ray/2.40.0/)、[pip download](https://pip.pypa.io/en/stable/cli/pip_download/) 和 [pip install](https://pip.pypa.io/en/stable/cli/pip_install/)。
+
+> **AI 修改声明：** 本文由 LLM 协助修订，最近修改时间：2026-09-25 07:36（UTC+08:00）。修订仅统一离线下载与安装所固定的 Ray 版本。
 
 ## Next Steps
 

@@ -54,8 +54,20 @@ FENCE_SPLIT_RE = re.compile(
 RAW_BLOCK_RE = re.compile(r"{%-?\s*raw\s*-?%}.*?{%-?\s*endraw\s*-?%}", re.S)
 RAW_PAIR_RE = re.compile(
     r"\A{%-?\s*raw\s*-?%}(?P<payload>.*?){%-?\s*endraw\s*-?%}\Z", re.S)
+# `{% post_url X %}` appears in two shapes and both occur here:
+#
+#   [visible text]({% post_url 2026-06-12-...-Ray(Docker) %})   <- the link text
+#                                                                is OUTSIDE the tag
+#   {% post_url ... %}visible text)                             <- emitted inline
+#
+# The first is the more common one here, and it is the one a pattern expecting
+# text after the tag misses. Consequence, measured: re-applying internal links
+# dropped both cross-references in
+# 2026-06-12-Python-Ray-Offline-Installation-Guide.md while reporting no loss.
+# Shape one is matched whole, so the inline alternative cannot match inside one.
 POST_URL_RE = re.compile(
-    r"{%-?\s*post_url\s+(?P<slug>[^%]*?)\s*-?%}(?P<text>[^()\n]{1,80}?)\)")
+    r"(?:\[[^\]\n]{1,120}\]\({%-?\s*post_url\s+[^%\n]*?-?%}\)"
+    r"|{%-?\s*post_url\s+(?P<slug>[^%\n]*?)\s*-?%}(?P<text>[^()\n]{1,80}?\)))")
 BROKEN_LINK_WITH_URL_RE = re.compile(r"\[(https?://[^\]\n]{4,200}?)\]\(\s*\)")
 BROKEN_LINK_TEXT_RE = re.compile(r"\[([^\]\n]{1,120}?)\]\(\s*\)")
 LINK_TARGET_RE = re.compile(r"\]\(((?:https?|ftp)://[^)\n]*)\)")
@@ -312,11 +324,27 @@ def _merge_protected(repo_body, upstream_body):
 
     body = upstream_body
     restored = 0
+    absent = []
     for m in POST_URL_RE.finditer(repo_body):
-        text = m.group("text").strip()
+        # Shape one keeps its visible text outside the tag, so `text` is None and
+        # there is nothing inside the match to search for. Anchor on the text the
+        # reader sees instead.
+        text = (m.group("text") or "").strip()
+        if not text:
+            vis = re.match(r"\[([^\]\n]{1,120})\]", m.group(0))
+            text = vis.group(1) if vis else ""
         if text and text in body:
             body = body.replace(text, m.group(0), 1)
             restored += 1
+        else:
+            # Two different situations, and conflating them sends the reader to
+            # the wrong conclusion. Either upstream still has this text and the
+            # anchor failed -- a bug here -- or upstream no longer contains it at
+            # all, in which case the anchor had nothing to match and the link
+            # simply has no host. 2026-06-12-Python-Ray-Offline is the second:
+            # upstream dropped the whole "Next Steps" section, so both
+            # cross-references vanished with it.
+            absent.append(text[:60])
 
     body, raws_done, dropped, missing = _reapply_raw(body, raw_blocks)
 
@@ -327,10 +355,14 @@ def _merge_protected(repo_body, upstream_body):
         more_done = 1
     body = ensure_more_outside_raw(body)
 
-    lost = (links_before - restored) + len(missing) + \
-        (1 if mi is not None and more_done == 0 else 0)
+    # `lost` counts only what should have been recoverable and was not. A link
+    # whose target text upstream no longer has is not a loss -- it is content the
+    # upstream rewrite removed, and it belongs in `upstream_dropped` so a reader of
+    # the report can tell "the tool broke" from "the source no longer has it".
+    lost = len(missing) + (1 if mi is not None and more_done == 0 else 0)
     return body, {"raw_blocks": len(raw_blocks), "links": f"{restored}/{links_before}",
                   "more": more_done, "lost": lost,
+                  "upstream_dropped": absent,
                   "raw_no_longer_needed": dropped, "raw_missing": missing,
                   "kept": restored + raws_done + more_done}
 

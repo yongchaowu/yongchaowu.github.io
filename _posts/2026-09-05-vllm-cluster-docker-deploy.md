@@ -21,10 +21,9 @@ tags:
 
 当模型参数量突破 70B，单张 A100 80GB 已经无法装下整个模型。你需要一个**多节点 GPU 集群**，配合高效的分布式推理框架，才能让这些巨型模型真正跑起来。
 
-<!--more-->
-
-
 本文记录了我在生产环境中使用 **Docker + Ray + vLLM** 搭建多节点推理集群的完整过程。从环境准备到 API 服务上线，覆盖在线/离线两种安装方式，并附上性能调优和故障排查经验。
+
+<!--more-->
 
 **你将学到：**
 - 如何在多台 GPU 服务器上部署 vLLM 推理集群
@@ -927,6 +926,8 @@ systemctl stop firewalld
 
 ### 12.1 API Key 认证
 
+> vLLM 的 `--api-key` 或 `VLLM_API_KEY` 只保护 `/v1`、`/v2` 和 `/inference` 路径；`/invocations` 等其他端点不会因此自动受到保护。生产环境仍应结合网络访问控制、反向代理和其他隔离措施，详见 [vLLM 安全文档](https://docs.vllm.ai/en/stable/usage/security.html)。
+
 ```bash
 # 启用 API Key
 docker run -d \
@@ -1015,3 +1016,7 @@ server {
 - [Ray 分布式计算框架](https://docs.ray.io/)
 - [NVIDIA NCCL 文档](https://docs.nvidia.com/deeplearning/nccl/)
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/)
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 00:05（UTC+08:00）。

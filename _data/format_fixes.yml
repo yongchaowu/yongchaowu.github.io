@@ -108,3 +108,21 @@ fixes:
     # hand-maintained copy of logic that already works.
     reason: >-
       Upstream carries three links shaped `label[https://host/path]()`. The URL is present in the text but was never given a target, so kramdown rendered `<a href="">https://host/path</a>` and the link went nowhere. Each is promoted to an autolink (`<https://host/path>`), which restores a working link and changes no wording. Introduced by the 2026-10-01 upstream sync carrying the 2026-09-25 proofread; the post had zero occurrences before it. smoke-test.rb rejects empty anchors and site-review.py rejects empty anchor href, so this was a rendering defect rather than a preference.
+
+# --- 2026-10-01: section upstream dropped, restored deliberately ---
+  - post: _posts/2026-06-12-Python-Ray-Offline-Installation-Guide.md
+    fixed_blob: 7ae649ba4e075ac0b804e1f81237cce9a7fb583e
+    date: 2026-10-01
+    kind: missing-upstream-section
+    # No `rewrite` rule: this is not a substitution but the re-insertion of a whole
+    # section that upstream removed, so there is no find-and-replace to record. The
+    # reason field is what tells the next person it was deliberate.
+    reason: >-
+      Upstream's rewrite dropped this repository's closing "Next Steps" section, which
+      carries two `{% post_url %}` cross-references into the vLLM+Ray and the serving-architecture
+      guides. Sync cannot re-anchor a link whose target text no longer exists upstream, so
+      upstream_text.py reports it as `upstream_dropped` rather than as a lost facility, and the
+      section is restored here by hand. Both sides' value is kept: upstream's Ray 2.40.0 version
+      constraint, which this repository lacked, and these two navigation links, which upstream
+      no longer has. Re-apply by hand after any future sync -- a mechanical rule cannot tell an
+      upstream deletion worth keeping from one worth reverting.

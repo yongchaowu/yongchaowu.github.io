@@ -12,17 +12,17 @@ tags:
 - Tool
 - Graphify
 ---
-
 Graphify 是一项开源技能，通过把代码、文档、论文和图示构建为可查询知识图谱，帮助 AI 编码助手理解多模态代码库。
 
-<!--more-->
 - `pip install graphifyy`
+
+<!--more-->
 
 - [Home](https://graphify.net/zh/#features)
 
 ---
 
-Graphify 是为 AI 编码助手（如 Claude Code、OpenAI Codex、OpenCode）打造的多模态知识图谱构建器。它结合 Tree-sitter 静态分析与 LLM 语义抽取，将整个仓库（源代码、文档、研究论文、图示）转换为可交互图谱，同时解释代码“做什么”和“为什么这样设计”。项目由 Safi Shamsi 维护，采用 MIT 许可证，并建立在 NetworkX 与 Tree-sitter 等成熟库之上。
+Graphify 是为 AI 编码助手（如 Claude Code、OpenAI Codex、OpenCode）打造的多模态知识图谱构建器。它结合 Tree-sitter 静态分析与 LLM 语义抽取，将整个仓库（源代码、文档、研究论文、图示）转换为可交互图谱，同时解释代码“做什么”和“为什么这样设计”。项目由 Safi Shamsi 维护；官方 v0.9.25（2026-07-22）发布说明明确记录许可证从 MIT 改为 Apache License 2.0，v0.9.67（2026-09-23）仍为 Apache-2.0，且 NOTICE 说明重授权前的贡献仍按 MIT 条款。不能将当前许可证追溯套用到旧版本。它建立在 NetworkX 与 Tree-sitter 等成熟库之上。
 
 ## 核心能力
 
@@ -30,7 +30,7 @@ Graphify 将静态分析、语义抽取和图聚类统一为一个可被 AI 编�
 
 - 多模态抽取
 
-解析代码（.py、.js、.go、.java 等）、Markdown、PDF 与图片。Tree-sitter 提取 AST、调用图和注释；LLM 从文本抽取概念；视觉模型读取图示。
+解析代码（.py、.js、.go、.java 等）、Markdown、PDF 与图片。Tree-sitter 提取 AST、调用图和注释；LLM 从文本抽取概-念；视觉模型读取图示。
 
 - 知识图谱构建
 
@@ -72,3 +72,9 @@ graphify-out/
 ```
 
 Graphify 不内置大模型。它复用你在 AI 编码助手（Claude、Codex 等）里已配置的模型 API Key，并且只发送语义内容，不发送原始源码。
+
+参考：[Graphify v0.9.25 发布说明](https://github.com/Graphify-Labs/graphify/releases/tag/v0.9.25)、[v0.9.67 发布说明](https://github.com/Graphify-Labs/graphify/releases/tag/v0.9.67)、[v0.9.67 LICENSE](https://github.com/Graphify-Labs/graphify/blob/v0.9.67/LICENSE)、[NOTICE](https://github.com/Graphify-Labs/graphify/blob/v0.9.67/NOTICE) 和 [LICENSE-MIT](https://github.com/Graphify-Labs/graphify/blob/v0.9.67/LICENSE-MIT)。
+
+---
+
+> **AI 修改声明：** 本文由 LLM 协助校对，最近修改时间：2026-09-25 03:29（UTC+08:00）。
