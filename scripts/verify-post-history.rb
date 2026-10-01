@@ -19,6 +19,9 @@
 #           the 20 the sync held back are listed in docs/review-2026-10-01.md §10.
 #           format_fixes.yml still records every blob-bound exception against this
 #           baseline, so the audit trail does not restart here.
+# 6263862   after syncing the five held-back posts cnblogs was ahead of. Tool-Graphify
+#           now records the v0.9.25 relicense to Apache-2.0 rather than calling the
+#           project MIT. Bodies only; no filename, date or front matter moved.
 #
 # Advancing this is not a way to make a red gate green. It states that the content
 # at this commit is the approved historical state. Do it as its own commit, after
@@ -31,7 +34,7 @@ require 'set'
 require 'yaml'
 require 'date'
 
-BASELINE = ENV.fetch('POST_HISTORY_BASELINE', 'e73203c11e0c73508b9c2a8c2ef50d51790d7e41')
+BASELINE = ENV.fetch('POST_HISTORY_BASELINE', '62638628d318d28bc24d3f8f204d0cbc87350672')
 
 # Post count per known baseline. Keyed by commit rather than held as a single
 # number so that POST_HISTORY_BASELINE=<older commit> -- the override the usage
@@ -41,7 +44,8 @@ BASELINE = ENV.fetch('POST_HISTORY_BASELINE', 'e73203c11e0c73508b9c2a8c2ef50d517
 # which reads as a broken migration rather than as a deliberate check of history.
 BASELINE_POST_COUNTS = {
   '28c89b4645a8f6dc8683daa62c259f81a86befae' => 331,
-  'e73203c11e0c73508b9c2a8c2ef50d51790d7e41' => 357
+  'e73203c11e0c73508b9c2a8c2ef50d51790d7e41' => 357,
+  '62638628d318d28bc24d3f8f204d0cbc87350672' => 357
 }.freeze
 
 # An unrecognised baseline skips the count assertion with a warning instead of
